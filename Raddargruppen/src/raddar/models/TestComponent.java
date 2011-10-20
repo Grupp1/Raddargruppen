@@ -15,7 +15,7 @@ public class TestComponent {
 
 	
 	public void hejdanne(){
-		// LOL
+		// jkashdjklashdjkahsdj
 	}
 	
 }
