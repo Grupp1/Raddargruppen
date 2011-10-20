@@ -10,5 +10,10 @@ public class TestComponent {
 	public static void main(String[] args) {
 		System.out.println("HEEEJ DANNE!!!");
 	}
+
+	
+	public void hejdanne(){
+		// LOL
+	}
 	
 }
