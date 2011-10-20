@@ -3,7 +3,7 @@ package raddar.models;
 public class TestComponent {
 	
 	public boolean lol(){
-		return true;
+		return false;
 	}
 
 	public int raddd(){
