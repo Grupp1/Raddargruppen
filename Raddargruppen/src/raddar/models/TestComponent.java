@@ -2,8 +2,8 @@ package raddar.models;
 
 public class TestComponent {
 	
-	public void lol(){
-		
+	public boolean lol(){
+		return true;
 	}
 
 	public int raddd(){
