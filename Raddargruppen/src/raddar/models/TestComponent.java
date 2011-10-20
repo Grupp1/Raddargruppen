@@ -6,7 +6,9 @@ public class TestComponent {
 		
 	}
 
-
+	public int raddd(){
+		return 0;
+	}
 	public static void main(String[] args) {
 		System.out.println("HEEEJ DANNE!!!");
 	}
