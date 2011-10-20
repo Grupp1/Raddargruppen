@@ -14,7 +14,7 @@ public class RaddargruppenActivity extends Activity {
         setContentView(R.layout.main);
         
         TextMessage tm = new TextMessage(MessageType.TEXT, "Borche", "Alice");
-        tm.setMessage("Hejsan. Detta är ett testmeddelande!");
+        tm.setMessage("Hejsan. Detta är ett INTEFFE testmeddelande!");
         
         TextView tv = (TextView) findViewById(R.id.textView1);
         tv.setText(tm.getFormattedMessage());
