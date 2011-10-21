@@ -4,6 +4,16 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
+    
+	<com.google.android.maps.MapView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mapview"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:clickable="true"
+    android:apiKey="0b1qi7XBfQqn9A3za-xBrAlalU6nTrHtuJ-lKog"
+	/>
+    
 <TextView  
 	android:id="@+id/textView1"
     android:layout_width="fill_parent" 

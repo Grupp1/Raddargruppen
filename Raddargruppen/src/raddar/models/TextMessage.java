@@ -1,6 +1,7 @@
 package raddar.models;
 
-import raddar.enums.*;
+import raddar.enums.MessagePriority;
+import raddar.enums.MessageType;
 
 public class TextMessage extends Message {
 	
