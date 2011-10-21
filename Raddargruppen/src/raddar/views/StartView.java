@@ -15,9 +15,10 @@ public class StartView extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
+        
+        
         TextMessage tm = new TextMessage(MessageType.TEXT, "Borche", "Alice");
         tm.setMessage("Hejsan. Detta är ett INTEFFE testmeddelande!");
-        
         TextView tv = (TextView) findViewById(R.id.textView1);
         tv.setText(tm.getFormattedMessage());
     }
