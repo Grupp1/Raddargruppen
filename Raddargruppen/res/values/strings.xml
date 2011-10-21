@@ -2,5 +2,6 @@
 <resources>
     <string name="header">Raddargruppens App</string>
     <string name="app_name">Räddargruppen</string>
-    <string name="button1">Tryck på mig!</string>
+    <string name="map_close">Stäng programmet!</string>
+    <string name="map_header">Karta</string>
 </resources>
