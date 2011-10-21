@@ -1,6 +1,4 @@
-/.metadata/
-Raddargruppen/bin/
-Raddargruppen/.settings/
+.metadata/
 # built application files
 *.apk
 *.ap_
