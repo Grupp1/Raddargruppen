@@ -5,7 +5,7 @@
     <uses-sdk android:minSdkVersion="10" />
 
     <application android:icon="@drawable/icon" android:label="@string/app_name">
-        <activity android:name="tddd36.activity.SkelettActivity"
+        <activity android:name="tddd36.activity.RaddargruppenActivity"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
