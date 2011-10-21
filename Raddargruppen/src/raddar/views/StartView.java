@@ -17,10 +17,10 @@ public class StartView extends Activity {
         
         
         
-        TextMessage tm = new TextMessage(MessageType.TEXT, "Borche", "Alice");
-        tm.setMessage("Hejsan. Detta är ett INTEFFE testmeddelande!");
-        TextView tv = (TextView) findViewById(R.id.textView1);
-        tv.setText(tm.getFormattedMessage());
+        //TextMessage tm = new TextMessage(MessageType.TEXT, "Borche", "Alice");
+        //tm.setMessage("Hejsan. Detta är ett INTEFFE testmeddelande!");
+        //TextView tv = (TextView) findViewById(R.id.textView1);
+        //tv.setText(tm.getFormattedMessage());
     }
 
 }
