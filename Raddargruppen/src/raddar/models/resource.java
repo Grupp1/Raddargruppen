@@ -1,16 +1,16 @@
 package raddar.models;
 
-import raddar.enums.resourceStatus;
+import raddar.enums.ResourceStatus;
 
-public class resource extends MapObject {
+public class Resource extends MapObject {
 
-	private resourceStatus status;
+	private ResourceStatus status;
 
-	public resourceStatus getStatus() {
+	public ResourceStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(resourceStatus status) {
+	public void setStatus(ResourceStatus status) {
 		this.status = status;
 	}
 	
