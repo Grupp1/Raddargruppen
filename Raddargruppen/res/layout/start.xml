@@ -11,15 +11,14 @@
     </LinearLayout>
     <LinearLayout android:id="@+id/linearLayout3" android:layout_height="wrap_content" android:orientation="vertical" android:layout_width="wrap_content" android:layout_below="@+id/textView3" android:layout_alignLeft="@+id/textView3">
     </LinearLayout>
-    <EditText android:id="@+id/editText2" android:layout_width="254dp" android:layout_height="wrap_content" android:layout_alignTop="@+id/textView3" android:layout_alignLeft="@+id/textView3" android:layout_marginTop="20dp">
+    <EditText android:layout_width="254dp" android:layout_alignTop="@+id/textView3" android:layout_alignLeft="@+id/textView3" android:layout_marginTop="20dp" android:id="@+id/passwordText" android:password="true" android:layout_height="wrap_content" android:singleLine="true">"
         <requestFocus></requestFocus>
     </EditText>
     <LinearLayout android:id="@+id/linearLayout4" android:layout_height="wrap_content" android:orientation="vertical" android:layout_width="wrap_content" android:layout_below="@+id/textView2" android:layout_alignLeft="@+id/textView2">
-        <EditText android:id="@+id/editText1" android:layout_height="wrap_content" android:layout_width="249dp"></EditText>
+        <EditText android:layout_width="249dp" android:id="@+id/userText" android:layout_height="wrap_content" android:singleLine="true"></EditText>
     </LinearLayout>
     <TextView android:layout_height="wrap_content" android:text="@string/start_password" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:id="@+id/textView3" android:layout_below="@+id/linearLayout4" android:layout_alignLeft="@+id/linearLayout4" android:layout_marginTop="20dp"></TextView>
     <TextView android:layout_height="wrap_content" android:text="@string/start_user" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:id="@+id/textView2" android:layout_below="@+id/textView1" android:layout_toLeftOf="@+id/linearLayout2" android:layout_marginTop="48dp"></TextView>
-    <Button android:layout_height="wrap_content" android:id="@+id/button1" android:layout_width="wrap_content" android:text="@string/start_exit" android:layout_below="@+id/linearLayout1" android:layout_alignRight="@+id/textView2"></Button>
-    <Button android:layout_height="wrap_content" android:id="@+id/button2" android:layout_width="62dp" android:text="@string/start_ok" android:layout_alignTop="@+id/linearLayout1" android:layout_toRightOf="@+id/linearLayout2"></Button>
+    <Button android:layout_width="62dp" android:id="@+id/okButton" android:layout_height="wrap_content" android:text="@string/start_ok" android:layout_below="@+id/passwordText" android:layout_alignLeft="@+id/textView1" android:layout_marginTop="62dp"></Button>
         
 </RelativeLayout>

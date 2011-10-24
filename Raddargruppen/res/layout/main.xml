@@ -7,5 +7,14 @@
     android:layout_centerInParent="true"
     <LinearLayout android:id="@+id/linearLayout1" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
     </LinearLayout>
-    <RelativeLayout android:id="@+id/relativeLayout1" android:layout_width="match_parent" android:layout_height="match_parent"></RelativeLayout>
+    <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent" android:id="@+id/logoutButton">
+        <LinearLayout android:layout_width="wrap_content" android:id="@+id/linearLayout2" android:layout_height="wrap_content" android:orientation="vertical" android:layout_alignParentTop="true" android:layout_alignParentLeft="true" android:layout_marginLeft="62dp" android:layout_marginTop="73dp"></LinearLayout>
+        <Button android:layout_width="110dp" android:layout_alignParentTop="true" android:layout_alignParentLeft="true" android:layout_marginLeft="37dp" android:layout_marginTop="30dp" android:layout_height="90dp" android:text="@string/main_calls" android:id="@+id/callButton" android:background="#839ed7"></Button>
+        <Button android:layout_width="110dp" android:layout_height="90dp" android:text="@string/main_messages" android:layout_alignBaseline="@+id/callButton" android:layout_alignBottom="@+id/callButton" android:layout_toRightOf="@+id/callButton" android:layout_marginLeft="23dp" android:id="@+id/messageButton" android:background="#839ed7"></Button>
+        <Button android:layout_width="110dp" android:id="@+id/mapButton" android:layout_height="90dp" android:text="@string/main_map" android:layout_below="@+id/callButton" android:layout_alignLeft="@+id/callButton" android:layout_marginTop="29dp" android:background="#839ed7"></Button>
+        <Button android:layout_width="110dp" android:layout_height="90dp" android:text="@string/main_setup" android:layout_below="@+id/reportButton" android:layout_alignLeft="@+id/reportButton" android:layout_marginTop="28dp" android:id="@+id/setupButton" android:background="#839ed7"></Button>
+        <Button android:layout_width="110dp" android:id="@+id/reportButton" android:layout_height="90dp" android:text="@string/main_report" android:layout_alignBaseline="@+id/mapButton" android:layout_alignBottom="@+id/mapButton" android:layout_alignLeft="@+id/messageButton" android:background="#839ed7"></Button>
+        <Button android:layout_width="110dp" android:id="@+id/logoutButton" android:layout_height="50dp" android:text="@string/main_logout" android:layout_alignParentBottom="true" android:layout_alignLeft="@+id/setupButton" android:layout_marginBottom="16dp" android:background="#839ed7"></Button>
+        <Button android:textSize="50px" android:layout_width="110dp" android:id="@+id/sosButton" android:layout_height="90dp" android:text="@string/main_sos" android:background="#FF0000" android:textColor="#FFFFFF" android:layout_alignTop="@+id/setupButton" android:layout_alignLeft="@+id/mapButton"></Button>
+    </RelativeLayout>
 </LinearLayout>

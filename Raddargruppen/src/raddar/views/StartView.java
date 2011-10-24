@@ -22,17 +22,17 @@ public class StartView extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.start);
-		loginButton = (Button)this.findViewById(R.id.button2);
+		loginButton = (Button)this.findViewById(R.id.okButton);
 		loginButton.setOnClickListener(this);
-		user = (EditText)this.findViewById(R.id.editText1);
-		password = (EditText)this.findViewById(R.id.editText2);
+		user = (EditText)this.findViewById(R.id.userText);
+		password = (EditText)this.findViewById(R.id.passwordText);
 		
 
 	}
 
 	public void onClick(View v) {
+		setContentView(R.layout.main);
 		//anropar loginfunktionen - går vidare till main
-		finish();
 		
 	}
 

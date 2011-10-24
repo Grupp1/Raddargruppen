@@ -7,4 +7,11 @@
     <string name="start_password">Lösenord:</string>
     <string name="start_exit">Avsluta</string>
     <string name="start_ok">OK</string>
+    <string name="main_map">Karta</string>
+    <string name="main_messages">Meddelanden</string>
+    <string name="main_calls">Samtal</string>
+    <string name="main_logout">Logga ut</string>
+    <string name="main_setup">Inställningar</string>
+    <string name="main_sos">SOS</string>
+    <string name="main_report">Rapportera</string>
 </resources>
