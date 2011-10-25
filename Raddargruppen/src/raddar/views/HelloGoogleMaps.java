@@ -17,7 +17,7 @@ public class HelloGoogleMaps extends MapActivity {
 		setContentView(R.layout.main);
 
 		Button b;
-		b = (Button)this.findViewById(R.id.button1);
+		b = (Button)this.findViewById(R.id.button_close);
 		b.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				
