@@ -28,7 +28,11 @@ public class TextMessage extends Message {
 		this.data = message;
 	}
 	
-	public void appendMessage(String message) {
+	public void prependMessage(String message) {
+		this.data = message + data;
+	}
+	
+	public void append(String message) {
 		this.data += message;
 	}
 	

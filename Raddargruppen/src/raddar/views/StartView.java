@@ -1,16 +1,13 @@
 package raddar.views;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.InetAddress;
-import java.net.Socket;
 
+import raddar.controllers.ReciveHandler;
 import raddar.controllers.Sender;
-import raddar.enums.MessagePriority;
 import raddar.enums.MessageType;
 import raddar.gruppen.R;
+import raddar.models.Message;
 import raddar.models.TextMessage;
 import android.app.Activity;
 import android.os.Bundle;
@@ -28,16 +25,23 @@ public class StartView extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		new ReciveHandler(6789);
 
-		Button send = (Button) findViewById(R.id.button1);
-		
+		Button send = (Button) findViewById(R.id.button1);		
 		send.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				TextView tv = (TextView) findViewById(R.id.textView1);
-				EditText et = (EditText) findViewById(R.id.editText1);
+				//EditText et = (EditText) findViewById(R.id.editText1);
+				//TextView tv = (TextView) findViewById(R.id.textView1);
 				try {
-					Socket so = new Socket(InetAddress.getByName("130.236.188.128"), 6789);
+					
+					TextMessage m = new TextMessage(MessageType.TEXT, "Borche", "Alice");
+					m.setMessage("Hej");
+					new Sender(m, 
+							InetAddress.getByName("130.236.188.128"), 6789); 
+					
+					
+					/*Socket so = new Socket(InetAddress.getByName("130.236.188.128"), 6789);
 					so.setSoTimeout(5000);
 					
 					TextMessage tm = new TextMessage(MessageType.TEXT, "Borche", "Alice");
@@ -69,11 +73,10 @@ public class StartView extends Activity {
 					tv.setText(reply.getFormattedMessage());		
 					
 					so.close();
-					
+					*/
 					
 				} catch (IOException ie) {
-					Log.d("Skapandet av socket", "Gick inte");
-					tv.setText("Failed");
+					Log.d("Failade i onClick()", "Gick inte");
 				}				
 			}
 			

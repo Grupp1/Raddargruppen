@@ -83,6 +83,7 @@ public abstract class Message {
 	public String getDestUser() {
 		return toUser;
 	}
-
+	
+	public abstract String getFormattedMessage();
 }
 
