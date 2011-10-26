@@ -7,7 +7,6 @@ import raddar.controllers.ReciveHandler;
 import raddar.controllers.Sender;
 import raddar.enums.MessageType;
 import raddar.gruppen.R;
-import raddar.models.Message;
 import raddar.models.TextMessage;
 import android.app.Activity;
 import android.os.Bundle;
@@ -16,7 +15,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 public class StartView extends Activity {
 
