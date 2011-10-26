@@ -3,7 +3,7 @@ package raddar.models;
 import android.graphics.drawable.Drawable;
 import raddar.enums.ResourceStatus;
 
-public class Resource extends MapObject {
+public class Resource extends MapObjectList {
 
 	public Resource(Drawable defaultMarker) {
 		super(defaultMarker);

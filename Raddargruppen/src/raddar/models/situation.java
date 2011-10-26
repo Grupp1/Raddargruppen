@@ -3,7 +3,7 @@ package raddar.models;
 import android.graphics.drawable.Drawable;
 import raddar.enums.SituationPriority;
 
-public class Situation extends MapObject {
+public class Situation extends MapObjectList {
 
 	public Situation(Drawable defaultMarker) {
 		super(defaultMarker);
