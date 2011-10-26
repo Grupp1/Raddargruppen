@@ -20,10 +20,12 @@ public class ReciveHandler implements Runnable {
 
 	public void run() {
 		try {
+			// Skapa en ServerSocket för att lyssna på inkommande meddelanden
 			ServerSocket so = new ServerSocket(port);
 
 			while (true) 
-				
+				// När ett inkommande meddelande tas emot skapa en ny Receiver
+				// som körs i en egen tråd
 				new Reciver(so.accept());
 
 		} catch (IOException ie) {

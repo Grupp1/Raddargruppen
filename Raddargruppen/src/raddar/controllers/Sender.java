@@ -42,26 +42,9 @@ public class Sender implements Runnable {
 			Log.d("3", "lawl");
 									
 			PrintWriter out = new PrintWriter(so.getOutputStream(), true);
-			BufferedReader in = new BufferedReader(new InputStreamReader(so.getInputStream()));
 			
 			// Formatera och skicka meddelandet till servern
 			out.println(message.getFormattedMessage());
-						
-			/*String msgType = in.readLine().split(" ")[1];
-			String msgPriority = in.readLine().split(" ")[1];
-			String fromUser = in.readLine().split(" ")[1];
-			String toUser = in.readLine().split(" ")[1];
-			in.readLine();
-			String data = "";
-			while (in.ready())
-				data += in.readLine();
-			
-			MessageType type = MessageType.convert(msgType);
-			MessagePriority priority = MessagePriority.convert(msgPriority);
-			
-			TextMessage reply = new TextMessage(type, fromUser, toUser, priority, data);
-			
-			tv.setText(reply.getFormattedMessage()); */		
 			
 			so.close();
 			

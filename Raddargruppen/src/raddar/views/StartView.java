@@ -25,55 +25,32 @@ public class StartView extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		
+		// Skapa ny ReceiveHandler som körs i en egen tråd och alltid ligger och 
+		// lyssnar efter inkommande meddelanden
 		new ReciveHandler(6789);
 
-		Button send = (Button) findViewById(R.id.button1);		
+		Button send = (Button) findViewById(R.id.button1);
+		
+		// Lyssna på knapptryckningar
 		send.setOnClickListener(new OnClickListener() {
 
+			// Definiera vad som händer när man klickar på knappen SEND
 			public void onClick(View v) {
-				//EditText et = (EditText) findViewById(R.id.editText1);
+				EditText et = (EditText) findViewById(R.id.editText1);
 				//TextView tv = (TextView) findViewById(R.id.textView1);
 				try {
 					
+					// Testmeddelande. Borche och Alice är bara random namn än så länge
 					TextMessage m = new TextMessage(MessageType.TEXT, "Borche", "Alice");
-					m.setMessage("Hej");
-					new Sender(m, 
-							InetAddress.getByName("130.236.188.128"), 6789); 
 					
+					// Hämta texten/meddelandet som användaren skrivit in
+					m.setMessage(et.getText().toString());
 					
-					/*Socket so = new Socket(InetAddress.getByName("130.236.188.128"), 6789);
-					so.setSoTimeout(5000);
-					
-					TextMessage tm = new TextMessage(MessageType.TEXT, "Borche", "Alice");
-					tm.setMessage(et.getText().toString());
-									
-					//et.setText(tm.getFormattedMessage());
-					
-					PrintWriter out = new PrintWriter(so.getOutputStream(), true);
-					BufferedReader in = new BufferedReader(new InputStreamReader(so.getInputStream()));
-					
-					// Formatera och skicka meddelandet till servern
-					out.println(tm.getFormattedMessage());
-					
-					String msgType = in.readLine().split(" ")[1];
-					String msgPriority = in.readLine().split(" ")[1];
-					String fromUser = in.readLine().split(" ")[1];
-					String toUser = in.readLine().split(" ")[1];
-					in.readLine();
-					String data = "";
-					while (in.ready())
-						data += in.readLine();
-					
-					
-					MessageType type = MessageType.convert(msgType);
-					MessagePriority priority = MessagePriority.convert(msgPriority);
-					
-					TextMessage reply = new TextMessage(type, fromUser, toUser, priority, data);
-					
-					tv.setText(reply.getFormattedMessage());		
-					
-					so.close();
-					*/
+					// Skapa en ny Sender som tar hand om att skicka meddelandet 
+					// till angiven IP address på angiven port
+					new Sender(m, InetAddress.getByName("127.0.0.1"), 6789);
+					//new Sender(m, InetAddress.getByName("130.236.188.128"), 6789); 
 					
 				} catch (IOException ie) {
 					Log.d("Failade i onClick()", "Gick inte");
