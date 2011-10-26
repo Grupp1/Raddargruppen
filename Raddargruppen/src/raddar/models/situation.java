@@ -1,11 +1,16 @@
 package raddar.models;
 
-import raddar.enums.situationPriority;
+import android.graphics.drawable.Drawable;
+import raddar.enums.SituationPriority;
 
-public class situation extends MapObject {
+public class Situation extends MapObject {
 
+	public Situation(Drawable defaultMarker) {
+		super(defaultMarker);
+		// TODO Auto-generated constructor stub
+	}
 	private String description;
-	private situationPriority priority;
+	private SituationPriority priority;
 	
 	public String getDescription() {
 		return description;
@@ -13,10 +18,10 @@ public class situation extends MapObject {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public situationPriority getPriority() {
+	public SituationPriority getPriority() {
 		return priority;
 	}
-	public void setPriority(situationPriority priority) {
+	public void setPriority(SituationPriority priority) {
 		this.priority = priority;
 	}
 	

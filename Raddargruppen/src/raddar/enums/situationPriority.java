@@ -1,6 +1,6 @@
 package raddar.enums;
 
-public enum situationPriority {
+public enum SituationPriority {
 	
 	HIGH,
 	NORMAL,

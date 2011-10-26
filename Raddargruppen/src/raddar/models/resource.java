@@ -1,16 +1,22 @@
 package raddar.models;
 
-import raddar.enums.resourceStatus;
+import android.graphics.drawable.Drawable;
+import raddar.enums.ResourceStatus;
 
-public class resource extends MapObject {
+public class Resource extends MapObject {
 
-	private resourceStatus status;
+	public Resource(Drawable defaultMarker) {
+		super(defaultMarker);
+		// TODO Auto-generated constructor stub
+	}
 
-	public resourceStatus getStatus() {
+	private ResourceStatus status;
+
+	public ResourceStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(resourceStatus status) {
+	public void setStatus(ResourceStatus status) {
 		this.status = status;
 	}
 	

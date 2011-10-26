@@ -3,11 +3,10 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    >
-<TextView  
-	android:id="@+id/textView1"
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text="@string/hello"
-    />
+    android:weightSum="1">
+    <EditText android:id="@+id/editText1" android:layout_height="wrap_content" android:layout_width="match_parent">
+        <requestFocus></requestFocus>
+    </EditText>
+    <Button android:id="@+id/button1" android:layout_height="wrap_content" android:text="Send" android:layout_width="match_parent"></Button>
+    <TextView android:id="@+id/textView1" android:layout_weight="0.28" android:text="TextView" android:layout_width="match_parent" android:layout_height="match_parent"></TextView>
 </LinearLayout>
