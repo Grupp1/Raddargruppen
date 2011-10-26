@@ -99,14 +99,12 @@ public class ClientHandler implements Runnable {
 			// Formatera och vidarebefordra meddelandet
 			fOut.println(tm.getFormattedMessage());
 			
-			// Formatera textmeddelandet och skicka tillbaka det till klienten
-			// out.println(tm.getFormattedMessage());
+			System.out.println("["+so.getInetAddress().getHostAddress()+"] << Replying with altered text message. ");
 			
+			// Stäng ner
 			fOut.close();
 			forward.close();
-			
-			System.out.println("["+so.getInetAddress().getHostAddress()+"] << Replying with altered text message. ");
-						
+									
 			System.out.println("["+so.getInetAddress().getHostAddress()+"] ** Connection closed. ");
 			
 		} catch (IOException ie) {
