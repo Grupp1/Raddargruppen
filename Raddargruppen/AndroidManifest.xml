@@ -5,8 +5,12 @@
     <uses-sdk android:minSdkVersion="10" />
 
     <application android:icon="@drawable/icon" android:label="@string/app_name">
-        <activity android:name="tddd36.activity.SkelettActivity"
-                  android:label="@string/app_name">
+    
+    <uses-library android:name="com.google.android.maps" />
+    
+        <activity android:name="raddar.views.StartView"
+                  android:label="@string/app_name"
+                  android:theme="@android:style/Theme.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -14,4 +18,7 @@
         </activity>
 
     </application>
+   
+    <uses-permission android:name="android.permission.INTERNET" />
+    
 </manifest>

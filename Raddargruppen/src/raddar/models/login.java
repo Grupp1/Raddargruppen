@@ -3,17 +3,17 @@ package raddar.models;
 import java.util.HashMap;
 import java.util.Observable;
 
-import raddar.enums.loginResponse;
+import raddar.enums.LoginResponse;
 
-public class login extends Observable {
+public class Login extends Observable {
 	
 	HashMap<String, String> passwordCache = new HashMap<String, String>();
 	
-	public login(){
+	public Login(){
 		passwordCache.put("admin", "password");
 	}
 	
-	public loginResponse checkPassword(String user, String password){
+	public LoginResponse checkPassword(String user, String password){
 		if (passwordCache.containsKey(user)){
 			return checkLocal(user, password);
 		}
@@ -22,20 +22,20 @@ public class login extends Observable {
 		}
 	}
 	
-	private loginResponse checkLocal(String user, String password){
+	private LoginResponse checkLocal(String user, String password){
 		String temp = passwordCache.get(user);
 		if (temp == null){
-			return loginResponse.NO_SUCH_USER;
+			return LoginResponse.NO_SUCH_USER;
 		}
 		if (password.equals(temp)){
-			return loginResponse.ACCEPTED;
+			return LoginResponse.ACCEPTED;
 		}
-		return loginResponse.ERROR;
+		return LoginResponse.ERROR;
 	}
 	
-	private loginResponse checkServer(String user, String password){
+	private LoginResponse checkServer(String user, String password){
 		// send user and password to server via Sender!
-		return loginResponse.NO_CONNECTION;
+		return LoginResponse.NO_CONNECTION;
 	}
 	
 }

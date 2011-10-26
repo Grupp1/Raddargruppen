@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, SkelettActivity!</string>
-    <string name="app_name">Skelett</string>
+    <string name="header">Raddargruppens App</string>
+    <string name="app_name">Räddargruppen</string>
+    <string name="map_close">Stäng programmet!</string>
+    <string name="map_header">Karta</string>
 </resources>
