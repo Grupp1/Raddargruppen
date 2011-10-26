@@ -15,6 +15,6 @@
         <ImageButton android:layout_width="110dp" android:layout_height="90dp" android:layout_below="@+id/reportButton" android:layout_alignLeft="@+id/reportButton" android:layout_marginTop="28dp" android:id="@+id/setupButton" android:src="@drawable/setup" android:background="#000000"></ImageButton>
         <ImageButton android:layout_width="110dp" android:id="@+id/reportButton" android:layout_height="90dp" android:layout_alignBaseline="@+id/mapButton" android:layout_alignBottom="@+id/mapButton" android:layout_alignLeft="@+id/messageButton" android:src="@drawable/anteckna" android:background="#000000"></ImageButton>
         <ImageButton android:textSize="50px" android:layout_width="110dp" android:id="@+id/sosButton" android:layout_height="90dp" android:text="@string/main_sos" android:layout_alignTop="@+id/setupButton" android:layout_alignLeft="@+id/mapButton" android:src="@drawable/lifebouy" android:background="#000000"></ImageButton>
-        <Button android:id="@+id/logoutButton" android:layout_height="50dp" android:layout_width="110dp" android:text="@string/main_logout" android:layout_alignParentBottom="true" android:layout_alignLeft="@+id/setupButton" android:layout_marginBottom="36dp"></Button>
+        <Button android:layout_width="wrap_content" android:id="@+id/logButton" android:layout_height="wrap_content" android:text="Logga ut" android:layout_alignParentBottom="true" android:layout_alignRight="@+id/setupButton" android:layout_marginRight="21dp" android:layout_marginBottom="23dp"></Button>
     </RelativeLayout>
 </LinearLayout>

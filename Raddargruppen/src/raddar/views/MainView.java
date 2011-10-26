@@ -6,16 +6,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 public class MainView extends Activity implements OnClickListener {
 
-	private Button callButton;
-	private Button messageButton;
-	private Button mapButton;
-	private Button reportButton;
-	private Button sosButton;
-	private Button setupButton;
-	private Button logoutButton;
+	private ImageButton callButton;
+	private ImageButton messageButton;
+	private ImageButton mapButton;
+	private ImageButton reportButton;
+	private ImageButton sosButton;
+	private ImageButton setupButton;
+	private Button logButton;
+	
 
 	/** Called when the activity is first created. */
 	@Override
@@ -23,72 +25,55 @@ public class MainView extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-		callButton = (Button)this.findViewById(R.id.callButton);
+		callButton = (ImageButton)this.findViewById(R.id.callButton);
 		callButton.setOnClickListener(this);
-		//	public void onClick(View v){
-		//		setContentView(R.layout.start);
-	//		}
-	//	});
 
-		messageButton = (Button)this.findViewById(R.id.messageButton);
-		messageButton.setOnClickListener(new OnClickListener(){
-			public void onClick(View v){ 
-			//	setContentView(R.layout.start);
-				finish();
-			}
-		});
+		messageButton = (ImageButton)this.findViewById(R.id.messageButton);
+		messageButton.setOnClickListener(this);
 
-		mapButton = (Button)this.findViewById(R.id.mapButton);
-		mapButton.setOnClickListener(new OnClickListener(){
-			public void onClick(View v){ 
-				setContentView(R.layout.start);
-			}
-		});
+		mapButton = (ImageButton)this.findViewById(R.id.mapButton);
+		mapButton.setOnClickListener(this);
 
-		reportButton = (Button)this.findViewById(R.id.reportButton);
-		reportButton.setOnClickListener(new OnClickListener(){
-			public void onClick(View v){ 
-				setContentView(R.layout.start);
-			}
-		});
+		reportButton = (ImageButton)this.findViewById(R.id.reportButton);
+		reportButton.setOnClickListener(this);
 
+		sosButton = (ImageButton)this.findViewById(R.id.sosButton);
+		sosButton.setOnClickListener(this);
 
-		sosButton = (Button)this.findViewById(R.id.sosButton);
-		sosButton.setOnClickListener(new OnClickListener(){
-			public void onClick(View v){ 
-				setContentView(R.layout.start);
-			}
-		});
-		
-		setupButton = (Button)this.findViewById(R.id.setupButton);
-		setupButton.setOnClickListener(new OnClickListener(){
-			public void onClick(View v){ 
-				setContentView(R.layout.start);
+		setupButton = (ImageButton)this.findViewById(R.id.setupButton);
+		setupButton.setOnClickListener(this);
 
-			}
-
-		});
-		logoutButton = (Button)this.findViewById(R.id.logoutButton);
-		logoutButton.setOnClickListener(new OnClickListener() {
-			public void onClick(View v){ 
-				//setContentView(R.layout.start);
-				finish();
-			}
-
-		});
-		//anropar loginfunktionen - går vidare till main
-
+		logButton = (Button)this.findViewById(R.id.logButton);
+		logButton.setOnClickListener(this);
 
 	}
 
 	public void onClick(View v) {
-		finish();
-		if(v ==callButton){
-			
+
+		if(v == callButton){
+			finish();
 		}
-		
+		if(v == messageButton){
+			finish();
+		}
+		if(v == mapButton){
+			finish(); //kopplas till map activity
+		}
+		if(v == reportButton){
+			finish();
+		}
+		if(v == sosButton){
+			finish();
+		}
+		if(v == setupButton){
+			finish();
+		}
+		if(v == logButton){
+			finish();
+		}
+
+
+
+
 	}
-
-
-
 }

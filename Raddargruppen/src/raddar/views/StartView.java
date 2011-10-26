@@ -6,6 +6,7 @@ import raddar.enums.MessageType;
 import raddar.gruppen.R;
 import raddar.models.TextMessage;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,12 +16,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class StartView extends Activity implements Serializable {
+public class StartView extends Activity {
 
 	private Button loginButton;
 	private EditText user;
 	private EditText password;
-	
+
 
 	/** Called when the activity is first created. */
 	@Override
@@ -28,32 +29,21 @@ public class StartView extends Activity implements Serializable {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.start);
 
-		//onStart();
-		loginButton = (Button)this.findViewById(R.id.okButton);
-		//loginButton.setOnClickListener(this);
 		user = (EditText)this.findViewById(R.id.userText);
 		password = (EditText)this.findViewById(R.id.passwordText);
-		
+
+		loginButton = (Button)this.findViewById(R.id.okButton);
 		loginButton.setOnClickListener(new OnClickListener(){
+
 			public void onClick(View v){ 
+
 				Intent nextIntent = new Intent(StartView.this, MainView.class);
 				startActivity(nextIntent);
 			}
+
 		});
+
+		
 	}
 
-//	public void onClick(View v) {
-		
-		
-		//setContentView(R.layout.main);
-		
-		//	Intent nextIntent = new Intent(StartView.this, MainView.class);
-		//	startActivity(nextIntent);
-		
-
-	//}
-	//anropar loginfunktionen - går vidare till main
-
 }
-
-
