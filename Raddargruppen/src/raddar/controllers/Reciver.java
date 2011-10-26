@@ -1,20 +1,12 @@
 package raddar.controllers;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.Socket;
 
-import raddar.enums.MessagePriority;
 import raddar.enums.MessageType;
-import raddar.models.Message;
-import raddar.models.TextMessage;
 import android.util.Log;
-import android.widget.EditText;
-import android.widget.TextView;
 
 public class Reciver implements Runnable {
 
@@ -42,14 +34,15 @@ public class Reciver implements Runnable {
 			in.readLine();
 			while (in.ready())
 				Log.d(in.readLine(),"hej");
-			switch (type){
+			
+			/*switch (type){
 			case TEXT:
 
 				break;
 			case IMAGE:
 
 				break;			
-			}
+			}*/
 
 		} catch (IOException ie) {
 			ie.printStackTrace();
