@@ -1,20 +1,13 @@
 package raddar.views;
 
-import java.io.Serializable;
-
-import raddar.enums.MessageType;
 import raddar.gruppen.R;
-import raddar.models.TextMessage;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 public class StartView extends Activity {
 
@@ -27,6 +20,7 @@ public class StartView extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.start);
 
 		user = (EditText)this.findViewById(R.id.userText);
@@ -43,7 +37,7 @@ public class StartView extends Activity {
 
 		});
 
-		
-	}
 
+
+	}
 }

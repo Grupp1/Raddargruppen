@@ -23,10 +23,13 @@ import raddar.enums.MessageType;
  * Borche
  */
 public abstract class Message {
+	
+	// Carriage-return och Line-feed
+	public static final String CRLF = "\r\n";
 		
 	// Header attributer
-	public static final String HEADER_PRIO = "Priority: ";
 	public static final String HEADER_TYPE = "Content-Type: ";
+	public static final String HEADER_PRIO = "Priority: ";
 	public static final String HEADER_FROM = "From-User: ";
 	public static final String HEADER_TO = "To-User: ";	
 	
@@ -41,8 +44,8 @@ public abstract class Message {
 	//public static final int PRIO_HIGH = 1;
 	
 	// Typ av message, sändare och mottagare
-	protected MessagePriority priority;
 	protected MessageType type;
+	protected MessagePriority priority;
 	protected String fromUser;
 	protected String toUser;
 	
@@ -80,6 +83,7 @@ public abstract class Message {
 	public String getDestUser() {
 		return toUser;
 	}
-
+	
+	public abstract String getFormattedMessage();
 }
 

@@ -28,6 +28,14 @@ public class TextMessage extends Message {
 		this.data = message;
 	}
 	
+	public void prependMessage(String message) {
+		this.data = message + data;
+	}
+	
+	public void append(String message) {
+		this.data += message;
+	}
+	
 	public String getMessage() {
 		return data;
 	}
@@ -39,11 +47,11 @@ public class TextMessage extends Message {
 	@Override
 	public String toString() {
 		String formattedMessage = "";
-		formattedMessage += Message.HEADER_PRIO + priority +"\r\n";
-		formattedMessage += Message.HEADER_TYPE + type + "\r\n";
-		formattedMessage += Message.HEADER_FROM + fromUser.toLowerCase() + "\r\n";
-		formattedMessage += Message.HEADER_TO + toUser.toLowerCase() + "\r\n";
-		formattedMessage += "\r\n\r\n";
+		formattedMessage += Message.HEADER_TYPE + type + CRLF;
+		formattedMessage += Message.HEADER_PRIO + priority + CRLF;
+		formattedMessage += Message.HEADER_FROM + fromUser.toLowerCase() + CRLF;
+		formattedMessage += Message.HEADER_TO + toUser.toLowerCase() + CRLF;
+		formattedMessage += CRLF + CRLF;
 		formattedMessage += data;
 		
 		return formattedMessage;

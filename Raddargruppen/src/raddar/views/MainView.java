@@ -2,6 +2,7 @@ package raddar.views;
 
 import raddar.gruppen.R;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -57,7 +58,8 @@ public class MainView extends Activity implements OnClickListener {
 			finish();
 		}
 		if(v == mapButton){
-			finish(); //kopplas till map activity
+			Intent nextIntent = new Intent(MainView.this, Map.class);
+			startActivity(nextIntent);
 		}
 		if(v == reportButton){
 			finish();
