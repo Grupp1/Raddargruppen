@@ -5,22 +5,21 @@ import java.util.List;
 import raddar.gruppen.R;
 import raddar.models.MapObject;
 import raddar.models.MapObjectList;
+import raddar.models.Resource;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
-import com.google.android.maps.OverlayItem;
 
 public class Map extends MapActivity {
 
 	private MapView mapView;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -34,33 +33,44 @@ public class Map extends MapActivity {
 			}
 		});
 
-		
+
 		//MapView mapView = ((MapView)findViewById(R.id.mapview), "0b1qi7XBfQqm8teK24blL1Hhnfhqc9iOFejhYUw");
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
-		//this.setSatelliteView(true);
-		
-		
-		
+		this.setSatelliteView(true);
+
+
+		// Lista över overlays på kartan, som visas
 		List<Overlay> mapOverlays = mapView.getOverlays();
-		Drawable drawable = this.getResources().getDrawable(R.drawable.icon);
-		MapObjectList itemizedoverlay = new MapObjectList(drawable);
+
+		Drawable drawable;
+		drawable = this.getResources().getDrawable(R.drawable.magnus);
+		MapObjectList magnusList= new MapObjectList(drawable);
+		
+		drawable = this.getResources().getDrawable(R.drawable.niklas);
+		MapObjectList niklasList = new MapObjectList(drawable);
+		
+		drawable = this.getResources().getDrawable(R.drawable.resource);
+		MapObjectList resourceList = new MapObjectList(drawable);
+		
+
+		// Skapar en nytt object på kartan
+		MapObject niklas = new MapObject("Niklas", "Hallo", 18394730, 45576080);
+		MapObject magnus = new MapObject("Magnus", "Hej, jag heter magnus", 52395730, 65573080);
+		Resource res = new Resource("Resurs", "Hej på dig", 25394730, 65576080);
+		
+		// Lägger till objekten i kategorierna
+		niklasList.addOverlay(niklas.getOverlayitem());
+		magnusList.addOverlay(magnus.getOverlayitem());
+		resourceList.addOverlay(res.getOverlayitem());
 		
 		
+		// lägger på objekt "över" varandra
+		mapOverlays.add(niklasList);
+		mapOverlays.add(magnusList);
+		mapOverlays.add(resourceList);
 		
-//		GeoPoint point = new GeoPoint(58395730,15573080);
-//		OverlayItem overlayitem = new OverlayItem(point, "LIU", "liu");
 		
-		MapObject magnus = new MapObject("Magnus", "Hej, jag heter magnus", 58395730, 15573080);
-		
-//		GeoPoint point2 = new GeoPoint(35410000, 139460000);
-//		OverlayItem overlayitem2 = new OverlayItem(point2, "Sekai, konichiwa!", "I'm in Japan!");
-		
-		itemizedoverlay.addOverlay(magnus.getOverlayitem());
-		//itemizedoverlay.addOverlay(overlayitem);
-		//itemizedoverlay.addOverlay(overlayitem2);
-		
-		mapOverlays.add(itemizedoverlay);
 	}
 
 	@Override
@@ -72,9 +82,9 @@ public class Map extends MapActivity {
 	public void setSatelliteView(boolean on){
 		mapView.setSatellite(on);
 	}
-	
+
 	public void setTrafficView(boolean on){
 		mapView.setTraffic(on);
 	}
-	
+
 }

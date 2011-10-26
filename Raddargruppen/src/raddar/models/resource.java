@@ -1,13 +1,11 @@
 package raddar.models;
 
-import android.graphics.drawable.Drawable;
 import raddar.enums.ResourceStatus;
 
-public class Resource extends MapObjectList {
-
-	public Resource(Drawable defaultMarker) {
-		super(defaultMarker);
-		// TODO Auto-generated constructor stub
+public class Resource extends MapObject {
+	
+	public Resource(String name, String description, int latCoord, int lonCoord) {
+		super(name, description, latCoord, lonCoord);
 	}
 
 	private ResourceStatus status;

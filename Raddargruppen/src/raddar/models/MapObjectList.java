@@ -49,31 +49,4 @@ public class MapObjectList extends ItemizedOverlay {
 	  return true;
 	}
 	
-	
-	private String ID;
-	private long coords;
-	private String name;
-	private String description;
-	
-	public String getID() {
-		return ID;
-	}
-	public void setID(String iD) {
-		ID = iD;
-	}
-	public long getCoords() {
-		return coords;
-	}
-	public void setCoords(long coords) {
-		this.coords = coords;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	
-	
 }
