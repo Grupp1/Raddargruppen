@@ -33,7 +33,7 @@ public class MainView extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		
-		// Notifiera servern att vi är online
+		// Notifiera servern att vi kommer online
 		/* 
 		NotificationMessage nm = new NotificationMessage("username", NotificationType.CONNECT);
 		try {
@@ -99,7 +99,7 @@ public class MainView extends Activity implements OnClickListener {
 	
 	@Override
 	public void onDestroy() {
-		// Notifiera servern att vi är online
+		// Notifiera servern att vi går offline
 		/* 
 		NotificationMessage nm = new NotificationMessage("username", NotificationType.DISCONNECT);
 		try {

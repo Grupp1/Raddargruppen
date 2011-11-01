@@ -13,12 +13,12 @@ public class Login extends Observable {
 		passwordCache.put("admin", "password");
 	}
 	
-	public LoginResponse checkPassword(String user, String password){
+	public LoginResponse checkPassword(String user, String hashedPassword){
 		if (passwordCache.containsKey(user)){
-			return checkLocal(user, password);
+			return checkLocal(user, hashedPassword);
 		}
 		else{
-			return checkServer(user, password);
+			return checkServer(user, hashedPassword);
 		}
 	}
 	
