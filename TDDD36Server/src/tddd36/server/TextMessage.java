@@ -18,8 +18,8 @@ public class TextMessage extends Message {
 	
 	public TextMessage(MessageType type, String srcUser, String destUser, MessagePriority priority, String data) {
 		this.type = type;
-		this.srcUser = srcUser;
-		this.destUser = destUser;
+		this.fromUser = srcUser;
+		this.toUser = destUser;
 		this.priority = priority;
 		this.data = data;
 	}
@@ -49,8 +49,8 @@ public class TextMessage extends Message {
 		String formattedMessage = "";
 		formattedMessage += Message.HEADER_TYPE + type + CRLF;
 		formattedMessage += Message.HEADER_PRIO + priority + CRLF;
-		formattedMessage += Message.HEADER_FROM + srcUser.toLowerCase() + CRLF;
-		formattedMessage += Message.HEADER_TO + destUser.toLowerCase() + CRLF;
+		formattedMessage += Message.HEADER_FROM + fromUser.toLowerCase() + CRLF;
+		formattedMessage += Message.HEADER_TO + toUser.toLowerCase() + CRLF;
 		formattedMessage += CRLF + CRLF;
 		formattedMessage += data;
 		

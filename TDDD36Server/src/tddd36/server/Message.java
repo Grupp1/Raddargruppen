@@ -42,8 +42,8 @@ public abstract class Message {
 	// Typ av message, sändare och mottagare
 	protected MessageType type;
 	protected MessagePriority priority;
-	protected String srcUser;
-	protected String destUser;
+	protected String fromUser;
+	protected String toUser;
 	
 	public void setPriority(MessagePriority priority) {
 		if (priority == MessagePriority.NORMAL || priority == MessagePriority.HIGH)
@@ -65,19 +65,19 @@ public abstract class Message {
 	}
 	
 	public void setSrcUser(String srcUser) {
-		this.srcUser = srcUser;
+		this.fromUser = srcUser;
 	}
 	
 	public String getSrcUser() {
-		return srcUser;
+		return fromUser;
 	}
 	
 	public void setDestUser(String destUser) {
-		this.destUser = destUser;
+		this.toUser = destUser;
 	}
 	
 	public String getDestUser() {
-		return destUser;
+		return toUser;
 	}
 	
 	public abstract String getFormattedMessage();

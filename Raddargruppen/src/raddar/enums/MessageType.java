@@ -3,6 +3,11 @@ package raddar.enums;
 
 /* Ett meddelandes typer */
 public enum MessageType {
+	NOTIFICATION("notification") {
+		public String toString() {
+			return "notification";
+		}
+	},
 	TEXT("text/plain") {
 		public String toString() {
 			return "text/plain";
