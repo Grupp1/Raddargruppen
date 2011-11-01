@@ -22,6 +22,10 @@ import raddar.enums.MessageType;
  * 
  * Borche
  */
+
+/*
+ * SUPERKLASS TILL ALLA ANDRA MEDDELANDEN
+ */
 public abstract class Message {
 	
 	// Carriage-return och Line-feed

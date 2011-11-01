@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.Socket;
 
 import raddar.enums.MessagePriority;
@@ -120,9 +121,18 @@ public class ClientHandler implements Runnable {
 			// Lägg till lite text så att klienten kan se att denna testserver fungerar
 			tm.prepend("Borche (OK): ");
 			
-			// Extrahera mottagarens IP address (som än så länge alltid är samma som sändarens)
-			// och skapa en ny socket med denna IP address
-			Socket forward = new Socket(so.getInetAddress(), 6789);
+			// Hämta mottagarens IP-address från serverns lista 
+			InetAddress address = Server.onlineUsers.getUserAddress(toUser);
+			
+			if (address == null) {
+				// Användaren är offline
+				// Buffra meddelandet (to be implemented...)
+				return;
+			}
+				
+			// Skapa en socket med mottagarens address och den porten som klienten
+			// ligger och lyssnar på (hårdkodat på klienterna är 6789 när detta skrevs).
+			Socket forward = new Socket(address, 6789);			
 			
 			// Ny PrintWriter för mottagarens socket
 			PrintWriter fOut = new PrintWriter(forward.getOutputStream(), true);
