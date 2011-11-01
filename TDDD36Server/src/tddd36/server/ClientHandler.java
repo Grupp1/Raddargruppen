@@ -8,6 +8,7 @@ import java.net.Socket;
 
 import raddar.enums.MessagePriority;
 import raddar.enums.MessageType;
+import raddar.enums.NotificationType;
 
 public class ClientHandler implements Runnable {
 	
@@ -45,6 +46,9 @@ public class ClientHandler implements Runnable {
 			// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
 			// meddelandet som klienten har skickat blir inläst på korrekt sätt
 			switch (type) {
+				case NOTIFICATION:
+					handleNotification();
+					break;
 				case TEXT:
 					handleTextMessage();
 					break;
@@ -59,6 +63,37 @@ public class ClientHandler implements Runnable {
 			ie.printStackTrace();
 		}
 		
+	}
+	
+	private void handleNotification() {
+		try {
+			// Read from who the notification is from
+			String fromUser = in.readLine().split(" ")[1];
+			
+			// Read in the notification itself
+			String notification = in.readLine().split(" ")[1];
+			
+			// Convert the notification from String to NotificationType
+			NotificationType nt = NotificationType.convert(notification);
+			
+			switch (nt) {
+				case CONNECT:
+					// Spara användaren och dennes IP-address (skriv över eventuell gammal IP-address)
+					Server.onlineUsers.addUser(fromUser, so.getInetAddress());
+					break;
+				case DISCONNECT:
+					// Ta bort användaren och dennes IP-address
+					Server.onlineUsers.removeUser(fromUser);
+					break;
+				default:
+					// Här hamnar vi om något gått fel i formatteringen eler inläsandet av meddelandet
+					System.out.println("Unknown NotificationType... ");
+			}
+			
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/*
