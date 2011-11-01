@@ -20,7 +20,6 @@ public class StartView extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		setContentView(R.layout.start);
 
 		user = (EditText)this.findViewById(R.id.userText);
