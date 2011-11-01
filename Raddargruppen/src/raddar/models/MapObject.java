@@ -3,33 +3,52 @@ package raddar.models;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
 
-public class MapObject {
+public class MapObject extends OverlayItem {
 
-	private String name;
-	private String description;
-	private int latCoord;
-	private int lonCoord;
-	
-	private OverlayItem overlayitem;
 	private GeoPoint point;
-	
+	private String title;
+	private String snippet;
+
 	private String ID;
 	
-	public MapObject(String name, String description, int latCoord, int lonCoord){
-		this.name = name;
-		this.description = name;
-		this.latCoord = latCoord;
-		this.lonCoord = lonCoord;
-		create();
+	public MapObject(GeoPoint point, String title, String snippet, String ID) {
+		super(point, title, snippet);
+		this.point = point;
+		this.title = title;
+		this.snippet = snippet;
+		this.ID = ID;
 	}
-	
-	private void create(){
-		point = new GeoPoint(latCoord, latCoord);
-		overlayitem = new OverlayItem(point, name, description);
+
+	public GeoPoint getPoint() {
+		return point;
 	}
-	
-	public OverlayItem getOverlayitem() {
-		return overlayitem;
+
+	public void setPoint(GeoPoint point) {
+		this.point = point;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getSnippet() {
+		return snippet;
+	}
+
+	public void setSnippet(String snippet) {
+		this.snippet = snippet;
+	}
+
+	public String getID() {
+		return ID;
+	}
+
+	public void setID(String iD) {
+		ID = iD;
 	}
 
 }

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
+import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
@@ -40,7 +41,9 @@ public class Map extends MapActivity {
 		this.setSatelliteView(true);
 
 
-		// Lista över overlays på kartan, som visas
+		/**
+		 *  Lista över alla overlays (lager) som visas på kartan
+		 */
 		List<Overlay> mapOverlays = mapView.getOverlays();
 
 		Drawable drawable;
@@ -55,14 +58,14 @@ public class Map extends MapActivity {
 		
 
 		// Skapar en nytt object på kartan
-		MapObject niklas = new MapObject("Niklas", "Hallo", 18394730, 45576080);
-		MapObject magnus = new MapObject("Magnus", "Hej, jag heter magnus", 52395730, 65573080);
-		Resource res = new Resource("Resurs", "Hej på dig", 25394730, 65576080);
+		MapObject niklas = new MapObject(new GeoPoint(52395730, 65573080), "Niklas", "Hallo", "niklas");
+		//MapObject magnus = new MapObject("Magnus", "Hej, jag heter magnus", 52395730, 65573080);
+		//Resource res = new Resource("Resurs", "Hej på dig", 25394730, 65576080);
 		
 		// Lägger till objekten i kategorierna
-		niklasList.addOverlay(niklas.getOverlayitem());
-		magnusList.addOverlay(magnus.getOverlayitem());
-		resourceList.addOverlay(res.getOverlayitem());
+		niklasList.addOverlay(niklas);
+		//magnusList.addOverlay(magnus.getOverlayitem());
+		//resourceList.addOverlay(res.getOverlayitem());
 		
 		
 		// lägger på objekt "över" varandra
