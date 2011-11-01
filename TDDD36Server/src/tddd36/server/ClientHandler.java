@@ -26,19 +26,13 @@ public class ClientHandler implements Runnable {
 	@Override
 	public void run() {
 		try {
-			
 			System.out.println("["+so.getInetAddress().getHostAddress()+"] ** Connection established. ");
 			
 			// För att läsa inkommande data från klienten
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
-			
-			// För att skicka data till klienten
-			//out = new PrintWriter(so.getOutputStream(), true);
-			
+						
 			// Läs in vilken typ av meddelande som klienten skickar
-			String msgType = in.readLine();
-			String[] parts = msgType.split(" ");
-			String t = parts[1];
+			String t = in.readLine().split(" ")[1];
 			
 			// Konvertera från sträng till MessageType
 			MessageType type = MessageType.convert(t);
@@ -56,7 +50,7 @@ public class ClientHandler implements Runnable {
 					handleImageMessage();
 					break;
 				default:
-					System.out.println("Received message has unknown type. Aborting... ");			
+					System.out.println("Received message has unknown type. Discarding... ");			
 			}
 			
 		} catch (IOException ie) {
@@ -65,6 +59,9 @@ public class ClientHandler implements Runnable {
 		
 	}
 	
+	/*
+	 * I denna metoden associerar eller avassocierar vi användare med IP-addresser
+	 */
 	private void handleNotification() {
 		try {
 			// Read from who the notification is from
