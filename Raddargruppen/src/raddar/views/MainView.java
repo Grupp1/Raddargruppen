@@ -108,7 +108,7 @@ public class MainView extends Activity implements OnClickListener {
 			// är fastställd och portarna har öppnats i projektrummet
 			new Sender(nm, InetAddress.getLocalHost(), 6789);	
 		} catch (UnknownHostException e) {
-			Log.d("NotificationMessage", "Connect failed");
+			Log.d("NotificationMessage", "Disconnect failed");
 		}
 		*/
 	}

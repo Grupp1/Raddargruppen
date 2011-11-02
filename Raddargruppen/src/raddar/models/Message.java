@@ -104,7 +104,7 @@ public abstract class Message {
 	}
 	
 	public String getFormattedDate() {
-		DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, new Locale("sv_SE"));
+		DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.DEFAULT);
 		return df.format(date);
 	}
 	
