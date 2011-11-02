@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.Date;
 
 import raddar.enums.MessageType;
 import raddar.models.Message;
@@ -32,17 +33,22 @@ public class Reciver implements Runnable {
 			String t = parts[1];
 			MessageType type = MessageType.convert(t);
 			Message m = null;
-					
+			String prio = in.readLine().split(" ")[1];
+			String srcUser = in.readLine().split(" ")[1];
+			String toUser = in.readLine().split(" ")[1];
+			Date  date = new Date(Date.parse(in.readLine().split(" ")[1]));
+			String subject = in.readLine().split(" ")[1];
 			switch (type){
 			case TEXT:
-				m = new TextMessage(type,in.readLine().split(" ")[1],in.readLine().split(" ")[1]);
+				m = new TextMessage(type,srcUser,toUser);
+				m.setDate(date);
+				m.setSubject(subject);
 				break;
 			case IMAGE:
 
 				break;			
 			}
 
-			Log.d( in.readLine().split(" ")[1], "hej");
 			in.readLine();
 			String data = "";
 			while (in.ready())

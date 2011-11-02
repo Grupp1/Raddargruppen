@@ -41,13 +41,13 @@ public class StartView extends Activity {
 		loginButton.setOnClickListener(new OnClickListener(){
 
 			public void onClick(View v) { 
-				
-				if (Login.checkPassword(user.getText().toString(), password.getText().toString()) == LoginResponse.ACCEPTED) {
+			
+			//	if (Login.checkPassword(user.getText().toString(), password.getText().toString()) == LoginResponse.ACCEPTED) {
 					Intent nextIntent = new Intent(StartView.this, MainView.class);
 					startActivity(nextIntent);
-				} else {
+			//	} else {
 					Toast.makeText(StartView.this, "Wrong username or password", Toast.LENGTH_LONG).show();
-				}
+			//	}
 			}
 
 		});
