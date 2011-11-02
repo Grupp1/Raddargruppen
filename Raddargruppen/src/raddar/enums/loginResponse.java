@@ -1,6 +1,6 @@
 package raddar.enums;
 
-public enum loginResponse {
+public enum LoginResponse {
 
 	ACCEPTED,
 	NO_SUCH_USER,

@@ -17,6 +17,13 @@ public class ImageMessage extends Message {
 	public void setImage(File path) {
 		
 	}
+
+
+	@Override
+	public String getFormattedMessage() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 	

@@ -1,6 +1,6 @@
 package raddar.enums;
 
-public enum resourceStatus {
+public enum ResourceStatus {
 
 	BUSY,
 	FREE;
