@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import raddar.gruppen.R;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.location.Address;
@@ -15,6 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
+import raddar.gruppen.R;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -50,7 +50,6 @@ public class Map extends MapActivity {
 		//MapView mapView = ((MapView)findViewById(R.id.mapview), "0b1qi7XBfQqm8teK24blL1Hhnfhqc9iOFejhYUw");
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
-		this.setSatelliteView(true);
 
 
 		/**
@@ -129,7 +128,6 @@ public class Map extends MapActivity {
 				stop = e.getEventTime();
 			}
 			if(stop - start > 1500){
-				System.out.println("hajklsfhaklsdh");
 				AlertDialog alert = new AlertDialog.Builder(Map.this).create();
 				alert.setTitle("Hej");
 				alert.setMessage("Välj en knapp");
@@ -159,9 +157,15 @@ public class Map extends MapActivity {
 						}
 					}
 				});
-				alert.setButton3("hejsan", new DialogInterface.OnClickListener() {
+				alert.setButton3("Byt vy", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-
+						if(mapView.isSatellite()){
+							mapView.setSatellite(false);
+							//mapView.setStreetView(true);
+						}
+						else{
+							mapView.setSatellite(true);
+						}
 					}
 				});
 				alert.show();
