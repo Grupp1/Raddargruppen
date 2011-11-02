@@ -48,12 +48,23 @@ public abstract class Message {
 	protected MessagePriority priority;
 	protected String fromUser;
 	protected String toUser;
+	//Temporärt en string bara för att testa
+	protected String data;
 	
 	public void setPriority(MessagePriority priority) {
 		if (priority == MessagePriority.NORMAL || priority == MessagePriority.HIGH)
 			this.priority = priority;
 		else
 			this.priority = MessagePriority.NORMAL;
+	}
+	
+	//Här också
+	public String getData() {
+		return data;
+	}
+	
+	public void setData(String data) {
+		this.data = data;
 	}
 	
 	public MessagePriority getPriority() {
