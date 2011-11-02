@@ -5,9 +5,6 @@ import raddar.enums.MessageType;
 
 public class TextMessage extends Message {
 	
-	/* Själva meddelandet/texten */
-	private String data;
-	
 	public TextMessage(MessageType type, String srcUser, String destUser) {
 		this(type, srcUser, destUser, MessagePriority.NORMAL, "");
 	}
@@ -24,21 +21,6 @@ public class TextMessage extends Message {
 		this.data = data;
 	}
 	
-	public void setMessage(String message) {
-		this.data = message;
-	}
-	
-	public void prependMessage(String message) {
-		this.data = message + data;
-	}
-	
-	public void append(String message) {
-		this.data += message;
-	}
-	
-	public String getMessage() {
-		return data;
-	}
 	
 	public String getFormattedMessage() {
 		return toString();

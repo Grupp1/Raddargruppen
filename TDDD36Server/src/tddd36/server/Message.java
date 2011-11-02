@@ -2,7 +2,6 @@ package tddd36.server;
 
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 import raddar.enums.MessagePriority;
 import raddar.enums.MessageType;
@@ -53,9 +52,21 @@ public abstract class Message {
 	protected MessagePriority priority;
 	protected String fromUser;
 	protected String toUser;
+	// Ämnesrad
+	protected String subject;
 	// Meddelandets datum. Default är då meddelandet skapades.
 	protected Date date = new Date();
+	// Meddelandets data
+	protected String data;
 	
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
 	public void setPriority(MessagePriority priority) {
 		if (priority == MessagePriority.NORMAL || priority == MessagePriority.HIGH)
 			this.priority = priority;
@@ -102,6 +113,23 @@ public abstract class Message {
 	public String getFormattedDate() {
 		DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.DEFAULT);
 		return df.format(date);
+	}
+	
+
+	public void setMessage(String message) {
+		this.data = message;
+	}
+	
+	public void prepend(String message) {
+		this.data = message + data;
+	}
+	
+	public void append(String message) {
+		this.data += message;
+	}
+	
+	public String getMessage() {
+		return data;
 	}
 	
 	public abstract String getFormattedMessage();
