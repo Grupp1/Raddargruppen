@@ -1,24 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      android:versionCode="1"
-      android:versionName="1.0" package="raddar.gruppen">
-    <uses-sdk android:minSdkVersion="10" />
+	android:versionCode="1" android:versionName="1.0" package="raddar.gruppen">
+	<uses-sdk android:minSdkVersion="10" />
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
 
-    <application android:icon="@drawable/icon" android:label="@string/app_name">
-    
-    <uses-library android:name="com.google.android.maps" />
-    
-        <activity android:name=".raddar.views.Map"
-                  android:label="@string/app_name"
-                  android:theme="@android:style/Theme.NoTitleBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+	<application android:icon="@drawable/icon" android:label="@string/app_name">
 
-    </application>
-   
-    <uses-permission android:name="android.permission.INTERNET" />
-    
+		<uses-library android:name="com.google.android.maps" />
+
+		<activity android:name=".raddar.views.Map"/>
+
+        
+			<activity android:name="raddar.views.MapUI"
+				e667c4b8fe0add5a6e5826b2bb0d8d85910c912c="android:label="
+				android:label="@string/app_name"
+				android:theme="@android:style/Theme.NoTitleBar">
+				<intent-filter>
+					<action android:name="android.intent.action.MAIN" />
+					<category android:name="android.intent.category.LAUNCHER" />
+				</intent-filter>
+			</activity>
+
+	</application>
+
+	<uses-permission android:name="android.permission.INTERNET" />
+
 </manifest>

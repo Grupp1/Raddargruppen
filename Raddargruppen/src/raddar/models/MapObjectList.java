@@ -9,21 +9,21 @@ import android.graphics.drawable.Drawable;
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.OverlayItem;
 
-public class MapObjectList extends ItemizedOverlay {
+public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 	
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
 	private Context mContext;
 	
-	public MapObjectList(Drawable defaultMarker, Context context) {
-		  super(defaultMarker);
-		  mContext = context;
-		}
-	
 	public MapObjectList(Drawable defaultMarker) {
 		super(boundCenterBottom(defaultMarker));
 	}
-
+	
+	public MapObjectList(Drawable defaultMarker, Context context) {
+		  this(defaultMarker);
+		  mContext = context;
+		}
+	
 	@Override
 	protected OverlayItem createItem(int i) {
 		return mOverlays.get(i);
@@ -36,7 +36,7 @@ public class MapObjectList extends ItemizedOverlay {
 
 	public void addOverlay(OverlayItem overlay) {
 	    mOverlays.add(overlay);
-	    populate();
+	    this.populate();
 	}
 	
 	@Override
