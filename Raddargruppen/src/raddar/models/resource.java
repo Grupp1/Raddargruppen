@@ -1,16 +1,17 @@
 package raddar.models;
 
-import android.graphics.drawable.Drawable;
+import com.google.android.maps.GeoPoint;
+
 import raddar.enums.ResourceStatus;
 
 public class Resource extends MapObject {
-
-	public Resource(Drawable defaultMarker) {
-		super(defaultMarker);
-		// TODO Auto-generated constructor stub
-	}
-
+	
 	private ResourceStatus status;
+	
+	public Resource(GeoPoint point, String title, String snippet, String ID, ResourceStatus status) {
+		super(point, title, snippet, ID);
+		this.status = status;
+	}
 
 	public ResourceStatus getStatus() {
 		return status;
