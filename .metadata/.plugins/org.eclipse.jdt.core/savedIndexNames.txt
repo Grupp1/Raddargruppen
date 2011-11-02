@@ -1,0 +1,4 @@
+INDEX VERSION 1.126+Z:\Raddargruppen\.metadata\.plugins\org.eclipse.jdt.core
+3822752710.index
+3362591030.index
+2671999857.index
