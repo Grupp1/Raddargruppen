@@ -73,7 +73,8 @@ public class MainView extends Activity implements OnClickListener {
 			finish();
 		}
 		if(v == messageButton){
-			finish();
+			Intent nextIntent = new Intent(MainView.this, InboxView.class);
+			startActivity(nextIntent);
 		}
 		if(v == mapButton){
 			Intent nextIntent = new Intent(MainView.this, Map.class);

@@ -1,6 +1,9 @@
 package raddar.views;
 
 import raddar.enums.LoginResponse;
+
+import raddar.controllers.InternalComManager;
+
 import raddar.gruppen.R;
 import raddar.models.Login;
 import android.app.Activity;
@@ -17,6 +20,7 @@ public class StartView extends Activity {
 	private Button loginButton;
 	private EditText user;
 	private EditText password;
+	InternalComManager controller;
 
 
 	/** Called when the activity is first created. */

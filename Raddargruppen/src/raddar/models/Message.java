@@ -58,6 +58,7 @@ public abstract class Message {
 	// Meddelandets datum. Default är då meddelandet skapades.
 	protected Date date = new Date();
 	// Meddelandets data
+	//Temporärt en string bara för att testa
 	protected String data;
 	
 	public String getSubject() {
@@ -73,6 +74,15 @@ public abstract class Message {
 			this.priority = priority;
 		else
 			this.priority = MessagePriority.NORMAL;
+	}
+	
+	//Här också
+	public String getData() {
+		return data;
+	}
+	
+	public void setData(String data) {
+		this.data = data;
 	}
 	
 	public MessagePriority getPriority() {
