@@ -38,8 +38,9 @@ public abstract class Message {
 	public static final String HEADER_TYPE = "Content-Type: ";
 	public static final String HEADER_PRIO = "Priority: ";
 	public static final String HEADER_FROM = "From-User: ";
-	public static final String HEADER_TO = "To-User: ";	
+	public static final String HEADER_TO = "To-User: ";
 	public static final String HEADER_DATE = "Date: ";
+	public static final String HEADER_SUBJECT = "Subject: ";
 	
 	/* Värden på attributerna ovan */
 	
