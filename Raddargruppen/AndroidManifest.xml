@@ -1,31 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      android:versionCode="1"
-      android:versionName="1.0" package="raddar.gruppen">
-    <uses-sdk android:minSdkVersion="10" />
-
-    <application android:icon="@drawable/icon" android:label="@string/app_name">
-    
-    <uses-library android:name="com.google.android.maps" />
-    
-        <activity android:name="raddar.views.StartView"
-                  android:label="@string/app_name"
-                  android:theme="@android:style/Theme.NoTitleBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-		 <activity android:name="raddar.views.MainView" android:label="@string/app_name">
-		
-		 </activity>
-		 
-		 <activity android:name="raddar.views.Map" android:label="@string/app_name">
-		
-		 </activity>
-    </application>
-   
-    <uses-permission android:name="android.permission.INTERNET" />
-    
+<manifest
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:versionCode="1"
+	android:versionName="1.0"
+	package="raddar.gruppen">
+	<uses-sdk android:minSdkVersion="10" />
+	<application
+		android:icon="@drawable/icon"
+		android:label="@string/app_name" android:debuggable="true">
+		<uses-library android:name="com.google.android.maps" />
+		<activity
+			android:name="raddar.views.StartView"
+			android:label="@string/app_name"
+			android:theme="@android:style/Theme.NoTitleBar">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+		<activity
+			android:name="raddar.views.MainView"
+			android:label="@string/app_name" />
+		<activity
+			android:name="raddar.views.Map"
+			android:label="@string/app_name" />
+	</application>
+	<uses-permission android:name="android.permission.INTERNET" />
 </manifest>

@@ -99,6 +99,7 @@ public class MainView extends Activity implements OnClickListener {
 	
 	@Override
 	public void onDestroy() {
+		super.onDestroy();
 		// Notifiera servern att vi går offline
 		/* 
 		NotificationMessage nm = new NotificationMessage("username", NotificationType.DISCONNECT);
