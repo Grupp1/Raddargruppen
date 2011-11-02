@@ -10,7 +10,7 @@ public class ReciveHandler implements Runnable {
 	private ReciveController rc;
 
 	public ReciveHandler(ReciveController rc) {
-		rc = new ReciveController();
+		this.rc = rc;
 		reciveHandler.start();
 	}
 

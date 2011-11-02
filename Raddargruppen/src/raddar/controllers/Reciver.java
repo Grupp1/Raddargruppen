@@ -25,13 +25,15 @@ public class Reciver implements Runnable {
 
 	public void run() {
 		try {
-			
+
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
 			String msgType = in.readLine();
 			String[] parts = msgType.split(" ");
 			String t = parts[1];
 			MessageType type = MessageType.convert(t);
 			Message m = null;
+			String priority =
+					
 			switch (type){
 			case TEXT:
 				m = new TextMessage(type,in.readLine().split(" ")[1],in.readLine().split(" ")[1]);
@@ -40,16 +42,19 @@ public class Reciver implements Runnable {
 
 				break;			
 			}
-			
+
 			Log.d( in.readLine().split(" ")[1], "hej");
 			in.readLine();
 			String data = "";
 			while (in.ready())
 				data +=in.readLine();
 			m.setData(data);
-			Log.d("FEL",m.getData());
+			
+			if(m == null || rc == null)
+					Log.d("FEL",m.getData());
 			rc.addToInbox(m);
-
+			so.close();
+			
 		} catch (IOException ie) {
 			ie.printStackTrace();
 		}
