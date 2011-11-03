@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -99,6 +100,9 @@ public class InboxView extends ListActivity implements Observer{
 			if (m != null) {
 				TextView tt = (TextView) v.findViewById(R.id.toptext);
 				TextView bt = (TextView) v.findViewById(R.id.bottomtext);
+				ImageView iv = (ImageView)v.findViewById(R.id.icon);
+				if(m.getType() == MessageType.TEXT)
+					iv.setImageResource(R.drawable.magnus);
 				if (tt != null) 
 					tt.setText("Avsändare: "+m.getSrcUser());                            
 				if(bt != null)

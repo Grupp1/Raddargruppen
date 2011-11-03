@@ -12,6 +12,8 @@ import raddar.gruppen.R;
 import raddar.models.Inbox;
 import raddar.models.NotificationMessage;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,7 +40,8 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-
+		Bundle extras = getIntent().getExtras();
+		controller.setUser(extras.get("user").toString());
 		// Notifiera servern att vi kommer online
 		/* 
 		NotificationMessage nm = new NotificationMessage("username", NotificationType.CONNECT);
@@ -99,7 +102,21 @@ public class MainView extends Activity implements OnClickListener, Observer{
 			finish();
 		}
 		if(v == logButton){
-			finish();
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("Är du säker på att du vill logga ut?")
+			       .setCancelable(false)
+			       .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			                MainView.this.finish();
+			           }
+			       })
+			       .setNegativeButton("Nej", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			                dialog.cancel();
+			           }
+			       });
+			AlertDialog alert = builder.create();
+			alert.show();
 		}
 
 
