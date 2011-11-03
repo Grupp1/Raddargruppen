@@ -7,6 +7,13 @@ public class Server {
 	
 	// Default-value: 6789
 	private int port;
+	
+	/* 
+	 * Alla anslutna enheter sparas i detta objekt associerade med sina IP-addresser
+	 * Behöver servern veta vilken IP-address en viss användare har så är det från detta
+	 * objekt IP-addressen kan hämtas 
+	 */
+	public static Associations onlineUsers;
 
 	public Server() {
 		this(6789);

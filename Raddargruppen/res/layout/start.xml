@@ -1,25 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent">
-    <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:id="@+id/textView1" android:layout_alignParentTop="true" android:layout_centerHorizontal="true" android:layout_marginTop="61dp" android:text="@string/start_header"></TextView>
-    <LinearLayout android:id="@+id/linearLayout1" android:layout_height="wrap_content" android:orientation="vertical" android:layout_width="wrap_content" android:layout_below="@+id/editText2" android:layout_alignRight="@+id/textView3" android:layout_marginRight="20dp" android:layout_marginTop="53dp" android:weightSum="1">
-    </LinearLayout>
-    <LinearLayout android:id="@+id/linearLayout2" android:layout_height="wrap_content" android:orientation="vertical" android:layout_width="wrap_content" android:layout_alignTop="@+id/button1" android:layout_centerHorizontal="true">
-    </LinearLayout>
-    <LinearLayout android:id="@+id/linearLayout3" android:layout_height="wrap_content" android:orientation="vertical" android:layout_width="wrap_content" android:layout_below="@+id/textView3" android:layout_alignLeft="@+id/textView3">
-    </LinearLayout>
-    <LinearLayout android:id="@+id/linearLayout4" android:layout_height="wrap_content" android:orientation="vertical" android:layout_width="wrap_content" android:layout_below="@+id/textView2" android:layout_alignLeft="@+id/textView2">
-    </LinearLayout>
-    <Button android:layout_width="62dp" android:id="@+id/okButton" android:layout_height="wrap_content" android:text="@string/start_ok" android:layout_alignParentBottom="true" android:layout_centerHorizontal="true" android:layout_marginBottom="72dp"></Button>
-    <EditText android:layout_height="wrap_content" android:layout_below="@+id/textView2" android:layout_alignLeft="@+id/linearLayout4" android:layout_width="210dp" android:singleLine="true" android:id="@+id/userText">
-        <requestFocus></requestFocus>
-    </EditText>
-    <TextView android:text="@string/start_user" android:id="@+id/textView2" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_height="wrap_content" android:layout_below="@+id/textView1" android:layout_alignRight="@+id/textView1" android:layout_marginTop="39dp"></TextView>
-    <EditText android:singleLine="true" android:password="true" android:inputType="textPassword" android:layout_width="210dp" android:layout_height="wrap_content" android:id="@+id/passwordText" android:layout_above="@+id/okButton" android:layout_centerHorizontal="true" android:layout_marginBottom="65dp"></EditText>
-    <TextView android:text="@string/start_password" android:id="@+id/textView3" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_height="wrap_content" android:layout_above="@+id/passwordText" android:layout_alignLeft="@+id/passwordText"></TextView>
-    <TextView android:text="TextView" android:id="@+id/textView4" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_height="wrap_content" android:layout_above="@+id/okButton" android:layout_centerHorizontal="true" android:layout_marginBottom="24dp"></TextView>
-        
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+	<TextView
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceLarge"
+		android:id="@+id/textView1"
+		android:layout_alignParentTop="true"
+		android:layout_centerHorizontal="true"
+		android:layout_marginTop="61dp"
+		android:text="@string/start_header" />
+
+	<LinearLayout
+		android:id="@+id/linearLayout1"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:layout_width="wrap_content"
+		android:layout_below="@+id/editText2"
+		android:layout_alignRight="@+id/textView3"
+		android:layout_marginRight="20dp"
+		android:layout_marginTop="53dp"
+		android:weightSum="1" />
+
+	<LinearLayout
+		android:id="@+id/linearLayout2"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:layout_width="wrap_content"
+		android:layout_alignTop="@+id/button1"
+		android:layout_centerHorizontal="true" />
+
+	<LinearLayout
+		android:id="@+id/linearLayout3"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:layout_width="wrap_content"
+		android:layout_below="@+id/textView3" />
+
+
+	<LinearLayout
+		android:id="@+id/linearLayout4"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:layout_width="wrap_content"
+		android:layout_below="@+id/textView2"
+		android:layout_alignLeft="@+id/textView2">
+
+		<Button
+			android:layout_width="62dp"
+			android:id="@+id/okButton"
+			android:layout_height="wrap_content"
+			android:text="@string/start_ok"
+			android:layout_alignParentBottom="true"
+			android:layout_centerHorizontal="true"
+			android:layout_marginBottom="72dp" />
+		<EditText
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/textView2"
+			android:layout_alignLeft="@+id/linearLayout4"
+			android:layout_width="210dp"
+			android:singleLine="true"
+			android:id="@+id/userText">
+			<requestFocus />
+		</EditText>
+		<TextView
+			android:text="@string/start_user"
+			android:id="@+id/textView2"
+			android:layout_width="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/textView1"
+			android:layout_alignRight="@+id/textView1"
+			android:layout_marginTop="39dp" />
+		<EditText
+			android:singleLine="true"
+			android:password="true"
+			android:inputType="textPassword"
+			android:layout_width="210dp"
+			android:layout_height="wrap_content"
+			android:id="@+id/passwordText"
+			android:layout_above="@+id/okButton"
+			android:layout_centerHorizontal="true"
+			android:layout_marginBottom="65dp" />
+
+
+		<TextView
+			android:text="@string/start_password"
+			android:id="@+id/textView3"
+			android:layout_width="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:layout_height="wrap_content"
+			android:layout_above="@+id/passwordText"
+			android:layout_alignLeft="@+id/passwordText" />
+
+		<TextView
+			android:text="TextView"
+			android:id="@+id/textView4"
+			android:layout_width="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:layout_height="wrap_content"
+			android:layout_above="@+id/okButton"
+			android:layout_centerHorizontal="true"
+			android:layout_marginBottom="24dp" />
+	</LinearLayout>
 </RelativeLayout>

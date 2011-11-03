@@ -1,9 +1,16 @@
 package raddar.views;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import raddar.controllers.Sender;
+import raddar.enums.NotificationType;
 import raddar.gruppen.R;
+import raddar.models.NotificationMessage;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -25,7 +32,18 @@ public class MainView extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-
+		
+		// Notifiera servern att vi kommer online
+		/* 
+		NotificationMessage nm = new NotificationMessage("username", NotificationType.CONNECT);
+		try {
+			// Ändra localhost till serverns address när den
+			// är fastställd och portarna har öppnats i projektrummet
+			new Sender(nm, InetAddress.getLocalHost(), 6789);	
+		} catch (UnknownHostException e) {
+			Log.d("NotificationMessage", "Connect failed");
+		}
+		*/
 		callButton = (ImageButton)this.findViewById(R.id.callButton);
 		callButton.setOnClickListener(this);
 
@@ -55,7 +73,8 @@ public class MainView extends Activity implements OnClickListener {
 			finish();
 		}
 		if(v == messageButton){
-			finish();
+			Intent nextIntent = new Intent(MainView.this, InboxView.class);
+			startActivity(nextIntent);
 		}
 		if(v == mapButton){
 			Intent nextIntent = new Intent(MainView.this, Map.class);
@@ -77,5 +96,21 @@ public class MainView extends Activity implements OnClickListener {
 
 
 
+	}
+	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		// Notifiera servern att vi går offline
+		/* 
+		NotificationMessage nm = new NotificationMessage("username", NotificationType.DISCONNECT);
+		try {
+			// Ändra localhost till serverns address när den
+			// är fastställd och portarna har öppnats i projektrummet
+			new Sender(nm, InetAddress.getLocalHost(), 6789);	
+		} catch (UnknownHostException e) {
+			Log.d("NotificationMessage", "Disconnect failed");
+		}
+		*/
 	}
 }
