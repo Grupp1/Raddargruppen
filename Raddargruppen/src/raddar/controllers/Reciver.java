@@ -40,7 +40,8 @@ public class Reciver implements Runnable {
 		//	String[] dateParts = in.readLine().split(" ");
 		//	DateFormat df = DateFormat.getDateTimeInstance();
 		//	Date  date = new Date(Date.parse(in.readLine()));
-			String subject = in.readLine().split(" ")[1];
+			String subject = in.readLine();
+			subject = extractValue(subject);
 			switch (type){
 			case TEXT:
 				m = new TextMessage(type,srcUser,toUser);
@@ -67,5 +68,16 @@ public class Reciver implements Runnable {
 			Log.d("Undersök","ArrayIndexOutOfBounds i reciver");
 		}
 
+	}
+	
+	private String extractValue(String str) {
+		int index = 0;
+		for (int i = 0; i < str.length(); i++) {
+			if (str.charAt(i) == ' ') { 
+				index = i;
+				break;
+			}
+		}
+		return str.substring(index);
 	}
 }

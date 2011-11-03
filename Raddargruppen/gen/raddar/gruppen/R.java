@@ -46,7 +46,7 @@ public final class R {
         public static final int messageData=0x7f05001a;
         public static final int newMessageButton=0x7f05000d;
         public static final int okButton=0x7f050020;
-        public static final int passwordText=0x7f05001e;
+        public static final int passwordText=0x7f05001f;
         public static final int readMessage=0x7f050012;
         public static final int readMessageDate=0x7f050010;
         public static final int readMessageSrcUser=0x7f05000f;
@@ -63,7 +63,7 @@ public final class R {
         public static final int textView3=0x7f050019;
         public static final int toptext=0x7f050014;
         public static final int trafikverketButton=0x7f05001c;
-        public static final int userText=0x7f05001f;
+        public static final int userText=0x7f05001e;
     }
     public static final class layout {
         public static final int list_item=0x7f030000;
