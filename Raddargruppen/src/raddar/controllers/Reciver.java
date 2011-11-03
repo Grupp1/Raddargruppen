@@ -36,12 +36,13 @@ public class Reciver implements Runnable {
 			String prio = in.readLine().split(" ")[1];
 			String srcUser = in.readLine().split(" ")[1];
 			String toUser = in.readLine().split(" ")[1];
-			Date  date = new Date(Date.parse(in.readLine().split(" ")[1]));
+			in.readLine();
+		//	Date  date = new Date(Date.parse(in.readLine().split(" ")[1]));
 			String subject = in.readLine().split(" ")[1];
 			switch (type){
 			case TEXT:
 				m = new TextMessage(type,srcUser,toUser);
-				m.setDate(date);
+			//	m.setDate(date);
 				m.setSubject(subject);
 				break;
 			case IMAGE:
@@ -55,13 +56,14 @@ public class Reciver implements Runnable {
 				data +=in.readLine();
 			m.setData(data);
 			
-			if(m == null || rc == null)
-					Log.d("FEL",m.getData());
-			rc.addToInbox(m);
 			so.close();
+			rc.addToInbox(m);
 			
 		} catch (IOException ie) {
 			ie.printStackTrace();
+		}
+		catch(ArrayIndexOutOfBoundsException e){
+			Log.d("Undersök","ArrayIndexOutOfBounds i reciver");
 		}
 
 	}

@@ -2,10 +2,14 @@ package raddar.views;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Observable;
+import java.util.Observer;
 
+import raddar.controllers.InternalComManager;
 import raddar.controllers.Sender;
 import raddar.enums.NotificationType;
 import raddar.gruppen.R;
+import raddar.models.Inbox;
 import raddar.models.NotificationMessage;
 import android.app.Activity;
 import android.content.Intent;
@@ -15,8 +19,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
-public class MainView extends Activity implements OnClickListener {
+public class MainView extends Activity implements OnClickListener, Observer{
 
 	private ImageButton callButton;
 	private ImageButton messageButton;
@@ -25,15 +30,20 @@ public class MainView extends Activity implements OnClickListener {
 	private ImageButton serviceButton;
 	private ImageButton sosButton;
 	private ImageButton setupButton;
+
 	private ImageButton logButton;
 	
+	
+	public static InternalComManager controller = new InternalComManager();
+
+
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		
+
 		// Notifiera servern att vi kommer online
 		/* 
 		NotificationMessage nm = new NotificationMessage("username", NotificationType.CONNECT);
@@ -44,7 +54,9 @@ public class MainView extends Activity implements OnClickListener {
 		} catch (UnknownHostException e) {
 			Log.d("NotificationMessage", "Connect failed");
 		}
-		*/
+		 */
+		controller.addObserverToInbox(this);
+
 		callButton = (ImageButton)this.findViewById(R.id.callButton);
 		callButton.setOnClickListener(this);
 
@@ -91,7 +103,8 @@ public class MainView extends Activity implements OnClickListener {
 			finish();
 		}
 		if(v == sosButton){
-			finish();
+			Intent nextIntent = new Intent(MainView.this, SendMessageView.class);
+			startActivity(nextIntent);
 		}
 		if(v == setupButton){
 			finish();
@@ -106,7 +119,7 @@ public class MainView extends Activity implements OnClickListener {
 
 
 	}
-	
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -120,6 +133,17 @@ public class MainView extends Activity implements OnClickListener {
 		} catch (UnknownHostException e) {
 			Log.d("NotificationMessage", "Disconnect failed");
 		}
-		*/
+		 */
+	}
+
+	public void update(Observable observable, final Object data) {
+		runOnUiThread(new Runnable(){
+			public void run(){			
+				if(data != null)
+					Toast.makeText(getApplicationContext(), "Meddelande från "+data.toString()
+							,Toast.LENGTH_LONG).show();
+			}
+		});
+
 	}
 }
