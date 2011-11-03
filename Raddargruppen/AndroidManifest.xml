@@ -36,6 +36,7 @@
 		</activity>
 		<activity android:name="raddar.views.InboxView"></activity>
 		<activity android:name="raddar.views.ReadMessageView"></activity>
+		<activity android:name="raddar.views.SendMessageView"></activity>
 	</application>
 
 	<uses-permission android:name="android.permission.INTERNET" />

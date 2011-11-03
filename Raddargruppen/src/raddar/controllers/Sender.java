@@ -35,11 +35,9 @@ public class Sender implements Runnable {
 
 	public void run() {
 		try {
-			Log.d("1", "lawl");
+			Thread.sleep(10000);
 			Socket so = new Socket(address, port);
-			Log.d("2", "lawl");
 			so.setSoTimeout(5000);
-			Log.d("3", "lawl");
 									
 			PrintWriter out = new PrintWriter(so.getOutputStream(), true);
 			
@@ -50,6 +48,8 @@ public class Sender implements Runnable {
 			
 		} catch (IOException ie) {
 			Log.d("Skapandet av socket [2]", "Gick inte");
+		} catch (InterruptedException e) {
+			Log.d("Avruten väntan", "Gick inte");
 		} 
 	}
 

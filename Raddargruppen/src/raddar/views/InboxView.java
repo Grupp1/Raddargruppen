@@ -33,13 +33,13 @@ public class InboxView extends ListActivity implements Observer{
 
 	private ArrayList<Message> inbox;
 	private InboxAdapter ia;
-	InternalComManager controller;
 
 	public void onCreate(Bundle savedInstanceState){
-		super.onCreate(savedInstanceState);	
-		controller = new InternalComManager();
-		controller.addObserverToInbox(this);
-		inbox = controller.getInbox();
+		super.onCreate(savedInstanceState);
+		Bundle extras = getIntent().getExtras();
+		
+		MainView.controller.addObserverToInbox(this);
+		inbox = MainView.controller.getInbox();
 		ia = new InboxAdapter(this, R.layout.row,inbox);
 		setListAdapter(ia);
 		ListView lv = getListView();
@@ -50,16 +50,18 @@ public class InboxView extends ListActivity implements Observer{
 					int position, long id) {
 				Intent nextIntent = new Intent(InboxView.this, ReadMessageView.class);
 				nextIntent.putExtra("sender",inbox.get(position).getSrcUser());
-				nextIntent.putExtra("subject","Ämnet");
+				nextIntent.putExtra("subject",inbox.get(position).getSubject());
 				nextIntent.putExtra("data",inbox.get(position).getData());
-				nextIntent.putExtra("date", "2011-11-02");
+				nextIntent.putExtra("date", inbox.get(position).getDate());
 				nextIntent.putExtra("type", inbox.get(position).getType());
 				startActivity(nextIntent);
 
 			}
 		});
+		
 		Message m = new TextMessage(MessageType.convert("text/plain"),"Daniel","Daniel");
 		m.setData("HOPPAS DET FUNGERAR");
+		m.setSubject("VIKTIGT");
 		try {
 			new Sender (m, InetAddress.getByName("127.0.0.1"), 6789);
 		} catch (UnknownHostException e) {
@@ -67,9 +69,16 @@ public class InboxView extends ListActivity implements Observer{
 		}
 	}
 	
-	public void update(Observable observable, Object data) {
-		inbox = ((Inbox)observable).getInbox();
-		ia.notifyDataSetChanged();
+	public void update(final Observable observable, Object data) {
+		runOnUiThread(new Runnable(){
+			public void run(){
+				Log.d("NEJ","hmm");
+				inbox = ((Inbox)observable).getInbox();
+				ia.notifyDataSetChanged();				
+				//Toast.makeText(getApplicationContext(), "Meddelande från "+inbox.get(inbox.size()-1).getSrcUser()
+				//		,Toast.LENGTH_LONG).show();
+			}
+		});
 	}
 
 	private class InboxAdapter extends ArrayAdapter<Message>{
@@ -93,7 +102,7 @@ public class InboxView extends ListActivity implements Observer{
 				if (tt != null) 
 					tt.setText("Avsändare: "+m.getSrcUser());                            
 				if(bt != null)
-					bt.setText("Ämne: "+ "Subject");
+					bt.setText("Ämne: "+ m.getSubject());
 
 			}
 			return v;
