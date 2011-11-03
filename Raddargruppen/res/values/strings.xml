@@ -12,5 +12,7 @@
 
     <string name="map_close">Stäng programmet!</string>
     <string name="map_header">Karta</string>
+    <string name="messagechoice_new">Nytt meddelande</string>
+    <string name="messagechoice_inbox">Inbox</string>
 
 </resources>

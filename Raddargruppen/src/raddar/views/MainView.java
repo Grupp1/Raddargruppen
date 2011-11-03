@@ -22,9 +22,10 @@ public class MainView extends Activity implements OnClickListener {
 	private ImageButton messageButton;
 	private ImageButton mapButton;
 	private ImageButton reportButton;
+	private ImageButton serviceButton;
 	private ImageButton sosButton;
 	private ImageButton setupButton;
-	private Button logButton;
+	private ImageButton logButton;
 	
 
 	/** Called when the activity is first created. */
@@ -55,6 +56,9 @@ public class MainView extends Activity implements OnClickListener {
 
 		reportButton = (ImageButton)this.findViewById(R.id.reportButton);
 		reportButton.setOnClickListener(this);
+		
+		serviceButton = (ImageButton)this.findViewById(R.id.serviceButton);
+		serviceButton.setOnClickListener(this);
 
 		sosButton = (ImageButton)this.findViewById(R.id.sosButton);
 		sosButton.setOnClickListener(this);
@@ -62,7 +66,7 @@ public class MainView extends Activity implements OnClickListener {
 		setupButton = (ImageButton)this.findViewById(R.id.setupButton);
 		setupButton.setOnClickListener(this);
 
-		logButton = (Button)this.findViewById(R.id.logButton);
+		logButton = (ImageButton)this.findViewById(R.id.logButton);
 		logButton.setOnClickListener(this);
 
 	}
@@ -73,7 +77,7 @@ public class MainView extends Activity implements OnClickListener {
 			finish();
 		}
 		if(v == messageButton){
-			Intent nextIntent = new Intent(MainView.this, InboxView.class);
+			Intent nextIntent = new Intent(MainView.this, MessageChoiceView.class);
 			startActivity(nextIntent);
 		}
 		if(v == mapButton){
@@ -81,6 +85,9 @@ public class MainView extends Activity implements OnClickListener {
 			startActivity(nextIntent);
 		}
 		if(v == reportButton){
+			finish();
+		}
+		if(v == serviceButton){
 			finish();
 		}
 		if(v == sosButton){
@@ -92,6 +99,8 @@ public class MainView extends Activity implements OnClickListener {
 		if(v == logButton){
 			finish();
 		}
+		
+		
 
 
 
