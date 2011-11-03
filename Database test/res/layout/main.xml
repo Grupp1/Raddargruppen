@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+ 
+    <!-- ADD A DATA ENTRY FORM -->
+    <TextView
+    	android:text="@string/add_directions"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	/>
+    <LinearLayout
+    	android:orientation="horizontal"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	>
+    	<EditText
+    		android:id="@+id/text_field_one"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:minWidth="100px"
+    		/>
+    	<EditText
+    		android:id="@+id/text_field_two"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:minWidth="100px"
+    		/>
+		<Button
+			android:id="@+id/add_button"
+    		android:text="@string/add"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		/>
+   	</LinearLayout>
+ 
+   	<!-- DELETE A DATA ENTRY FORM -->
+    <TextView
+    	android:text="@string/delete_directions"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	/>
+    <LinearLayout
+    	android:orientation="horizontal"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+		>
+		<EditText
+    		android:id="@+id/id_field"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:minWidth="100px"
+    		/>
+    	<Button
+			android:id="@+id/delete_button"
+    		android:text="@string/delete"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		/>
+	</LinearLayout>
+ 
+	<!-- UPDATE A DATA ENTRY FORM -->
+    <TextView
+    	android:text="@string/update_directions"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	/>
+	<LinearLayout
+		android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	>
+    	<EditText
+    		android:id="@+id/update_id_field"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:minWidth="45px"
+			/>    		
+    	<Button
+    		android:id="@+id/retrieve_button"
+    		android:text="@string/retrieve"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		/>
+    	<EditText
+    		android:id="@+id/update_text_field_one"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:minWidth="70px"
+    		/>
+    	<EditText
+    		android:id="@+id/update_text_field_two"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:minWidth="70px"
+    		/>
+		<Button
+			android:id="@+id/update_button"
+    		android:text="@string/update"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		/>
+ 
+    </LinearLayout>
+ 
+	<!-- THE DATA TABLE -->
+	<TableLayout
+		android:id="@+id/data_table"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		>
+		<TableRow>
+			<TextView 
+				android:text="@string/th_id"
+				android:minWidth="50px"
+				/>
+			<TextView
+				android:text="@string/th_text_one"
+				android:minWidth="125px"
+				/>
+			<TextView
+				android:text="@string/th_text_two"
+				android:minWidth="125px"
+				/>
+		</TableRow>
+	</TableLayout>
+ 
+</LinearLayout>
