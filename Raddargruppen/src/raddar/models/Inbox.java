@@ -7,8 +7,8 @@ import android.util.Log;
 
 import raddar.enums.MessageType;
 
-public class Inbox extends Observable{
-	
+public class Inbox extends Observable {
+
 	private ArrayList<Message> inbox;
 
 	public Inbox(){
@@ -24,9 +24,11 @@ public class Inbox extends Observable{
 	
 	public void newMessage(Message m){
 		inbox.add(m);
-		notifyObservers();
+		Log.d("inbox", ""+countObservers());
+		setChanged();
+		notifyObservers(inbox.get(inbox.size()-1).getSrcUser());
 	}
-	
+
 	public void removeMessage(Message m){
 		inbox.remove(m);
 		notifyObservers();

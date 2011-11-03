@@ -7,6 +7,11 @@ public class TextMessage extends Message {
 	
 	public TextMessage(MessageType type, String srcUser, String destUser) {
 		this(type, srcUser, destUser, MessagePriority.NORMAL, "");
+		subject = "DEFAULT"; 
+	}
+	public TextMessage(String srcUser, String destUser) {
+		this(MessageType.TEXT, srcUser, destUser, MessagePriority.NORMAL, "");
+		subject = "DEFAULT"; 
 	}
 
 	public TextMessage(MessageType type, String srcUser, String destUser, String data) {

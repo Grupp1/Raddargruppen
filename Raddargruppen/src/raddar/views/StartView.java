@@ -43,7 +43,7 @@ public class StartView extends Activity {
 			public void onClick(View v) { 
 			
 			//	if (Login.checkPassword(user.getText().toString(), password.getText().toString()) == LoginResponse.ACCEPTED) {
-					Intent nextIntent = new Intent(StartView.this, MainView.class);
+					Intent nextIntent = new Intent(StartView.this, MainView.class);										
 					startActivity(nextIntent);
 			//	} else {
 					Toast.makeText(StartView.this, "Wrong username or password", Toast.LENGTH_LONG).show();
@@ -51,5 +51,10 @@ public class StartView extends Activity {
 			}
 
 		});
+	}
+	public void onRestart(){
+		super.onRestart();
+		//Fixa så att användaren loggas ut här också
+		finish();
 	}
 }
