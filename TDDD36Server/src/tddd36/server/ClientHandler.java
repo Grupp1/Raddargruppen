@@ -125,6 +125,7 @@ public class ClientHandler implements Runnable {
 			InetAddress address = Server.onlineUsers.getUserAddress(toUser);
 			
 			if (address == null) {
+				// Kolla om användaren existerar om JA, buffra, annars discard.
 				// Användaren är offline
 				// Buffra meddelandet (to be implemented...)
 				return;

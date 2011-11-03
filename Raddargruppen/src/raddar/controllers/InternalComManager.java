@@ -1,30 +1,39 @@
 package raddar.controllers;
 
-
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
 import raddar.models.Message;
 
-
 /*
  * Sköter kommunikationen med användaren och det grafiska gränssnittet
  */
- public class InternalComManager implements Observer {
+public class InternalComManager implements Observer {
 
 	private ReciveController rc;
-	
-	public InternalComManager(){
+	private String user;
+
+	public InternalComManager() {
 		this.rc = new ReciveController();
 		new ReciveHandler(rc);
 	}
-	
-	public void update(Observable observable, Object data) {
-		
-		
+
+	public String setUser(String user) {
+		String temp = getUser();
+		this.user = user;
+		return temp;
 	}
-	public void addObserverToInbox(Observer o){
+	
+	public String getUser() {
+		return user;
+	}
+
+	public void update(Observable observable, Object data) {
+
+	}
+
+	public void addObserverToInbox(Observer o) {
 		rc.addObservertoInbox(o);
 	}
 
