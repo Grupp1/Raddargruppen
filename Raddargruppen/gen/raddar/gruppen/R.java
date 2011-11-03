@@ -23,6 +23,7 @@ public final class R {
         public static final int setup=0x7f020009;
         public static final int smhi=0x7f02000a;
         public static final int sos=0x7f02000b;
+        public static final int trafikverket=0x7f02000c;
     }
     public static final class id {
         public static final int bottomtext=0x7f050015;
@@ -32,15 +33,15 @@ public final class R {
         public static final int editText1=0x7f05000b;
         public static final int icon=0x7f050013;
         public static final int inboxButton=0x7f05000e;
-        public static final int linearLayout1=0x7f05001b;
+        public static final int linearLayout1=0x7f05001d;
         public static final int logButton=0x7f050007;
         public static final int mapButton=0x7f050002;
         public static final int mapview=0x7f050009;
         public static final int messageButton=0x7f050001;
         public static final int messageData=0x7f05001a;
         public static final int newMessageButton=0x7f05000d;
-        public static final int okButton=0x7f05001e;
-        public static final int passwordText=0x7f05001c;
+        public static final int okButton=0x7f050020;
+        public static final int passwordText=0x7f05001e;
         public static final int readMessage=0x7f050012;
         public static final int readMessageDate=0x7f050010;
         public static final int readMessageSrcUser=0x7f05000f;
@@ -49,13 +50,15 @@ public final class R {
         public static final int sendButton=0x7f05000c;
         public static final int serviceButton=0x7f050004;
         public static final int setupButton=0x7f050005;
+        public static final int smhiButton=0x7f05001b;
         public static final int sosButton=0x7f050006;
         public static final int subject=0x7f050018;
         public static final int textView1=0x7f050008;
         public static final int textView2=0x7f050017;
         public static final int textView3=0x7f050019;
         public static final int toptext=0x7f050014;
-        public static final int userText=0x7f05001d;
+        public static final int trafikverketButton=0x7f05001c;
+        public static final int userText=0x7f05001f;
     }
     public static final class layout {
         public static final int list_item=0x7f030000;
