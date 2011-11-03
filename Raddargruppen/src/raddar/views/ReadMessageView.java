@@ -15,7 +15,7 @@ public class ReadMessageView extends Activity{
 		TextView readMessageDate = (TextView)this.findViewById(R.id.readMessageDate);
 		TextView readMessageSubject =(TextView)this.findViewById(R.id.readMessageSubject);
 
-			TextView readMessage =(TextView)this.findViewById(R.id.readMessage);
+		TextView readMessage =(TextView)this.findViewById(R.id.readMessage);
 		readMessageSrcUser.setText(extras.get("sender").toString());
 		readMessageDate.setText(extras.get("date").toString());
 		readMessageSubject.setText(extras.get("subject").toString());
