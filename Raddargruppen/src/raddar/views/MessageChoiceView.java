@@ -28,12 +28,13 @@ public class MessageChoiceView extends Activity implements OnClickListener {
 
 	public void onClick(View v) {
 		
-		if(v == inboxButton){
-			finish();
+		if(v == newMessageButton){
+			Intent nextIntent = new Intent(MessageChoiceView.this, SendMessageView.class);
+			startActivity(nextIntent);
 		}
 		
 		if(v == inboxButton){
-			Intent nextIntent = new Intent(MessageChoiceView.this, ReadMessageView.class);
+			Intent nextIntent = new Intent(MessageChoiceView.this, InboxView.class);
 			startActivity(nextIntent);
 		}
 		

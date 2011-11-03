@@ -12,13 +12,17 @@ public final class R {
     }
     public static final class drawable {
         public static final int icon=0x7f020000;
-        public static final int logout=0x7f020001;
-        public static final int magnus=0x7f020002;
-        public static final int map=0x7f020003;
-        public static final int mess=0x7f020004;
-        public static final int phone=0x7f020005;
-        public static final int report=0x7f020006;
-        public static final int setup=0x7f020007;
+        public static final int inbox=0x7f020001;
+        public static final int logout=0x7f020002;
+        public static final int magnus=0x7f020003;
+        public static final int map=0x7f020004;
+        public static final int mess=0x7f020005;
+        public static final int phone=0x7f020006;
+        public static final int report=0x7f020007;
+        public static final int services=0x7f020008;
+        public static final int setup=0x7f020009;
+        public static final int smhi=0x7f02000a;
+        public static final int sos=0x7f02000b;
     }
     public static final class id {
         public static final int bottomtext=0x7f050015;
@@ -62,7 +66,8 @@ public final class R {
         public static final int read_message=0x7f030005;
         public static final int row=0x7f030006;
         public static final int send_message=0x7f030007;
-        public static final int start=0x7f030008;
+        public static final int services=0x7f030008;
+        public static final int start=0x7f030009;
     }
     public static final class string {
         public static final int app_name=0x7f040001;
@@ -72,6 +77,10 @@ public final class R {
         public static final int map_header=0x7f040009;
         public static final int messagechoice_inbox=0x7f04000b;
         public static final int messagechoice_new=0x7f04000a;
+        public static final int send_destUser=0x7f04000c;
+        public static final int send_message=0x7f04000e;
+        public static final int send_send=0x7f04000f;
+        public static final int send_subject=0x7f04000d;
         public static final int start_exit=0x7f040005;
         public static final int start_header=0x7f040000;
         public static final int start_ok=0x7f040006;
