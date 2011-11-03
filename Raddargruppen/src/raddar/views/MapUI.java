@@ -3,23 +3,19 @@ package raddar.views;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Observable;
+import java.util.Observer;
 
-import raddar.enums.ResourceStatus;
 import raddar.enums.SituationPriority;
 import raddar.gruppen.R;
+import raddar.models.Fire;
+import raddar.models.GPSModel;
 import raddar.models.MapObjectList;
-import raddar.models.Resource;
-import raddar.models.Situation;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,22 +30,18 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 
-public class MapUI extends MapActivity implements LocationListener {
+public class MapUI extends MapActivity implements Observer {
 
 	private MapView mapView;
 	private long start;
 	private long stop;
 	private MyLocationOverlay compass;
 	private MapController controller;
-	private int x, y;
-	int lat = 58395730;
-	int lon = 15573080;
-	GeoPoint touchedPoint;
-	GeoPoint myLocation;
-	Drawable d;
-	List<Overlay> mapOverlays;
-	LocationManager lm;
-	String towers;
+	private int touchedX, touchedY;
+	private GeoPoint touchedPoint;
+	private Drawable d;
+	private List<Overlay> mapOverlays;
+	private GPSModel gps;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -77,31 +69,11 @@ public class MapUI extends MapActivity implements LocationListener {
 
 		Touchy t = new Touchy();
 
-
-		// Vår position
-		lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		Criteria crit = new Criteria();
-
-		towers = lm.getBestProvider(crit, false);
-		Location location = lm.getLastKnownLocation(towers);
-
-		d = getResources().getDrawable(R.drawable.magnus);
+		gps = new GPSModel(this);
 		
-		if (location != null){
-			lat = (int) (location.getLatitude() * 1E6);
-			lon = (int) (location.getLongitude() * 1E6);
-
-			myLocation = new GeoPoint(lat, lon);
-			Resource magnus = new Resource(myLocation, "Magnus", "Här är jag!", "00000", ResourceStatus.FREE);
-			MapObjectList gay = new MapObjectList(d, MapUI.this);
-			gay.addOverlay(magnus);
-			mapOverlays.add(gay);
-		}
-		else{
-			Toast.makeText(MapUI.this, "Couldnt get provider", Toast.LENGTH_SHORT).show();
-		}
-
-		d = getResources().getDrawable(R.drawable.fire);
+		Fire fire = new Fire(touchedPoint, "Det brinner här!", SituationPriority.HIGH);
+		
+		d = this.getResources().getDrawable(fire.getID());
 
 		// Skapar en nytt object på kartan
 		//MapObject niklas = new MapObject(new GeoPoint(52395730, 65573080), "Niklas", "Hallo", "niklas");
@@ -128,7 +100,7 @@ public class MapUI extends MapActivity implements LocationListener {
 		// TODO Auto-generated method stub
 		compass.disableCompass();
 		super.onPause();
-		lm.removeUpdates(this);
+		gps.getLocationManager().removeUpdates(gps);
 	}
 
 	@Override
@@ -136,7 +108,7 @@ public class MapUI extends MapActivity implements LocationListener {
 		// TODO Auto-generated method stub
 		compass.enableCompass();
 		super.onResume();
-		lm.requestLocationUpdates(towers, 500, 1, this);
+		gps.getLocationManager().requestLocationUpdates(gps.getTowers(), 500, 1, gps);
 	}
 
 	@Override
@@ -149,9 +121,9 @@ public class MapUI extends MapActivity implements LocationListener {
 		public boolean onTouchEvent(MotionEvent e, MapView m){
 			if(e.getAction() == MotionEvent.ACTION_DOWN){
 				start = e.getEventTime();
-				x = (int) e.getX();
-				y = (int) e.getY();
-				touchedPoint = mapView.getProjection().fromPixels(x, y);
+				touchedX = (int) e.getX();
+				touchedY = (int) e.getY();
+				touchedPoint = mapView.getProjection().fromPixels(touchedX, touchedY);
 			}
 			if(e.getAction() == MotionEvent.ACTION_UP){
 				stop = e.getEventTime();
@@ -165,10 +137,11 @@ public class MapUI extends MapActivity implements LocationListener {
 
 				alert.setButton("Placera", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						Situation situation = new Situation(touchedPoint, "Eld", "Det brinner här!", "000000", SituationPriority.HIGH);
-						MapObjectList fire = new MapObjectList(d, MapUI.this);
-						fire.addOverlay(situation);
-						mapOverlays.add(fire);
+						
+						Fire f = new Fire(touchedPoint, "Det brinner här!", SituationPriority.HIGH);
+						MapObjectList firePlaces = new MapObjectList(d, MapUI.this);
+						firePlaces.addOverlay(f);
+						mapOverlays.add(firePlaces);
 					}
 				});
 
@@ -224,38 +197,9 @@ public class MapUI extends MapActivity implements LocationListener {
 		return false;
 	}
 
-
-
-/**
- * -----------------------
- * LocationListener metoder
- * -----------------------
- */
-
-	public void onLocationChanged(Location l) {
+	public void update(Observable observable, Object data) {
 		// TODO Auto-generated method stub
-		lat = (int) (l.getLatitude() * 1E6);
-		lon = (int) (l.getLongitude() * 1E6);
-		myLocation = new GeoPoint(lat, lon);
-		Resource magnus = new Resource(myLocation, "Magnus", "Här är jag!", "00000", ResourceStatus.FREE);
-		MapObjectList gay = new MapObjectList(d, MapUI.this);
-		gay.addOverlay(magnus);
-		mapOverlays.add(gay);
-	}
-
-	public void onProviderDisabled(String provider) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void onProviderEnabled(String provider) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 }
