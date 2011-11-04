@@ -12,6 +12,8 @@ import raddar.gruppen.R;
 import raddar.models.Inbox;
 import raddar.models.NotificationMessage;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,10 +29,15 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	private ImageButton messageButton;
 	private ImageButton mapButton;
 	private ImageButton reportButton;
+	private ImageButton serviceButton;
 	private ImageButton sosButton;
 	private ImageButton setupButton;
-	private Button logButton;
+
+	private ImageButton logButton;
+	
+	
 	public static InternalComManager controller = new InternalComManager();
+
 
 
 	/** Called when the activity is first created. */
@@ -38,7 +45,8 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-
+		Bundle extras = getIntent().getExtras();
+		controller.setUser(extras.get("user").toString());
 		// Notifiera servern att vi kommer online
 		/* 
 		NotificationMessage nm = new NotificationMessage("username", NotificationType.CONNECT);
@@ -63,6 +71,9 @@ public class MainView extends Activity implements OnClickListener, Observer{
 
 		reportButton = (ImageButton)this.findViewById(R.id.reportButton);
 		reportButton.setOnClickListener(this);
+		
+		serviceButton = (ImageButton)this.findViewById(R.id.serviceButton);
+		serviceButton.setOnClickListener(this);
 
 		sosButton = (ImageButton)this.findViewById(R.id.sosButton);
 		sosButton.setOnClickListener(this);
@@ -70,7 +81,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 		setupButton = (ImageButton)this.findViewById(R.id.setupButton);
 		setupButton.setOnClickListener(this);
 
-		logButton = (Button)this.findViewById(R.id.logButton);
+		logButton = (ImageButton)this.findViewById(R.id.logButton);
 		logButton.setOnClickListener(this);
 
 	}
@@ -81,7 +92,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 			finish();
 		}
 		if(v == messageButton){
-			Intent nextIntent = new Intent(MainView.this, InboxView.class);
+			Intent nextIntent = new Intent(MainView.this, MessageChoiceView.class);
 			startActivity(nextIntent);
 		}
 		if(v == mapButton){
@@ -91,16 +102,34 @@ public class MainView extends Activity implements OnClickListener, Observer{
 		if(v == reportButton){
 			finish();
 		}
+		if(v == serviceButton){
+			finish();
+		}
 		if(v == sosButton){
-			Intent nextIntent = new Intent(MainView.this, SendMessageView.class);
-			startActivity(nextIntent);
+			finish();
 		}
 		if(v == setupButton){
 			finish();
 		}
 		if(v == logButton){
-			finish();
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("Är du säker på att du vill logga ut?")
+			       .setCancelable(false)
+			       .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			                MainView.this.finish();
+			           }
+			       })
+			       .setNegativeButton("Nej", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			                dialog.cancel();
+			           }
+			       });
+			AlertDialog alert = builder.create();
+			alert.show();
 		}
+		
+		
 
 
 
