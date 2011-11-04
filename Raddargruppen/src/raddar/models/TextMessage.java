@@ -24,6 +24,7 @@ public class TextMessage extends Message {
 		this.toUser = destUser;
 		this.priority = priority;
 		this.data = data;
+		subject = "DEFAULT";
 	}
 	
 	

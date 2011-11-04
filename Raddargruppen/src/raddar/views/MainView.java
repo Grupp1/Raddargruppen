@@ -30,7 +30,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	private ImageButton sosButton;
 	private ImageButton setupButton;
 	private Button logButton;
-	public static InternalComManager controller = new InternalComManager();
+	public static InternalComManager controller;
 
 
 	/** Called when the activity is first created. */
@@ -38,7 +38,9 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-
+		controller = new InternalComManager(this);
+		
+		
 		// Notifiera servern att vi kommer online
 		/* 
 		NotificationMessage nm = new NotificationMessage("username", NotificationType.CONNECT);
@@ -101,10 +103,6 @@ public class MainView extends Activity implements OnClickListener, Observer{
 		if(v == logButton){
 			finish();
 		}
-
-
-
-
 	}
 
 	@Override

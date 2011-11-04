@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
+import android.content.Context;
+
 import raddar.models.Message;
 
 
@@ -15,11 +17,10 @@ import raddar.models.Message;
 
 	private ReciveController rc;
 	
-	public InternalComManager(){
-		this.rc = new ReciveController();
+	public InternalComManager(Context con){
+		this.rc = new ReciveController(con);
 		new ReciveHandler(rc);
 	}
-	
 	public void update(Observable observable, Object data) {
 		
 		

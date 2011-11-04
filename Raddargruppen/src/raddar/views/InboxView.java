@@ -10,6 +10,7 @@ import raddar.controllers.InternalComManager;
 import raddar.controllers.Sender;
 import raddar.enums.MessageType;
 import raddar.gruppen.R;
+import raddar.models.ClientDatabaseManager;
 import raddar.models.Inbox;
 import raddar.models.Message;
 import raddar.models.TextMessage;
@@ -37,9 +38,10 @@ public class InboxView extends ListActivity implements Observer{
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		Bundle extras = getIntent().getExtras();
-		
 		MainView.controller.addObserverToInbox(this);
 		inbox = MainView.controller.getInbox();
+		//MainView.controller.addObserverToInbox(this);
+		//inbox = MainView.controller.getInbox();
 		ia = new InboxAdapter(this, R.layout.row,inbox);
 		setListAdapter(ia);
 		ListView lv = getListView();
@@ -73,7 +75,7 @@ public class InboxView extends ListActivity implements Observer{
 		runOnUiThread(new Runnable(){
 			public void run(){
 				Log.d("NEJ","hmm");
-				inbox = ((Inbox)observable).getInbox();
+				inbox = ((ClientDatabaseManager)observable).getAllRowsAsArrays();
 				ia.notifyDataSetChanged();				
 				//Toast.makeText(getApplicationContext(), "Meddelande från "+inbox.get(inbox.size()-1).getSrcUser()
 				//		,Toast.LENGTH_LONG).show();
