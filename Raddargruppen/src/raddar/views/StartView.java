@@ -37,14 +37,15 @@ public class StartView extends Activity {
 
 		user = (EditText)this.findViewById(R.id.userText);
 		password = (EditText)this.findViewById(R.id.passwordText);
-
+		user.setText("Alice");
 		loginButton = (Button)this.findViewById(R.id.okButton);
 		loginButton.setOnClickListener(new OnClickListener(){
 
 			public void onClick(View v) { 
 			
 			//	if (Login.checkPassword(user.getText().toString(), password.getText().toString()) == LoginResponse.ACCEPTED) {
-					Intent nextIntent = new Intent(StartView.this, MainView.class);										
+					Intent nextIntent = new Intent(StartView.this, MainView.class);
+					nextIntent.putExtra("user",user.getText().toString());
 					startActivity(nextIntent);
 			//	} else {
 					Toast.makeText(StartView.this, "Wrong username or password", Toast.LENGTH_LONG).show();
@@ -55,7 +56,6 @@ public class StartView extends Activity {
 	}
 	public void onRestart(){
 		super.onRestart();
-		//Fixa så att användaren loggas ut här också
 		finish();
 	}
 }

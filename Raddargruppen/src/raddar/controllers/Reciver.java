@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.util.Date;
+import java.text.DateFormat;
 
 import raddar.enums.MessageType;
 import raddar.models.Message;
@@ -37,24 +37,26 @@ public class Reciver implements Runnable {
 			String srcUser = in.readLine().split(" ")[1];
 			String toUser = in.readLine().split(" ")[1];
 			in.readLine();
-		//	Date  date = new Date(Date.parse(in.readLine().split(" ")[1]));
-			String subject = in.readLine().split(" ")[1];
+		//	String[] dateParts = in.readLine().split(" ");
+		//	DateFormat df = DateFormat.getDateTimeInstance();
+		//	Date  date = new Date(Date.parse(in.readLine()));
+			String subject = in.readLine();
+			subject = extractValue(subject);
 			switch (type){
 			case TEXT:
 				m = new TextMessage(type,srcUser,toUser);
 			//	m.setDate(date);
 				m.setSubject(subject);
+				in.readLine();
+				String data = "";
+				while (in.ready())
+					data +=in.readLine();
+				m.setData(data);
 				break;
 			case IMAGE:
 
 				break;			
-			}
-
-			in.readLine();
-			String data = "";
-			while (in.ready())
-				data +=in.readLine();
-			m.setData(data);
+			}			
 			
 			so.close();
 			rc.addToInbox(m);
@@ -66,5 +68,16 @@ public class Reciver implements Runnable {
 			Log.d("Undersök","ArrayIndexOutOfBounds i reciver");
 		}
 
+	}
+	
+	private String extractValue(String str) {
+		int index = 0;
+		for (int i = 0; i < str.length(); i++) {
+			if (str.charAt(i) == ' ') { 
+				index = i;
+				break;
+			}
+		}
+		return str.substring(index);
 	}
 }
