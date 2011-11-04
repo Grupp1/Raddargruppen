@@ -6,6 +6,7 @@ import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
+import raddar.controllers.MapCont;
 import raddar.enums.SituationPriority;
 import raddar.gruppen.R;
 import raddar.models.Fire;
@@ -41,13 +42,16 @@ public class MapUI extends MapActivity implements Observer {
 	private GeoPoint touchedPoint;
 	private Drawable d;
 	private List<Overlay> mapOverlays;
+
 	private GPSModel gps;
+
+	private MapCont mapCont;
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.maps);
-
 		Button close;
 		close = (Button)this.findViewById(R.id.button_close);
 		close.setOnClickListener(new OnClickListener() {
@@ -56,33 +60,25 @@ public class MapUI extends MapActivity implements Observer {
 			}
 		});
 
-
+		//MapController mapController = new MapController();
 		//MapView mapView = ((MapView)findViewById(R.id.mapview), "0b1qi7XBfQqm8teK24blL1Hhnfhqc9iOFejhYUw");
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 
-
 		/**
 		 *  Lista över alla overlays (lager) som visas på kartan
 		 */
+
 		mapOverlays = mapView.getOverlays();
 
 		Touchy t = new Touchy();
 
 		gps = new GPSModel(this);
-		
+
 		Fire fire = new Fire(touchedPoint, "Det brinner här!", SituationPriority.HIGH);
-		
+
 		d = this.getResources().getDrawable(fire.getID());
 
-		// Skapar en nytt object på kartan
-		//MapObject niklas = new MapObject(new GeoPoint(52395730, 65573080), "Niklas", "Hallo", "niklas");
-
-		// Lägger till objekten i kategorierna
-		//niklasList.addOverlay(niklas);
-
-		// lägger på objekt "över" varandra
-		//mapOverlays.add(niklasList);
 		mapOverlays.add(t);
 		compass = new MyLocationOverlay(MapUI.this, mapView);
 		mapOverlays.add(compass);
@@ -90,8 +86,6 @@ public class MapUI extends MapActivity implements Observer {
 		GeoPoint point = new GeoPoint(58395730, 15573080);
 		controller.animateTo(point);
 		controller.setZoom(15);
-
-
 
 	}
 
@@ -118,7 +112,15 @@ public class MapUI extends MapActivity implements Observer {
 	}
 
 	class Touchy extends Overlay{
-		public boolean onTouchEvent(MotionEvent e, MapView m){
+		public boolean onTouchEvent(MotionEvent e, MapView m) {
+
+			//new Runnable() {
+			//public void run() {
+
+			//}
+			//};
+
+
 			if(e.getAction() == MotionEvent.ACTION_DOWN){
 				start = e.getEventTime();
 				touchedX = (int) e.getX();
@@ -137,17 +139,18 @@ public class MapUI extends MapActivity implements Observer {
 
 				alert.setButton("Placera", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						
+
+
+
 						Fire f = new Fire(touchedPoint, "Det brinner här!", SituationPriority.HIGH);
+						//mapCont.add(f);
 						MapObjectList firePlaces = new MapObjectList(d, MapUI.this);
 						firePlaces.addOverlay(f);
 						mapOverlays.add(firePlaces);
+
+
 					}
 				});
-
-
-
-
 
 
 				alert.setButton2("get adress", new DialogInterface.OnClickListener() {
@@ -173,8 +176,6 @@ public class MapUI extends MapActivity implements Observer {
 				});
 
 
-
-
 				alert.setButton3("Toggle View", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						if(mapView.isSatellite()){
@@ -198,8 +199,9 @@ public class MapUI extends MapActivity implements Observer {
 	}
 
 	public void update(Observable observable, Object data) {
-		// TODO Auto-generated method stub
-		
+		if (data instanceof MapObjectList){
+			mapOverlays.add((MapObjectList) data);
+		}
 	}
 
 }
