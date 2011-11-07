@@ -7,11 +7,15 @@ import java.util.Observable;
 import java.util.Observer;
 
 import raddar.controllers.MapCont;
+import raddar.enums.ResourceStatus;
 import raddar.enums.SituationPriority;
 import raddar.gruppen.R;
 import raddar.models.Fire;
+import raddar.models.FireTruck;
 import raddar.models.GPSModel;
+import raddar.models.MapObject;
 import raddar.models.MapObjectList;
+import raddar.views.Map.Touchy;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
@@ -39,13 +43,14 @@ public class MapUI extends MapActivity implements Observer {
 	private MyLocationOverlay compass;
 	private MapController controller;
 	private int touchedX, touchedY;
-	private GeoPoint touchedPoint;
+	private GeoPoint touchedPoint, point;
 	private Drawable d;
 	private List<Overlay> mapOverlays;
 
 	private GPSModel gps;
 
 	private MapCont mapCont;
+	private MapCont mapCont1;
 
 
 	@Override
@@ -60,7 +65,6 @@ public class MapUI extends MapActivity implements Observer {
 			}
 		});
 
-		//MapController mapController = new MapController();
 		//MapView mapView = ((MapView)findViewById(R.id.mapview), "0b1qi7XBfQqm8teK24blL1Hhnfhqc9iOFejhYUw");
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
@@ -71,30 +75,40 @@ public class MapUI extends MapActivity implements Observer {
 
 		mapOverlays = mapView.getOverlays();
 
-		Touchy t = new Touchy();
 
-		gps = new GPSModel(this);
 
-		Fire fire = new Fire(touchedPoint, "Det brinner här!", SituationPriority.HIGH);
-
-		d = this.getResources().getDrawable(fire.getID());
-
-		mapOverlays.add(t);
 		compass = new MyLocationOverlay(MapUI.this, mapView);
 		mapOverlays.add(compass);
 		controller = mapView.getController();
-		GeoPoint point = new GeoPoint(58395730, 15573080);
+
+
+		point = new GeoPoint(58395730, 15573080);
 		controller.animateTo(point);
 		controller.setZoom(15);
 
-	}
+
+
+		mapCont = new MapCont(MapUI.this, new Fire(point, "Det brinner här!", "000000", SituationPriority.HIGH));
+		mapCont.add(new FireTruck(new GeoPoint(58395739, 15573089), "Vi är på väg", "00000", ResourceStatus.BUSY));
+		//mapCont.add(new Fire(point, "Det brinner här!", "000000", SituationPriority.HIGH));
+
+
+
+		//d = getResources().getDrawable(fire.getIcon());
+
+	} 
 
 	@Override
-	protected void onPause() {
+	protected void onStart() {
 		// TODO Auto-generated method stub
-		compass.disableCompass();
-		super.onPause();
-		gps.getLocationManager().removeUpdates(gps);
+
+		Touchy t = new Touchy();
+		mapOverlays.add(t);
+		gps = new GPSModel(this);
+
+		super.onStart();
+
+
 	}
 
 	@Override
@@ -106,10 +120,31 @@ public class MapUI extends MapActivity implements Observer {
 	}
 
 	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		compass.disableCompass();
+		super.onPause();
+		gps.getLocationManager().removeUpdates(gps);
+	}
+
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+	}
+
+
+
+
+	@Override
 	protected boolean isRouteDisplayed() {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+
+
+
 
 	class Touchy extends Overlay{
 		public boolean onTouchEvent(MotionEvent e, MapView m) {
@@ -132,17 +167,71 @@ public class MapUI extends MapActivity implements Observer {
 			}
 			if(stop - start > 1500){
 				AlertDialog alert = new AlertDialog.Builder(MapUI.this).create();
-				alert.setTitle("Hej");
-				alert.setMessage("Välj en knapp");
+				alert.setTitle("Karta");
+				alert.setMessage("Tryck på en knapp");
 
 
 
-				alert.setButton("Placera", new DialogInterface.OnClickListener() {
+				alert.setButton("Brand", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 
+						//						Fire f = new Fire(touchedPoint, "Det brinner här!", "00000", SituationPriority.HIGH);
+						//						d = getResources().getDrawable(f.getIcon());
+						//						MapObjectList firePlaces = new MapObjectList(d, MapUI.this);
+						//						firePlaces.addOverlay(f);
+						//						mapOverlays.add(firePlaces);
+
+						mapCont.add(new Fire(touchedPoint, "Det brinner här!", "00000", SituationPriority.HIGH));
+
+					}
+				});
 
 
-						Fire f = new Fire(touchedPoint, "Det brinner här!", SituationPriority.HIGH);
+
+				//					public void onClick(DialogInterface dialog, int which) {	
+				//						AlertDialog choose = new AlertDialog.Builder(MapUI.this).create();
+				//						choose.setTitle("Välj objekt");
+				//						choose.setMessage("Tryck igen");
+				//
+				//						choose.setButton("Brand", new DialogInterface.OnClickListener() {
+				//							public void onClick(DialogInterface dialog, int which) {
+				//								Fire f = new Fire(touchedPoint, "Det brinner här!", "00000", SituationPriority.HIGH);
+				//								d = getResources().getDrawable(f.getIcon());
+				//								MapObjectList firePlaces = new MapObjectList(d, MapUI.this);
+				//								firePlaces.addOverlay(f);
+				//								mapOverlays.add(firePlaces);
+				//							}
+				//						});
+				//
+				//						choose.setButton2("Brandbil", new DialogInterface.OnClickListener() {
+				//							public void onClick(DialogInterface dialog, int which) {
+				//								FireTruck f = new FireTruck(touchedPoint, "Här kommer hjälpen!", "00000", ResourceStatus.FREE);
+				//								d = getResources().getDrawable(f.getIcon());
+				//								MapObjectList fireTrucks = new MapObjectList(d, MapUI.this);
+				//								fireTrucks.addOverlay(f);
+				//								mapOverlays.add(fireTrucks);
+				//							}
+				//						});
+				//
+				//
+				//					}
+
+
+				alert.setButton2("Brandbil", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						FireTruck f = new FireTruck(touchedPoint, "Här kommer hjälpen!", "00000", ResourceStatus.FREE);
+						d = getResources().getDrawable(f.getIcon());
+						MapObjectList fireTrucks = new MapObjectList(d, MapUI.this);
+						fireTrucks.addOverlay(f);
+						mapOverlays.add(fireTrucks);
+					}
+				});
+
+
+				// SYNS INTE I MENYN, FÅR ENDAST PLATS TRE ALTERNATIV
+				alert.setButton3("get adress", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int wich){
+						Fire f = new Fire(touchedPoint, "Det brinner här!", "00000", SituationPriority.HIGH);
 						//mapCont.add(f);
 						MapObjectList firePlaces = new MapObjectList(d, MapUI.this);
 						firePlaces.addOverlay(f);
@@ -186,6 +275,8 @@ public class MapUI extends MapActivity implements Observer {
 						}
 					}
 				});
+
+
 				alert.show();
 				return true;
 			}
@@ -199,7 +290,11 @@ public class MapUI extends MapActivity implements Observer {
 	}
 
 	public void update(Observable observable, Object data) {
+		// TODO Auto-generated method stub
+
+
 		if (data instanceof MapObjectList){
+			//d = getResources().getDrawable(((MapObjectList) data).getIcon());
 			mapOverlays.add((MapObjectList) data);
 		}
 	}
