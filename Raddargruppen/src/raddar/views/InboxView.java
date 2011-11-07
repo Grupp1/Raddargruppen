@@ -74,9 +74,7 @@ public class InboxView extends ListActivity implements Observer{
 	public void update(final Observable observable, final Object data) {
 		runOnUiThread(new Runnable(){
 			public void run(){
-			//	inbox = MainView.controller.getInbox();
 				inbox.add((Message) data);
-				Log.d("inboxView.updatae"," meddelanden i inbox");
 				ia.notifyDataSetChanged();
 			}
 		});
@@ -95,12 +93,9 @@ public class InboxView extends ListActivity implements Observer{
 			if (v == null) {
 				LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				v = vi.inflate(R.layout.row, null);
-				Log.d("InboxWiew.getView","if sats nr ett");
 			}
 			Message m = items.get(position);
-			Log.d("InboxWiew.getView","items: " + position);
 			if (m != null) {
-				Log.d("InboxWiew.getView","Ritar ut! "+items.size());
 				TextView tt = (TextView) v.findViewById(R.id.toptext);
 				TextView bt = (TextView) v.findViewById(R.id.bottomtext);
 				ImageView iv = (ImageView)v.findViewById(R.id.icon);

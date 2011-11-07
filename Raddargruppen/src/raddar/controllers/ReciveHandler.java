@@ -39,8 +39,7 @@ public class ReciveHandler implements Runnable {
 	}
 	public void newMessage(MessageType mt, Message m){
 		if(mt == MessageType.TEXT){
-			MainView.db.addRow("message",new String[]{m.getSrcUser(),m.getDate().toString(),
-			m.getSubject(),m.getData()});
+			MainView.db.addRow(m);
 		}
 	}
 }
