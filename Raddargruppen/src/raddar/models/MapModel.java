@@ -35,6 +35,7 @@ public class MapModel extends Observable {
 	/*
 	 * Alla fires utplacerade på kartan sparas här
 	 */
+
 	
 	public void add(MapObject o){
 		if (o instanceof Fire){
@@ -49,7 +50,10 @@ public class MapModel extends Observable {
 		
 		if(o instanceof FireTruck){
 			if(fireTruckList == null){
-				d = mapUI.getResources().getDrawable(R.drawable.magnus);
+
+
+				d = mapUI.getResources().getDrawable(o.getIcon());
+
 				fireTruckList = new MapObjectList(d, mapUI);
 			}
 			fireTruckList.addOverlay(o);
@@ -67,6 +71,7 @@ public class MapModel extends Observable {
 	 * Alla situationer utplacerade på kartan sparas här
 	 */
 	
+
 	public MapObjectList getResourceList(){
 		return resourceList;
 	}

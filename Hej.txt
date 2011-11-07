@@ -1,0 +1,6 @@
+Hej Daniel!
+<<<<<<< HEAD
+<(")
+=======
+Heeeej!
+>>>>>>> 28d4c470f0bb8594bf94c423a9d5c8c6f303b276

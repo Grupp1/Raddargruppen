@@ -92,15 +92,16 @@ public class MapUI extends MapActivity implements Observer {
 
 
 		mapCont = new MapCont(MapUI.this, new Fire(point, "Det brinner här!", "000000", SituationPriority.HIGH));
-		
-		mapCont.add(new FireTruck(point2, "Vi är på väg", "00000", ResourceStatus.BUSY));
+
+		mapCont.add(new FireTruck(new GeoPoint(58395739, 15573089), "Vi är på väg", "00000", ResourceStatus.BUSY));
+
 		//mapCont.add(new Fire(point, "Det brinner här!", "000000", SituationPriority.HIGH));
 
 
 
 		//d = getResources().getDrawable(fire.getIcon());
 
-	}
+	} 
 
 	@Override
 	protected void onStart() {

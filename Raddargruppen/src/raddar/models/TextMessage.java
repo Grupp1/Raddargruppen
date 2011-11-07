@@ -5,11 +5,11 @@ import raddar.enums.MessageType;
 
 public class TextMessage extends Message {
 	
-	/* Själva meddelandet/texten */
-	private String data;
-	
 	public TextMessage(MessageType type, String srcUser, String destUser) {
 		this(type, srcUser, destUser, MessagePriority.NORMAL, "");
+	}
+	public TextMessage(String srcUser, String destUser) {
+		this(MessageType.TEXT, srcUser, destUser, MessagePriority.NORMAL, "");
 	}
 
 	public TextMessage(MessageType type, String srcUser, String destUser, String data) {
@@ -18,27 +18,13 @@ public class TextMessage extends Message {
 	
 	public TextMessage(MessageType type, String srcUser, String destUser, MessagePriority priority, String data) {
 		this.type = type;
-		this.fromUser = srcUser;
-		this.toUser = destUser;
+		this.fromUser = srcUser.trim();
+		this.toUser = destUser.trim();
 		this.priority = priority;
 		this.data = data;
+		subject = "DEFAULT";
 	}
 	
-	public void setMessage(String message) {
-		this.data = message;
-	}
-	
-	public void prependMessage(String message) {
-		this.data = message + data;
-	}
-	
-	public void append(String message) {
-		this.data += message;
-	}
-	
-	public String getMessage() {
-		return data;
-	}
 	
 	public String getFormattedMessage() {
 		return toString();
@@ -49,8 +35,10 @@ public class TextMessage extends Message {
 		String formattedMessage = "";
 		formattedMessage += Message.HEADER_TYPE + type + CRLF;
 		formattedMessage += Message.HEADER_PRIO + priority + CRLF;
-		formattedMessage += Message.HEADER_FROM + fromUser.toLowerCase() + CRLF;
-		formattedMessage += Message.HEADER_TO + toUser.toLowerCase() + CRLF;
+		formattedMessage += Message.HEADER_FROM + fromUser + CRLF;
+		formattedMessage += Message.HEADER_TO + toUser + CRLF;
+		formattedMessage += Message.HEADER_DATE + getFormattedDate() + CRLF;
+		formattedMessage += Message.HEADER_SUBJECT + subject + CRLF;
 		formattedMessage += CRLF + CRLF;
 		formattedMessage += data;
 		
