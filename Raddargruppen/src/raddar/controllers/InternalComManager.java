@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
+import android.content.Context;
+
 import raddar.models.Message;
 
 /*
@@ -13,9 +15,9 @@ public class InternalComManager implements Observer {
 
 	private ReciveController rc;
 	private String user;
-
-	public InternalComManager() {
-		this.rc = new ReciveController();
+	
+	public InternalComManager(Context con){
+		this.rc = new ReciveController(con);
 		new ReciveHandler(rc);
 	}
 

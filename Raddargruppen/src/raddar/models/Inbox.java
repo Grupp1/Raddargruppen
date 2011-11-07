@@ -6,6 +6,7 @@ import java.util.Observable;
 import android.util.Log;
 
 import raddar.enums.MessageType;
+import raddar.views.MainView;
 
 public class Inbox extends Observable {
 

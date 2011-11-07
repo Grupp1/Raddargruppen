@@ -10,6 +10,7 @@ import raddar.controllers.Sender;
 import raddar.enums.NotificationType;
 import raddar.gruppen.R;
 import raddar.models.Inbox;
+import raddar.models.Message;
 import raddar.models.NotificationMessage;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -32,11 +33,8 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	private ImageButton serviceButton;
 	private ImageButton sosButton;
 	private ImageButton setupButton;
-
 	private ImageButton logButton;
-	
-	
-	public static InternalComManager controller = new InternalComManager();
+	public static InternalComManager controller;
 
 
 
@@ -45,6 +43,8 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		controller = new InternalComManager(this);
+
 		Bundle extras = getIntent().getExtras();
 		controller.setUser(extras.get("user").toString());
 		// Notifiera servern att vi kommer online
@@ -71,7 +71,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 
 		reportButton = (ImageButton)this.findViewById(R.id.reportButton);
 		reportButton.setOnClickListener(this);
-		
+
 		serviceButton = (ImageButton)this.findViewById(R.id.serviceButton);
 		serviceButton.setOnClickListener(this);
 
@@ -114,26 +114,20 @@ public class MainView extends Activity implements OnClickListener, Observer{
 		if(v == logButton){
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage("Är du säker på att du vill logga ut?")
-			       .setCancelable(false)
-			       .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			                MainView.this.finish();
-			           }
-			       })
-			       .setNegativeButton("Nej", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			                dialog.cancel();
-			           }
-			       });
+			.setCancelable(false)
+			.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					MainView.this.finish();
+				}
+			})
+			.setNegativeButton("Nej", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+				}
+			});
 			AlertDialog alert = builder.create();
 			alert.show();
 		}
-		
-		
-
-
-
-
 	}
 
 	@Override
@@ -154,9 +148,10 @@ public class MainView extends Activity implements OnClickListener, Observer{
 
 	public void update(Observable observable, final Object data) {
 		runOnUiThread(new Runnable(){
-			public void run(){			
+			public void run(){	
 				if(data != null)
-					Toast.makeText(getApplicationContext(), "Meddelande från "+data.toString()
+					Toast.makeText(getApplicationContext(), "Meddelande från "+
+							((Message)data).getSrcUser()
 							,Toast.LENGTH_LONG).show();
 			}
 		});

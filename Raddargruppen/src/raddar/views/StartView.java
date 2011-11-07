@@ -28,11 +28,12 @@ public class StartView extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.start);
-		
 		// Lite hårdkodade testanvändare att testa med
 		Login.cache("Borche", "hej123");
 		Login.cache("Danne", "raddar");
 		Login.cache("Alice", "longshot");
+		//Endast för lättare testning
+		this.deleteDatabase("Alice");
 
 		user = (EditText)this.findViewById(R.id.userText);
 		password = (EditText)this.findViewById(R.id.passwordText);
