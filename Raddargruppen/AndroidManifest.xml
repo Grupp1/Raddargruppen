@@ -40,6 +40,7 @@
 		<activity android:name="raddar.views.MessageChoiceView"></activity>
 
 		<activity android:name="raddar.views.SendMessageView"></activity>
+		<activity android:name="raddar.views.ContactView"></activity>
 
 	</application>
 

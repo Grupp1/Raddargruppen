@@ -6,20 +6,15 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-import raddar.controllers.InternalComManager;
 import raddar.controllers.Sender;
 import raddar.enums.MessageType;
 import raddar.gruppen.R;
-import raddar.models.ClientDatabaseManager;
-import raddar.models.Inbox;
 import raddar.models.Message;
 import raddar.models.TextMessage;
 import android.app.ListActivity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +24,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class InboxView extends ListActivity implements Observer{
 
