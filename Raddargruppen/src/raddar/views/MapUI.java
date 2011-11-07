@@ -202,6 +202,7 @@ public class MapUI extends MapActivity implements Observer {
 		if (data instanceof MapObjectList){
 			mapOverlays.add((MapObjectList) data);
 		}
+
 	}
 
 }

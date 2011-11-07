@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Observable;
 
 import raddar.views.MapUI;
+import android.R;
 import android.graphics.drawable.Drawable;
 
 import com.google.android.maps.Overlay;
@@ -27,6 +28,7 @@ public class MapModel extends Observable {
 	 */
 	public void addFire(Fire fire){
 		
+	
 		fireList.addOverlay(fire);
 		notifyObservers(fireList);
 		
