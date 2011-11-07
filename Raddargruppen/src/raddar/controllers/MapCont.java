@@ -24,21 +24,10 @@ public class MapCont implements Observer, Runnable{
 	 * Kontrollerar vilken typ av objekt som lagts till på kartan. 
 	 */
 
-	//d = new Drawable(fire);
-	//fireList = new MapObjectList(d);
-
 	public MapCont(final MapUI mapUI, Object o){
-
-		//new Runnable() {
-		//public void run() {
-		//mapModel = new MapModel(mapUI, MapCont.this);
-		//}
-		//};
-
 		mapModel = new MapModel(mapUI, this);
 		this.o = o;
 		thread.start();
-
 	}
 
 	public void add(Object o){

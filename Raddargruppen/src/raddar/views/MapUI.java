@@ -13,10 +13,9 @@ import raddar.gruppen.R;
 import raddar.models.Fire;
 import raddar.models.FireTruck;
 import raddar.models.GPSModel;
-import raddar.models.MapObject;
 import raddar.models.MapObjectList;
-import raddar.views.Map.Touchy;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
@@ -47,6 +46,7 @@ public class MapUI extends MapActivity implements Observer {
 	private Drawable d;
 	private List<Overlay> mapOverlays;
 
+
 	private GPSModel gps;
 
 	private MapCont mapCont;
@@ -59,7 +59,7 @@ public class MapUI extends MapActivity implements Observer {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.maps);
 		Button close;
-		close = (Button)this.findViewById(R.id.button_close);
+		close = (Button) this.findViewById(R.id.button_close);
 		close.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				finish();
@@ -85,7 +85,7 @@ public class MapUI extends MapActivity implements Observer {
 
 		point = new GeoPoint(58395730, 15573080);
 		point2 = new GeoPoint(57395730, 15573080);
-		
+
 		controller.animateTo(point);
 		controller.setZoom(15);
 
@@ -95,19 +95,13 @@ public class MapUI extends MapActivity implements Observer {
 
 		mapCont.add(new FireTruck(new GeoPoint(58395739, 15573089), "Vi är på väg", "00000", ResourceStatus.BUSY));
 
-		//mapCont.add(new Fire(point, "Det brinner här!", "000000", SituationPriority.HIGH));
-
-
-
-		//d = getResources().getDrawable(fire.getIcon());
-
 	} 
 
 	@Override
 	protected void onStart() {
 		// TODO Auto-generated method stub
 
-		Touchy t = new Touchy();
+		Touchy t = new Touchy(this);
 		mapOverlays.add(t);
 		gps = new GPSModel(this);
 
@@ -148,18 +142,15 @@ public class MapUI extends MapActivity implements Observer {
 	}
 
 
-
-
-
 	class Touchy extends Overlay{
+		private Context context;
+		private CharSequence [] items = {"Fire", "FireTruck", "Situation", "Resource"};
+
+		public Touchy(Context context){
+			this.context = context;
+		}
+
 		public boolean onTouchEvent(MotionEvent e, MapView m) {
-
-			//new Runnable() {
-			//public void run() {
-
-			//}
-			//};
-
 
 			if(e.getAction() == MotionEvent.ACTION_DOWN){
 				start = e.getEventTime();
@@ -171,117 +162,110 @@ public class MapUI extends MapActivity implements Observer {
 				stop = e.getEventTime();
 			}
 			if(stop - start > 1500){
-				AlertDialog alert = new AlertDialog.Builder(MapUI.this).create();
-				alert.setTitle("Karta");
-				alert.setMessage("Tryck på en knapp");
 
 
+				AlertDialog.Builder builder = new AlertDialog.Builder(context);
+				builder.setTitle("Placera");
+				builder.setItems(items, new DialogInterface.OnClickListener() {
 
-				alert.setButton("Brand", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-
-						//						Fire f = new Fire(touchedPoint, "Det brinner här!", "00000", SituationPriority.HIGH);
-						//						d = getResources().getDrawable(f.getIcon());
-						//						MapObjectList firePlaces = new MapObjectList(d, MapUI.this);
-						//						firePlaces.addOverlay(f);
-						//						mapOverlays.add(firePlaces);
-
-						mapCont.add(new Fire(touchedPoint, "Det brinner här!", "00000", SituationPriority.HIGH));
-
+					public void onClick(DialogInterface dialog, int item) {
+						Toast.makeText(getApplicationContext(), items[item]+" utplacerad", Toast.LENGTH_LONG).show();
+						if(item == 0){		
+							mapCont.add(new Fire(touchedPoint, "Det brinner här!", "00000", SituationPriority.HIGH));
+						}
+						if(item == 1){
+							mapCont.add(new FireTruck(touchedPoint, "Vi är på väg", "00000", ResourceStatus.BUSY));
+						}
+						
 					}
 				});
+				AlertDialog alert = builder.create();
 
 
 
-				//					public void onClick(DialogInterface dialog, int which) {	
-				//						AlertDialog choose = new AlertDialog.Builder(MapUI.this).create();
-				//						choose.setTitle("Välj objekt");
-				//						choose.setMessage("Tryck igen");
+				//				AlertDialog alert = new AlertDialog.Builder(MapUI.this).create();
+				//				alert.setTitle("Karta");
+				//				alert.setMessage("Tryck på en knapp");
+				//				
+				//				
+				//				
+				//				alert.setButton("Brand", new DialogInterface.OnClickListener() {
+				//					public void onClick(DialogInterface dialog, int which) {
+				//						
+				//						
+				//						
+				//						//						Fire f = new Fire(touchedPoint, "Det brinner här!", "00000", SituationPriority.HIGH);
+				//						//						d = getResources().getDrawable(f.getIcon());
+				//						//						MapObjectList firePlaces = new MapObjectList(d, MapUI.this);
+				//						//						firePlaces.addOverlay(f);
+				//						//						mapOverlays.add(firePlaces);
 				//
-				//						choose.setButton("Brand", new DialogInterface.OnClickListener() {
-				//							public void onClick(DialogInterface dialog, int which) {
-				//								Fire f = new Fire(touchedPoint, "Det brinner här!", "00000", SituationPriority.HIGH);
-				//								d = getResources().getDrawable(f.getIcon());
-				//								MapObjectList firePlaces = new MapObjectList(d, MapUI.this);
-				//								firePlaces.addOverlay(f);
-				//								mapOverlays.add(firePlaces);
-				//							}
-				//						});
+				//						mapCont.add(new Fire(touchedPoint, "Det brinner här!", "00000", SituationPriority.HIGH));
 				//
-				//						choose.setButton2("Brandbil", new DialogInterface.OnClickListener() {
-				//							public void onClick(DialogInterface dialog, int which) {
-				//								FireTruck f = new FireTruck(touchedPoint, "Här kommer hjälpen!", "00000", ResourceStatus.FREE);
-				//								d = getResources().getDrawable(f.getIcon());
-				//								MapObjectList fireTrucks = new MapObjectList(d, MapUI.this);
-				//								fireTrucks.addOverlay(f);
-				//								mapOverlays.add(fireTrucks);
-				//							}
-				//						});
+				//						
+				//					}
+				//				});
+				//
+				//				alert.setButton2("Brandbil", new DialogInterface.OnClickListener() {
+				//					public void onClick(DialogInterface dialog, int which) {
+				//						FireTruck f = new FireTruck(touchedPoint, "Här kommer hjälpen!", "00000", ResourceStatus.FREE);
+				//						d = getResources().getDrawable(f.getIcon());
+				//						MapObjectList fireTrucks = new MapObjectList(d, MapUI.this);
+				//						fireTrucks.addOverlay(f);
+				//						mapOverlays.add(fireTrucks);
+				//					}
+				//				});
+				//
+				//
+				//				// SYNS INTE I MENYN, FÅR ENDAST PLATS TRE ALTERNATIV
+				//				alert.setButton3("get adress", new DialogInterface.OnClickListener() {
+				//					public void onClick(DialogInterface dialog, int wich){
+				//						Fire f = new Fire(touchedPoint, "Det brinner här!", "00000", SituationPriority.HIGH);
+				//						//mapCont.add(f);
+				//						MapObjectList firePlaces = new MapObjectList(d, MapUI.this);
+				//						firePlaces.addOverlay(f);
+				//						mapOverlays.add(firePlaces);
 				//
 				//
 				//					}
-
-
-				alert.setButton2("Brandbil", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						FireTruck f = new FireTruck(touchedPoint, "Här kommer hjälpen!", "00000", ResourceStatus.FREE);
-						d = getResources().getDrawable(f.getIcon());
-						MapObjectList fireTrucks = new MapObjectList(d, MapUI.this);
-						fireTrucks.addOverlay(f);
-						mapOverlays.add(fireTrucks);
-					}
-				});
-
-
-				// SYNS INTE I MENYN, FÅR ENDAST PLATS TRE ALTERNATIV
-				alert.setButton3("get adress", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int wich){
-						Fire f = new Fire(touchedPoint, "Det brinner här!", "00000", SituationPriority.HIGH);
-						//mapCont.add(f);
-						MapObjectList firePlaces = new MapObjectList(d, MapUI.this);
-						firePlaces.addOverlay(f);
-						mapOverlays.add(firePlaces);
-
-
-					}
-				});
-
-
-				alert.setButton2("get adress", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						Geocoder geocoder = new Geocoder(getBaseContext(), Locale.getDefault());
-						try{
-							List<Address> address = geocoder.getFromLocation(touchedPoint.getLatitudeE6() / 1E6, touchedPoint.getLongitudeE6() / 1E6, 1);
-							if(address.size() > 0){
-								String display ="";
-								for(int i = 0; i<address.get(0).getMaxAddressLineIndex(); i++){
-									display += address.get(0).getAddressLine(i) + "\n";
+				//				});
+				//
+				//
+				//				alert.setButton2("get adress", new DialogInterface.OnClickListener() {
+				//					public void onClick(DialogInterface dialog, int which) {
+				//						Geocoder geocoder = new Geocoder(getBaseContext(), Locale.getDefault());
+				//						try{
+				//							List<Address> address = geocoder.getFromLocation(touchedPoint.getLatitudeE6() / 1E6, touchedPoint.getLongitudeE6() / 1E6, 1);
+				//							if(address.size() > 0){
+				//								String display ="";
+				//								for(int i = 0; i<address.get(0).getMaxAddressLineIndex(); i++){
+				//									display += address.get(0).getAddressLine(i) + "\n";
+				//								}
+				//								Toast t = Toast.makeText(getBaseContext(), display, Toast.LENGTH_LONG);
+				//								t.show();
+				//							}
+				//						} catch (IOException e) {
+				//							// TODO Auto-generated catch block
+				//							e.printStackTrace();
+				//						}finally{
+				//
+				//						}
+				//					}
+				//				});
+				//
+				//
+								alert.setButton3("Toggle View", new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog, int which) {
+										if(mapView.isSatellite()){
+											mapView.setSatellite(false);
+										}
+										else{
+											mapView.setSatellite(true);
+										}
 								}
-								Toast t = Toast.makeText(getBaseContext(), display, Toast.LENGTH_LONG);
-								t.show();
-							}
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}finally{
-
-						}
-					}
-				});
-
-
-				alert.setButton3("Toggle View", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						if(mapView.isSatellite()){
-							mapView.setSatellite(false);
-						}
-						else{
-							mapView.setSatellite(true);
-						}
-					}
-				});
-
-
+								});
+				
+				
 				alert.show();
 				return true;
 			}

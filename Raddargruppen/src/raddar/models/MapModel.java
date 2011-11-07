@@ -26,9 +26,6 @@ public class MapModel extends Observable {
 		this.mapUI = mapUI;
 		this.addObserver(mapUI);
 		this.addObserver(mapCont);
-		
-//		d = mapUI.getResources().getDrawable(R.drawable.firetruck);
-//		resourceList = new MapObjectList(d, mapUI);
 	}
 	
 	
@@ -50,18 +47,21 @@ public class MapModel extends Observable {
 		
 		if(o instanceof FireTruck){
 			if(fireTruckList == null){
-
-
 				d = mapUI.getResources().getDrawable(o.getIcon());
-
 				fireTruckList = new MapObjectList(d, mapUI);
 			}
 			fireTruckList.addOverlay(o);
 			this.setChanged();
 			notifyObservers(fireTruckList);
 		}
+		if(o instanceof Resource){
+			if(resourceList == null){
+				d = mapUI.getResources().getDrawable(o.getIcon());
+			}
+		}
 	
 	}
+	
 	
 	public MapObjectList getFireList(){
 		return fireList;
