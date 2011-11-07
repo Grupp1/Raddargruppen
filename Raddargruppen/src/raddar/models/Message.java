@@ -139,10 +139,6 @@ public abstract class Message {
 		this.data += message;
 	}
 	
-	public String getMessage() {
-		return data;
-	}
-	
 	public abstract String getFormattedMessage();
 }
 
