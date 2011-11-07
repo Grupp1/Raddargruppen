@@ -3,9 +3,18 @@ package raddar.views;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Observable;
+import java.util.Observer;
 
+import raddar.controllers.MapCont;
+import raddar.enums.SituationPriority;
+import raddar.gruppen.R;
+import raddar.models.Fire;
+import raddar.models.GPSModel;
+import raddar.models.MapObjectList;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -14,7 +23,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
-import raddar.gruppen.R;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -23,21 +31,27 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 
-public class Map extends MapActivity {
+public class MapUI extends MapActivity implements Observer {
 
 	private MapView mapView;
 	private long start;
 	private long stop;
 	private MyLocationOverlay compass;
 	private MapController controller;
-	private int x, y;
-	GeoPoint touchedPoint;
+	private int touchedX, touchedY;
+	private GeoPoint touchedPoint;
+	private Drawable d;
+	private List<Overlay> mapOverlays;
+
+	private GPSModel gps;
+
+	private MapCont mapCont;
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.maps);
-
 		Button close;
 		close = (Button)this.findViewById(R.id.button_close);
 		close.setOnClickListener(new OnClickListener() {
@@ -46,46 +60,33 @@ public class Map extends MapActivity {
 			}
 		});
 
-
+		//MapController mapController = new MapController();
 		//MapView mapView = ((MapView)findViewById(R.id.mapview), "0b1qi7XBfQqm8teK24blL1Hhnfhqc9iOFejhYUw");
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 
-
 		/**
 		 *  Lista över alla overlays (lager) som visas på kartan
 		 */
-		List<Overlay> mapOverlays = mapView.getOverlays();
-		
+
+		mapOverlays = mapView.getOverlays();
+
 		Touchy t = new Touchy();
-		
 
-		//Drawable drawable;
-//		drawable = this.getResources().getDrawable(R.drawable.magnus);
-//		MapObjectList magnusList= new MapObjectList(drawable);
+		gps = new GPSModel(this);
 
-		//drawable = this.getResources().getDrawable(R.drawable.niklas);
-		//MapObjectList niklasList = new MapObjectList(drawable);
+		Fire fire = new Fire(touchedPoint, "Det brinner här!", SituationPriority.HIGH);
 
-//		drawable = this.getResources().getDrawable(R.drawable.resource);
-//		MapObjectList resourceList = new MapObjectList(drawable);
+		d = this.getResources().getDrawable(fire.getID());
 
-
-		// Skapar en nytt object på kartan
-		//MapObject niklas = new MapObject(new GeoPoint(52395730, 65573080), "Niklas", "Hallo", "niklas");
-
-		// Lägger till objekten i kategorierna
-		//niklasList.addOverlay(niklas);
-
-		// lägger på objekt "över" varandra
-		//mapOverlays.add(niklasList);
 		mapOverlays.add(t);
-		compass = new MyLocationOverlay(Map.this, mapView);
+		compass = new MyLocationOverlay(MapUI.this, mapView);
 		mapOverlays.add(compass);
 		controller = mapView.getController();
 		GeoPoint point = new GeoPoint(58395730, 15573080);
 		controller.animateTo(point);
 		controller.setZoom(15);
+
 	}
 
 	@Override
@@ -93,6 +94,7 @@ public class Map extends MapActivity {
 		// TODO Auto-generated method stub
 		compass.disableCompass();
 		super.onPause();
+		gps.getLocationManager().removeUpdates(gps);
 	}
 
 	@Override
@@ -100,6 +102,7 @@ public class Map extends MapActivity {
 		// TODO Auto-generated method stub
 		compass.enableCompass();
 		super.onResume();
+		gps.getLocationManager().requestLocationUpdates(gps.getTowers(), 500, 1, gps);
 	}
 
 	@Override
@@ -108,34 +111,48 @@ public class Map extends MapActivity {
 		return false;
 	}
 
-	public void setSatelliteView(boolean on){
-		mapView.setSatellite(on);
-	}
-
-	public void setTrafficView(boolean on){
-		mapView.setTraffic(on);
-	}
-
 	class Touchy extends Overlay{
-		public boolean onTouchEvent(MotionEvent e, MapView m){
+		public boolean onTouchEvent(MotionEvent e, MapView m) {
+
+			//new Runnable() {
+			//public void run() {
+
+			//}
+			//};
+
+
 			if(e.getAction() == MotionEvent.ACTION_DOWN){
 				start = e.getEventTime();
-				x = (int) e.getX();
-				y = (int) e.getY();
-				touchedPoint = mapView.getProjection().fromPixels(x, y);
+				touchedX = (int) e.getX();
+				touchedY = (int) e.getY();
+				touchedPoint = mapView.getProjection().fromPixels(touchedX, touchedY);
 			}
 			if(e.getAction() == MotionEvent.ACTION_UP){
 				stop = e.getEventTime();
 			}
 			if(stop - start > 1500){
-				AlertDialog alert = new AlertDialog.Builder(Map.this).create();
+				AlertDialog alert = new AlertDialog.Builder(MapUI.this).create();
 				alert.setTitle("Hej");
 				alert.setMessage("Välj en knapp");
-				alert.setButton("place a pin", new DialogInterface.OnClickListener() {
+
+
+
+				alert.setButton("Placera", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
+
+
+
+						Fire f = new Fire(touchedPoint, "Det brinner här!", SituationPriority.HIGH);
+						//mapCont.add(f);
+						MapObjectList firePlaces = new MapObjectList(d, MapUI.this);
+						firePlaces.addOverlay(f);
+						mapOverlays.add(firePlaces);
+
 
 					}
 				});
+
+
 				alert.setButton2("get adress", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						Geocoder geocoder = new Geocoder(getBaseContext(), Locale.getDefault());
@@ -153,15 +170,16 @@ public class Map extends MapActivity {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}finally{
-							
+
 						}
 					}
 				});
-				alert.setButton3("Byt vy", new DialogInterface.OnClickListener() {
+
+
+				alert.setButton3("Toggle View", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						if(mapView.isSatellite()){
 							mapView.setSatellite(false);
-							//mapView.setStreetView(true);
 						}
 						else{
 							mapView.setSatellite(true);
@@ -172,6 +190,17 @@ public class Map extends MapActivity {
 				return true;
 			}
 			return false;
+		}
+	}
+
+	protected boolean isSatellite() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void update(Observable observable, Object data) {
+		if (data instanceof MapObjectList){
+			mapOverlays.add((MapObjectList) data);
 		}
 	}
 

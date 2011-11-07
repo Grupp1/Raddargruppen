@@ -1,82 +1,55 @@
 package raddar.models;
 
-import java.util.ArrayList;
-
-import android.app.AlertDialog;
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 
-import com.google.android.maps.ItemizedOverlay;
+import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
 
-public class MapObject extends ItemizedOverlay {
+public class MapObject extends OverlayItem {
 
+	private GeoPoint point;
+	private String title;
+	private String snippet;
+	private int ID;
 	
-	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
-	private Context mContext;
-	
-	public MapObject(Drawable defaultMarker, Context context) {
-		  super(defaultMarker);
-		  mContext = context;
-		}
-	
-	public MapObject(Drawable defaultMarker) {
-		super(boundCenterBottom(defaultMarker));
+	public MapObject(GeoPoint point, String title, String snippet, int ID) {
+		super(point, title, snippet);
+		this.point = point;
+		this.title = title;
+		this.snippet = snippet;
+		this.ID = ID;
 	}
-
-	@Override
-	protected OverlayItem createItem(int i) {
-		return mOverlays.get(i);
-	}
-
-	@Override
-	public int size() {
-		 return mOverlays.size();
+	
+	public GeoPoint getPoint() {
+		return point;
 	}
 
-	public void addOverlay(OverlayItem overlay) {
-	    mOverlays.add(overlay);
-	    populate();
+	public void setPoint(GeoPoint point) {
+		this.point = point;
 	}
-	
-	@Override
-	protected boolean onTap(int index) {
-	  OverlayItem item = mOverlays.get(index);
-	  AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
-	  dialog.setTitle(item.getTitle());
-	  dialog.setMessage(item.getSnippet());
-	  dialog.show();
-	  return true;
+
+	public String getTitle() {
+		return title;
 	}
-	
-	
-	
-	private String ID;
-	private long coords;
-	private String name;
-	
-	public String getID() {
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getSnippet() {
+		return snippet;
+	}
+
+	public void setSnippet(String snippet) {
+		this.snippet = snippet;
+	}
+
+	public int getID() {
 		return ID;
 	}
-	public void setID(String iD) {
+
+	public void setID(int iD) {
 		ID = iD;
 	}
-	public long getCoords() {
-		return coords;
-	}
-	public void setCoords(long coords) {
-		this.coords = coords;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	
-	
-	
-	
-	
+
 }

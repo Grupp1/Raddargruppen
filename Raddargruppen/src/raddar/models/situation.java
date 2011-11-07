@@ -1,23 +1,18 @@
 package raddar.models;
 
-import android.graphics.drawable.Drawable;
 import raddar.enums.SituationPriority;
+
+import com.google.android.maps.GeoPoint;
 
 public class Situation extends MapObject {
 
-	public Situation(Drawable defaultMarker) {
-		super(defaultMarker);
-		// TODO Auto-generated constructor stub
-	}
-	private String description;
 	private SituationPriority priority;
 	
-	public String getDescription() {
-		return description;
+	public Situation(GeoPoint point, String title, String snippet, int ID, SituationPriority priority) {
+		super(point, title, snippet, ID);
+		this.priority = priority;
 	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
+	
 	public SituationPriority getPriority() {
 		return priority;
 	}
