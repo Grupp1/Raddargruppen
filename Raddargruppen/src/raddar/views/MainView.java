@@ -6,9 +6,11 @@ import java.util.Observable;
 import java.util.Observer;
 
 import raddar.controllers.InternalComManager;
+import raddar.controllers.ReciveHandler;
 import raddar.controllers.Sender;
 import raddar.enums.NotificationType;
 import raddar.gruppen.R;
+import raddar.models.ClientDatabaseManager;
 import raddar.models.Inbox;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
@@ -34,8 +36,8 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	private ImageButton sosButton;
 	private ImageButton setupButton;
 	private ImageButton logButton;
-	public static InternalComManager controller;
-
+	public static InternalComManager controller; 
+	public static ClientDatabaseManager db;
 
 
 	/** Called when the activity is first created. */
@@ -43,10 +45,12 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		controller = new InternalComManager(this);
-
 		Bundle extras = getIntent().getExtras();
+		controller = new InternalComManager();
 		controller.setUser(extras.get("user").toString());
+		db = new ClientDatabaseManager(this,controller.getUser());
+		new ReciveHandler();
+
 		// Notifiera servern att vi kommer online
 		/* 
 		NotificationMessage nm = new NotificationMessage("username", NotificationType.CONNECT);
@@ -58,7 +62,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 			Log.d("NotificationMessage", "Connect failed");
 		}
 		 */
-		controller.addObserverToInbox(this);
+		db.addObserver(this);
 
 		callButton = (ImageButton)this.findViewById(R.id.callButton);
 		callButton.setOnClickListener(this);

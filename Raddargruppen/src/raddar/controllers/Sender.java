@@ -40,7 +40,7 @@ public class Sender implements Runnable {
 			Socket so = new Socket(address, port);
 			so.setSoTimeout(5000);
 
-			// Formatera och skicka meddelandet till servern
+		//	Formatera och skicka meddelandet till servern
 			if (MessageType.IMAGE == message.getType()) {
 
 				
@@ -52,7 +52,7 @@ public class Sender implements Runnable {
 			so.close();
 
 		} catch (IOException ie) {
-			Log.d("Skapandet av socket [2]", "Gick inte");
+			Log.d("Skapandet av socket [2]", ie.toString());
 		} catch (InterruptedException e) {
 			Log.d("Avruten väntan", "Gick inte");
 		}

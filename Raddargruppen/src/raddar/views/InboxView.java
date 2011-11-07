@@ -38,8 +38,9 @@ public class InboxView extends ListActivity implements Observer{
 
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-		MainView.controller.addObserverToInbox(this);
-		inbox = MainView.controller.getInbox();
+		MainView.db.addObserver(this);
+		inbox = MainView.db.getAllRowsAsArrays();
+		
 		ia = new InboxAdapter(this, R.layout.row,inbox);
 		setListAdapter(ia);
 		ListView lv = getListView();
