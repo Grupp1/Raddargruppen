@@ -1,7 +1,5 @@
 package raddar.models;
 
-import android.graphics.drawable.Drawable;
-
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
 
@@ -10,14 +8,16 @@ public class MapObject extends OverlayItem {
 	private GeoPoint point;
 	private String title;
 	private String snippet;
-	private int ID;
-	
-	public MapObject(GeoPoint point, String title, String snippet, int ID) {
+	private String id;
+	private int icon;
+
+	public MapObject(GeoPoint point, String title, String snippet, int icon, String id) {
 		super(point, title, snippet);
 		this.point = point;
 		this.title = title;
 		this.snippet = snippet;
-		this.ID = ID;
+		this.id = id;
+		this.icon = icon;
 	}
 	
 	public GeoPoint getPoint() {
@@ -44,12 +44,20 @@ public class MapObject extends OverlayItem {
 		this.snippet = snippet;
 	}
 
-	public int getID() {
-		return ID;
+	public String getId() {
+		return id;
 	}
 
-	public void setID(int iD) {
-		ID = iD;
+	public void setId(String id) {
+		this.id = id;
+	}
+	
+	public int getIcon() {
+		return icon;
+	}
+
+	public void setIcon(int icon) {
+		this.icon = icon;
 	}
 
 }

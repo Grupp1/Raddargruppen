@@ -42,7 +42,7 @@ public class GPSModel implements LocationListener {
 			lon = (int) (location.getLongitude() * 1E6);
 
 			myLocation = new GeoPoint(lat, lon);
-			Resource magnus = new Resource(myLocation, "Magnus", "Här är jag!", R.drawable.magnus, ResourceStatus.FREE);
+			Resource magnus = new Resource(myLocation, "Magnus", "Här är jag!", R.drawable.magnus, "00000", ResourceStatus.FREE);
 			//MapObjectList gay = new MapObjectList(d, MapUI.this);
 			//gay.addOverlay(magnus);
 			//mapOverlays.add(gay);
@@ -56,7 +56,7 @@ public class GPSModel implements LocationListener {
 		lat = (int) (l.getLatitude() * 1E6);
 		lon = (int) (l.getLongitude() * 1E6);
 		myLocation = new GeoPoint(lat, lon);
-		Resource magnus = new Resource(myLocation, "Magnus", "Här är jag!", R.drawable.magnus, ResourceStatus.FREE);
+		Resource magnus = new Resource(myLocation, "Magnus", "Här är jag!", R.drawable.magnus, "00000", ResourceStatus.FREE);
 		//MapObjectList gay = new MapObjectList(d, MapUI.this);
 		//gay.addOverlay(magnus);
 		//mapOverlays.add(gay);

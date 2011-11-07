@@ -8,8 +8,8 @@ public class Resource extends MapObject {
 	
 	private ResourceStatus status;
 	
-	public Resource(GeoPoint point, String title, String snippet, int ID, ResourceStatus status) {
-		super(point, title, snippet, ID);
+	public Resource(GeoPoint point, String title, String snippet, int icon, String id, ResourceStatus status) {
+		super(point, title, snippet, icon, id);
 		this.status = status;
 	}
 
