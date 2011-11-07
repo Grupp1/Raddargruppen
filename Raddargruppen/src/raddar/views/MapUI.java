@@ -51,6 +51,7 @@ public class MapUI extends MapActivity implements Observer {
 
 	private MapCont mapCont;
 	private MapCont mapCont1;
+	private GeoPoint point2;
 
 
 	@Override
@@ -83,13 +84,16 @@ public class MapUI extends MapActivity implements Observer {
 
 
 		point = new GeoPoint(58395730, 15573080);
+		point2 = new GeoPoint(57395730, 15573080);
+		
 		controller.animateTo(point);
 		controller.setZoom(15);
 
 
 
 		mapCont = new MapCont(MapUI.this, new Fire(point, "Det brinner här!", "000000", SituationPriority.HIGH));
-		mapCont1 = new MapCont(MapUI.this, new FireTruck(point, "Vi är på väg", "00000", ResourceStatus.BUSY));
+		
+		mapCont.add(new FireTruck(point2, "Vi är på väg", "00000", ResourceStatus.BUSY));
 		//mapCont.add(new Fire(point, "Det brinner här!", "000000", SituationPriority.HIGH));
 
 

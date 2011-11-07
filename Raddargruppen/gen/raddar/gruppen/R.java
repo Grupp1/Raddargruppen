@@ -17,7 +17,6 @@ public final class R {
         public static final int icon=0x7f020003;
         public static final int magnus=0x7f020004;
         public static final int niklas=0x7f020005;
-        public static final int resource=0x7f020006;
     }
     public static final class id {
         public static final int button1=0x7f050001;

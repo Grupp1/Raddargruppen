@@ -49,20 +49,20 @@ public class MapCont implements Observer, Runnable{
 
 		}
 		if(o instanceof FireTruck){
-			Resource r = (FireTruck) o;
-			mapModel.addResource(r);
+			FireTruck r = (FireTruck) o;
+			mapModel.add(r);
 
 		}
 
 	}
 
-	public void update(Observable o, Object data) {
-
-
-	}
-
 	public void run() {
 		add(o);
+
+	}
+	
+	public void update(Observable o, Object data) {
+
 
 	}
 

@@ -5,7 +5,7 @@ import java.util.Observable;
 
 import raddar.controllers.MapCont;
 import raddar.views.MapUI;
-import android.R;
+import raddar.gruppen.R;
 import android.graphics.drawable.Drawable;
 
 import com.google.android.maps.Overlay;
@@ -35,22 +35,6 @@ public class MapModel extends Observable {
 	/*
 	 * Alla fires utplacerade på kartan sparas här
 	 */
-	public void addFire(Fire fire){
-
-		if (fireList == null){
-			d = mapUI.getResources().getDrawable(fire.getIcon());
-			fireList = new MapObjectList(d, mapUI);
-		}
-
-		fireList.addOverlay(fire);
-		this.setChanged();
-//		if (this.hasChanged()){
-//			test.getIcon();
-//		}else{
-//			test.getIcon();
-//		}
-		notifyObservers(fireList);
-	}
 	
 	public void add(MapObject o){
 		if (o instanceof Fire){
@@ -62,17 +46,17 @@ public class MapModel extends Observable {
 			this.setChanged();
 			notifyObservers(fireList);
 		}
+		
 		if(o instanceof FireTruck){
 			if(fireTruckList == null){
-				d = mapUI.getResources().getDrawable(o.getIcon());
-				fireList = new MapObjectList(d, mapUI);
+				d = mapUI.getResources().getDrawable(R.drawable.magnus);
+				fireTruckList = new MapObjectList(d, mapUI);
 			}
 			fireTruckList.addOverlay(o);
 			this.setChanged();
 			notifyObservers(fireTruckList);
 		}
-		
-		
+	
 	}
 	
 	public MapObjectList getFireList(){
@@ -82,13 +66,6 @@ public class MapModel extends Observable {
 	/*
 	 * Alla situationer utplacerade på kartan sparas här
 	 */
-	
-	public void addResource(Resource resource){
-		
-		resourceList.addOverlay(resource);
-		notifyObservers(resourceList);
-		
-	}
 	
 	public MapObjectList getResourceList(){
 		return resourceList;
