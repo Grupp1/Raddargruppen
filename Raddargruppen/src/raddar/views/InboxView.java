@@ -39,7 +39,7 @@ public class InboxView extends ListActivity implements Observer{
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		MainView.db.addObserver(this);
-		inbox = MainView.db.getAllRowsAsArrays();
+		inbox = MainView.db.getAllRowsAsArrays("message");
 		
 		ia = new InboxAdapter(this, R.layout.row,inbox);
 		setListAdapter(ia);
@@ -63,7 +63,6 @@ public class InboxView extends ListActivity implements Observer{
 		Message m = new TextMessage(MessageType.convert("text/plain"),"Daniel","Daniel");
 		m.setData("HOPPAS DET FUNGERAR");
 		m.setSubject("VIKTIGT");
-		Log.d("Subject",m.getSubject());
 		try {
 			new Sender (m, InetAddress.getByName("127.0.0.1"), 6789);
 		} catch (UnknownHostException e) {

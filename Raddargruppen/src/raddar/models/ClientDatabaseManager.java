@@ -5,7 +5,6 @@ import java.util.Observable;
 
 import raddar.enums.MessagePriority;
 import raddar.enums.MessageType;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -25,6 +24,9 @@ public class ClientDatabaseManager extends Observable {
 	// changed to suit your needs.
 	private String DB_NAME;
 	private final int DB_VERSION = 1;
+	
+	private final String[] TEXT_MESSAGE_TABLE_ROWS = new String[] { "msgId",
+			"srcUser","rDate","subject","mData"};
 
 
 	public ClientDatabaseManager(Context context, String userName) {
@@ -133,7 +135,7 @@ public class ClientDatabaseManager extends Observable {
 	 *            the id of the row to retrieve
 	 * @return an array containing the data from the row
 	 */
-	public ArrayList<Message> getRowAsArray() {
+/*	public ArrayList<Message> getRowAsArray() {
 		// create an array list to store data from the database row.
 		// I would recommend creating a JavaBean compliant object
 		// to store this data instead. That way you can ensure
@@ -174,26 +176,24 @@ public class ClientDatabaseManager extends Observable {
 
 		// return the ArrayList containing the given row from the database.
 		return rowArray;
-	}
-	public ArrayList<Message> getAllRowsAsArrays()
+	} */
+	
+	public ArrayList<Message> getAllRowsAsArrays(String table)
 	{
-		// create an ArrayList that will hold all of the data collected from
-		// the database.
+		
 		ArrayList<Message> dataArrays = new ArrayList<Message>();
 
-		// this is a database call that creates a "cursor" object.
-		// the cursor object store the information collected from the
-		// database and is used to iterate through the data.
-		Cursor cursor;
+		Cursor cursor = null;
 
 		try
 		{
 			// ask the database object to create the cursor.
-
-			cursor = db.query("message", new String[] { "msgId",
-					"srcUser","rDate","subject","mData"}, null,
-					null, null, null, null);
-
+			if(table.equals("message")){
+						cursor = db.query(
+						"message",
+						TEXT_MESSAGE_TABLE_ROWS,
+						null, null, null, null, null);
+			}
 			// move the cursor's pointer to position zero.
 			cursor.moveToFirst();
 
@@ -226,36 +226,6 @@ public class ClientDatabaseManager extends Observable {
 		return dataArrays;
 	}
 
-	/**********************************************************************
-	 * RETRIEVING ALL ROWS FROM THE DATABASE TABLE
-	 * 
-	 * This is an example of how to retrieve all data from a database table
-	 * using this class. You should edit this method to suit your needs.
-	 * 
-	 * the key is automatically assigned by the database
-	 */
-
-	/**********************************************************************
-	 * THIS IS THE BEGINNING OF THE INTERNAL SQLiteOpenHelper SUBCLASS.
-	 * 
-	 * I MADE THIS CLASS INTERNAL SO I CAN COPY A SINGLE FILE TO NEW APPS AND
-	 * MODIFYING IT - ACHIEVING DATABASE FUNCTIONALITY. ALSO, THIS WAY I DO NOT
-	 * HAVE TO SHARE CONSTANTS BETWEEN TWO FILES AND CAN INSTEAD MAKE THEM
-	 * PRIVATE AND/OR NON-STATIC. HOWEVER, I THINK THE INDUSTRY STANDARD IS TO
-	 * KEEP THIS CLASS IN A SEPARATE FILE.
-	 *********************************************************************/
-
-	/**
-	 * This class is designed to check if there is a database that currently
-	 * exists for the given program. If the database does not exist, it creates
-	 * one. After the class ensures that the database exists, this class will
-	 * open the database for use. Most of this functionality will be handled by
-	 * the SQLiteOpenHelper parent class. The purpose of extending this class is
-	 * to tell the class how to create (or update) the database.
-	 * 
-	 * @author Randall Mitchell
-	 * 
-	 */
 	private class CustomSQLiteOpenHelper extends SQLiteOpenHelper {
 		public CustomSQLiteOpenHelper(Context context) {
 			super(context, DB_NAME, null, DB_VERSION);
