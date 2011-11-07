@@ -49,4 +49,8 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 	  return true;
 	}
 	
+	public int getIcon(){
+		return raddar.gruppen.R.drawable.fire;
+	}
+	
 }
