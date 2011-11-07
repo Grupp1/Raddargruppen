@@ -51,7 +51,7 @@ public class StartView extends Activity {
 					nextIntent.putExtra("user",user.getText().toString());
 					startActivity(nextIntent);
 				} else {
-					Toast.makeText(StartView.this, "Wrong username or password", Toast.LENGTH_LONG).show();
+					Toast.makeText(StartView.this, "Fel användarnamn eller lösenord", Toast.LENGTH_LONG).show();
 				}
 			}
 
