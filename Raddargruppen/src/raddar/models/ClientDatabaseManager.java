@@ -226,36 +226,6 @@ public class ClientDatabaseManager extends Observable {
 		return dataArrays;
 	}
 
-	/**********************************************************************
-	 * RETRIEVING ALL ROWS FROM THE DATABASE TABLE
-	 * 
-	 * This is an example of how to retrieve all data from a database table
-	 * using this class. You should edit this method to suit your needs.
-	 * 
-	 * the key is automatically assigned by the database
-	 */
-
-	/**********************************************************************
-	 * THIS IS THE BEGINNING OF THE INTERNAL SQLiteOpenHelper SUBCLASS.
-	 * 
-	 * I MADE THIS CLASS INTERNAL SO I CAN COPY A SINGLE FILE TO NEW APPS AND
-	 * MODIFYING IT - ACHIEVING DATABASE FUNCTIONALITY. ALSO, THIS WAY I DO NOT
-	 * HAVE TO SHARE CONSTANTS BETWEEN TWO FILES AND CAN INSTEAD MAKE THEM
-	 * PRIVATE AND/OR NON-STATIC. HOWEVER, I THINK THE INDUSTRY STANDARD IS TO
-	 * KEEP THIS CLASS IN A SEPARATE FILE.
-	 *********************************************************************/
-
-	/**
-	 * This class is designed to check if there is a database that currently
-	 * exists for the given program. If the database does not exist, it creates
-	 * one. After the class ensures that the database exists, this class will
-	 * open the database for use. Most of this functionality will be handled by
-	 * the SQLiteOpenHelper parent class. The purpose of extending this class is
-	 * to tell the class how to create (or update) the database.
-	 * 
-	 * @author Randall Mitchell
-	 * 
-	 */
 	private class CustomSQLiteOpenHelper extends SQLiteOpenHelper {
 		public CustomSQLiteOpenHelper(Context context) {
 			super(context, DB_NAME, null, DB_VERSION);
