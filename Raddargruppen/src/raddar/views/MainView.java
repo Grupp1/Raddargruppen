@@ -6,12 +6,17 @@ import java.util.Observable;
 import java.util.Observer;
 
 import raddar.controllers.InternalComManager;
+import raddar.controllers.ReciveHandler;
 import raddar.controllers.Sender;
 import raddar.enums.NotificationType;
 import raddar.gruppen.R;
+import raddar.models.ClientDatabaseManager;
 import raddar.models.Inbox;
+import raddar.models.Message;
 import raddar.models.NotificationMessage;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,12 +35,9 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	private ImageButton serviceButton;
 	private ImageButton sosButton;
 	private ImageButton setupButton;
-
 	private ImageButton logButton;
-	
-	
-	public static InternalComManager controller = new InternalComManager();
-
+	public static InternalComManager controller; 
+	public static ClientDatabaseManager db;
 
 
 	/** Called when the activity is first created. */
@@ -43,6 +45,11 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		Bundle extras = getIntent().getExtras();
+		controller = new InternalComManager();
+		controller.setUser(extras.get("user").toString());
+		db = new ClientDatabaseManager(this,controller.getUser());
+		new ReciveHandler();
 
 		// Notifiera servern att vi kommer online
 		/* 
@@ -55,7 +62,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 			Log.d("NotificationMessage", "Connect failed");
 		}
 		 */
-		controller.addObserverToInbox(this);
+		db.addObserver(this);
 
 		callButton = (ImageButton)this.findViewById(R.id.callButton);
 		callButton.setOnClickListener(this);
@@ -68,7 +75,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 
 		reportButton = (ImageButton)this.findViewById(R.id.reportButton);
 		reportButton.setOnClickListener(this);
-		
+
 		serviceButton = (ImageButton)this.findViewById(R.id.serviceButton);
 		serviceButton.setOnClickListener(this);
 
@@ -109,14 +116,22 @@ public class MainView extends Activity implements OnClickListener, Observer{
 			finish();
 		}
 		if(v == logButton){
-			finish();
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("Är du säker på att du vill logga ut?")
+			.setCancelable(false)
+			.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					MainView.this.finish();
+				}
+			})
+			.setNegativeButton("Nej", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+				}
+			});
+			AlertDialog alert = builder.create();
+			alert.show();
 		}
-		
-		
-
-
-
-
 	}
 
 	@Override
@@ -137,9 +152,10 @@ public class MainView extends Activity implements OnClickListener, Observer{
 
 	public void update(Observable observable, final Object data) {
 		runOnUiThread(new Runnable(){
-			public void run(){			
+			public void run(){	
 				if(data != null)
-					Toast.makeText(getApplicationContext(), "Meddelande från "+data.toString()
+					Toast.makeText(getApplicationContext(), "Meddelande från "+
+							((Message)data).getSrcUser()
 							,Toast.LENGTH_LONG).show();
 			}
 		});

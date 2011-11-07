@@ -8,7 +8,10 @@
 	<com.google.android.maps.MapView
 		xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/mapview"
 		android:layout_width="fill_parent" android:clickable="true"
-		android:apiKey="0s2mG7BRwMEO7k1qqPwPYY-WJQZRItVie8xVLtg"
+
+
+		android:apiKey="0sfNWnyLW9XDZyE6ofqFmhQCysDsbRTK_0Yh00A"
+
 		android:layout_height="388dp" android:layout_weight="0.62" />
 
 	<Button android:id="@+id/button_close" android:text="@string/map_close"

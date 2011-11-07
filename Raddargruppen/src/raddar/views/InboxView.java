@@ -10,6 +10,7 @@ import raddar.controllers.InternalComManager;
 import raddar.controllers.Sender;
 import raddar.enums.MessageType;
 import raddar.gruppen.R;
+import raddar.models.ClientDatabaseManager;
 import raddar.models.Inbox;
 import raddar.models.Message;
 import raddar.models.TextMessage;
@@ -25,21 +26,21 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class InboxView extends ListActivity implements Observer{
 
-	private ArrayList<Message> inbox;
 	private InboxAdapter ia;
+	private ArrayList<Message> inbox;
 
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-		Bundle extras = getIntent().getExtras();
+		MainView.db.addObserver(this);
+		inbox = MainView.db.getAllRowsAsArrays("message");
 		
-		MainView.controller.addObserverToInbox(this);
-		inbox = MainView.controller.getInbox();
 		ia = new InboxAdapter(this, R.layout.row,inbox);
 		setListAdapter(ia);
 		ListView lv = getListView();
@@ -69,14 +70,11 @@ public class InboxView extends ListActivity implements Observer{
 		}
 	}
 	
-	public void update(final Observable observable, Object data) {
+	public void update(final Observable observable, final Object data) {
 		runOnUiThread(new Runnable(){
 			public void run(){
-				Log.d("NEJ","hmm");
-				inbox = ((Inbox)observable).getInbox();
-				ia.notifyDataSetChanged();				
-				//Toast.makeText(getApplicationContext(), "Meddelande från "+inbox.get(inbox.size()-1).getSrcUser()
-				//		,Toast.LENGTH_LONG).show();
+				inbox.add((Message) data);
+				ia.notifyDataSetChanged();
 			}
 		});
 	}
@@ -99,12 +97,14 @@ public class InboxView extends ListActivity implements Observer{
 			if (m != null) {
 				TextView tt = (TextView) v.findViewById(R.id.toptext);
 				TextView bt = (TextView) v.findViewById(R.id.bottomtext);
+				ImageView iv = (ImageView)v.findViewById(R.id.icon);
+				if(m.getType() == MessageType.TEXT)
+					iv.setImageResource(R.drawable.magnus);
 				if (tt != null) 
 					tt.setText("Avsändare: "+m.getSrcUser());                            
 				if(bt != null)
 					bt.setText("Ämne: "+ m.getSubject());
-
-			}
+			}			
 			return v;
 		}
 	}

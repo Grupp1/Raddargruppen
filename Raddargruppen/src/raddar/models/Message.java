@@ -66,7 +66,7 @@ public abstract class Message {
 	}
 
 	public void setSubject(String subject) {
-		this.subject = subject;
+		this.subject = subject.trim();
 	}
 
 	public void setPriority(MessagePriority priority) {
@@ -98,15 +98,15 @@ public abstract class Message {
 	}
 	
 	public void setSrcUser(String srcUser) {
-		this.fromUser = srcUser;
+		this.fromUser = srcUser.trim();
 	}
 	
 	public String getSrcUser() {
-		return fromUser;
+		return fromUser.trim();
 	}
 	
 	public void setDestUser(String destUser) {
-		this.toUser = destUser;
+		this.toUser = destUser.trim();
 	}
 	
 	public String getDestUser() {
@@ -137,10 +137,6 @@ public abstract class Message {
 	
 	public void append(String message) {
 		this.data += message;
-	}
-	
-	public String getMessage() {
-		return data;
 	}
 	
 	public abstract String getFormattedMessage();
