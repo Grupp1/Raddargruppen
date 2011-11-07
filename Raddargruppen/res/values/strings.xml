@@ -8,15 +8,22 @@
     <string name="start_password">Lösenord:</string>
     <string name="start_exit">Avsluta</string>
     <string name="start_ok">OK</string>
-    <string name="main_logout">Logga ut</string>
 
     <string name="map_close">Stäng programmet!</string>
     <string name="map_header">Karta</string>
-    <string name="messagechoice_new">Nytt meddelande</string>
+    <string name="messagechoice_new">Skriv nytt</string>
     <string name="messagechoice_inbox">Inbox</string>
     <string name="send_destUser">Mottagare:</string>
     <string name="send_subject">Ämne:</string>
     <string name="send_message">Meddelande:</string>
     <string name="send_send">Skicka</string>
+    <string name="main_logout">Logga ut</string>
+    <string name="main_setup">Inställningar</string>
+    <string name="main_report">Rapportera</string>
+    <string name="main_map">Karta</string>
+    <string name="main_call">Samtal</string>
+    <string name="main_message">Meddelanden</string>
+    <string name="main_sos">SOS</string>
+    <string name="main_services">Externa tjänster</string>
 
 </resources>
