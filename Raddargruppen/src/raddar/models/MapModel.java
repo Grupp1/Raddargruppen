@@ -1,25 +1,63 @@
 package raddar.models;
 
-import android.database.Observable;
+import java.util.List;
+import java.util.Observable;
+
+import raddar.views.MapUI;
+import android.graphics.drawable.Drawable;
+
+import com.google.android.maps.Overlay;
 
 public class MapModel extends Observable {
 	
-	@Override
-	public void registerObserver(Object observer) {
-		// TODO Auto-generated method stub
-		super.registerObserver(observer);
+	private List<Overlay> mapOverlays;
+	private MapObjectList fireList;
+	private MapObjectList resourceList;
+	private Drawable d;
+	private MapUI map;
+	
+	
+	public MapModel(){
+		this.addObserver(map);
+	}
+	
+	
+	/*
+	 * Alla fires utplacerade på kartan sparas här
+	 */
+	public void addFire(Fire fire){
+		
+		fireList.addOverlay(fire);
+		notifyObservers(fireList);
+		
+	}
+	
+	public MapObjectList getFireList(){
+		return fireList;
+	}
+	
+	/*
+	 * Alla situationer utplacerade på kartan sparas här
+	 */
+	
+	public void addResource(Resource resource){
+		
+		resourceList.addOverlay(resource);
+		notifyObservers(resourceList);
+		
+	}
+	
+	public MapObjectList getResourceList(){
+		return resourceList;
+	}
+	
+	
+	public List<Overlay> getMapOverlays() {
+		return mapOverlays;
 	}
 
-	@Override
-	public void unregisterAll() {
-		// TODO Auto-generated method stub
-		super.unregisterAll();
-	}
-
-	@Override
-	public void unregisterObserver(Object observer) {
-		// TODO Auto-generated method stub
-		super.unregisterObserver(observer);
+	public void setMapOverlays(List<Overlay> mapOverlays) {
+		this.mapOverlays = mapOverlays;
 	}
 
 }
