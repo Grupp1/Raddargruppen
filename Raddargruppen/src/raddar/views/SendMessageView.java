@@ -64,6 +64,9 @@ public class SendMessageView extends Activity implements OnClickListener {
 			} catch (UnknownHostException e) {
 
 			}
+			Toast.makeText(getApplicationContext(), "Meddelande till "+destUser.getText().toString(),
+					Toast.LENGTH_SHORT).show();
+			finish();
 		} else {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage(
