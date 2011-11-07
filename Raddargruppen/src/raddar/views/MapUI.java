@@ -6,9 +6,11 @@ import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
+import raddar.enums.ResourceStatus;
 import raddar.enums.SituationPriority;
 import raddar.gruppen.R;
 import raddar.models.Fire;
+import raddar.models.FireTruck;
 import raddar.models.GPSModel;
 import raddar.models.MapObjectList;
 import android.app.AlertDialog;
@@ -70,10 +72,10 @@ public class MapUI extends MapActivity implements Observer {
 		Touchy t = new Touchy();
 
 		gps = new GPSModel(this);
-		
-		Fire fire = new Fire(touchedPoint, "Det brinner här!", SituationPriority.HIGH);
-		
-		d = this.getResources().getDrawable(fire.getID());
+
+		Fire fire = new Fire(touchedPoint, "Det brinner här!", "000000", SituationPriority.HIGH);
+
+		d = getResources().getDrawable(fire.getIcon());
 
 		// Skapar en nytt object på kartan
 		//MapObject niklas = new MapObject(new GeoPoint(52395730, 65573080), "Niklas", "Hallo", "niklas");
@@ -130,27 +132,65 @@ public class MapUI extends MapActivity implements Observer {
 			}
 			if(stop - start > 1500){
 				AlertDialog alert = new AlertDialog.Builder(MapUI.this).create();
-				alert.setTitle("Hej");
-				alert.setMessage("Välj en knapp");
+				alert.setTitle("Karta");
+				alert.setMessage("Tryck på en knapp");
 
 
 
-				alert.setButton("Placera", new DialogInterface.OnClickListener() {
+				alert.setButton("Brand", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						
-						Fire f = new Fire(touchedPoint, "Det brinner här!", SituationPriority.HIGH);
+						Fire f = new Fire(touchedPoint, "Det brinner här!", "00000", SituationPriority.HIGH);
+						d = getResources().getDrawable(f.getIcon());
 						MapObjectList firePlaces = new MapObjectList(d, MapUI.this);
 						firePlaces.addOverlay(f);
 						mapOverlays.add(firePlaces);
 					}
 				});
+					
+					
+					
+//					public void onClick(DialogInterface dialog, int which) {	
+//						AlertDialog choose = new AlertDialog.Builder(MapUI.this).create();
+//						choose.setTitle("Välj objekt");
+//						choose.setMessage("Tryck igen");
+//
+//						choose.setButton("Brand", new DialogInterface.OnClickListener() {
+//							public void onClick(DialogInterface dialog, int which) {
+//								Fire f = new Fire(touchedPoint, "Det brinner här!", "00000", SituationPriority.HIGH);
+//								d = getResources().getDrawable(f.getIcon());
+//								MapObjectList firePlaces = new MapObjectList(d, MapUI.this);
+//								firePlaces.addOverlay(f);
+//								mapOverlays.add(firePlaces);
+//							}
+//						});
+//
+//						choose.setButton2("Brandbil", new DialogInterface.OnClickListener() {
+//							public void onClick(DialogInterface dialog, int which) {
+//								FireTruck f = new FireTruck(touchedPoint, "Här kommer hjälpen!", "00000", ResourceStatus.FREE);
+//								d = getResources().getDrawable(f.getIcon());
+//								MapObjectList fireTrucks = new MapObjectList(d, MapUI.this);
+//								fireTrucks.addOverlay(f);
+//								mapOverlays.add(fireTrucks);
+//							}
+//						});
+//
+//
+//					}
+				
+				
+				alert.setButton2("Brandbil", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						FireTruck f = new FireTruck(touchedPoint, "Här kommer hjälpen!", "00000", ResourceStatus.FREE);
+						d = getResources().getDrawable(f.getIcon());
+						MapObjectList fireTrucks = new MapObjectList(d, MapUI.this);
+						fireTrucks.addOverlay(f);
+						mapOverlays.add(fireTrucks);
+					}
+				});
 
-
-
-
-
-
-				alert.setButton2("get adress", new DialogInterface.OnClickListener() {
+				
+				// SYNS INTE I MENYN, FÅR ENDAST PLATS TRE ALTERNATIV
+				alert.setButton3("get adress", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						Geocoder geocoder = new Geocoder(getBaseContext(), Locale.getDefault());
 						try{
@@ -185,6 +225,11 @@ public class MapUI extends MapActivity implements Observer {
 						}
 					}
 				});
+				
+				
+				
+				
+				
 				alert.show();
 				return true;
 			}
@@ -199,7 +244,7 @@ public class MapUI extends MapActivity implements Observer {
 
 	public void update(Observable observable, Object data) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

@@ -12,7 +12,7 @@ public final class R {
     }
     public static final class drawable {
         public static final int fire=0x7f020000;
-        public static final int fire_meaney_1207512969_5911099=0x7f020001;
+        public static final int firetruck=0x7f020001;
         public static final int icon=0x7f020002;
         public static final int magnus=0x7f020003;
         public static final int niklas=0x7f020004;
