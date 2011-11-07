@@ -49,31 +49,26 @@ public class ClientDatabaseManager extends Observable {
 	 * @param rowStringTwo
 	 *            the value for the row's second column
 	 */
-	public void addRow(String tableName, String[] tableCells) {
-		// this is a key value pair holder used by android's SQLite functions
-		ContentValues values = new ContentValues();
-		values.put("srcUser", tableCells[0]);
-		//	values.put("rDate", tableCells[1]);
-		values.put("subject", tableCells[2]);
-		values.put("mData", tableCells[3]);
 
-		// ask the database object to insert the new data
+	public void addRow(Message m) {
+		//Extract information about TextMessage m and put them in value pairs
+		ContentValues values = new ContentValues();
+		values.put("srcUser", m.getSrcUser());
+		values.put("rDate", m.getFormattedDate());
+		values.put("subject", m.getSubject());
+		values.put("mData", m.getData());
+		// Sätt in
 		try {
-			db.insert(tableName, null, values);
+			db.insert("message", null, values);
 		} catch (Exception e) {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
-		Message m = new TextMessage(MessageType.TEXT, 
-				tableCells[0], 
-				DB_NAME, 
-				MessagePriority.NORMAL, 
-				tableCells[3]);
-		m.setSubject(tableCells[2]);
-		
 		setChanged();
 		notifyObservers(m);
 	}
+	
+
 
 	/**********************************************************************
 	 * DELETING A ROW FROM THE DATABASE TABLE

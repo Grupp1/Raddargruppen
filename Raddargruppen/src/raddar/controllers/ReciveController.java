@@ -24,8 +24,7 @@ public class ReciveController {
 		inbox.addObserver(o);
 	}
 	public void addToInbox(Message m){
-		inbox.addRow("message",new String[]{m.getSrcUser(),m.getDate().toString(),
-			m.getSubject(),m.getData()});
+		inbox.addRow(m);
 	}
 
 	public ArrayList<Message> getInbox() {	
