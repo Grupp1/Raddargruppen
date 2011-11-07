@@ -10,6 +10,7 @@ package tddd36.server;
 	import java.util.logging.Logger;
 
 	//Hämta version av databasen och skriver ut den i terminalen
+	//Ska returnera "5.1.49"
 	
 	public class TestDatabase {
 
