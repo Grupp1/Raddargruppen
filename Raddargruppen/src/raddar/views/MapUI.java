@@ -1,6 +1,8 @@
 package raddar.views;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -14,11 +16,16 @@ import raddar.models.GPSModel;
 import raddar.models.MapObjectList;
 import raddar.models.Resource;
 import raddar.models.Situation;
+import raddar.models.You;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
-import android.os.Message;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -40,22 +47,18 @@ public class MapUI extends MapActivity implements Observer {
 	private MyLocationOverlay compass;
 	private MapController controller;
 	private int touchedX, touchedY;
-	private GeoPoint touchedPoint, liu, myLocation;
+	private GeoPoint touchedPoint, liu, myLocation, startLocation;
 	private List<Overlay> mapOverlays;
 	private GPSModel gps;
 	private MapCont mapCont;
+	private boolean follow;
+	private You you;
+	private Toast toast;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.maps);
-		Button close;
-		close = (Button) this.findViewById(R.id.button_close);
-		close.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				finish();
-			}
-		});
 
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
@@ -72,20 +75,22 @@ public class MapUI extends MapActivity implements Observer {
 
 		myLocation = new GeoPoint(0,0);
 		liu = new GeoPoint(58395730, 15573080);
-		//controller.animateTo(liu);
-		controller.setZoom(15);
+		startLocation = new GeoPoint(59357290, 17960050);
+		controller.animateTo(startLocation);
+		controller.setZoom(13);
 
+		you = new You(myLocation, "Min position", "Här är jag", R.drawable.niklas, "000000", ResourceStatus.FREE);
 		gps = new GPSModel(this);
-		mapCont = new MapCont(MapUI.this, new Resource(myLocation, "Min position", "Här är jag", R.drawable.niklas, "000000", ResourceStatus.FREE));
-		//mapCont.add(new FireTruck(new GeoPoint(58395769, 15573489), "Vi är på väg", "00000", ResourceStatus.BUSY));
+		mapCont = new MapCont(MapUI.this, you);
 		
 		Touchy t = new Touchy(this);
 		mapOverlays.add(t);
 
-	} 
+	}
 
 	@Override
 	protected void onStart() {
+		follow = false;
 		super.onStart();
 	}
 
@@ -136,8 +141,7 @@ public class MapUI extends MapActivity implements Observer {
 			if(e.getAction() == MotionEvent.ACTION_UP){
 				stop = e.getEventTime();
 			}
-			if(stop - start > 1000){
-
+			if(stop - start > 800){
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(context);
 				builder.setTitle("Placera");
@@ -159,101 +163,40 @@ public class MapUI extends MapActivity implements Observer {
 						}
 					}
 				});
+				
 				AlertDialog alert = builder.create();
 
-
-
-				//				AlertDialog alert = new AlertDialog.Builder(MapUI.this).create();
-				//				alert.setTitle("Karta");
-				//				alert.setMessage("Tryck på en knapp");
-				//				
-				//				
-				//				
-				//				alert.setButton("Brand", new DialogInterface.OnClickListener() {
-				//					public void onClick(DialogInterface dialog, int which) {
-				//						
-				//						
-				//						
-				//						//						Fire f = new Fire(touchedPoint, "Det brinner här!", "00000", SituationPriority.HIGH);
-				//						//						d = getResources().getDrawable(f.getIcon());
-				//						//						MapObjectList firePlaces = new MapObjectList(d, MapUI.this);
-				//						//						firePlaces.addOverlay(f);
-				//						//						mapOverlays.add(firePlaces);
-				//
-				//						mapCont.add(new Fire(touchedPoint, "Det brinner här!", "00000", SituationPriority.HIGH));
-				//
-				//						
-				//					}
-				//				});
-				//
-				//				alert.setButton2("Brandbil", new DialogInterface.OnClickListener() {
-				//					public void onClick(DialogInterface dialog, int which) {
-				//						FireTruck f = new FireTruck(touchedPoint, "Här kommer hjälpen!", "00000", ResourceStatus.FREE);
-				//						d = getResources().getDrawable(f.getIcon());
-				//						MapObjectList fireTrucks = new MapObjectList(d, MapUI.this);
-				//						fireTrucks.addOverlay(f);
-				//						mapOverlays.add(fireTrucks);
-				//					}
-				//				});
-				//
-				//
-				//				// SYNS INTE I MENYN, FÅR ENDAST PLATS TRE ALTERNATIV
-				//				alert.setButton3("get adress", new DialogInterface.OnClickListener() {
-				//					public void onClick(DialogInterface dialog, int wich){
-				//						Fire f = new Fire(touchedPoint, "Det brinner här!", "00000", SituationPriority.HIGH);
-				//						//mapCont.add(f);
-				//						MapObjectList firePlaces = new MapObjectList(d, MapUI.this);
-				//						firePlaces.addOverlay(f);
-				//						mapOverlays.add(firePlaces);
-				//
-				//
-				//					}
-				//				});
-				//
-				//
-				//				alert.setButton2("get adress", new DialogInterface.OnClickListener() {
-				//					public void onClick(DialogInterface dialog, int which) {
-				//						Geocoder geocoder = new Geocoder(getBaseContext(), Locale.getDefault());
-				//						try{
-				//							List<Address> address = geocoder.getFromLocation(touchedPoint.getLatitudeE6() / 1E6, touchedPoint.getLongitudeE6() / 1E6, 1);
-				//							if(address.size() > 0){
-				//								String display ="";
-				//								for(int i = 0; i<address.get(0).getMaxAddressLineIndex(); i++){
-				//									display += address.get(0).getAddressLine(i) + "\n";
-				//								}
-				//								Toast t = Toast.makeText(getBaseContext(), display, Toast.LENGTH_LONG);
-				//								t.show();
-				//							}
-				//						} catch (IOException e) {
-				//							// TODO Auto-generated catch block
-				//							e.printStackTrace();
-				//						}finally{
-				//
-				//						}
-				//					}
-				//				});
-				//
-				//
-								alert.setButton("Toggle View", new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog, int which) {
-										if(mapView.isSatellite()){
-											mapView.setSatellite(false);
-										}
-										else{
-											mapView.setSatellite(true);
-										}
+				alert.setButton("Hämta adress", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						Geocoder geocoder = new Geocoder(getBaseContext(), Locale.getDefault());
+						try{
+							List<Address> address = geocoder.getFromLocation(touchedPoint.getLatitudeE6() / 1E6, touchedPoint.getLongitudeE6() / 1E6, 1);
+							if(address.size() > 0){
+								String display ="";
+								for(int i = 0; i<address.get(0).getMaxAddressLineIndex(); i++){
+									display += address.get(0).getAddressLine(i) + "\n";
 								}
-								});
-								
-								
-								alert.setButton2("Gå till min position", new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog, int which) {
-										gps = new GPSModel(MapUI.this);
-										controller.animateTo(myLocation);
-								}
-								});
+								toast = Toast.makeText(getBaseContext(), display, Toast.LENGTH_LONG);
+								toast.show();
+							}
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}finally{
+
+						}
+					}
+				});
 				
-				
+				/*
+				// Exempel på en till knapp
+				alert.setButton2("Gå till min position", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						controller.animateTo(myLocation); 
+					}
+				});
+				*/
+
 				alert.show();
 				return true;
 			}
@@ -269,6 +212,10 @@ public class MapUI extends MapActivity implements Observer {
 	public void update(Observable observable, Object data) {
 		if (data instanceof GeoPoint){
 			myLocation = (GeoPoint) data;
+			you.setPoint(myLocation);
+			if (follow){
+				controller.animateTo(myLocation);
+			}
 		}
 		if (data instanceof MapObjectList){
 			mapOverlays.add((MapObjectList) data);	
@@ -276,6 +223,59 @@ public class MapUI extends MapActivity implements Observer {
 		mapView.postInvalidate();
 		// RITA OM PÅ NÅGOT SÄTT
 		//använd mapView.invalidate() om du kör i UI tråden
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.mapmenu, menu);
+	    return true;
+	}
+
+//	Anropas varje gång menu klickas på
+//	@Override
+//	public boolean onPrepareOptionsMenu(Menu menu){
+//		return true;
+//	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	    case R.id.toggle:
+	    	if(mapView.isSatellite()){
+				mapView.setSatellite(false);
+			}
+			else{
+				mapView.setSatellite(true);
+			}
+	        return true;
+	    case R.id.follow:
+	        if (follow){
+	        	follow = false;
+	        }
+	        else{
+	        	follow = true;
+	        }
+	        toast = Toast.makeText(getBaseContext(), "Följ efter: " +follow, Toast.LENGTH_LONG);
+			toast.show();
+	        return true;
+	    case R.id.myLocation:
+	    	controller.animateTo(myLocation); 
+	        return true;
+	    case R.id.traffic:
+	    	if(mapView.isTraffic()){
+				mapView.setTraffic(false);
+			}
+			else{
+				mapView.setTraffic(true);
+			}
+	    	toast = Toast.makeText(getBaseContext(), "Trafik: " +mapView.isTraffic(), Toast.LENGTH_LONG);
+			toast.show();
+	        return true;
+	    default:
+	        return super.onOptionsItemSelected(item);
+	    }
 	}
 
 }

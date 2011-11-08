@@ -100,7 +100,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 			startActivity(nextIntent);
 		}
 		if(v == mapButton){
-			Intent nextIntent = new Intent(MainView.this, Map.class);
+			Intent nextIntent = new Intent(MainView.this, MapUI.class);
 			startActivity(nextIntent);
 		}
 		if(v == reportButton){

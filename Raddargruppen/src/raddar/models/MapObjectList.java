@@ -39,18 +39,19 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 	    this.populate();
 	}
 	
+	/**
+	 * Vad som händer när man trycker på en situation
+	 */
 	@Override
 	protected boolean onTap(int index) {
+		
+
 	  OverlayItem item = mOverlays.get(index);
 	  AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
 	  dialog.setTitle(item.getTitle());
-	  dialog.setMessage(item.getSnippet());
+	  dialog.setMessage(item.getSnippet() + item.getPoint().toString());
 	  dialog.show();
 	  return true;
-	}
-	
-	public int getIcon(){
-		return raddar.gruppen.R.drawable.fire;
 	}
 	
 }

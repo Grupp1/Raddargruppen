@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <item android:title="@string/map_menu_toggle" android:id="@+id/toggle"/>
+    <item android:title="@string/map_menu_follow" android:id="@+id/follow"/>
+    <item android:title="@string/map_menu_myLocation" android:id="@+id/myLocation"/>
+    <item android:title="@string/map_menu_traffic" android:id="@+id/traffic"/>
+   
+</menu>

@@ -11,24 +11,25 @@ import android.graphics.drawable.Drawable;
 import com.google.android.maps.Overlay;
 
 public class MapModel extends Observable {
-	
+
 	private List<Overlay> mapOverlays;
 	private Drawable d;
-	
+
 	private MapObjectList fireList;
 	private MapObjectList fireTruckList;
 	private MapObjectList situationList;
 	private MapObjectList resourceList;
-	
+	private MapObjectList youList;
+
 	private MapUI mapUI;
-	
+
 	public MapModel(MapUI mapUI, MapCont mapCont){
 		this.mapUI = mapUI;
 		this.addObserver(mapUI);
 		this.addObserver(mapCont);
 	}
-	
-	
+
+
 	/*
 	 * Alla fires utplacerade på kartan sparas här
 	 */
@@ -49,6 +50,14 @@ public class MapModel extends Observable {
 			fireTruckList.addOverlay(o);
 			notifyObservers(fireTruckList);
 		}
+		else if(o instanceof You){
+			if(youList == null){
+				youList = new MapObjectList(d, mapUI);
+			}
+			youList.addOverlay(o);
+			notifyObservers(youList);
+		}
+		
 		else if(o instanceof Situation){
 			if(situationList == null){
 				situationList = new MapObjectList(d, mapUI);
@@ -62,14 +71,14 @@ public class MapModel extends Observable {
 			}
 			resourceList.addOverlay(o);
 			notifyObservers(resourceList);
-		}
+		}		
 	}
-	
+
 
 	/*
 	 * Alla situationer utplacerade på kartan sparas här
 	 */
-	
+
 	public List<Overlay> getMapOverlays() {
 		return mapOverlays;
 	}
