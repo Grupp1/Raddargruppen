@@ -25,5 +25,7 @@
     <string name="main_message">Meddelanden</string>
     <string name="main_sos">SOS</string>
     <string name="main_services">Externa tjänster</string>
+    <string name="add_contact_add">Lägg till kontakt:</string>
+    <string name="add_contact_save">Spara</string>
 
 </resources>
