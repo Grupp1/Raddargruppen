@@ -95,7 +95,7 @@ public class ClientDatabaseManager extends Observable {
 	public void addRow(Situation s){
 		ContentValues values = new ContentValues();
 		values.put("title", s.getTitle());
-		values.put("description", s.getDescription());
+		//values.put("description", s.getDescription());
 		values.put("priority", s.getPriority().toString());
 		try {
 			db.insert("contact", null, values);

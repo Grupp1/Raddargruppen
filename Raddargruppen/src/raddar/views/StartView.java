@@ -1,9 +1,7 @@
 package raddar.views;
 
-import raddar.enums.LoginResponse;
-
 import raddar.controllers.InternalComManager;
-
+import raddar.enums.LoginResponse;
 import raddar.gruppen.R;
 import raddar.models.Login;
 import android.app.Activity;
@@ -14,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 
 public class StartView extends Activity {
 
