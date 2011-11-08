@@ -67,7 +67,6 @@ public class MapModel extends Observable {
 		}
 		else if(o instanceof Resource){
 			if(resourceList == null){
-				d = mapUI.getResources().getDrawable(o.getIcon());
 				resourceList = new MapObjectList(d, mapUI);
 			}
 			resourceList.addOverlay(o);

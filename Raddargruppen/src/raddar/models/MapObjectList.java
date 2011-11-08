@@ -44,12 +44,12 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 	 */
 	@Override
 	protected boolean onTap(int index) {
-		
-
-	  OverlayItem item = mOverlays.get(index);
+	  MapObject item = (MapObject) mOverlays.get(index);
 	  AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
 	  dialog.setTitle(item.getTitle());
-	  dialog.setMessage(item.getSnippet() + item.getPoint().toString());
+	  dialog.setMessage("Beskrivning: "+item.getSnippet()+"\nAdress: "+item.getAdress()+
+			  "Koordinater: "+item.getPoint().getLatitudeE6()/1E6+", "+item.getPoint().getLongitudeE6()/1E6);
+	  // Lägga till String onTouch i MapObject???
 	  dialog.show();
 	  return true;
 	}

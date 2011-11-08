@@ -1,8 +1,6 @@
 package raddar.views;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -20,8 +18,6 @@ import raddar.models.You;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -127,6 +123,7 @@ public class MapUI extends MapActivity implements Observer {
 		private CharSequence [] items = {"Brand", "Brandbil", "Situation", "Resurs"};
 		private String value;
 		private EditText input;
+		private int item;
 
 		public Touchy(Context context){
 			this.context = context;
@@ -151,7 +148,7 @@ public class MapUI extends MapActivity implements Observer {
 
 
 					public void onClick(DialogInterface dialog, int item) {
-
+						Touchy.this.item = item;
 						AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 
 						alertDialog.setTitle("Lägg till beskrivning");
@@ -160,37 +157,30 @@ public class MapUI extends MapActivity implements Observer {
 						input = new EditText(context);
 						alertDialog.setView(input);
 
-						
 						alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
 								value = input.getText().toString();
-								//Toast.makeText(getApplicationContext(), value, Toast.LENGTH_LONG).show();
+								if(Touchy.this.item == 0){		
+									mapCont.add(new Fire(touchedPoint, value, "00000", SituationPriority.HIGH));
+								}
+								if(Touchy.this.item == 1){
+									mapCont.add(new FireTruck(touchedPoint, value, "00000", ResourceStatus.BUSY));
+								}
+								if(Touchy.this.item == 2){
+									mapCont.add(new Situation(touchedPoint, "Situation", value, R.drawable.situation, "00000", SituationPriority.NORMAL));
+								}
+								if(Touchy.this.item == 3){
+									mapCont.add(new Resource(touchedPoint, "Resurs", value, R.drawable.resource, "00000", ResourceStatus.BUSY));
+								}
+								Toast.makeText(getApplicationContext(), items[Touchy.this.item]+" utplacerad", Toast.LENGTH_LONG).show();
 							}
 						});
-
 						alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
 
 							}
 						});
-
-
 						alertDialog.show();
-
-						if(item == 0){		
-							mapCont.add(new Fire(touchedPoint, value, "00000", SituationPriority.HIGH));
-						}
-						if(item == 1){
-							mapCont.add(new FireTruck(touchedPoint, "value", "00000", ResourceStatus.BUSY));
-						}
-						if(item == 2){
-							mapCont.add(new Situation(touchedPoint, "Situation", "value", R.drawable.situation, "00000", SituationPriority.NORMAL));
-						}
-						if(item == 3){
-							mapCont.add(new Resource(touchedPoint, "Resurs", "value", R.drawable.resource, "00000", ResourceStatus.BUSY));
-						}
-						Toast.makeText(getApplicationContext(), items[item]+" utplacerad", Toast.LENGTH_LONG).show();
-
 					}
 
 				});
@@ -199,23 +189,7 @@ public class MapUI extends MapActivity implements Observer {
 
 				alert.setButton("Hämta adress", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						Geocoder geocoder = new Geocoder(getBaseContext(), Locale.getDefault());
-						try{
-							List<Address> address = geocoder.getFromLocation(touchedPoint.getLatitudeE6() / 1E6, touchedPoint.getLongitudeE6() / 1E6, 1);
-							if(address.size() > 0){
-								String display ="";
-								for(int i = 0; i<address.get(0).getMaxAddressLineIndex(); i++){
-									display += address.get(0).getAddressLine(i) + "\n";
-								}
-								toast = Toast.makeText(getBaseContext(), display, Toast.LENGTH_LONG);
-								toast.show();
-							}
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}finally{
-
-						}
+						Toast.makeText(getApplicationContext(), mapCont.calcAdress(touchedPoint), Toast.LENGTH_LONG).show();
 					}
 				});
 				
@@ -227,7 +201,6 @@ public class MapUI extends MapActivity implements Observer {
 					}
 				});
 				*/
-
 
 				alert.show();
 				return true;

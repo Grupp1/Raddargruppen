@@ -6,9 +6,7 @@ import com.google.android.maps.OverlayItem;
 public class MapObject extends OverlayItem {
 
 	private GeoPoint point;
-	private String title;
-	private String snippet;
-	private String id;
+	private String title, snippet, id, adress;
 	private int icon;
 
 	public MapObject(GeoPoint point, String title, String snippet, int icon, String id) {
@@ -58,6 +56,14 @@ public class MapObject extends OverlayItem {
 
 	public void setIcon(int icon) {
 		this.icon = icon;
+	}
+	
+	public String getAdress() {
+		return adress;
+	}
+
+	public void setAdress(String adress) {
+		this.adress = adress;
 	}
 
 }
