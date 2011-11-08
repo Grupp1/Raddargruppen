@@ -1,4 +1,8 @@
-package tddd36.server;
+/*
+ * ANVÃ„ND INTE DENNA KLASSEN LÃ„NGRE
+ * /
+
+/* package tddd36.server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,17 +33,17 @@ public class ClientHandler implements Runnable {
 		try {
 			System.out.println("["+so.getInetAddress().getHostAddress()+"] ** Connection established. ");
 			
-			// För att läsa inkommande data från klienten
+			// Fï¿½r att lï¿½sa inkommande data frï¿½n klienten
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
 						
-			// Läs in vilken typ av meddelande som klienten skickar
+			// Lï¿½s in vilken typ av meddelande som klienten skickar
 			String t = in.readLine().split(" ")[1];
 			
-			// Konvertera från sträng till MessageType
+			// Konvertera frï¿½n strï¿½ng till MessageType
 			MessageType type = MessageType.convert(t);
 			
-			// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
-			// meddelandet som klienten har skickat blir inläst på korrekt sätt
+			// Kontroll-sats som, beroende pï¿½ vilken typ som lï¿½sts in, ser till att resterande del av
+			// meddelandet som klienten har skickat blir inlï¿½st pï¿½ korrekt sï¿½tt
 			switch (type) {
 				case NOTIFICATION:
 					handleNotification();
@@ -61,7 +65,7 @@ public class ClientHandler implements Runnable {
 	}
 	
 	/*
-	 * I denna metoden associerar eller avassocierar vi användare med IP-addresser
+	 * I denna metoden associerar eller avassocierar vi anvï¿½ndare med IP-addresser
 	 */
 	private void handleNotification() {
 		try {
@@ -76,15 +80,15 @@ public class ClientHandler implements Runnable {
 			
 			switch (nt) {
 				case CONNECT:
-					// Spara användaren och dennes IP-address (skriv över eventuell gammal IP-address)
+					// Spara anvï¿½ndaren och dennes IP-address (skriv ï¿½ver eventuell gammal IP-address)
 					Server.onlineUsers.addUser(fromUser, so.getInetAddress());
 					break;
 				case DISCONNECT:
-					// Ta bort användaren och dennes IP-address
+					// Ta bort anvï¿½ndaren och dennes IP-address
 					Server.onlineUsers.removeUser(fromUser);
 					break;
 				default:
-					// Här hamnar vi om något gått fel i formatteringen eler inläsandet av meddelandet
+					// Hï¿½r hamnar vi om nï¿½got gï¿½tt fel i formatteringen eler inlï¿½sandet av meddelandet
 					System.out.println("Unknown NotificationType... ");
 			}
 			
@@ -95,14 +99,14 @@ public class ClientHandler implements Runnable {
 	}
 	
 	/*
-	 * Ta emot ett textmeddelande. Denna metod lär utvecklas mer sen för att 
+	 * Ta emot ett textmeddelande. Denna metod lï¿½r utvecklas mer sen fï¿½r att 
 	 * vidarebefordra meddelandet till en mottagarklient.
 	 */
 	private void handleTextMessage() {
 		try {
 			System.out.println("["+so.getInetAddress().getHostAddress()+"] >> Reading text message. ");
 			
-			// Läs in värden från headern
+			// Lï¿½s in vï¿½rden frï¿½n headern
 			String priority = in.readLine().split(" ")[1];
 			String fromUser = in.readLine().split(" ")[1];
 			String toUser = in.readLine().split(" ")[1];
@@ -112,36 +116,36 @@ public class ClientHandler implements Runnable {
 			// Skippa den tomma raden som alla HTTP-formaterade meddelanden har
 			in.readLine();
 			
-			// Läs in meddelandets data/text
+			// Lï¿½s in meddelandets data/text
 			String data = "";
 			while (in.ready())
 				data += in.readLine();
 			
-			// Skapa ett nytt TextMessage med inlästa värden
+			// Skapa ett nytt TextMessage med inlï¿½sta vï¿½rden
 			TextMessage tm = new TextMessage(MessageType.TEXT, fromUser, toUser, MessagePriority.convert(priority), data);
 			
-			// Lägg till lite text så att klienten kan se att denna testserver fungerar
+			// Lï¿½gg till lite text sï¿½ att klienten kan se att denna testserver fungerar
 			tm.prepend("Borche (OK): ");
 			
-			// Sätt datum och ämnesrad
+			// Sï¿½tt datum och ï¿½mnesrad
 			tm.setDate(date);
 			tm.setSubject(subject);
 			
-			// Hämta mottagarens IP-address från serverns lista 
+			// Hï¿½mta mottagarens IP-address frï¿½n serverns lista 
 			InetAddress address = Server.onlineUsers.getUserAddress(toUser);
 			
 			if (address == null) {
-				// Kolla om användaren existerar om JA, buffra, annars discard.
-				// Användaren är offline
+				// Kolla om anvï¿½ndaren existerar om JA, buffra, annars discard.
+				// Anvï¿½ndaren ï¿½r offline
 				// Buffra meddelandet (to be implemented...)
 				return;
 			}
 				
 			// Skapa en socket med mottagarens address och den porten som klienten
-			// ligger och lyssnar på (hårdkodat på klienterna är 6789 när detta skrevs).
+			// ligger och lyssnar pï¿½ (hï¿½rdkodat pï¿½ klienterna ï¿½r 6789 nï¿½r detta skrevs).
 			Socket forward = new Socket(address, 6789);			
 			
-			// Ny PrintWriter för mottagarens socket
+			// Ny PrintWriter fï¿½r mottagarens socket
 			PrintWriter fOut = new PrintWriter(forward.getOutputStream(), true);
 			
 			
@@ -150,7 +154,7 @@ public class ClientHandler implements Runnable {
 			
 			System.out.println("["+forward.getInetAddress().getHostAddress()+"] << Forwarding text message. ");
 			
-			// Stäng ner
+			// Stï¿½ng ner
 			fOut.close();
 			forward.close();
 									
@@ -177,4 +181,4 @@ public class ClientHandler implements Runnable {
 		return sb.toString();
 	}
 
-}
+}*/
