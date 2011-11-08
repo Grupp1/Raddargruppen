@@ -110,13 +110,15 @@ public class MainView extends Activity implements OnClickListener, Observer{
 			finish();
 		}
 		if(v == serviceButton){
-			finish();
+			Intent nextIntent = new Intent(MainView.this, ServiceView.class);
+			startActivity(nextIntent);
 		}
 		if(v == sosButton){
 			finish();
 		}
 		if(v == setupButton){
-			finish();
+			Intent nextIntent = new Intent(MainView.this, AddContactView.class);
+			startActivity(nextIntent);
 		}
 		if(v == logButton){
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);

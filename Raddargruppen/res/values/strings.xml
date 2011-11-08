@@ -3,6 +3,7 @@
 	<string name="start_header">Login</string>
 	<string name="app_name">Räddargruppen</string>
 
+
 	<string name="button1">Tryck på mig!</string>
 	<string name="start_user">Användarnamn:</string>
 	<string name="start_password">Lösenord:</string>
@@ -26,5 +27,8 @@
 	<string name="main_message">Meddelanden</string>
 	<string name="main_sos">SOS</string>
 	<string name="main_services">Externa tjänster</string>
+    <string name="add_contact_add">Lägg till kontakt:</string>
+    <string name="add_contact_save">Spara</string>
+
 
 </resources>
