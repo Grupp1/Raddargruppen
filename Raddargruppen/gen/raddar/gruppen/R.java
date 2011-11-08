@@ -34,7 +34,7 @@ public final class R {
     }
     public static final class id {
         public static final int addContactButton=0x7f050002;
-        public static final int addContactTextView=0x7f050001;
+        public static final int addContactEditText=0x7f050001;
         public static final int bottomtext=0x7f050023;
         public static final int button_close=0x7f050016;
         public static final int callButton=0x7f050004;

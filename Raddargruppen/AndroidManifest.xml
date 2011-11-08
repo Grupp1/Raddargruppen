@@ -44,6 +44,7 @@
 
 		<activity android:name="raddar.views.SendMessageView"></activity>
 		<activity android:name="raddar.views.ServiceView"></activity>
+		<activity android:name="raddar.views.AddContactView"></activity>
 
 	</application>
 
