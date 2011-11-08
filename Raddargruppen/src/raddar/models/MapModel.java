@@ -13,14 +13,14 @@ import com.google.android.maps.Overlay;
 public class MapModel extends Observable {
 	
 	private List<Overlay> mapOverlays;
-	private MapObjectList fireList;
-	private MapObjectList resourceList;
-	private MapObjectList fireTruckList;
 	private Drawable d;
 	
-	private MapUI mapUI;
+	private MapObjectList fireList;
+	private MapObjectList fireTruckList;
+	private MapObjectList situationList;
+	private MapObjectList resourceList;
 	
-	private MapObject test;
+	private MapUI mapUI;
 	
 	public MapModel(MapUI mapUI, MapCont mapCont){
 		this.mapUI = mapUI;
@@ -32,50 +32,43 @@ public class MapModel extends Observable {
 	/*
 	 * Alla fires utplacerade på kartan sparas här
 	 */
-
-	
 	public void add(MapObject o){
+		d = mapUI.getResources().getDrawable(o.getIcon());
+		setChanged();
 		if (o instanceof Fire){
 			if (fireList == null){
-				d = mapUI.getResources().getDrawable(o.getIcon());
 				fireList = new MapObjectList(d, mapUI);
 			}
 			fireList.addOverlay(o);
-			this.setChanged();
 			notifyObservers(fireList);
 		}
-		
-		if(o instanceof FireTruck){
+		else if(o instanceof FireTruck){
 			if(fireTruckList == null){
-				d = mapUI.getResources().getDrawable(o.getIcon());
 				fireTruckList = new MapObjectList(d, mapUI);
 			}
 			fireTruckList.addOverlay(o);
-			this.setChanged();
 			notifyObservers(fireTruckList);
 		}
-		if(o instanceof Resource){
-			if(resourceList == null){
-				d = mapUI.getResources().getDrawable(o.getIcon());
+		else if(o instanceof Situation){
+			if(situationList == null){
+				situationList = new MapObjectList(d, mapUI);
 			}
+			situationList.addOverlay(o);
+			notifyObservers(situationList);
 		}
-	
+		else if(o instanceof Resource){
+			if(resourceList == null){
+				resourceList = new MapObjectList(d, mapUI);
+			}
+			resourceList.addOverlay(o);
+			notifyObservers(resourceList);
+		}
 	}
 	
-	
-	public MapObjectList getFireList(){
-		return fireList;
-	}
-	
+
 	/*
 	 * Alla situationer utplacerade på kartan sparas här
 	 */
-	
-
-	public MapObjectList getResourceList(){
-		return resourceList;
-	}
-	
 	
 	public List<Overlay> getMapOverlays() {
 		return mapOverlays;

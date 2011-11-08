@@ -1,8 +1,6 @@
 package raddar.views;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -14,13 +12,13 @@ import raddar.models.Fire;
 import raddar.models.FireTruck;
 import raddar.models.GPSModel;
 import raddar.models.MapObjectList;
+import raddar.models.Resource;
+import raddar.models.Situation;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.drawable.Drawable;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -42,17 +40,10 @@ public class MapUI extends MapActivity implements Observer {
 	private MyLocationOverlay compass;
 	private MapController controller;
 	private int touchedX, touchedY;
-	private GeoPoint touchedPoint, point;
-	private Drawable d;
+	private GeoPoint touchedPoint, liu, myLocation;
 	private List<Overlay> mapOverlays;
-
-
 	private GPSModel gps;
-
 	private MapCont mapCont;
-	private MapCont mapCont1;
-	private GeoPoint point2;
-
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -66,53 +57,40 @@ public class MapUI extends MapActivity implements Observer {
 			}
 		});
 
-		//MapView mapView = ((MapView)findViewById(R.id.mapview), "0b1qi7XBfQqm8teK24blL1Hhnfhqc9iOFejhYUw");
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
+		mapView.setSatellite(true);
 
 		/**
 		 *  Lista över alla overlays (lager) som visas på kartan
 		 */
-
 		mapOverlays = mapView.getOverlays();
-
-
 
 		compass = new MyLocationOverlay(MapUI.this, mapView);
 		mapOverlays.add(compass);
 		controller = mapView.getController();
 
-
-		point = new GeoPoint(58395730, 15573080);
-		point2 = new GeoPoint(57395730, 15573080);
-
-		controller.animateTo(point);
+		myLocation = new GeoPoint(0,0);
+		liu = new GeoPoint(58395730, 15573080);
+		//controller.animateTo(liu);
 		controller.setZoom(15);
 
-
-
-		mapCont = new MapCont(MapUI.this, new Fire(point, "Det brinner här!", "000000", SituationPriority.HIGH));
-
-		mapCont.add(new FireTruck(new GeoPoint(58395739, 15573089), "Vi är på väg", "00000", ResourceStatus.BUSY));
+		gps = new GPSModel(this);
+		mapCont = new MapCont(MapUI.this, new Resource(myLocation, "Min position", "Här är jag", R.drawable.niklas, "000000", ResourceStatus.FREE));
+		//mapCont.add(new FireTruck(new GeoPoint(58395769, 15573489), "Vi är på väg", "00000", ResourceStatus.BUSY));
+		
+		Touchy t = new Touchy(this);
+		mapOverlays.add(t);
 
 	} 
 
 	@Override
 	protected void onStart() {
-		// TODO Auto-generated method stub
-
-		Touchy t = new Touchy(this);
-		mapOverlays.add(t);
-		gps = new GPSModel(this);
-
 		super.onStart();
-
-
 	}
 
 	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
 		compass.enableCompass();
 		super.onResume();
 		gps.getLocationManager().requestLocationUpdates(gps.getTowers(), 500, 1, gps);
@@ -120,7 +98,6 @@ public class MapUI extends MapActivity implements Observer {
 
 	@Override
 	protected void onPause() {
-		// TODO Auto-generated method stub
 		compass.disableCompass();
 		super.onPause();
 		gps.getLocationManager().removeUpdates(gps);
@@ -133,8 +110,6 @@ public class MapUI extends MapActivity implements Observer {
 	}
 
 
-
-
 	@Override
 	protected boolean isRouteDisplayed() {
 		// TODO Auto-generated method stub
@@ -144,7 +119,7 @@ public class MapUI extends MapActivity implements Observer {
 
 	class Touchy extends Overlay{
 		private Context context;
-		private CharSequence [] items = {"Fire", "FireTruck", "Situation", "Resource"};
+		private CharSequence [] items = {"Brand", "Brandbil", "Situation", "Resurs"};
 
 		public Touchy(Context context){
 			this.context = context;
@@ -161,7 +136,7 @@ public class MapUI extends MapActivity implements Observer {
 			if(e.getAction() == MotionEvent.ACTION_UP){
 				stop = e.getEventTime();
 			}
-			if(stop - start > 1500){
+			if(stop - start > 1000){
 
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -176,7 +151,12 @@ public class MapUI extends MapActivity implements Observer {
 						if(item == 1){
 							mapCont.add(new FireTruck(touchedPoint, "Vi är på väg", "00000", ResourceStatus.BUSY));
 						}
-						
+						if(item == 2){
+							mapCont.add(new Situation(touchedPoint, "Situation", "Något har hänt", R.drawable.situation, "00000", SituationPriority.NORMAL));
+						}
+						if(item == 3){
+							mapCont.add(new Resource(touchedPoint, "Resurs", "Räddningen är här", R.drawable.resource, "00000", ResourceStatus.BUSY));
+						}
 					}
 				});
 				AlertDialog alert = builder.create();
@@ -254,7 +234,7 @@ public class MapUI extends MapActivity implements Observer {
 				//				});
 				//
 				//
-								alert.setButton3("Toggle View", new DialogInterface.OnClickListener() {
+								alert.setButton("Toggle View", new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog, int which) {
 										if(mapView.isSatellite()){
 											mapView.setSatellite(false);
@@ -262,6 +242,14 @@ public class MapUI extends MapActivity implements Observer {
 										else{
 											mapView.setSatellite(true);
 										}
+								}
+								});
+								
+								
+								alert.setButton2("Gå till min position", new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog, int which) {
+										gps = new GPSModel(MapUI.this);
+										controller.animateTo(myLocation);
 								}
 								});
 				
@@ -279,14 +267,15 @@ public class MapUI extends MapActivity implements Observer {
 	}
 
 	public void update(Observable observable, Object data) {
-		// TODO Auto-generated method stub
-
-
-		if (data instanceof MapObjectList){
-			//d = getResources().getDrawable(((MapObjectList) data).getIcon());
-			mapOverlays.add((MapObjectList) data);
+		if (data instanceof GeoPoint){
+			myLocation = (GeoPoint) data;
 		}
-
+		if (data instanceof MapObjectList){
+			mapOverlays.add((MapObjectList) data);	
+		}
+		mapView.postInvalidate();
+		// RITA OM PÅ NÅGOT SÄTT
+		//använd mapView.invalidate() om du kör i UI tråden
 	}
 
 }

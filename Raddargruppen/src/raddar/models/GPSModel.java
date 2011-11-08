@@ -1,12 +1,8 @@
 package raddar.models;
 
-import raddar.enums.ResourceStatus;
-import raddar.gruppen.R;
+import java.util.Observable;
+
 import raddar.views.MapUI;
-
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapActivity;
-
 import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
@@ -14,9 +10,10 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.widget.Toast;
-import raddar.gruppen.R;
 
-public class GPSModel implements LocationListener {
+import com.google.android.maps.GeoPoint;
+
+public class GPSModel extends Observable implements LocationListener {
 	
 	private int lat = 58395730;
 	private int lon = 15573080;
@@ -25,30 +22,23 @@ public class GPSModel implements LocationListener {
 	private LocationManager lm;
 	private String towers;
 	
-	public GPSModel(MapActivity map){
-		/**
-		 * MÅSTE LÖSAS, GPSEN VET OM KARTAN?
-		 */
+	public GPSModel(MapUI map){
+		addObserver(map);
 		lm = (LocationManager) map.getSystemService(Context.LOCATION_SERVICE);
 		Criteria crit = new Criteria();
 	
 		towers = lm.getBestProvider(crit, false);
 		Location location = lm.getLastKnownLocation(towers);
-
-		//d = getResources().getDrawable(R.drawable.magnus);
 		
 		if (location != null){
 			lat = (int) (location.getLatitude() * 1E6);
 			lon = (int) (location.getLongitude() * 1E6);
-
 			myLocation = new GeoPoint(lat, lon);
-			Resource magnus = new Resource(myLocation, "Magnus", "Här är jag!", R.drawable.magnus, "00000", ResourceStatus.FREE);
-			//MapObjectList gay = new MapObjectList(d, MapUI.this);
-			//gay.addOverlay(magnus);
-			//mapOverlays.add(gay);
+			setChanged();
+			notifyObservers(myLocation);
 		}
 		else{
-			//Toast.makeText(MapUI.this, "Couldnt get provider", Toast.LENGTH_SHORT).show();
+			Toast.makeText(map, "Couldnt get provider", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -56,10 +46,8 @@ public class GPSModel implements LocationListener {
 		lat = (int) (l.getLatitude() * 1E6);
 		lon = (int) (l.getLongitude() * 1E6);
 		myLocation = new GeoPoint(lat, lon);
-		Resource magnus = new Resource(myLocation, "Magnus", "Här är jag!", R.drawable.magnus, "00000", ResourceStatus.FREE);
-		//MapObjectList gay = new MapObjectList(d, MapUI.this);
-		//gay.addOverlay(magnus);
-		//mapOverlays.add(gay);
+		setChanged();
+		notifyObservers(myLocation);
 	}
 
 	public void onProviderDisabled(String provider) {
