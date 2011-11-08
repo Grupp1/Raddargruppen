@@ -28,6 +28,8 @@ public class ClientDatabaseManager extends Observable {
 	private final String[] TEXT_MESSAGE_TABLE_ROWS = new String[] { "msgId",
 			"srcUser","rDate","subject","mData"};
 	private final String[] CONTACT_TABLE_ROWS = new String[] { "userName", "isGroup"};
+	private final String[] SITUATION_TABLE_ROWS = new String[] { "title", "description", "priority" };
+	private final String[] RESOURCE_TABLE_ROWS = new String[] { "title", "status" };
 
 
 	/**********************************************************************
@@ -88,9 +90,9 @@ public class ClientDatabaseManager extends Observable {
 	 */
 	public void addRow(Situation s){
 		ContentValues values = new ContentValues();
-		values.put("situation", s.getTitle());
+		values.put("title", s.getTitle());
 		values.put("description", s.getDescription());
-		values.put("priority", s.getPriority().);
+		values.put("priority", s.getPriority().toString());
 		try {
 			db.insert("contact", null, values);
 		} catch (Exception e) {
@@ -98,7 +100,7 @@ public class ClientDatabaseManager extends Observable {
 			e.printStackTrace();
 		}
 		setChanged();
-		notifyObservers(c);
+		notifyObservers(s);
 	}
 	
 	/**********************************************************************
@@ -108,8 +110,8 @@ public class ClientDatabaseManager extends Observable {
 	 */
 	public void addRow(Resource r){
 		ContentValues values = new ContentValues();
-		values.put("situation", c.getUserName());
-		values.put("group", c.isgroup());
+		values.put("title", r.getTitle());
+		values.put("status", r.getStatus().toString());
 		try {
 			db.insert("contact", null, values);
 		} catch (Exception e) {
@@ -117,14 +119,14 @@ public class ClientDatabaseManager extends Observable {
 			e.printStackTrace();
 		}
 		setChanged();
-		notifyObservers(c);
+		notifyObservers(r);
 	}
 
 
 	/**********************************************************************
 	 * DELETING A ROW FROM THE CONTACT TABLE
 	 *
-	 *@param c The ontact that is to be deleted
+	 *@param c The contact that is to be deleted
 	 */
 	public void deleteRow(Contact c) {
 		try {
@@ -162,7 +164,7 @@ public class ClientDatabaseManager extends Observable {
 	 *            the id of the row to retrieve
 	 * @return an array containing the data from the row
 	 */
-	public ArrayList<Message> getRowAsArray() {
+/*	public ArrayList<Message> getRowAsArray() {
 		// create an array list to store data from the database row.
 		// I would recommend creating a JavaBean compliant object
 		// to store this data instead. That way you can ensure
@@ -203,7 +205,7 @@ public class ClientDatabaseManager extends Observable {
 
 		// return the ArrayList containing the given row from the database.
 		return rowArray;
-	} 
+	} */
 	
 	
 	/**
@@ -211,8 +213,11 @@ public class ClientDatabaseManager extends Observable {
 	 * @param table The table that is to be retrieved
 	 * @return
 	 */
-	public ArrayList<Message> getAllRowsAsArrays(String table)
-	{
+	
+	
+	public ArrayList<Message> getAllRowsAsArrays(String table){
+		//TODO gör så denna funktion fungerar med alla databastabeller
+		//TODO kom inte på något bra sätt för att få det att fungera i det generella fallet.
 		ArrayList<Message> dataArrays = new ArrayList<Message>();
 		Cursor cursor = null;
 		try
@@ -253,25 +258,6 @@ public class ClientDatabaseManager extends Observable {
 			Log.e("DB Error", e.toString());
 			e.printStackTrace();
 		}
-		//If ti is a contact table
-		if (!cursor.isAfterLast() && table == "contact")
-		{
-			do
-			{
-				Contact c = new Contact(cursor.getString(1), );
-				m.setSubject(cursor.getString(3));
-				dataArrays.add(m);
-			}
-			// move the cursor's pointer up one position.
-			while (cursor.moveToNext());
-		}
-	}
-	catch (SQLException e)
-	{
-		Log.e("DB Error", e.toString());
-		e.printStackTrace();
-	}
-
 		// return the ArrayList that holds the data collected from
 		// the database.
 		return dataArrays;

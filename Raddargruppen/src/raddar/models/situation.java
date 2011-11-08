@@ -33,4 +33,5 @@ public class Situation extends MapObject {
 		return title;
 	}
 	
+	
 }
