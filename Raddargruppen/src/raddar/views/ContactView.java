@@ -1,5 +1,6 @@
 package raddar.views;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import raddar.enums.MessageType;
 import raddar.gruppen.R;
@@ -32,11 +33,10 @@ public class ContactView extends ListActivity implements OnClickListener{
 
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-		contacts = new ArrayList<Contact>();
+		contacts = MainView.db.getAllRowsAsArrays("contact");
 		selected = new ArrayList<String>();
-		for(int i = 0;i <10;i++)
-			contacts.add(new Contact());
-
+	//	for(int i = 0;i <10;i++)
+	//		contacts.add(new Contact("Peter"+i, false));
 		ia = new ContactAdapter(this, R.layout.contact,contacts,selected);
 
 
@@ -44,7 +44,6 @@ public class ContactView extends ListActivity implements OnClickListener{
 		lv.setTextFilterEnabled(true);
 		View footer = ((LayoutInflater)this.getSystemService
 				(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.contact_footer, null, false);
-		
 		lv.addFooterView(footer);
 		foot = (Button)footer.findViewById(R.id.foot);
 
@@ -74,20 +73,21 @@ public class ContactView extends ListActivity implements OnClickListener{
 				LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				v = vi.inflate(R.layout.contact, null);
 				CheckBox bt = (CheckBox) v.findViewById(R.id.check);
+
 				bt.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
 					public void onCheckedChanged(CompoundButton buttonView,
 							boolean isChecked) {
 						Intent in = new Intent();
 						if(isChecked){						
-							selected.add(c.name);
+							selected.add(c.getUserName());
 							String[] sel = new String[selected.size()];
 							sel = (String[]) selected.toArray(sel);
 							in.putExtra("contacts",sel);
 							setResult(RESULT_OK, in);
-							
+
 						}
 						else if(!isChecked){
-							selected.remove(c.name);
+							selected.remove(c.getUserName());
 							String[] sel = new String[selected.size()];
 							sel = (String[]) selected.toArray(sel);
 							in.putExtra("contacts",sel);
@@ -95,11 +95,10 @@ public class ContactView extends ListActivity implements OnClickListener{
 						}
 					}
 				});
-			}
-			if(c != null){
-				TextView contact = (TextView) v.findViewById(R.id.label);
-				if(contact != null)
-					contact.setText(c.name);
+				if (c != null) {
+					TextView tt = (TextView) v.findViewById(R.id.label);
+					tt.setText(c.getUserName());
+				}
 			}	
 			return v;
 		}

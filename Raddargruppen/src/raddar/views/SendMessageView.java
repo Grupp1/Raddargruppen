@@ -64,7 +64,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 			m.setSubject(subject.getText() + "");
 			m.setData(messageData.getText() + "");
 			try {
-				new Sender(m, InetAddress.getByName("127.0.0.1"), 6789);
+				new Sender(m, InetAddress.getByName("130.236.227.95"), 4043);
 			} catch (UnknownHostException e) {
 
 			}
@@ -91,7 +91,6 @@ public class SendMessageView extends Activity implements OnClickListener {
 			try {
 				new Sender(m, InetAddress.getByName("127.0.0.1"), 6789);
 			} catch (UnknownHostException e) {
-
 			}
 		}
 	}

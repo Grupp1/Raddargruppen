@@ -16,7 +16,7 @@ public class Server {
 	public static Associations onlineUsers;
 
 	public Server() {
-		this(6789);
+		this(4043);
 	}
 	
 	public Server(int port) {
@@ -38,10 +38,7 @@ public class Server {
 		} catch (IOException ie) {
 			ie.printStackTrace();
 		}
-		
 	}
-	
-	
 	
 	public static void main(String[] args) {
 		new Server();
