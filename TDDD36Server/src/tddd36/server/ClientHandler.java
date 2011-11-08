@@ -106,6 +106,8 @@ public class ClientHandler implements Runnable {
 			String priority = in.readLine().split(" ")[1];
 			String fromUser = in.readLine().split(" ")[1];
 			String toUser = in.readLine().split(" ")[1];
+			String date = getAttrValue(in.readLine());
+			String subject = getAttrValue(in.readLine());
 			
 			// Skippa den tomma raden som alla HTTP-formaterade meddelanden har
 			in.readLine();
@@ -120,6 +122,10 @@ public class ClientHandler implements Runnable {
 			
 			// Lägg till lite text så att klienten kan se att denna testserver fungerar
 			tm.prepend("Borche (OK): ");
+			
+			// Sätt datum och ämnesrad
+			tm.setDate(date);
+			tm.setSubject(subject);
 			
 			// Hämta mottagarens IP-address från serverns lista 
 			InetAddress address = Server.onlineUsers.getUserAddress(toUser);
@@ -142,7 +148,7 @@ public class ClientHandler implements Runnable {
 			// Formatera och vidarebefordra meddelandet
 			fOut.println(tm.getFormattedMessage());
 			
-			System.out.println("["+so.getInetAddress().getHostAddress()+"] << Replying with altered text message. ");
+			System.out.println("["+forward.getInetAddress().getHostAddress()+"] << Forwarding text message. ");
 			
 			// Stäng ner
 			fOut.close();
@@ -160,6 +166,15 @@ public class ClientHandler implements Runnable {
 	 */
 	private void handleImageMessage() {
 		
+	}
+	
+	private String getAttrValue(String str) {
+		StringBuilder sb = new StringBuilder("");
+		String[] parts = str.split(" ");
+		for (int i = 1; i < parts.length; i++) 
+			sb.append(parts[i]);
+		
+		return sb.toString();
 	}
 
 }

@@ -36,7 +36,7 @@ public class Sender implements Runnable {
 
 	public void run() {
 		try {
-			Thread.sleep(10000);
+			//Thread.sleep(10000);
 			Socket so = new Socket(address, port);
 			so.setSoTimeout(5000);
 
@@ -53,8 +53,8 @@ public class Sender implements Runnable {
 
 		} catch (IOException ie) {
 			Log.d("Skapandet av socket [2]", ie.toString());
-		} catch (InterruptedException e) {
-			Log.d("Avruten väntan", "Gick inte");
-		}
+		} //catch (InterruptedException e) {
+			//Log.d("Avruten väntan", "Gick inte");
+		//}
 	}
 }

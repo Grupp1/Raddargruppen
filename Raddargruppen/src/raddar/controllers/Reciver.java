@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.text.DateFormat;
-
 import raddar.enums.MessageType;
 import raddar.models.Message;
 import raddar.models.TextMessage;
