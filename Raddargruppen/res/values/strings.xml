@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="start_header">Login</string>
-    <string name="app_name">Räddargruppen</string>
+    <string name="app_name">Räddarappen</string>
 
     <string name="button1">Tryck på mig!</string>
     <string name="start_user">Användarnamn:</string>

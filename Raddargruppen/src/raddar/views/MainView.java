@@ -107,7 +107,8 @@ public class MainView extends Activity implements OnClickListener, Observer{
 			finish();
 		}
 		if(v == serviceButton){
-			finish();
+			Intent nextIntent = new Intent(MainView.this, ServiceView.class);
+			startActivity(nextIntent);
 		}
 		if(v == sosButton){
 			finish();

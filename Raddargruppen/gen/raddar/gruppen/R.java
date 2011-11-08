@@ -18,12 +18,14 @@ public final class R {
         public static final int map=0x7f020004;
         public static final int mess=0x7f020005;
         public static final int phone=0x7f020006;
-        public static final int report=0x7f020007;
-        public static final int services=0x7f020008;
-        public static final int setup=0x7f020009;
-        public static final int smhi=0x7f02000a;
-        public static final int sos=0x7f02000b;
-        public static final int trafikverket=0x7f02000c;
+        public static final int r=0x7f020007;
+        public static final int report=0x7f020008;
+        public static final int services=0x7f020009;
+        public static final int setup=0x7f02000a;
+        public static final int smhi=0x7f02000b;
+        public static final int sos=0x7f02000c;
+        public static final int trafikverket=0x7f02000d;
+        public static final int yr=0x7f02000e;
     }
     public static final class id {
         public static final int bottomtext=0x7f050021;
@@ -34,6 +36,7 @@ public final class R {
         public static final int icon=0x7f05001f;
         public static final int inboxButton=0x7f05001a;
         public static final int linearLayout1=0x7f050025;
+        public static final int linearLayout2=0x7f050027;
         public static final int linearLayoutCall=0x7f050000;
         public static final int linearLayoutInbox=0x7f050019;
         public static final int linearLayoutLogout=0x7f050010;
@@ -50,8 +53,8 @@ public final class R {
         public static final int messageButton=0x7f050004;
         public static final int messageData=0x7f050024;
         public static final int newMessageButton=0x7f050018;
-        public static final int okButton=0x7f050028;
-        public static final int passwordText=0x7f050027;
+        public static final int okButton=0x7f05002b;
+        public static final int passwordText=0x7f05002a;
         public static final int readMessage=0x7f05001e;
         public static final int readMessageDate=0x7f05001c;
         public static final int readMessageSrcUser=0x7f05001b;
@@ -66,7 +69,9 @@ public final class R {
         public static final int textView2=0x7f050002;
         public static final int textView3=0x7f050005;
         public static final int toptext=0x7f050020;
-        public static final int userText=0x7f050026;
+        public static final int trafikverketButton=0x7f050028;
+        public static final int userText=0x7f050029;
+        public static final int yrButton=0x7f050026;
     }
     public static final class layout {
         public static final int list_item=0x7f030000;
@@ -77,7 +82,8 @@ public final class R {
         public static final int read_message=0x7f030005;
         public static final int row=0x7f030006;
         public static final int send_message=0x7f030007;
-        public static final int start=0x7f030008;
+        public static final int services=0x7f030008;
+        public static final int start=0x7f030009;
     }
     public static final class string {
         public static final int app_name=0x7f040001;
