@@ -41,6 +41,18 @@ public class Server {
 	}
 	
 	public static void main(String[] args) {
+		
+		System.out.println(Database.getUserLevel("Alice"));
+		System.out.println(Database.getUserLevel("ANDREAS"));
+		System.out.println(Database.getUserGroup("Kjell"));
+		System.out.println(Database.getUserGroup("Alise"));
+		
+		System.out.println(Database.getUserID("Alice"));
+		System.out.println(Database.getUserID("Alise"));
+		System.out.println(Database.getUsername(1));
+		System.out.println(Database.getUsername(4));
+		
+		
 		new Server();
 	}	
 }

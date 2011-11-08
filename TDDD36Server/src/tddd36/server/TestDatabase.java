@@ -27,10 +27,10 @@ package tddd36.server;
 	        try {
 	            con = DriverManager.getConnection(url, user, password);
 	            st = con.createStatement();
-	            rs = st.executeQuery("SELECT VERSION()");
+	        	rs = st.executeQuery("SELECT * FROM users WHERE userName = \'Alice\';");
 
 	            if (rs.next()) {
-	                System.out.println(rs.getString(1));
+	                System.out.println(rs.getString(3));
 	            }
 
 	        } catch (SQLException ex) {
