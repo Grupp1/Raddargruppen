@@ -1,28 +1,34 @@
-/*
- * ANVÃ„ND INTE DENNA KLASSEN LÃ„NGRE
- * /
-
-/* package tddd36.server;
+package tddd36.server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.Socket;
 
 import raddar.enums.MessagePriority;
 import raddar.enums.MessageType;
 import raddar.enums.NotificationType;
 
-public class ClientHandler implements Runnable {
+
+/**
+ * Denna klass bör användas för att ta emot ett godtyckligt meddelande.
+ * Skapa en instans av denna t ex när accept() (i klassen ServerSocket)
+ * returnerar en instans av klassen Socket och skicka den returnerade
+ * socketen som argument till denna klassen
+ * 
+ * @author andbo265
+ *
+ */
+
+
+public class Receiver implements Runnable {
 	
 	private Thread clientThread = new Thread(this);
 	
 	private Socket so;
 	private BufferedReader in;
 	
-	public ClientHandler(Socket clientSocket) {
+	public Receiver(Socket clientSocket) {
 		so = clientSocket;
 		clientThread.start();
 	}
@@ -33,17 +39,17 @@ public class ClientHandler implements Runnable {
 		try {
 			System.out.println("["+so.getInetAddress().getHostAddress()+"] ** Connection established. ");
 			
-			// Fï¿½r att lï¿½sa inkommande data frï¿½n klienten
+			// För att läsa inkommande data från klienten
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
 						
-			// Lï¿½s in vilken typ av meddelande som klienten skickar
+			// Läs in vilken typ av meddelande som klienten skickar
 			String t = in.readLine().split(" ")[1];
 			
-			// Konvertera frï¿½n strï¿½ng till MessageType
+			// Konvertera från sträng till MessageType
 			MessageType type = MessageType.convert(t);
 			
-			// Kontroll-sats som, beroende pï¿½ vilken typ som lï¿½sts in, ser till att resterande del av
-			// meddelandet som klienten har skickat blir inlï¿½st pï¿½ korrekt sï¿½tt
+			// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
+			// meddelandet som klienten har skickat blir inläst på korrekt sätt
 			switch (type) {
 				case NOTIFICATION:
 					handleNotification();
@@ -55,7 +61,7 @@ public class ClientHandler implements Runnable {
 					handleImageMessage();
 					break;
 				default:
-					System.out.println("Received message has unknown type. Discarding... ");			
+					System.out.println("Received message has unknown type. Discarding... ");
 			}
 			
 		} catch (IOException ie) {
@@ -65,8 +71,10 @@ public class ClientHandler implements Runnable {
 	}
 	
 	/*
-	 * I denna metoden associerar eller avassocierar vi anvï¿½ndare med IP-addresser
-	 */ /*
+	 * I denna metoden associerar och avassocierar vi användare med IP-addresser
+	 * Klienterna bör skicka ett NotificationMessage av typen CONNECT när de loggar
+	 * online, samt ett NotificationMessage av typen DISCONNECT när de loggar off.
+	 */
 	private void handleNotification() {
 		try {
 			// Read from who the notification is from
@@ -80,15 +88,17 @@ public class ClientHandler implements Runnable {
 			
 			switch (nt) {
 				case CONNECT:
-					// Spara anvï¿½ndaren och dennes IP-address (skriv ï¿½ver eventuell gammal IP-address)
+					// Spara användaren och dennes IP-address (skriv över eventuell gammal IP-address)
+					System.out.println(fromUser + " is now associated with " + so.getInetAddress().getHostAddress());
 					Server.onlineUsers.addUser(fromUser, so.getInetAddress());
 					break;
 				case DISCONNECT:
-					// Ta bort anvï¿½ndaren och dennes IP-address
+					// Ta bort användaren och dennes IP-address
+					System.out.println(fromUser + " is no longer associated with " + so.getInetAddress().getHostAddress());
 					Server.onlineUsers.removeUser(fromUser);
 					break;
 				default:
-					// Hï¿½r hamnar vi om nï¿½got gï¿½tt fel i formatteringen eler inlï¿½sandet av meddelandet
+					// Här hamnar vi om något gått fel i formatteringen eler inläsandet av meddelandet
 					System.out.println("Unknown NotificationType... ");
 			}
 			
@@ -99,14 +109,14 @@ public class ClientHandler implements Runnable {
 	}
 	
 	/*
-	 * Ta emot ett textmeddelande. Denna metod lï¿½r utvecklas mer sen fï¿½r att 
-	 * vidarebefordra meddelandet till en mottagarklient.
-	 */ /* 
+	 * Ta emot ett textmeddelande och skapa en Sender som ser till att
+	 * det skickas vidare till rätt mottagare
+	 */
 	private void handleTextMessage() {
 		try {
-			System.out.println("["+so.getInetAddress().getHostAddress()+"] >> Reading text message. ");
+			System.out.println("["+so.getInetAddress().getHostAddress()+"] >> text/plain message has been received. ");
 			
-			// Lï¿½s in vï¿½rden frï¿½n headern
+			// Läs in värden från headern
 			String priority = in.readLine().split(" ")[1];
 			String fromUser = in.readLine().split(" ")[1];
 			String toUser = in.readLine().split(" ")[1];
@@ -116,36 +126,40 @@ public class ClientHandler implements Runnable {
 			// Skippa den tomma raden som alla HTTP-formaterade meddelanden har
 			in.readLine();
 			
-			// Lï¿½s in meddelandets data/text
+			// Läs in meddelandets data/text
 			String data = "";
 			while (in.ready())
 				data += in.readLine();
 			
-			// Skapa ett nytt TextMessage med inlï¿½sta vï¿½rden
+			// Skapa ett nytt TextMessage med inlästa värden
 			TextMessage tm = new TextMessage(MessageType.TEXT, fromUser, toUser, MessagePriority.convert(priority), data);
 			
-			// Lï¿½gg till lite text sï¿½ att klienten kan se att denna testserver fungerar
-			tm.prepend("Borche (OK): ");
+			// Lägg till lite text så att klienten kan se att denna testserver fungerar
+			//tm.prepend("Borche (OK): ");
 			
-			// Sï¿½tt datum och ï¿½mnesrad
+			// Sätt datum och ämnesrad
 			tm.setDate(date);
 			tm.setSubject(subject);
+
+			// Skapa en Sender som tar hand om att skicka vidare meddelandet
+			new Sender(tm, toUser, 6789);
 			
-			// Hï¿½mta mottagarens IP-address frï¿½n serverns lista 
+			/*
+			// Hämta mottagarens IP-address från serverns lista 
 			InetAddress address = Server.onlineUsers.getUserAddress(toUser);
 			
 			if (address == null) {
-				// Kolla om anvï¿½ndaren existerar om JA, buffra, annars discard.
-				// Anvï¿½ndaren ï¿½r offline
+				// Kolla om användaren existerar om JA, buffra, annars discard.
+				// Användaren är offline
 				// Buffra meddelandet (to be implemented...)
 				return;
 			}
 				
 			// Skapa en socket med mottagarens address och den porten som klienten
-			// ligger och lyssnar pï¿½ (hï¿½rdkodat pï¿½ klienterna ï¿½r 6789 nï¿½r detta skrevs).
+			// ligger och lyssnar på (hårdkodat på klienterna är 6789 när detta skrevs).
 			Socket forward = new Socket(address, 6789);			
 			
-			// Ny PrintWriter fï¿½r mottagarens socket
+			// Ny PrintWriter för mottagarens socket
 			PrintWriter fOut = new PrintWriter(forward.getOutputStream(), true);
 			
 			
@@ -154,11 +168,11 @@ public class ClientHandler implements Runnable {
 			
 			System.out.println("["+forward.getInetAddress().getHostAddress()+"] << Forwarding text message. ");
 			
-			// Stï¿½ng ner
+			// Stäng ner
 			fOut.close();
 			forward.close();
 									
-			System.out.println("["+so.getInetAddress().getHostAddress()+"] ** Connection closed. ");
+			System.out.println("["+so.getInetAddress().getHostAddress()+"] ** Connection closed. ");*/
 			
 		} catch (IOException ie) {
 			ie.printStackTrace();
@@ -167,11 +181,14 @@ public class ClientHandler implements Runnable {
 	
 	/*
 	 * To be implemented
-	 */ /* 
+	 */
 	private void handleImageMessage() {
 		
 	}
-	
+	/*
+	 * Denna funktionen används för att läsa in en rad och filtrera bort attributtaggen
+	 * 'Content-Type: text/plain' filtreras till exempel till text/plain
+	 */
 	private String getAttrValue(String str) {
 		StringBuilder sb = new StringBuilder("");
 		String[] parts = str.split(" ");
@@ -181,4 +198,4 @@ public class ClientHandler implements Runnable {
 		return sb.toString();
 	}
 
-}*/
+}
