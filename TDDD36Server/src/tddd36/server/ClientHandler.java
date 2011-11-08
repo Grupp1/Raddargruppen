@@ -66,7 +66,7 @@ public class ClientHandler implements Runnable {
 	
 	/*
 	 * I denna metoden associerar eller avassocierar vi anv�ndare med IP-addresser
-	 */
+	 */ /*
 	private void handleNotification() {
 		try {
 			// Read from who the notification is from
@@ -101,7 +101,7 @@ public class ClientHandler implements Runnable {
 	/*
 	 * Ta emot ett textmeddelande. Denna metod l�r utvecklas mer sen f�r att 
 	 * vidarebefordra meddelandet till en mottagarklient.
-	 */
+	 */ /* 
 	private void handleTextMessage() {
 		try {
 			System.out.println("["+so.getInetAddress().getHostAddress()+"] >> Reading text message. ");
@@ -167,7 +167,7 @@ public class ClientHandler implements Runnable {
 	
 	/*
 	 * To be implemented
-	 */
+	 */ /* 
 	private void handleImageMessage() {
 		
 	}
