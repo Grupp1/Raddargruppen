@@ -20,46 +20,41 @@ public class ClientDatabaseManager extends Observable {
 	// a reference to the database used by this application/object
 	private SQLiteDatabase db;
 
-	// These constants are specific to the database. They should be
-	// changed to suit your needs.
-	private String DB_NAME;
+	// Databse constants
+	private String DB_NAME; //Same as username
 	private final int DB_VERSION = 1;
 	
+	// Table row constants
 	private final String[] TEXT_MESSAGE_TABLE_ROWS = new String[] { "msgId",
 			"srcUser","rDate","subject","mData"};
+	private final String[] CONTACT_TABLE_ROWS = new String[] { "userName", "isGroup"};
+	private final String[] SITUATION_TABLE_ROWS = new String[] { "title", "description", "priority" };
+	private final String[] RESOURCE_TABLE_ROWS = new String[] { "title", "status" };
 
 
+	/**********************************************************************
+	 * CREATE OR OPEN A DATABASE SPECIFIC TO THE USER
+	 * @param context
+	 * @param userName The name of the database is equal to the user name
+	 */
 	public ClientDatabaseManager(Context context, String userName) {
 		this.context = context;
 		this.DB_NAME = userName;
-
-		// create or open the database
 		CustomSQLiteOpenHelper helper = new CustomSQLiteOpenHelper(context);
 		this.db = helper.getWritableDatabase();
 	}
 
 	/**********************************************************************
-	 * ADDING A ROW TO THE DATABASE TABLE
+	 * ADDING A MESSAGE ROW TO THE DATABASE TABLE
 	 * 
-	 * This is an example of how to add a row to a database table using this
-	 * class. You should edit this method to suit your needs.
-	 * 
-	 * the key is automatically assigned by the database
-	 * 
-	 * @param rowStringOne
-	 *            the value for the row's first column
-	 * @param rowStringTwo
-	 *            the value for the row's second column
+	 * @param m The message that is to be added to the database
 	 */
-
 	public void addRow(Message m) {
-		//Extract information about TextMessage m and put them in value pairs
 		ContentValues values = new ContentValues();
 		values.put("srcUser", m.getSrcUser());
 		values.put("rDate", m.getFormattedDate());
 		values.put("subject", m.getSubject());
 		values.put("mData", m.getData());
-		// Sätt in
 		try {
 			db.insert("message", null, values);
 		} catch (Exception e) {
@@ -69,56 +64,90 @@ public class ClientDatabaseManager extends Observable {
 		setChanged();
 		notifyObservers(m);
 	}
-	
-
-
 	/**********************************************************************
-	 * DELETING A ROW FROM THE DATABASE TABLE
+	 * ADDING A CONTACT ROW IN THE DATABASE TABLE
 	 * 
-	 * This is an example of how to delete a row from a database table using
-	 * this class. In most cases, this method probably does not need to be
-	 * rewritten.
-	 * 
-	 * @param rowID
-	 *            the SQLite database identifier for the row to delete.
+	 * @param c The contact that is to be added
 	 */
-	public void deleteRow(long rowID) {
-		// ask the database manager to delete the row of given id
+	public void addRow(Contact c){
+		ContentValues values = new ContentValues();
+		values.put("userName", c.getUserName());
+		values.put("group", c.isgroup());
 		try {
-			db.delete("message", "msgId =" + rowID, null);
+			db.insert("contact", null, values);
 		} catch (Exception e) {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
 		setChanged();
-		notifyObservers();
+		notifyObservers(c);
+	}
+	
+	/**********************************************************************
+	 * ADDING A SITUATION IN THA DATABASE TABLE
+	 * 
+	 * @param s The situation that is to be added
+	 */
+	public void addRow(Situation s){
+		ContentValues values = new ContentValues();
+		values.put("title", s.getTitle());
+		values.put("description", s.getDescription());
+		values.put("priority", s.getPriority().toString());
+		try {
+			db.insert("contact", null, values);
+		} catch (Exception e) {
+			Log.e("DB ERROR", e.toString());
+			e.printStackTrace();
+		}
+		setChanged();
+		notifyObservers(s);
+	}
+	
+	/**********************************************************************
+	 *ADDING A RESOURCE IN THA DATABASE TABLE
+	 *
+	 *
+	 */
+	public void addRow(Resource r){
+		ContentValues values = new ContentValues();
+		values.put("title", r.getTitle());
+		values.put("status", r.getStatus().toString());
+		try {
+			db.insert("contact", null, values);
+		} catch (Exception e) {
+			Log.e("DB ERROR", e.toString());
+			e.printStackTrace();
+		}
+		setChanged();
+		notifyObservers(r);
+	}
+
+
+	/**********************************************************************
+	 * DELETING A ROW FROM THE CONTACT TABLE
+	 *
+	 *@param c The contact that is to be deleted
+	 */
+	public void deleteRow(Contact c) {
+		try {
+			db.delete("contact", "userName =" + c.getUserName(), null);
+		} catch (Exception e) {
+			Log.e("DB ERROR", e.toString());
+			e.printStackTrace();
+		}
+		setChanged();
+		notifyObservers(c);
 	}
 
 	/**********************************************************************
-	 * UPDATING A ROW IN THE DATABASE TABLE
+	 * UPDATING A ROW IN THE CONTACT TABLE
 	 * 
-	 * This is an example of how to update a row in the database table using
-	 * this class. You should edit this method to suit your needs.
-	 * 
-	 * @param rowID
-	 *            the SQLite database identifier for the row to update.
-	 * @param rowStringOne
-	 *            the new value for the row's first column
-	 * @param rowStringTwo
-	 *            the new value for the row's second column
 	 */
-	public void updateRow(long rowID, String[] tableCells) {
-		// this is a key value pair holder used by android's SQLite functions
+	public void updateRow(Contact c, String userName) {
 		ContentValues values = new ContentValues();
-		values.put("srcUser", tableCells[0]);
-		values.put("rDate", tableCells[1]);
-		values.put("subject", tableCells[2]);
-		values.put("mData", tableCells[3]);
-
-
-		// ask the database object to update the database row of given rowID
+		values.put("srcUser", userName);
 		try {
-			db.update("message", values, "msgId=" + rowID, null);
+			db.update("contact", values, "userName" + c.getUserName(), null);
 		} catch (Exception e) {
 			Log.e("DB Error", e.toString());
 			e.printStackTrace();
@@ -178,28 +207,37 @@ public class ClientDatabaseManager extends Observable {
 		return rowArray;
 	} */
 	
-	public ArrayList<Message> getAllRowsAsArrays(String table)
-	{
-		
+	
+	/**
+	 * RETRIEVE ALL ROWS IN A TABLE AS AN ArrayList
+	 * @param table The table that is to be retrieved
+	 * @return
+	 */
+	
+	
+	public ArrayList<Message> getAllRowsAsArrays(String table){
+		//TODO gör så denna funktion fungerar med alla databastabeller
+		//TODO kom inte på något bra sätt för att få det att fungera i det generella fallet.
 		ArrayList<Message> dataArrays = new ArrayList<Message>();
-
 		Cursor cursor = null;
-
 		try
 		{
 			// ask the database object to create the cursor.
 			if(table.equals("message")){
-						cursor = db.query(
+				cursor = db.query(
 						"message",
 						TEXT_MESSAGE_TABLE_ROWS,
 						null, null, null, null, null);
 			}
-			// move the cursor's pointer to position zero.
+			else if(table.equals("contact")){
+				cursor = db.query(
+						"contact",
+						CONTACT_TABLE_ROWS,
+						null, null, null, null, null);
+			}
 			cursor.moveToFirst();
-
-			// if there is data after the current cursor position, add it
-			// to the ArrayList.
-			if (!cursor.isAfterLast())
+			//If it is a message table
+			if (!cursor.isAfterLast() && table == "message")
 			{
 				do
 				{
@@ -220,7 +258,6 @@ public class ClientDatabaseManager extends Observable {
 			Log.e("DB Error", e.toString());
 			e.printStackTrace();
 		}
-
 		// return the ArrayList that holds the data collected from
 		// the database.
 		return dataArrays;

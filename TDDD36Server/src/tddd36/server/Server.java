@@ -13,10 +13,10 @@ public class Server {
 	 * Behöver servern veta vilken IP-address en viss användare har så är det från detta
 	 * objekt IP-addressen kan hämtas 
 	 */
-	public static Associations onlineUsers;
+	public static Associations onlineUsers = new Associations();
 
 	public Server() {
-		this(6789);
+		this(4043);
 	}
 	
 	public Server(int port) {
@@ -33,15 +33,12 @@ public class Server {
 			while (true) 
 				// Acceptera en inkommande klient och skapa en ny ClientHandler 
 				// som hanterar klienten i en egen tråd
-				new ClientHandler(so.accept());
+				new Receiver(so.accept());
 			
 		} catch (IOException ie) {
 			ie.printStackTrace();
 		}
-		
 	}
-	
-	
 	
 	public static void main(String[] args) {
 		new Server();

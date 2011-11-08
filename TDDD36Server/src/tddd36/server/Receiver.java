@@ -3,22 +3,32 @@ package tddd36.server;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.Socket;
 
 import raddar.enums.MessagePriority;
 import raddar.enums.MessageType;
 import raddar.enums.NotificationType;
 
-public class ClientHandler implements Runnable {
+
+/**
+ * Denna klass bör användas för att ta emot ett godtyckligt meddelande.
+ * Skapa en instans av denna t ex när accept() (i klassen ServerSocket)
+ * returnerar en instans av klassen Socket och skicka den returnerade
+ * socketen som argument till denna klassen
+ * 
+ * @author andbo265
+ *
+ */
+
+
+public class Receiver implements Runnable {
 	
 	private Thread clientThread = new Thread(this);
 	
 	private Socket so;
 	private BufferedReader in;
 	
-	public ClientHandler(Socket clientSocket) {
+	public Receiver(Socket clientSocket) {
 		so = clientSocket;
 		clientThread.start();
 	}
@@ -51,7 +61,7 @@ public class ClientHandler implements Runnable {
 					handleImageMessage();
 					break;
 				default:
-					System.out.println("Received message has unknown type. Discarding... ");			
+					System.out.println("Received message has unknown type. Discarding... ");
 			}
 			
 		} catch (IOException ie) {
@@ -61,7 +71,9 @@ public class ClientHandler implements Runnable {
 	}
 	
 	/*
-	 * I denna metoden associerar eller avassocierar vi användare med IP-addresser
+	 * I denna metoden associerar och avassocierar vi användare med IP-addresser
+	 * Klienterna bör skicka ett NotificationMessage av typen CONNECT när de loggar
+	 * online, samt ett NotificationMessage av typen DISCONNECT när de loggar off.
 	 */
 	private void handleNotification() {
 		try {
@@ -77,10 +89,12 @@ public class ClientHandler implements Runnable {
 			switch (nt) {
 				case CONNECT:
 					// Spara användaren och dennes IP-address (skriv över eventuell gammal IP-address)
+					System.out.println(fromUser + " is now associated with " + so.getInetAddress().getHostAddress());
 					Server.onlineUsers.addUser(fromUser, so.getInetAddress());
 					break;
 				case DISCONNECT:
 					// Ta bort användaren och dennes IP-address
+					System.out.println(fromUser + " is no longer associated with " + so.getInetAddress().getHostAddress());
 					Server.onlineUsers.removeUser(fromUser);
 					break;
 				default:
@@ -95,12 +109,12 @@ public class ClientHandler implements Runnable {
 	}
 	
 	/*
-	 * Ta emot ett textmeddelande. Denna metod lär utvecklas mer sen för att 
-	 * vidarebefordra meddelandet till en mottagarklient.
+	 * Ta emot ett textmeddelande och skapa en Sender som ser till att
+	 * det skickas vidare till rätt mottagare
 	 */
 	private void handleTextMessage() {
 		try {
-			System.out.println("["+so.getInetAddress().getHostAddress()+"] >> Reading text message. ");
+			System.out.println("["+so.getInetAddress().getHostAddress()+"] >> text/plain message has been received. ");
 			
 			// Läs in värden från headern
 			String priority = in.readLine().split(" ")[1];
@@ -121,12 +135,16 @@ public class ClientHandler implements Runnable {
 			TextMessage tm = new TextMessage(MessageType.TEXT, fromUser, toUser, MessagePriority.convert(priority), data);
 			
 			// Lägg till lite text så att klienten kan se att denna testserver fungerar
-			tm.prepend("Borche (OK): ");
+			//tm.prepend("Borche (OK): ");
 			
 			// Sätt datum och ämnesrad
 			tm.setDate(date);
 			tm.setSubject(subject);
+
+			// Skapa en Sender som tar hand om att skicka vidare meddelandet
+			new Sender(tm, toUser, 6789);
 			
+			/*
 			// Hämta mottagarens IP-address från serverns lista 
 			InetAddress address = Server.onlineUsers.getUserAddress(toUser);
 			
@@ -154,7 +172,7 @@ public class ClientHandler implements Runnable {
 			fOut.close();
 			forward.close();
 									
-			System.out.println("["+so.getInetAddress().getHostAddress()+"] ** Connection closed. ");
+			System.out.println("["+so.getInetAddress().getHostAddress()+"] ** Connection closed. ");*/
 			
 		} catch (IOException ie) {
 			ie.printStackTrace();
@@ -167,7 +185,10 @@ public class ClientHandler implements Runnable {
 	private void handleImageMessage() {
 		
 	}
-	
+	/*
+	 * Denna funktionen används för att läsa in en rad och filtrera bort attributtaggen
+	 * 'Content-Type: text/plain' filtreras till exempel till text/plain
+	 */
 	private String getAttrValue(String str) {
 		StringBuilder sb = new StringBuilder("");
 		String[] parts = str.split(" ");
