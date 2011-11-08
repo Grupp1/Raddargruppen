@@ -16,6 +16,7 @@ public class MapModel extends Observable {
 	private MapObjectList fireList;
 	private MapObjectList resourceList;
 	private MapObjectList fireTruckList;
+	private MapObjectList situationList;
 	private Drawable d;
 	
 	private MapUI mapUI;
@@ -57,9 +58,21 @@ public class MapModel extends Observable {
 		if(o instanceof Resource){
 			if(resourceList == null){
 				d = mapUI.getResources().getDrawable(o.getIcon());
+				resourceList = new MapObjectList(d, mapUI);
 			}
+			resourceList.addOverlay(o);
+			this.setChanged();
+			notifyObservers(resourceList);
 		}
-	
+		if(o instanceof Situation){
+			if(resourceList == null){
+				d = mapUI.getResources().getDrawable(o.getIcon());
+				resourceList = new MapObjectList(d, mapUI);
+			}
+			situationList.addOverlay(o);
+			this.setChanged();
+			notifyObservers(situationList);
+		}
 	}
 	
 	
