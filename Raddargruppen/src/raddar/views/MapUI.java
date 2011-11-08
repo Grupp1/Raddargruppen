@@ -30,6 +30,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
@@ -81,8 +82,9 @@ public class MapUI extends MapActivity implements Observer {
 
 		you = new You(myLocation, "Min position", "Här är jag", R.drawable.niklas, "000000", ResourceStatus.FREE);
 		gps = new GPSModel(this);
+
 		mapCont = new MapCont(MapUI.this, you);
-		
+
 		Touchy t = new Touchy(this);
 		mapOverlays.add(t);
 
@@ -125,6 +127,9 @@ public class MapUI extends MapActivity implements Observer {
 	class Touchy extends Overlay{
 		private Context context;
 		private CharSequence [] items = {"Brand", "Brandbil", "Situation", "Resurs"};
+		private String value;
+		private EditText input;
+		private Fire f;
 
 		public Touchy(Context context){
 			this.context = context;
@@ -147,10 +152,38 @@ public class MapUI extends MapActivity implements Observer {
 				builder.setTitle("Placera");
 				builder.setItems(items, new DialogInterface.OnClickListener() {
 
+
 					public void onClick(DialogInterface dialog, int item) {
-						Toast.makeText(getApplicationContext(), items[item]+" utplacerad", Toast.LENGTH_LONG).show();
+
+						AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+
+						alertDialog.setTitle("Lägg till beskrivning");
+						alertDialog.setMessage("Beskrivning");
+
+						input = new EditText(context);
+						alertDialog.setView(input);
+
+						
+						alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int whichButton) {
+								value = input.getText().toString();
+								Toast.makeText(getApplicationContext(), value, Toast.LENGTH_LONG).show();
+								f = new Fire(touchedPoint, value, "00000", SituationPriority.HIGH);
+								mapCont.add(f);
+							}
+						});
+
+						alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int whichButton) {
+
+							}
+						});
+
+
+						alertDialog.show();
+
 						if(item == 0){		
-							mapCont.add(new Fire(touchedPoint, "Det brinner här!", "00000", SituationPriority.HIGH));
+							//mapCont.add(new Fire(touchedPoint, value, "00000", SituationPriority.HIGH));
 						}
 						if(item == 1){
 							mapCont.add(new FireTruck(touchedPoint, "Vi är på väg", "00000", ResourceStatus.BUSY));
@@ -161,7 +194,10 @@ public class MapUI extends MapActivity implements Observer {
 						if(item == 3){
 							mapCont.add(new Resource(touchedPoint, "Resurs", "Räddningen är här", R.drawable.resource, "00000", ResourceStatus.BUSY));
 						}
+						Toast.makeText(getApplicationContext(), items[item]+" utplacerad", Toast.LENGTH_LONG).show();
+
 					}
+
 				});
 				
 				AlertDialog alert = builder.create();
@@ -197,6 +233,7 @@ public class MapUI extends MapActivity implements Observer {
 				});
 				*/
 
+
 				alert.show();
 				return true;
 			}
@@ -211,6 +248,7 @@ public class MapUI extends MapActivity implements Observer {
 
 	public void update(Observable observable, Object data) {
 		if (data instanceof GeoPoint){
+			you.setPoint((GeoPoint)data);
 			myLocation = (GeoPoint) data;
 			you.setPoint(myLocation);
 			if (follow){
