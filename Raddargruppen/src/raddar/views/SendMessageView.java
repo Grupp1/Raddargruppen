@@ -97,12 +97,14 @@ public class SendMessageView extends Activity implements OnClickListener {
 	}
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if(requestCode == 0){
-			Bundle extras = data.getExtras();
-			String temp = "";
-			String[] destUsers = extras.getStringArray("contacts");
-			for(int i = 0; i < destUsers.length; i++)
-				temp += ";"+destUsers[i];
-			destUser.setText(temp);		
+			if(resultCode == RESULT_OK){
+				Bundle extras = data.getExtras();
+				String temp = "";
+				String[] destUsers = extras.getStringArray("contacts");
+				for(int i = 0; i < destUsers.length; i++)
+					temp += destUsers[i]+";";
+				destUser.setText(temp);	
+			}
 		}
 	}
 }

@@ -21,6 +21,7 @@ public class StartView extends Activity {
 	private EditText user;
 	private EditText password;
 	InternalComManager controller;
+	
 
 
 	/** Called when the activity is first created. */
