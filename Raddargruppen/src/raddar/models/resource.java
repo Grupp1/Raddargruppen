@@ -10,6 +10,7 @@ public class Resource extends MapObjectList {
 		// TODO Auto-generated constructor stub
 	}
 
+	private String title;
 	private ResourceStatus status;
 
 	public ResourceStatus getStatus() {
@@ -20,4 +21,10 @@ public class Resource extends MapObjectList {
 		this.status = status;
 	}
 	
+	public String getTitle(){
+		return title;
+	}
+	 public void setTitle(String title){
+		 this.title = title;
+	 }
 }
