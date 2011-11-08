@@ -27,12 +27,14 @@ public final class R {
         public static final int niklas=0x7f02000d;
         public static final int phone=0x7f02000e;
         public static final int report=0x7f02000f;
-        public static final int ringa=0x7f020010;
-        public static final int services=0x7f020011;
-        public static final int setup=0x7f020012;
-        public static final int smhi=0x7f020013;
-        public static final int sos=0x7f020014;
-        public static final int trafikverket=0x7f020015;
+        public static final int resource=0x7f020010;
+        public static final int ringa=0x7f020011;
+        public static final int services=0x7f020012;
+        public static final int setup=0x7f020013;
+        public static final int situation=0x7f020014;
+        public static final int smhi=0x7f020015;
+        public static final int sos=0x7f020016;
+        public static final int trafikverket=0x7f020017;
     }
     public static final class id {
         public static final int bottomtext=0x7f050015;
