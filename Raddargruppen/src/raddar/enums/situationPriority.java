@@ -18,10 +18,10 @@ public enum SituationPriority {
 		}
 	};
 	
-	private String prioroty;
+	private String priority;
 	
 	SituationPriority(String s){
-		prioroty = s;
+		priority = s;
 	}
 
 }

@@ -8,9 +8,11 @@
 	<uses-sdk android:minSdkVersion="10" />
 
 	<application
-		android:icon="@drawable/icon"
-		android:label="@string/app_name"
-		android:debuggable="true">
+
+		android:icon="@drawable/r"
+		android:label="@string/app_name" android:debuggable="true">
+
+	
 
 		<uses-library android:name="com.google.android.maps" />
 
@@ -41,6 +43,8 @@
 		<activity android:name="raddar.views.MessageChoiceView"></activity>
 
 		<activity android:name="raddar.views.SendMessageView"></activity>
+		<activity android:name="raddar.views.ServiceView"></activity>
+		<activity android:name="raddar.views.AddContactView"></activity>
 
 	</application>
 

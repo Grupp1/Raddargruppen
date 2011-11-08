@@ -10,7 +10,7 @@ public class Contact {
 	 * @param userName The contacts user name
 	 * @param isGroup false if the contact is a user; true if the contact is a group of users.
 	 */
-	Contact(String userName, boolean isGroup){
+	public Contact(String userName, boolean isGroup){
 		this.USER_NAME = userName;
 		this.isGroup = isGroup;
 	}
