@@ -9,6 +9,7 @@ public class Situation extends MapObject {
 		super(defaultMarker);
 		// TODO Auto-generated constructor stub
 	}
+	private String title;
 	private String description;
 	private SituationPriority priority;
 	
@@ -24,5 +25,13 @@ public class Situation extends MapObject {
 	public void setPriority(SituationPriority priority) {
 		this.priority = priority;
 	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	
+	public String getTitle() {
+		return title;
+	}
+	
 	
 }
