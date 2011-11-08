@@ -52,16 +52,16 @@ public class MainView extends Activity implements OnClickListener, Observer{
 		new ReciveHandler();
 
 		// Notifiera servern att vi kommer online
-		/* 
-		NotificationMessage nm = new NotificationMessage("username", NotificationType.CONNECT);
+		
+		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
 		try {
 			// Ändra localhost till serverns address när den
 			// är fastställd och portarna har öppnats i projektrummet
-			new Sender(nm, InetAddress.getLocalHost(), 6789);	
+			new Sender(nm, InetAddress.getByName("130.236.227.95"), 4043);	
 		} catch (UnknownHostException e) {
 			Log.d("NotificationMessage", "Connect failed");
 		}
-		 */
+		 
 		db.addObserver(this);
 
 		callButton = (ImageButton)this.findViewById(R.id.callButton);
@@ -138,16 +138,16 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	public void onDestroy() {
 		super.onDestroy();
 		// Notifiera servern att vi går offline
-		/* 
-		NotificationMessage nm = new NotificationMessage("username", NotificationType.DISCONNECT);
+		
+		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.DISCONNECT);
 		try {
 			// Ändra localhost till serverns address när den
 			// är fastställd och portarna har öppnats i projektrummet
-			new Sender(nm, InetAddress.getLocalHost(), 6789);	
+			new Sender(nm, InetAddress.getByName("130.236.227.95"), 4043);		
 		} catch (UnknownHostException e) {
 			Log.d("NotificationMessage", "Disconnect failed");
 		}
-		 */
+		 
 	}
 
 	public void update(Observable observable, final Object data) {

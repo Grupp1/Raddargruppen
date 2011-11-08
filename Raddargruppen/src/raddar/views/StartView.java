@@ -38,8 +38,8 @@ public class StartView extends Activity {
 		user = (EditText)this.findViewById(R.id.userText);
 		password = (EditText)this.findViewById(R.id.passwordText);
 		//Endast för lättare testning
-		user.setText("Alice");
-		password.setText("longshot");
+		user.setText("Borche");
+		password.setText("hej123");
 		
 		loginButton = (Button)this.findViewById(R.id.okButton);
 		loginButton.setOnClickListener(new OnClickListener(){
@@ -51,7 +51,7 @@ public class StartView extends Activity {
 					nextIntent.putExtra("user",user.getText().toString());
 					startActivity(nextIntent);
 				} else {
-					Toast.makeText(StartView.this, "Wrong username or password", Toast.LENGTH_LONG).show();
+					Toast.makeText(StartView.this, "Fel användarnamn eller lösenord", Toast.LENGTH_LONG).show();
 				}
 			}
 
