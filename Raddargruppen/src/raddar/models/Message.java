@@ -1,6 +1,7 @@
 package raddar.models;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.Date;
 
 import raddar.enums.MessagePriority;
@@ -115,6 +116,15 @@ public abstract class Message {
 	
 	public void setDate(Date date) {
 		this.date = date;
+	}
+	
+	public void setDate(String date) {
+		DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.DEFAULT);
+		try {
+			this.date = df.parse(date);
+		} catch (ParseException e) { 
+			e.printStackTrace();
+		}
 	}
 	
 	public Date getDate() {

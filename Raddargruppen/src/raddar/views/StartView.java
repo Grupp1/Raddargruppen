@@ -38,8 +38,8 @@ public class StartView extends Activity {
 		user = (EditText)this.findViewById(R.id.userText);
 		password = (EditText)this.findViewById(R.id.passwordText);
 		//Endast för lättare testning
-		user.setText("Alice");
-		password.setText("longshot");
+		user.setText("Borche");
+		password.setText("hej123");
 		
 		loginButton = (Button)this.findViewById(R.id.okButton);
 		loginButton.setOnClickListener(new OnClickListener(){
