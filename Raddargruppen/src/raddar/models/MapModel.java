@@ -18,11 +18,8 @@ public class MapModel extends Observable {
 	private MapObjectList fireList;
 	private MapObjectList fireTruckList;
 	private MapObjectList situationList;
-	<<<<<<< HEAD
-	private Drawable d;
-	=======
-			private MapObjectList resourceList;
-	>>>>>>> 0c4146c00133c2f1d80ffdce421517f589de7e30
+	private MapObjectList resourceList;
+
 
 	private MapUI mapUI;
 
