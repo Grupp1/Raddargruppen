@@ -1,9 +1,7 @@
 package raddar.views;
 
-import raddar.enums.LoginResponse;
-
 import raddar.controllers.InternalComManager;
-
+import raddar.enums.LoginResponse;
 import raddar.gruppen.R;
 import raddar.models.Login;
 import android.app.Activity;
@@ -15,12 +13,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+
 public class StartView extends Activity {
 
 	private Button loginButton;
 	private EditText user;
 	private EditText password;
 	InternalComManager controller;
+	
 
 
 	/** Called when the activity is first created. */
@@ -38,8 +38,8 @@ public class StartView extends Activity {
 		user = (EditText)this.findViewById(R.id.userText);
 		password = (EditText)this.findViewById(R.id.passwordText);
 		//Endast för lättare testning
-		user.setText("Borche");
-		password.setText("hej123");
+		user.setText("Alice");
+		password.setText("longshot");
 		
 		loginButton = (Button)this.findViewById(R.id.okButton);
 		loginButton.setOnClickListener(new OnClickListener(){

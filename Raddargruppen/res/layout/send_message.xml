@@ -1,18 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent">
-    <TextView android:id="@+id/textView1" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="@string/send_destUser" android:layout_marginLeft="30dip" android:layout_marginTop="20dip"></TextView>
-    <EditText android:layout_height="wrap_content" android:layout_width="match_parent" android:inputType="textPersonName" android:id="@+id/destUser" android:layout_marginLeft="30dip" android:layout_marginRight="30dip">
-        <requestFocus></requestFocus>
-    </EditText>
-    <TextView android:id="@+id/textView2" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_marginLeft="30dip" android:layout_marginTop="10dip" android:text="@string/send_subject"></TextView>
-    <EditText android:layout_height="wrap_content" android:layout_width="match_parent" android:inputType="textPersonName" android:id="@+id/subject" android:layout_marginLeft="30dip" android:layout_marginRight="30dip" android:maxLength="30"></EditText>
-    <TextView android:id="@+id/textView3" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_marginLeft="30dip" android:layout_marginTop="10dip" android:text="@string/send_message"></TextView>
-    <EditText android:layout_width="match_parent" android:layout_marginLeft="30dip" android:layout_marginRight="30dip" android:layout_height="200dp" android:id="@+id/messageData" android:gravity="top" android:maxLength="300"></EditText>
-    <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="right" android:layout_marginRight="30dip" android:layout_marginTop="10dip" android:layout_marginBottom="20dip" android:text="@string/send_send" android:id="@+id/sendButton"></Button>
-    
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+	<TextView
+		android:id="@+id/textView1"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:text="@string/send_destUser"
+		android:layout_marginLeft="30dip"
+		android:layout_marginTop="20dip"></TextView>
+	<EditText
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:inputType="textPersonName"
+		android:id="@+id/destUser"
+		android:layout_marginLeft="30dip"
+		android:layout_marginRight="30dip"
+		android:singleLine="true">
+		<requestFocus></requestFocus>
+	</EditText>
+	<TextView
+		android:id="@+id/textView2"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:layout_marginLeft="30dip"
+		android:layout_marginTop="10dip"
+		android:text="@string/send_subject"></TextView>
+	<EditText
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:inputType="textPersonName"
+		android:id="@+id/subject"
+		android:layout_marginLeft="30dip"
+		android:layout_marginRight="30dip"
+		android:maxLength="30"
+		android:singleLine="true"></EditText>
+	<TextView
+		android:id="@+id/textView3"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:layout_marginLeft="30dip"
+		android:layout_marginTop="10dip"
+		android:text="@string/send_message"></TextView>
+	<EditText
+		android:layout_width="match_parent"
+		android:layout_marginLeft="30dip"
+		android:layout_marginRight="30dip"
+		android:layout_height="200dp"
+		android:id="@+id/messageData"
+		android:gravity="top"
+		android:maxLength="300"></EditText>
+	<Button
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="right"
+		android:layout_marginRight="30dip"
+		android:layout_marginTop="10dip"
+		android:layout_marginBottom="20dip"
+		android:text="@string/send_send"
+		android:id="@+id/sendButton"></Button>
+
 
 </LinearLayout>

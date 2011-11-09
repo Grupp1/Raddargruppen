@@ -11,7 +11,9 @@ import raddar.models.TextMessage;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -55,6 +57,8 @@ public class SendMessageView extends Activity implements OnClickListener {
 						Toast.LENGTH_SHORT).show();
 				return;
 			}
+			sendMessages();
+			/*
 			Message m = new TextMessage(MainView.controller.getUser(), ""
 					+ destUser.getText());
 			m.setSubject(subject.getText() + "");
@@ -64,47 +68,42 @@ public class SendMessageView extends Activity implements OnClickListener {
 			} catch (UnknownHostException e) {
 
 			}
-			Toast.makeText(getApplicationContext(), "Meddelande till "+destUser.getText().toString(),
+			 */
+			Toast.makeText(getApplicationContext(), "Meddelande till "+destUser.getText().
+					toString().trim(),
 					Toast.LENGTH_SHORT).show();
 			finish();
 		} else {
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage(
-					"Vill du lägga till en användare från kontaktlistan?")
-					.setCancelable(false)
-					.setPositiveButton("Ja",
-							new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog,
-								int id) {
-							SendMessageView.this.addUserFromList();
-						}
-					})
-					.setNegativeButton("Nej",
-							new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog,
-								int id) {
-							dialog.cancel();
-						}
-					});
-			AlertDialog alert = builder.create();
-			alert.show();
-		}
 
+			Intent nextIntent = new Intent(SendMessageView.this, ContactView.class);
+			startActivityForResult(nextIntent,0);
+		}
 	}
 
-	private void addUserFromList() {
-		final CharSequence[] items = {  "Borche", "Daniel", "Thomas" };
-
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle("Välj en användare");
-		builder.setItems(items, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int item) {
-				Toast.makeText(getApplicationContext(), items[item],
-						Toast.LENGTH_SHORT).show();
-				destUser.setText(items[item]);
+	private void sendMessages(){
+		String[] destUsers = (destUser.getText().toString()+";").split(";");
+		Log.d("number of messages",destUsers.length+"");
+		for(int i = 0; i < destUsers.length;i++){
+			Message m = new TextMessage(MainView.controller.getUser(), ""
+					+ destUsers[i]);
+			m.setSubject(subject.getText() + "");
+			m.setData(messageData.getText() + "");
+			try {
+				new Sender(m, InetAddress.getByName("127.0.0.1"), 6789);
+			} catch (UnknownHostException e) {
 			}
-		});
-		AlertDialog alert = builder.create();
-		alert.show();
+		}
+	}
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(requestCode == 0){
+			if(resultCode == RESULT_OK){
+				Bundle extras = data.getExtras();
+				String temp = "";
+				String[] destUsers = extras.getStringArray("contacts");
+				for(int i = 0; i < destUsers.length; i++)
+					temp += destUsers[i]+";";
+				destUser.setText(temp);	
+			}
+		}
 	}
 }

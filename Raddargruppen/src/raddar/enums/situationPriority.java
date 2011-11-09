@@ -2,26 +2,19 @@ package raddar.enums;
 
 public enum SituationPriority {
 	
-	HIGH("high"){
+	HIGH(){
 		public String toString(){
-			return "high";
+			return "Hög";
 		}
 	},
-	NORMAL("normal"){
+	NORMAL(){
 		public String toString(){
-			return "normal";
+			return "Normal";
 		}
 	},
-	LOW("low"){
+	LOW(){
 		public String toString(){
-			return "low";
+			return "Låg";
 		}
 	};
-	
-	private String prioroty;
-	
-	SituationPriority(String s){
-		prioroty = s;
-	}
-
 }

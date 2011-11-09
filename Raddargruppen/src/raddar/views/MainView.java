@@ -36,7 +36,10 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	private ImageButton sosButton;
 	private ImageButton setupButton;
 	private ImageButton logButton;
+	//Håller reda på interna kommunikationen på servern. I dagsläget
+	//håller den endast reda på vilken användare som är online
 	public static InternalComManager controller; 
+	//Pekare på databasen. Ska användas för att komma åt databasen
 	public static ClientDatabaseManager db;
 
 
@@ -93,27 +96,29 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	public void onClick(View v) {
 
 		if(v == callButton){
-			finish();
+			//finish();
 		}
 		if(v == messageButton){
 			Intent nextIntent = new Intent(MainView.this, MessageChoiceView.class);
 			startActivity(nextIntent);
 		}
 		if(v == mapButton){
-			Intent nextIntent = new Intent(MainView.this, Map.class);
+			Intent nextIntent = new Intent(MainView.this, MapUI.class);
 			startActivity(nextIntent);
 		}
 		if(v == reportButton){
-			finish();
+			//finish();
 		}
 		if(v == serviceButton){
-			finish();
+			Intent nextIntent = new Intent(MainView.this, ServiceView.class);
+			startActivity(nextIntent);
 		}
 		if(v == sosButton){
-			finish();
+			//finish();
 		}
 		if(v == setupButton){
-			finish();
+			Intent nextIntent = new Intent(MainView.this, AddContactView.class);
+			startActivity(nextIntent);
 		}
 		if(v == logButton){
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);

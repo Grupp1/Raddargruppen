@@ -1,7 +1,8 @@
 package raddar.models;
 
 public class Contact {
-	private String USER_NAME;
+	
+	private String userName;
 	private boolean isGroup;
 	
 	/**
@@ -10,13 +11,13 @@ public class Contact {
 	 * @param userName The contacts user name
 	 * @param isGroup false if the contact is a user; true if the contact is a group of users.
 	 */
-	Contact(String userName, boolean isGroup){
-		this.USER_NAME = userName;
+	public Contact(String userName, boolean isGroup){
+		this.userName = userName;
 		this.isGroup = isGroup;
 	}
 	
 	public String getUserName(){
-		return USER_NAME;
+		return userName;
 	}
 	
 	public boolean isgroup(){
