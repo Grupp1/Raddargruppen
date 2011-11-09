@@ -60,16 +60,6 @@ public class MainView extends Activity implements OnClickListener, Observer{
 		controller.setUser(extras.get("user").toString());
 		db = new ClientDatabaseManager(this,controller.getUser());
 		new ReciveHandler();
-	//	ArrayList<MapObject> olist = MainView.db.getAllRowsAsArrays("map");
-	//	Log.d("DB TEST",olist.get(0).getAdress());
-		
-		MapObject mo = new Fire(new GeoPoint(58395730, 15573080), "HAHAHA", "HAHHAHA", SituationPriority.HIGH);
-		String t1 = new Gson().toJson(mo);
-		MapObject LOL = new Gson().fromJson(t1, Fire.class);
-		Log.d("DB TEST",mo.getClass().getName());
-		String t2 = new Gson().toJson(LOL);
-		Log.d("DB TEST",t2);
-		// Notifiera servern att vi kommer online
 		
 		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
 		try {

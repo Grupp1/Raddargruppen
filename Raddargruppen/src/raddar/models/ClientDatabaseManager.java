@@ -278,7 +278,7 @@ public class ClientDatabaseManager extends Observable {
 							e.printStackTrace();
 						}					
 						MapObject mo = gson.fromJson(cursor.getString(0), c);
-						dataArrays.add(c);
+						dataArrays.add(mo);
 					}
 				}
 				// move the cursor's pointer up one position.
