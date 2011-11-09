@@ -45,10 +45,18 @@ public class Server {
 		
 		//System.out.println(Database.evalutateUser("Kjell", "hamburgare"));
 		
+		System.out.println(Database.evalutateUser("Alice", "Longshot"));
+		
+		//Database.addUser("einar", "lakan", 'u', "staben");
+		
+		System.out.println(Database.getUserID("einar"));
+				
+				
 		System.out.println(Database.getUserLevel("Alice"));
 		/*System.out.println(Database.getUserLevel("ANDREAS"));
 		System.out.println(Database.getUserGroup("Kjell"));
 		System.out.println(Database.getUserGroup("Alise"));
+		
 		
 		System.out.println(Database.getUserID("Alice"));
 		System.out.println(Database.getUserID("Alise"));
@@ -62,13 +70,13 @@ public class Server {
 		Database.storeTextMessage(meddelande);*/
 		
 		
-		List<TextMessage> list = Database.getAllTextMessagesTo("Alice");
+	/*	List<TextMessage> list = Database.getAllTextMessagesTo("Alice");
 		
 		for (TextMessage tm: list) {
 			System.out.println(tm);
 			System.out.println(" -------------------- ");
 		}
-	
+	*/
 		
 		new Server();
 	}	
