@@ -25,6 +25,10 @@ public class MapModel extends Observable {
 	private MapObjectList youList;
 
 	private MapUI mapUI;
+	
+	/*
+	 * I MapModel sker alla uppdateringar av kartan. Här finns MapObjectLists för alla olika typer av situationer och resurser.
+	 */
 
 	public MapModel(MapUI mapUI, MapCont mapCont){
 		this.mapUI = mapUI;
@@ -34,8 +38,9 @@ public class MapModel extends Observable {
 
 
 	/*
-	 * Alla fires utplacerade på kartan sparas här
+	 * add lägger till ett MapObject i rätt MapObjectList 
 	 */
+	
 	public void add(MapObject o){
 		d = mapUI.getResources().getDrawable(o.getIcon());
 		setChanged();
@@ -76,6 +81,10 @@ public class MapModel extends Observable {
 		}		
 	}
 	
+	/*
+	 * updateObject(MapObject) uppdaterar den MapObjectList MapObject ligger i
+	 */
+	
 	public void updateObject(MapObject o){
 		setChanged();
 		o.updateData(new Geocoder(mapUI.getBaseContext(), Locale.getDefault()));
@@ -96,15 +105,15 @@ public class MapModel extends Observable {
 		}
 	}
 	
+	/*
+	 * updateObject(MapObject, String) anropas när beskrivningen av ett MapObject ändras
+	 */
+	
 	public void updateObject(MapObject o, String snippet){
 		o.setSnippet(snippet);
 		updateObject(o);
 	}
 	
-
-	/*
-	 * Alla situationer utplacerade på kartan sparas här
-	 */
 
 	public List<Overlay> getMapOverlays() {
 		return mapOverlays;
