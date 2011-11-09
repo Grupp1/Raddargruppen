@@ -135,15 +135,67 @@ public class Database {
 	}
 
 
-	/*public static void storeTextMessage(TextMessage m) {
-
+	/*public static void storeTextMessage(TextMessage mes) {
+		try {
+			Statement st = openConnection();
+			
+			//Syntaxen i MySQL funkar, men inte från java, suger >.<
+			
+			System.out.println("skriver ut sql inlägg sträng: " + "INSERT INTO messages VALUES (idmessages, \'" + mes.getType() + "\', \'" +
+					mes.getSrcUser() + "\', \'" + mes.getDestUser() + "\', \'" +
+					"2011-11-07 01:02:02" + "\', \'" + mes.getSubject() + "\', \'" +
+				    mes.getMessage() +  "\');" );
+			
+			
+			
+			st.executeUpdate("skriver ut sql inlägg sträng: " + "INSERT INTO messages VALUES (idmessages, \'" + mes.getType() + "\', \'" +
+					mes.getSrcUser() + "\', \'" + mes.getDestUser() + "\', \'" +
+					"2011-11-07 01:02:02" + "\', \'" + mes.getSubject() + "\', \'" +
+				    mes.getMessage() +  "\');" );
+		} catch (SQLException ex) {
+			System.out.println("Fel syntax i MySQL-queryn i storeTextMessage(). ");
+		}
 	}
+*/
+	
+/*	public static List<TextMessage> getAllTextMessagesFrom(String username) {
 
-	public static List<TextMessage> getAllTextMessagesFrom(String username) {
+		
+		// Upptäckte att det inte går att söka i kolumnerna from och to men resten går, så det här suger.
+		 
+		
+		try {
+			Statement st = openConnection();
+			ResultSet rs = st.executeQuery("SELECT * FROM messages WHERE from = \'" + username + "\';");
+			
+			if (rs.next()) 
+				//den ska väl sparas till en lista här...
+				return rs.getString(7); //ingen aning här, nog inte rätt kod, vill returnera hela raden inte bara meddelandet
+		} catch (SQLException ex) {
+			System.out.println("Fel syntax i MySQL-queryn i getAllTextMessagesFrom(). ");
+		}
+		return null;
+	}*/
+	
 
-	}
+/*	public static List<TextMessage> getAllTextMessagesTo(String username) {
 
-	public static List<TextMessage> getAllTextMessagesTo(String username) {
+		 
+  		 // Upptäckte att det inte går att söka i kolumnerna from och to men resten går, så det här suger.
+		
+	
+	try {
+			Statement st = openConnection();
+			ResultSet rs = st.executeQuery("SELECT * FROM messages WHERE to = \'" + username + "\';");
+			
+			if (rs.next()) 
+				//den ska väl sparas till en lista här...
+				return rs.getString(7); //ingen aning här, nog inte rätt kod, vill returnera hela raden inte bara meddelandet
+		} catch (SQLException ex) {
+			System.out.println("Fel syntax i MySQL-queryn i getAllTextMessagesFrom(). ");
+		}
+		return null;
+
 
 	}*/
 

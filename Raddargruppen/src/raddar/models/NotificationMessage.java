@@ -7,7 +7,8 @@ public class NotificationMessage extends Message {
 
 	// Message-header attributen för NotificationMessages
 	public final static String HEADER_NOTIFICATION = "Notification: ";
-
+	public final static String HEADER_PASSWORD = "Password: ";
+	
 	private NotificationType notification;
 	private String password;
 
@@ -49,6 +50,7 @@ public class NotificationMessage extends Message {
 		String formattedMessage = "";
 		formattedMessage += HEADER_TYPE + type.toString() + CRLF;
 		formattedMessage += HEADER_FROM + fromUser + CRLF;
+		formattedMessage += HEADER_PASSWORD + password + CRLF;
 		formattedMessage += HEADER_NOTIFICATION + notification.toString()
 				+ CRLF;
 

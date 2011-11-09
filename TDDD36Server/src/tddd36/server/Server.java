@@ -3,6 +3,8 @@ package tddd36.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 
+import raddar.enums.MessageType;
+
 public class Server {
 	
 	// Default-value: 6789
@@ -42,6 +44,8 @@ public class Server {
 	
 	public static void main(String[] args) {
 		
+		System.out.println(Database.evalutateUser("Kjell", "hamburgare"));
+		
 		System.out.println(Database.getUserLevel("Alice"));
 		System.out.println(Database.getUserLevel("ANDREAS"));
 		System.out.println(Database.getUserGroup("Kjell"));
@@ -52,6 +56,14 @@ public class Server {
 		System.out.println(Database.getUsername(1));
 		System.out.println(Database.getUsername(4));
 		
+		
+		
+	/*
+		TextMessage meddelande;
+		meddelande = new TextMessage(MessageType.TEXT, "testare", "alligator", "jag skriver något nu");
+		System.out.println("meddelandet är: " + meddelande);
+		Database.storeTextMessage(meddelande);
+	*/
 		
 		new Server();
 	}	

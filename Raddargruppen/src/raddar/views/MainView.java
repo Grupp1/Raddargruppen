@@ -9,6 +9,7 @@ import raddar.controllers.InternalComManager;
 import raddar.controllers.ReciveHandler;
 import raddar.controllers.Sender;
 import raddar.enums.NotificationType;
+import raddar.enums.ServerInfo;
 import raddar.gruppen.R;
 import raddar.models.ClientDatabaseManager;
 import raddar.models.Message;
@@ -114,7 +115,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 							NotificationType.DISCONNECT);
 					try {
 						// Skicka meddelandet
-						new Sender(nm, InetAddress.getByName("130.236.227.95"), 4043);		
+						new Sender(nm, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);		
 					} catch (UnknownHostException e) {
 						Log.d("NotificationMessage", "Disconnect failed");
 					}
@@ -140,7 +141,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 				NotificationType.DISCONNECT);
 		try {
 			// Skicka meddelandet
-			new Sender(nm, InetAddress.getByName("130.236.227.95"), 4043);		
+			new Sender(nm, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);		
 		} catch (UnknownHostException e) {
 			Log.d("NotificationMessage", "Disconnect failed");
 		}
