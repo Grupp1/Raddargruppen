@@ -7,13 +7,14 @@ import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
+import raddar.enums.ResourceStatus;
+import raddar.enums.SituationPriority;
 import raddar.models.MapModel;
 import raddar.models.MapObject;
 import raddar.views.MainView;
 import raddar.views.MapUI;
 import android.location.Address;
 import android.location.Geocoder;
-import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 
@@ -37,11 +38,18 @@ public class MapCont implements Observer, Runnable{
 	}
 
 	public void add(MapObject o){
-		o.setAdress(calcAdress(o.getPoint()));
 		MainView.db.addRow(o);
 		mapModel.add(o);
 	}
 
+	public void updateObject(MapObject o){
+		mapModel.updateObject(o);
+	}
+	
+	public void updateObject(MapObject o, String snippet){
+		mapModel.updateObject(o, snippet);
+	}
+	
 	public void run() {
 		for(int i = 0; i < olist.size();i++)
 			mapModel.add(olist.get(i));

@@ -2,6 +2,7 @@ package raddar.views;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -20,6 +21,7 @@ import raddar.models.You;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -35,7 +37,11 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
+
 import com.google.gson.Gson;
+
+import com.google.android.maps.OverlayItem;
+
 
 public class MapUI extends MapActivity implements Observer {
 
@@ -48,10 +54,16 @@ public class MapUI extends MapActivity implements Observer {
 	private GeoPoint touchedPoint, liu, myLocation, sthlmLocation;
 	private List<Overlay> mapOverlays;
 	private GPSModel gps;
-	private MapCont mapCont;
+
 	private boolean follow;
 	private You you;
 	private Toast toast;
+
+
+	public static MapCont mapCont;
+
+	private Geocoder geocoder;
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -75,7 +87,12 @@ public class MapUI extends MapActivity implements Observer {
 		liu = new GeoPoint(58395730, 15573080);
 		sthlmLocation = new GeoPoint(59357290, 17960050);
 
+		geocoder = new Geocoder(getBaseContext(), Locale.getDefault());
+
+		// SKAPA METOD SÅ ATT YOU INTE SKAPAS FÖRRÄN GPS:EN HITTAR EN POSITION!!
+
 		you = new You(myLocation, "Min position", "Här är jag", R.drawable.niklas, "000000", ResourceStatus.FREE);
+		you.updateData(geocoder);
 		gps = new GPSModel(this);
 
 		ArrayList<MapObject> olist = MainView.db.getAllRowsAsArrays("map");
@@ -116,6 +133,11 @@ public class MapUI extends MapActivity implements Observer {
 		super.onStop();
 	}
 
+	@Override
+	protected void onDestroy(){
+		// TODO Auto-generated method stub
+		super.onStop();
+	}
 
 	@Override
 	protected boolean isRouteDisplayed() {
@@ -162,22 +184,27 @@ public class MapUI extends MapActivity implements Observer {
 
 						input = new EditText(context);
 						alertDialog.setView(input);
+						
+						// FOR SIMPLICITY
+						input.setText("Bögutskottet");
 
 						alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
 								value = input.getText().toString();
+								MapObject o = null;
 								if(Touchy.this.item == 0){		
-									mapCont.add(new Fire(touchedPoint, value, "00000", SituationPriority.HIGH));
+									mapCont.add(o = new Fire(touchedPoint, value, "00000", SituationPriority.HIGH));
 								}
 								if(Touchy.this.item == 1){
-									mapCont.add(new FireTruck(touchedPoint, value, "00000", ResourceStatus.BUSY));
+									mapCont.add(o = new FireTruck(touchedPoint, value, "00000", ResourceStatus.BUSY));
 								}
 								if(Touchy.this.item == 2){
-									mapCont.add(new Situation(touchedPoint, "Situation", value, R.drawable.situation, "00000", SituationPriority.NORMAL));
+									mapCont.add(o = new Situation(touchedPoint, "Situation", value, R.drawable.situation, "00000", SituationPriority.NORMAL));
 								}
 								if(Touchy.this.item == 3){
-									mapCont.add(new Resource(touchedPoint, "Resurs", value, R.drawable.resource, "00000", ResourceStatus.BUSY));
+									mapCont.add(o = new Resource(touchedPoint, "Resurs", value, R.drawable.resource, "00000", ResourceStatus.BUSY));
 								}
+								o.updateData(geocoder);;
 								Toast.makeText(getApplicationContext(), items[Touchy.this.item]+" utplacerad", Toast.LENGTH_LONG).show();
 							}
 						});
@@ -190,7 +217,7 @@ public class MapUI extends MapActivity implements Observer {
 					}
 
 				});
-				
+
 				AlertDialog alert = builder.create();
 
 				alert.setButton("Hämta adress", new DialogInterface.OnClickListener() {
@@ -198,7 +225,7 @@ public class MapUI extends MapActivity implements Observer {
 						Toast.makeText(getApplicationContext(), mapCont.calcAdress(touchedPoint), Toast.LENGTH_LONG).show();
 					}
 				});
-				
+
 				/*
 				// Exempel på en till knapp
 				alert.setButton2("Gå till min position", new DialogInterface.OnClickListener() {
@@ -206,7 +233,7 @@ public class MapUI extends MapActivity implements Observer {
 						controller.animateTo(myLocation); 
 					}
 				});
-				*/
+				 */
 
 				alert.show();
 				return true;
@@ -222,15 +249,21 @@ public class MapUI extends MapActivity implements Observer {
 
 	public void update(Observable observable, Object data) {
 		if (data instanceof GeoPoint){
-			you.setPoint((GeoPoint)data);
 			myLocation = (GeoPoint) data;
 			you.setPoint(myLocation);
+			you.updateData(geocoder);
 			if (follow){
 				controller.animateTo(myLocation);
 			}
 		}
 		if (data instanceof MapObjectList){
-			mapOverlays.add((MapObjectList) data);	
+//			if (!mapOverlays.contains(data)){
+//				mapOverlays.add((MapObjectList) data);
+//			}
+//			else{
+//				mapOverlays.set(mapOverlays.indexOf(data), (MapObjectList)data);
+//			}
+			mapOverlays.add((MapObjectList) data);
 		}
 		mapView.postInvalidate();
 		// RITA OM PÅ NÅGOT SÄTT
@@ -239,55 +272,55 @@ public class MapUI extends MapActivity implements Observer {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.mapmenu, menu);
-	    return true;
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.mapmenu, menu);
+		return true;
 	}
 
-//	Anropas varje gång menu klickas på
-//	@Override
-//	public boolean onPrepareOptionsMenu(Menu menu){
-//		return true;
-//	}
-	
+	//	Anropas varje gång menu klickas på
+	//	@Override
+	//	public boolean onPrepareOptionsMenu(Menu menu){
+	//		return true;
+	//	}
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle item selection
-	    switch (item.getItemId()) {
-	    case R.id.toggle:
-	    	if(mapView.isSatellite()){
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.toggle:
+			if(mapView.isSatellite()){
 				mapView.setSatellite(false);
 			}
 			else{
 				mapView.setSatellite(true);
 			}
-	        return true;
-	    case R.id.follow:
-	        if (follow){
-	        	follow = false;
-	        }
-	        else{
-	        	follow = true;
-	        }
-	        toast = Toast.makeText(getBaseContext(), "Följ efter: " +follow, Toast.LENGTH_LONG);
+			return true;
+		case R.id.follow:
+			if (follow){
+				follow = false;
+			}
+			else{
+				follow = true;
+			}
+			toast = Toast.makeText(getBaseContext(), "Följ efter: " +follow, Toast.LENGTH_LONG);
 			toast.show();
-	        return true;
-	    case R.id.myLocation:
-	    	controller.animateTo(myLocation); 
-	        return true;
-	    case R.id.traffic:
-	    	if(mapView.isTraffic()){
+			return true;
+		case R.id.myLocation:
+			controller.animateTo(myLocation); 
+			return true;
+		case R.id.traffic:
+			if(mapView.isTraffic()){
 				mapView.setTraffic(false);
 			}
 			else{
 				mapView.setTraffic(true);
 			}
-	    	toast = Toast.makeText(getBaseContext(), "Trafik: " +mapView.isTraffic(), Toast.LENGTH_LONG);
+			toast = Toast.makeText(getBaseContext(), "Trafik: " +mapView.isTraffic(), Toast.LENGTH_LONG);
 			toast.show();
-	        return true;
-	    default:
-	        return super.onOptionsItemSelected(item);
-	    }
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 }
