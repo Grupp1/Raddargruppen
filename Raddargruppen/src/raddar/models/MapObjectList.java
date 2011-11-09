@@ -47,8 +47,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 	  MapObject item = (MapObject) mOverlays.get(index);
 	  AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
 	  dialog.setTitle(item.getTitle());
-	  dialog.setMessage("Beskrivning: "+item.getSnippet()+"\nAdress: "+item.getAdress()+
-			  "Koordinater: "+item.getPoint().getLatitudeE6()/1E6+", "+item.getPoint().getLongitudeE6()/1E6);
+	  dialog.setMessage(item.getDescription());
 	  // Lägga till String onTouch i MapObject???
 	  dialog.show();
 	  return true;

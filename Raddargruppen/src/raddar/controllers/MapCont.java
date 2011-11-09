@@ -35,7 +35,7 @@ public class MapCont implements Observer, Runnable{
 	}
 
 	public void add(MapObject o){
-		o.setAdress(calcAdress(o.getPoint()));
+		//o.setAdress(o.updateAdress(o.getPoint()));
 		mapModel.add(o);
 	}
 
