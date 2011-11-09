@@ -108,8 +108,12 @@ public abstract class Message {
 		this.date = date;
 	}
 	
-	public void setDate(String date) {
-		DateFormat df = DateFormat.getDateTimeInstance();
+
+	
+	 // Behöver man kunna "seta" datum? DateFormat ska vara .SHORT på båda troligtvis
+	  public void setDate(String date) {
+		DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.DEFAULT);
+
 		try {
 			this.date = df.parse(date);
 		} catch (ParseException e) { 
@@ -122,7 +126,9 @@ public abstract class Message {
 	}
 	
 	public String getFormattedDate() {
-		DateFormat df = DateFormat.getDateTimeInstance();
+
+		DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+
 		return df.format(date);
 	}
 	

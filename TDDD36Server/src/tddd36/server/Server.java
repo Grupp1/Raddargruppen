@@ -1,7 +1,11 @@
 package tddd36.server;
 
+import java.awt.TrayIcon.MessageType;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.List;
+
+import raddar.enums.MessagePriority;
 
 public class Server {
 	

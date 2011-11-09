@@ -3,6 +3,7 @@ package tddd36.server;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 
 import raddar.enums.MessagePriority;
@@ -76,9 +77,15 @@ public class Receiver implements Runnable {
 	 * online, samt ett NotificationMessage av typen DISCONNECT när de loggar off.
 	 */
 	private void handleNotification() {
+		
+		boolean passwordCheck = false;
+		
 		try {
 			// Read from who the notification is from
 			String fromUser = in.readLine().split(" ")[1];
+			
+			// Read the password
+			String password = in.readLine().split(" ")[1];
 			
 			// Read in the notification itself
 			String notification = in.readLine().split(" ")[1];
@@ -89,9 +96,25 @@ public class Receiver implements Runnable {
 			switch (nt) {
 				case CONNECT:
 					// Spara användaren och dennes IP-address (skriv över eventuell gammal IP-address)
-					System.out.println(fromUser + " is now associated with " + so.getInetAddress().getHostAddress());
-					Server.onlineUsers.addUser(fromUser, so.getInetAddress());
-					break;
+					
+					passwordCheck = Database.evalutateUser(fromUser, password);
+					System.out.println("PASSWORD = "+passwordCheck);
+					System.out.println("user " + fromUser);
+					System.out.println("pass " + password);
+					
+					if (passwordCheck){			
+						System.out.println(fromUser + " is now associated with " + so.getInetAddress().getHostAddress());
+						Server.onlineUsers.addUser(fromUser, so.getInetAddress());
+						
+						PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
+						pw.println("OK");
+						}
+					else{
+						System.out.println("Användarnamn eller lösenord fel");
+						PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
+						pw.println("Not OK");
+					}break;
+					
 				case DISCONNECT:
 					// Ta bort användaren och dennes IP-address
 					System.out.println(fromUser + " is no longer associated with " + so.getInetAddress().getHostAddress());

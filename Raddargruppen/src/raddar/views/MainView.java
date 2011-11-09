@@ -9,9 +9,9 @@ import raddar.controllers.InternalComManager;
 import raddar.controllers.ReciveHandler;
 import raddar.controllers.Sender;
 import raddar.enums.NotificationType;
+import raddar.enums.ServerInfo;
 import raddar.gruppen.R;
 import raddar.models.ClientDatabaseManager;
-import raddar.models.Inbox;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
 import android.app.Activity;
@@ -22,7 +22,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -53,17 +52,6 @@ public class MainView extends Activity implements OnClickListener, Observer{
 		controller.setUser(extras.get("user").toString());
 		db = new ClientDatabaseManager(this,controller.getUser());
 		new ReciveHandler();
-
-		// Notifiera servern att vi kommer online
-		
-		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
-		try {
-			// Ändra localhost till serverns address när den
-			// är fastställd och portarna har öppnats i projektrummet
-			new Sender(nm, InetAddress.getByName("130.236.227.95"), 4043);	
-		} catch (UnknownHostException e) {
-			Log.d("NotificationMessage", "Connect failed");
-		}
 		 
 		db.addObserver(this);
 
@@ -125,7 +113,18 @@ public class MainView extends Activity implements OnClickListener, Observer{
 			builder.setMessage("Är du säker på att du vill logga ut?")
 			.setCancelable(false)
 			.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+				
 				public void onClick(DialogInterface dialog, int id) {
+					// Notifiera servern att vi går offline
+					NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), 
+							NotificationType.DISCONNECT);
+					try {
+						// Skicka meddelandet
+						new Sender(nm, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);		
+					} catch (UnknownHostException e) {
+						Log.d("NotificationMessage", "Disconnect failed");
+					}
+					
 					MainView.this.finish();
 				}
 			})
@@ -143,12 +142,11 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	public void onDestroy() {
 		super.onDestroy();
 		// Notifiera servern att vi går offline
-		
-		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.DISCONNECT);
+		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), 
+				NotificationType.DISCONNECT);
 		try {
-			// Ändra localhost till serverns address när den
-			// är fastställd och portarna har öppnats i projektrummet
-			new Sender(nm, InetAddress.getByName("130.236.227.95"), 4043);		
+			// Skicka meddelandet
+			new Sender(nm, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);		
 		} catch (UnknownHostException e) {
 			Log.d("NotificationMessage", "Disconnect failed");
 		}
