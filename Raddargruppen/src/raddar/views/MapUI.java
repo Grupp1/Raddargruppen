@@ -1,5 +1,6 @@
 package raddar.views;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -11,6 +12,7 @@ import raddar.gruppen.R;
 import raddar.models.Fire;
 import raddar.models.FireTruck;
 import raddar.models.GPSModel;
+import raddar.models.MapObject;
 import raddar.models.MapObjectList;
 import raddar.models.Resource;
 import raddar.models.Situation;
@@ -19,6 +21,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,6 +35,7 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
+import com.google.gson.Gson;
 
 public class MapUI extends MapActivity implements Observer {
 
@@ -74,14 +78,16 @@ public class MapUI extends MapActivity implements Observer {
 		you = new You(myLocation, "Min position", "Här är jag", R.drawable.niklas, "000000", ResourceStatus.FREE);
 		gps = new GPSModel(this);
 
-		mapCont = new MapCont(MapUI.this, you);
+		ArrayList<MapObject> olist = MainView.db.getAllRowsAsArrays("map");
+		olist.add(you);
+		mapCont = new MapCont(MapUI.this, olist);
 		
 		controller.animateTo(myLocation);
 		controller.setZoom(13);
 
 		Touchy t = new Touchy(this);
 		mapOverlays.add(t);
-
+		
 	}
 
 	@Override

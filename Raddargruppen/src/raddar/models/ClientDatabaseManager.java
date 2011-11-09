@@ -3,8 +3,12 @@ package raddar.models;
 import java.util.ArrayList;
 import java.util.Observable;
 
+import com.google.android.maps.GeoPoint;
+import com.google.gson.Gson;
+
 import raddar.enums.MessagePriority;
 import raddar.enums.MessageType;
+import raddar.enums.SituationPriority;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -29,7 +33,7 @@ public class ClientDatabaseManager extends Observable {
 			"srcUser","rDate","subject","mData"};
 	private final String[] CONTACT_TABLE_ROWS = new String[] { "userName", "isGroup"};
 	private final String[] SITUATION_TABLE_ROWS = new String[] { "title", "description", "priority" };
-	private final String[] RESOURCE_TABLE_ROWS = new String[] { "title", "status" };
+	private final String[] MAP_TABLE_ROWS = new String[] { "mapObject","class"};
 
 
 	/**********************************************************************
@@ -46,6 +50,9 @@ public class ClientDatabaseManager extends Observable {
 		addRow(new Contact("Alice",false));
 		addRow(new Contact("Borche",false));
 		addRow(new Contact("Daniel",false));
+		
+		//TEST KOD FÖR MAP
+		addRow(new Fire(new GeoPoint(58395730, 15573080), "HAHAHA", "HAHHAHA", SituationPriority.HIGH));
 	}
 
 	/**********************************************************************
@@ -92,19 +99,19 @@ public class ClientDatabaseManager extends Observable {
 	 * 
 	 * @param s The situation that is to be added
 	 */
-	public void addRow(Situation s){
+	public void addRow(MapObject mo){
 		ContentValues values = new ContentValues();
-		values.put("title", s.getTitle());
-		//values.put("description", s.getDescription());
-		values.put("priority", s.getPriority().toString());
+		Gson gson = new Gson();
+		values.put("mapObject", gson.toJson(mo));
+		values.put("class", mo.getClass().getName());
 		try {
-			db.insert("contact", null, values);
+			db.insert("map", null, values);
 		} catch (Exception e) {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
-		setChanged();
-		notifyObservers(s);
+	//	setChanged();
+	//	notifyObservers(mo);
 	}
 
 	/**********************************************************************
@@ -237,6 +244,12 @@ public class ClientDatabaseManager extends Observable {
 						CONTACT_TABLE_ROWS,
 						null, null, null, null, null);
 			}
+			else if(table.equals("map")){
+				cursor = db.query(
+						"map",
+						MAP_TABLE_ROWS,
+						null, null, null, null, null);
+			}
 			cursor.moveToFirst();
 			//If it is a message table
 			if (!cursor.isAfterLast())
@@ -254,6 +267,17 @@ public class ClientDatabaseManager extends Observable {
 					}
 					else if(table.equals("contact")){
 						Contact c = new Contact(cursor.getString(0),false);
+						dataArrays.add(c);
+					}
+					else if(table.equals("map")){
+						Gson gson = new Gson();
+						Class c = null;
+						try {
+							c = Class.forName(cursor.getString(1));
+						} catch (ClassNotFoundException e) {
+							e.printStackTrace();
+						}					
+						MapObject mo = gson.fromJson(cursor.getString(0), c);
 						dataArrays.add(c);
 					}
 				}
@@ -289,12 +313,16 @@ public class ClientDatabaseManager extends Observable {
 			String contactTableQueryString = "create table contact (" +
 					"userName text, " +
 					"isGroup text)";
+			String mapTableQueryString = "create table map (" +
+					"mapObject text," +
+					"class text)";
 			/*
 			 * String newTableQueryString = "create table " + TABLE_NAME + " ("
 			 * + TABLE_ROW_ID + " integer primary key autoincrement not null," +
 			 * TABLE_ROW_ONE + " text," + TABLE_ROW_TWO + " text" + ");";
 			 */
 			// execute the query string to the database.
+			db.execSQL(mapTableQueryString);
 			db.execSQL(contactTableQueryString);
 			db.execSQL(messageTableQueryString);
 		}

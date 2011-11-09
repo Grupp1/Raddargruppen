@@ -2,16 +2,23 @@ package raddar.views;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+
+import com.google.android.maps.GeoPoint;
+import com.google.gson.Gson;
 
 import raddar.controllers.InternalComManager;
 import raddar.controllers.ReciveHandler;
 import raddar.controllers.Sender;
 import raddar.enums.NotificationType;
+import raddar.enums.SituationPriority;
 import raddar.gruppen.R;
 import raddar.models.ClientDatabaseManager;
+import raddar.models.Fire;
 import raddar.models.Inbox;
+import raddar.models.MapObject;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
 import android.app.Activity;
@@ -53,7 +60,15 @@ public class MainView extends Activity implements OnClickListener, Observer{
 		controller.setUser(extras.get("user").toString());
 		db = new ClientDatabaseManager(this,controller.getUser());
 		new ReciveHandler();
-
+	//	ArrayList<MapObject> olist = MainView.db.getAllRowsAsArrays("map");
+	//	Log.d("DB TEST",olist.get(0).getAdress());
+		
+		MapObject mo = new Fire(new GeoPoint(58395730, 15573080), "HAHAHA", "HAHHAHA", SituationPriority.HIGH);
+		String t1 = new Gson().toJson(mo);
+		MapObject LOL = new Gson().fromJson(t1, Fire.class);
+		Log.d("DB TEST",mo.getClass().getName());
+		String t2 = new Gson().toJson(LOL);
+		Log.d("DB TEST",t2);
 		// Notifiera servern att vi kommer online
 		
 		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
