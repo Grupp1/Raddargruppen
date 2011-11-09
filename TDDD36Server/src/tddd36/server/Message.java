@@ -121,7 +121,7 @@ public abstract class Message {
 		return date;
 	}
 	
-	public String getFormattedDate() {
+	public String getFormattedDate() { //Leta efter date grej så att den formaterar rätt enligt MySQL
 		DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.DEFAULT);
 		return df.format(date);
 	}

@@ -5,6 +5,11 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import raddar.enums.MessageType;
 
 public class Database {
 
@@ -135,69 +140,72 @@ public class Database {
 	}
 
 
-	/*public static void storeTextMessage(TextMessage mes) {
+	public static void storeTextMessage(TextMessage mes) {
 		try {
 			Statement st = openConnection();
 			
+			String query = "INSERT INTO messages VALUES (idmessages, \'" + mes.getType() + "\', \'" +
+					mes.getSrcUser() + "\', \'" + mes.getDestUser() + "\', \'" +
+					mes.getFormattedDate() + "\', \'" + mes.getSubject() + "\', \'" +
+				    mes.getMessage() +  "\');";
+			
 			//Syntaxen i MySQL funkar, men inte från java, suger >.<
-			
-			System.out.println("skriver ut sql inlägg sträng: " + "INSERT INTO messages VALUES (idmessages, \'" + mes.getType() + "\', \'" +
-					mes.getSrcUser() + "\', \'" + mes.getDestUser() + "\', \'" +
-					"2011-11-07 01:02:02" + "\', \'" + mes.getSubject() + "\', \'" +
-				    mes.getMessage() +  "\');" );
+			System.out.println(query);
 			
 			
 			
-			st.executeUpdate("skriver ut sql inlägg sträng: " + "INSERT INTO messages VALUES (idmessages, \'" + mes.getType() + "\', \'" +
-					mes.getSrcUser() + "\', \'" + mes.getDestUser() + "\', \'" +
-					"2011-11-07 01:02:02" + "\', \'" + mes.getSubject() + "\', \'" +
-				    mes.getMessage() +  "\');" );
+			st.executeUpdate(query);
 		} catch (SQLException ex) {
 			System.out.println("Fel syntax i MySQL-queryn i storeTextMessage(). ");
 		}
 	}
-*/
-	
-/*	public static List<TextMessage> getAllTextMessagesFrom(String username) {
 
-		
+	
+	public static List<TextMessage> getAllTextMessagesFrom(String username) {
 		// Upptäckte att det inte går att söka i kolumnerna from och to men resten går, så det här suger.
-		 
-		
+		List<TextMessage> list = new ArrayList<TextMessage>();
 		try {
 			Statement st = openConnection();
-			ResultSet rs = st.executeQuery("SELECT * FROM messages WHERE from = \'" + username + "\';");
+			ResultSet rs = st.executeQuery("SELECT * FROM messages WHERE fromUser = \'" + username + "\';");
 			
-			if (rs.next()) 
-				//den ska väl sparas till en lista här...
-				return rs.getString(7); //ingen aning här, nog inte rätt kod, vill returnera hela raden inte bara meddelandet
+			while (rs.next()) { 
+				TextMessage tm = new TextMessage(MessageType.TEXT, rs.getString(3), rs.getString(4));
+				tm.setDate(new Date());
+				tm.setSubject(rs.getString(6));
+				tm.setMessage(rs.getString(7));
+				list.add(tm);
+			}
 		} catch (SQLException ex) {
 			System.out.println("Fel syntax i MySQL-queryn i getAllTextMessagesFrom(). ");
 		}
-		return null;
-	}*/
+		return list;
+	}
 	
 
-/*	public static List<TextMessage> getAllTextMessagesTo(String username) {
+	public static List<TextMessage> getAllTextMessagesTo(String username) {
 
 		 
   		 // Upptäckte att det inte går att söka i kolumnerna from och to men resten går, så det här suger.
 		
-	
-	try {
+		List<TextMessage> list = new ArrayList<TextMessage>();
+		try {
 			Statement st = openConnection();
-			ResultSet rs = st.executeQuery("SELECT * FROM messages WHERE to = \'" + username + "\';");
+			ResultSet rs = st.executeQuery("SELECT * FROM messages WHERE toUser = \'" + username + "\';");
 			
-			if (rs.next()) 
-				//den ska väl sparas till en lista här...
-				return rs.getString(7); //ingen aning här, nog inte rätt kod, vill returnera hela raden inte bara meddelandet
+			while (rs.next()) { 
+				TextMessage tm = new TextMessage(MessageType.TEXT, rs.getString(3), rs.getString(4));
+				tm.setDate(new Date());
+				tm.setSubject(rs.getString(6));
+				tm.setMessage(rs.getString(7));
+				list.add(tm);
+			}
 		} catch (SQLException ex) {
 			System.out.println("Fel syntax i MySQL-queryn i getAllTextMessagesFrom(). ");
 		}
-		return null;
+		return list;
 
 
-	}*/
+	}
 
 	/*
 	 * Privat metod för att enkelt kunna ansluta till databasen.
@@ -208,7 +216,7 @@ public class Database {
 					dbpassword);
 			return con.createStatement();
 		} catch (SQLException ex) {
-			System.out.println("Kunde inte ansluta till databasen. ");
+			System.out.println("Kunde inte ansluta till databasen. Kollat Library efter JDBC Plugin? ");
 		}
 		return null;
 	}
