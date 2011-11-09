@@ -6,6 +6,7 @@ import raddar.enums.MessageType;
 import raddar.gruppen.R;
 import raddar.models.Contact;
 import raddar.models.Message;
+import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -25,7 +26,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class ContactView extends ListActivity implements OnClickListener{
+public class ContactView extends Activity implements OnClickListener{
 	/*
 	private ContactAdapter ia;
 	private ArrayList<Contact> contacts;
@@ -108,6 +109,11 @@ public class ContactView extends ListActivity implements OnClickListener{
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.contact_table);
+		
+	}
+
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
 		
 	}
 }
