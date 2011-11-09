@@ -2,20 +2,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent" android:layout_height="match_parent"
 	android:weightSum="1" android:orientation="vertical">
-	<TextView android:id="@+id/textView1" android:text="@string/map_header"
-		android:layout_width="match_parent" android:layout_height="wrap_content"></TextView>
-		
+
 	<com.google.android.maps.MapView
 		xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/mapview"
 		android:layout_width="fill_parent" android:clickable="true"
+		
+		android:apiKey="0b1qi7XBfQqm8teK24blL1Hhnfhqc9iOFejhYUw"
+		android:enabled="true" android:layout_height="match_parent"/>
 
-
-		android:apiKey="0s2mG7BRwMEO7k1qqPwPYY-WJQZRItVie8xVLtg"
-
-		android:layout_height="388dp" android:layout_weight="0.62" />
-
-	<Button android:id="@+id/button_close" android:text="@string/map_close"
-		android:layout_width="wrap_content" android:layout_weight="0.33"
-		android:layout_height="0dp"></Button>
 
 </LinearLayout>
+
+
+<!-- 
+
+Lalles nyckel på PC11:12/11
+0b1qi7XBfQqm8teK24blL1Hhnfhqc9iOFejhYUw
+
+Magnus nyckel på PC11:12
+0P4uyHaBFnO1w1ZvrAL_GO-vnVjyg6tYishNE8w
+
+
+
+
+ -->

@@ -2,7 +2,15 @@ package raddar.enums;
 
 public enum ResourceStatus {
 
-	BUSY,
-	FREE;
+	BUSY(){
+		public String toString(){
+			return "Upptagen";
+		}
+	},
+	FREE(){
+		public String toString(){
+			return "Ledig";
+		}
+	}
 	
 }

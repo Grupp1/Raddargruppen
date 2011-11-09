@@ -1,17 +1,19 @@
 package raddar.models;
 
-import android.graphics.drawable.Drawable;
+import com.google.android.maps.GeoPoint;
+
 import raddar.enums.ResourceStatus;
+import raddar.gruppen.R;
+
 
 public class Resource extends MapObject {
-
-	public Resource(Drawable defaultMarker) {
-		super(defaultMarker);
-		// TODO Auto-generated constructor stub
-	}
-
-	private String title;
+	
 	private ResourceStatus status;
+	
+	public Resource(GeoPoint point, String title, String snippet, int icon, String id, ResourceStatus status) {
+		super(point, title, snippet, icon, id);
+		this.status = status;
+	}
 
 	public ResourceStatus getStatus() {
 		return status;
@@ -21,10 +23,12 @@ public class Resource extends MapObject {
 		this.status = status;
 	}
 	
-	public String getTitle(){
-		return title;
+	@Override
+	public void updateDescription(){
+		super.updateDescription();
+		String des = this.getDescription();
+		des = des +"\nStatus: "+ getStatus().toString();
+		setDescription(des);
 	}
-	 public void setTitle(String title){
-		 this.title = title;
-	 }
+	
 }

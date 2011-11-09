@@ -23,7 +23,7 @@ public class ClientDatabaseManager extends Observable {
 	// Databse constants
 	private String DB_NAME; //Same as username
 	private final int DB_VERSION = 1;
-	
+
 	// Table row constants
 	private final String[] TEXT_MESSAGE_TABLE_ROWS = new String[] { "msgId",
 			"srcUser","rDate","subject","mData"};
@@ -42,6 +42,10 @@ public class ClientDatabaseManager extends Observable {
 		this.DB_NAME = userName;
 		CustomSQLiteOpenHelper helper = new CustomSQLiteOpenHelper(context);
 		this.db = helper.getWritableDatabase();
+		//TEST KOD ANVÄNDS FÖR ATT TESTA KONTAKTLISTAN
+		addRow(new Contact("Alice",false));
+		addRow(new Contact("Borche",false));
+		addRow(new Contact("Daniel",false));
 	}
 
 	/**********************************************************************
@@ -72,17 +76,17 @@ public class ClientDatabaseManager extends Observable {
 	public void addRow(Contact c){
 		ContentValues values = new ContentValues();
 		values.put("userName", c.getUserName());
-		values.put("group", c.isgroup());
+		values.put("isGroup", "0");
 		try {
 			db.insert("contact", null, values);
 		} catch (Exception e) {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
-		setChanged();
-		notifyObservers(c);
+		//setChanged();
+		//notifyObservers(c);
 	}
-	
+
 	/**********************************************************************
 	 * ADDING A SITUATION IN THA DATABASE TABLE
 	 * 
@@ -91,7 +95,7 @@ public class ClientDatabaseManager extends Observable {
 	public void addRow(Situation s){
 		ContentValues values = new ContentValues();
 		values.put("title", s.getTitle());
-		values.put("description", s.getDescription());
+		//values.put("description", s.getDescription());
 		values.put("priority", s.getPriority().toString());
 		try {
 			db.insert("contact", null, values);
@@ -102,7 +106,7 @@ public class ClientDatabaseManager extends Observable {
 		setChanged();
 		notifyObservers(s);
 	}
-	
+
 	/**********************************************************************
 	 *ADDING A RESOURCE IN THA DATABASE TABLE
 	 *
@@ -164,7 +168,7 @@ public class ClientDatabaseManager extends Observable {
 	 *            the id of the row to retrieve
 	 * @return an array containing the data from the row
 	 */
-/*	public ArrayList<Message> getRowAsArray() {
+	/*	public ArrayList<Message> getRowAsArray() {
 		// create an array list to store data from the database row.
 		// I would recommend creating a JavaBean compliant object
 		// to store this data instead. That way you can ensure
@@ -206,19 +210,17 @@ public class ClientDatabaseManager extends Observable {
 		// return the ArrayList containing the given row from the database.
 		return rowArray;
 	} */
-	
-	
+
+
 	/**
 	 * RETRIEVE ALL ROWS IN A TABLE AS AN ArrayList
 	 * @param table The table that is to be retrieved
 	 * @return
 	 */
-	
-	
-	public ArrayList<Message> getAllRowsAsArrays(String table){
+	public ArrayList getAllRowsAsArrays(String table){
 		//TODO gör så denna funktion fungerar med alla databastabeller
 		//TODO kom inte på något bra sätt för att få det att fungera i det generella fallet.
-		ArrayList<Message> dataArrays = new ArrayList<Message>();
+		ArrayList dataArrays = new ArrayList();
 		Cursor cursor = null;
 		try
 		{
@@ -237,17 +239,23 @@ public class ClientDatabaseManager extends Observable {
 			}
 			cursor.moveToFirst();
 			//If it is a message table
-			if (!cursor.isAfterLast() && table == "message")
+			if (!cursor.isAfterLast())
 			{
 				do
 				{
-					Message m = new TextMessage(MessageType.TEXT, 
-							cursor.getString(1), 
-							DB_NAME, 
-							MessagePriority.NORMAL, 
-							cursor.getString(4));
-					m.setSubject(cursor.getString(3));
-					dataArrays.add(m);
+					if(table.equals("message")){
+						Message m = new TextMessage(MessageType.TEXT, 
+								cursor.getString(1), 
+								DB_NAME, 
+								MessagePriority.NORMAL, 
+								cursor.getString(4));
+						m.setSubject(cursor.getString(3));
+						dataArrays.add(m);
+					}
+					else if(table.equals("contact")){
+						Contact c = new Contact(cursor.getString(0),false);
+						dataArrays.add(c);
+					}
 				}
 				// move the cursor's pointer up one position.
 				while (cursor.moveToNext());
@@ -278,13 +286,16 @@ public class ClientDatabaseManager extends Observable {
 					"rDate integer, " +
 					"subject text, " +
 					"mData text)";
-
+			String contactTableQueryString = "create table contact (" +
+					"userName text, " +
+					"isGroup text)";
 			/*
 			 * String newTableQueryString = "create table " + TABLE_NAME + " ("
 			 * + TABLE_ROW_ID + " integer primary key autoincrement not null," +
 			 * TABLE_ROW_ONE + " text," + TABLE_ROW_TWO + " text" + ");";
 			 */
 			// execute the query string to the database.
+			db.execSQL(contactTableQueryString);
 			db.execSQL(messageTableQueryString);
 		}
 

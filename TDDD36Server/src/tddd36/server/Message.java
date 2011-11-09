@@ -109,7 +109,7 @@ public abstract class Message {
 	}
 	
 	public void setDate(String date) {
-		DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.DEFAULT);
+		DateFormat df = DateFormat.getDateTimeInstance();
 		try {
 			this.date = df.parse(date);
 		} catch (ParseException e) { 
@@ -122,7 +122,7 @@ public abstract class Message {
 	}
 	
 	public String getFormattedDate() {
-		DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.DEFAULT);
+		DateFormat df = DateFormat.getDateTimeInstance();
 		return df.format(date);
 	}
 	

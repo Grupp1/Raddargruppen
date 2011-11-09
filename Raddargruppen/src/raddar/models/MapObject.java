@@ -1,82 +1,117 @@
 package raddar.models;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 
-import com.google.android.maps.ItemizedOverlay;
+import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
 
-public class MapObject extends ItemizedOverlay {
+public class MapObject extends OverlayItem {
 
+	private GeoPoint point;
+	private String title, snippet, id, adress, description;
+	private int icon;
+
+	public MapObject(GeoPoint point, String title, String snippet, int icon, String id) {
+		super(point, title, snippet);
+		this.point = point;
+		this.title = title;
+		this.snippet = snippet;
+		this.id = id;
+		this.icon = icon;
+	}
 	
-	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
-	private Context mContext;
+	public GeoPoint getPoint() {
+		return point;
+	}
+
+	public void setPoint(GeoPoint point) {
+		this.point = point;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getSnippet() {
+		return snippet;
+	}
+
+	public void setSnippet(String snippet) {
+		this.snippet = snippet;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 	
-	public MapObject(Drawable defaultMarker, Context context) {
-		  super(defaultMarker);
-		  mContext = context;
+	public int getIcon() {
+		return icon;
+	}
+
+	public void setIcon(int icon) {
+		this.icon = icon;
+	}
+	
+	public String getAdress() {
+		if(adress == null){
+			return "";
 		}
-	
-	public MapObject(Drawable defaultMarker) {
-		super(boundCenterBottom(defaultMarker));
+		return adress;
 	}
 
-	@Override
-	protected OverlayItem createItem(int i) {
-		return mOverlays.get(i);
-	}
-
-	@Override
-	public int size() {
-		 return mOverlays.size();
-	}
-
-	public void addOverlay(OverlayItem overlay) {
-	    mOverlays.add(overlay);
-	    populate();
+	public void setAdress(String adress) {
+		this.adress = adress;
 	}
 	
-	@Override
-	protected boolean onTap(int index) {
-	  OverlayItem item = mOverlays.get(index);
-	  AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
-	  dialog.setTitle(item.getTitle());
-	  dialog.setMessage(item.getSnippet());
-	  dialog.show();
-	  return true;
+	public String getDescription() {
+		return description;
 	}
 	
-	
-	
-	private String ID;
-	private long coords;
-	private String name;
-	
-	public String getID() {
-		return ID;
-	}
-	public void setID(String iD) {
-		ID = iD;
-	}
-	public long getCoords() {
-		return coords;
-	}
-	public void setCoords(long coords) {
-		this.coords = coords;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
+	public void setDescription(String description){
+		this.description = description;
 	}
 	
+	public void updateData(Geocoder geocoder){
+		updateAdress(geocoder);
+		updateDescription();
+	}
 	
+	public void updateAdress(Geocoder geocoder){
+		String display ="";
+		try{
+			List<Address> address = geocoder.getFromLocation(point.getLatitudeE6() / 1E6, point.getLongitudeE6() / 1E6, 1);
+			if(address.size() > 0){
+				for(int i = 0; i<address.get(0).getMaxAddressLineIndex(); i++){
+					display += address.get(0).getAddressLine(i) + "\n";
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally{
+			
+		}
+		if (display.equals("")){
+			display = "Kunde inte hämta adress";
+		}
+		setAdress(display);
+	}
 	
-	
-	
+	public void updateDescription(){
+		setDescription("Beskrivning: "+getSnippet()+"\nAdress: "+getAdress()+
+				  "Koordinater: "+getPoint().getLatitudeE6()/1E6+", "+getPoint().getLongitudeE6()/1E6);
+	}
 	
 }
