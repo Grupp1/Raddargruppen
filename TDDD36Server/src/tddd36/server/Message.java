@@ -108,7 +108,9 @@ public abstract class Message {
 		this.date = date;
 	}
 	
-	public void setDate(String date) {
+	
+	 // Behöver man kunna "seta" datum? DateFormat ska vara .SHORT på båda troligtvis
+	  public void setDate(String date) {
 		DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.DEFAULT);
 		try {
 			this.date = df.parse(date);
@@ -121,8 +123,8 @@ public abstract class Message {
 		return date;
 	}
 	
-	public String getFormattedDate() { //Leta efter date grej så att den formaterar rätt enligt MySQL
-		DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.DEFAULT);
+	public String getFormattedDate() {
+		DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
 		return df.format(date);
 	}
 	

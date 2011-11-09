@@ -149,7 +149,6 @@ public class Database {
 					mes.getFormattedDate() + "\', \'" + mes.getSubject() + "\', \'" +
 				    mes.getMessage() +  "\');";
 			
-			//Syntaxen i MySQL funkar, men inte från java, suger >.<
 			System.out.println(query);
 			
 			
@@ -162,7 +161,6 @@ public class Database {
 
 	
 	public static List<TextMessage> getAllTextMessagesFrom(String username) {
-		// Upptäckte att det inte går att söka i kolumnerna from och to men resten går, så det här suger.
 		List<TextMessage> list = new ArrayList<TextMessage>();
 		try {
 			Statement st = openConnection();
@@ -184,9 +182,6 @@ public class Database {
 
 	public static List<TextMessage> getAllTextMessagesTo(String username) {
 
-		 
-  		 // Upptäckte att det inte går att söka i kolumnerna from och to men resten går, så det här suger.
-		
 		List<TextMessage> list = new ArrayList<TextMessage>();
 		try {
 			Statement st = openConnection();
