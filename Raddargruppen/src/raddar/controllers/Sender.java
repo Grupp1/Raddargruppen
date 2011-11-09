@@ -9,6 +9,8 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import com.google.gson.Gson;
+
 import raddar.enums.MessagePriority;
 import raddar.enums.MessageType;
 import raddar.models.Message;
@@ -40,13 +42,18 @@ public class Sender implements Runnable {
 			Socket so = new Socket(address, port);
 			so.setSoTimeout(5000);
 
-		//	Formatera och skicka meddelandet till servern
+			//	Formatera och skicka meddelandet till servern
 			if (MessageType.IMAGE == message.getType()) {
 
-				
 			} else {
+				Gson gson = new Gson();
+				String send = "text/plain"+"\r\n";
+				send +=	gson.toJson(message);
+				Log.d("Gson test",send);
 				PrintWriter out = new PrintWriter(so.getOutputStream(), true);
-				out.println(message.getFormattedMessage());
+				out.println(send);
+				out.flush();
+
 			}
 
 			so.close();
@@ -54,7 +61,7 @@ public class Sender implements Runnable {
 		} catch (IOException ie) {
 			Log.d("Skapandet av socket [2]", ie.toString());
 		} //catch (InterruptedException e) {
-			//Log.d("Avruten väntan", "Gick inte");
+		//Log.d("Avruten väntan", "Gick inte");
 		//}
 	}
 }

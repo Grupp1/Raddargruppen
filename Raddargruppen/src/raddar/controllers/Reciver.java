@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.text.DateFormat;
+
+import com.google.gson.Gson;
+
 import raddar.enums.MessageType;
 import raddar.models.Message;
 import raddar.models.TextMessage;
@@ -27,6 +30,7 @@ public class Reciver implements Runnable {
 		try {
 
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
+			/*
 			String msgType = in.readLine();
 			String[] parts = msgType.split(" ");
 			String t = parts[1];
@@ -56,16 +60,33 @@ public class Reciver implements Runnable {
 
 				break;			
 			}
-			if(rh == null)
-				Log.d("NULL","ReciveHandler");
-			so.close();
-			rh.newMessage(type,m);
+
+			*/
+			//Läser av typen
+		//	Class c = Class.forName(in.readLine());
+			String temp = in.readLine();
+			MessageType type = MessageType.convert(temp);
+			switch (type){
+			case TEXT:
+				temp =in.readLine();
+				Log.d("Reciver","temp");
+				Gson gson = new Gson();
+				Message m = gson.fromJson(temp,TextMessage.class);
+				so.close();
+				rh.newMessage(m.getType(),m);
+				break;
+			case IMAGE:
+
+				break;			
+			}
+			
 
 		} catch (IOException ie) {
 			ie.printStackTrace();
 		}
-		catch(ArrayIndexOutOfBoundsException e){
-			Log.d("Undersök","ArrayIndexOutOfBounds i reciver");
+		//FIXA SEDAN, ENDAST FÖR TEST ArrayIndexOutOfBounds borde stå här
+		catch(Exception e){
+			Log.d("Undersök",e+"");
 		}
 
 	}

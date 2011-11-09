@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class ContactView extends ListActivity implements OnClickListener{
+	/*
 	private ContactAdapter ia;
 	private ArrayList<Contact> contacts;
 	private ArrayList selected;
@@ -102,5 +103,11 @@ public class ContactView extends ListActivity implements OnClickListener{
 			}	
 			return v;
 		}
+	}
+	*/
+	public void onCreate(Bundle savedInstanceState){
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.contact_table);
+		
 	}
 }
