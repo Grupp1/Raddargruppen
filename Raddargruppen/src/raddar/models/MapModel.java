@@ -1,12 +1,15 @@
 package raddar.models;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Observable;
 
 import raddar.controllers.MapCont;
+import raddar.enums.ResourceStatus;
+import raddar.enums.SituationPriority;
 import raddar.views.MapUI;
-import raddar.gruppen.R;
 import android.graphics.drawable.Drawable;
+import android.location.Geocoder;
 
 import com.google.android.maps.Overlay;
 
@@ -57,7 +60,6 @@ public class MapModel extends Observable {
 			youList.addOverlay(o);
 			notifyObservers(youList);
 		}
-		
 		else if(o instanceof Situation){
 			if(situationList == null){
 				situationList = new MapObjectList(d, mapUI);
@@ -70,15 +72,13 @@ public class MapModel extends Observable {
 				resourceList = new MapObjectList(d, mapUI);
 			}
 			resourceList.addOverlay(o);
-			this.setChanged();
 			notifyObservers(resourceList);
 		}		
 	}
 	
-	public void updateSnippet(MapObject o, String s){
+	public void updateObject(MapObject o){
 		setChanged();
-		o.setSnippet(s);
-		
+		o.updateData(new Geocoder(mapUI.getBaseContext(), Locale.getDefault()));
 		if (o instanceof Fire){
 			notifyObservers(fireList);
 		}
@@ -94,6 +94,11 @@ public class MapModel extends Observable {
 		else if(o instanceof Resource){
 			notifyObservers(resourceList);
 		}
+	}
+	
+	public void updateObject(MapObject o, String snippet){
+		o.setSnippet(snippet);
+		updateObject(o);
 	}
 	
 

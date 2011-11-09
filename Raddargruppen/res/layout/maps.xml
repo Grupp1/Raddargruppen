@@ -7,7 +7,7 @@
 		xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/mapview"
 		android:layout_width="fill_parent" android:clickable="true"
 		
-		android:apiKey="0b1qi7XBfQqm8teK24blL1Hhnfhqc9iOFejhYUw"
+		android:apiKey="0P4uyHaBFnO1w1ZvrAL_GO-vnVjyg6tYishNE8w"
 		android:enabled="true" android:layout_height="match_parent"/>
 
 

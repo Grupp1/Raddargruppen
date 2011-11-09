@@ -20,5 +20,12 @@ public class Situation extends MapObject {
 		this.priority = priority;
 	}
 	
+	@Override
+	public void updateDescription(){
+		super.updateDescription();
+		String des = this.getDescription();
+		des = des +"\nPrioritet: "+ getPriority().toString();
+		setDescription(des);
+	}
 	
 }

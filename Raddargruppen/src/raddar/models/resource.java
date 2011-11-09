@@ -12,7 +12,6 @@ public class Resource extends MapObject {
 	
 	public Resource(GeoPoint point, String title, String snippet, int icon, String id, ResourceStatus status) {
 		super(point, title, snippet, icon, id);
-		
 		this.status = status;
 	}
 
@@ -22,6 +21,14 @@ public class Resource extends MapObject {
 
 	public void setStatus(ResourceStatus status) {
 		this.status = status;
+	}
+	
+	@Override
+	public void updateDescription(){
+		super.updateDescription();
+		String des = this.getDescription();
+		des = des +"\nStatus: "+ getStatus().toString();
+		setDescription(des);
 	}
 	
 }

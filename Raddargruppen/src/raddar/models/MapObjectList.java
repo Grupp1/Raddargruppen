@@ -3,6 +3,7 @@ package raddar.models;
 import java.util.ArrayList;
 
 import raddar.controllers.MapCont;
+import raddar.enums.SituationPriority;
 import raddar.views.MapUI;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -21,8 +22,8 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 	private EditText input;
 	private String value;
 	private MapObject item;
-	
-	
+
+
 
 	public MapObjectList(Drawable defaultMarker) {
 		super(boundCenterBottom(defaultMarker));
@@ -48,25 +49,27 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 		this.populate();
 	}
 
+	//	public void updateOverlay(int index, MapObject o){
+	//		mOverlays.set(index, o);
+	//		this.populate();
+	//	}
+
 	/**
 	 * Vad som händer när man trycker på en situation
 	 */
 	@Override
 	protected boolean onTap(int index) {
 		item = (MapObject) mOverlays.get(index);
-
-
-
 		AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
 		dialog.setTitle(item.getTitle());
-		dialog.setMessage("Beskrivning: "+item.getSnippet()+"\nAdress: "+item.getAdress()+
-				"Koordinater: "+item.getPoint().getLatitudeE6()/1E6+", "+item.getPoint().getLongitudeE6()/1E6);
+		dialog.setMessage(item.getDescription());
 		// Lägga till String onTouch i MapObject???
-	
-		dialog.setPositiveButton("Ändra beskrivning", new DialogInterface.OnClickListener() {
+
+		AlertDialog alert = dialog.create();
+
+		alert.setButton("Ändra beskrivning", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
-
 
 				alertDialog.setTitle("Ändra beskrivning");
 				alertDialog.setMessage("Beskrivning");
@@ -77,10 +80,10 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 				alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
 						value = input.getText().toString();
-						MapUI.mapCont.updateSnippet(item, value);			
+						MapUI.mapCont.updateObject(item, value);		
 					}
 				});
-				
+
 				alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
 
@@ -90,7 +93,22 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 			}
 
 		});
-		dialog.show();
+
+
+		if(!(item instanceof You)){
+			alert.setButton2("Ta bort", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					mOverlays.remove(item);
+					MapUI.mapCont.updateObject(item);
+				}
+
+			});
+		}
+
+
+		alert.show();
+
+		//dialog.show();
 		return true;
 	}
 }
