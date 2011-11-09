@@ -47,13 +47,11 @@ public class Sender implements Runnable {
 
 			} else {
 				Gson gson = new Gson();
-				String send = "text/plain"+"\r\n";
+				String send = message.getClass().getName()+"\r\n";
 				send +=	gson.toJson(message);
 				Log.d("Gson test",send);
 				PrintWriter out = new PrintWriter(so.getOutputStream(), true);
 				out.println(send);
-				out.flush();
-
 			}
 
 			so.close();

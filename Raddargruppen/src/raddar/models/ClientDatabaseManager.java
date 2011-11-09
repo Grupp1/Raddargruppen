@@ -98,7 +98,7 @@ public class ClientDatabaseManager extends Observable {
 		//values.put("description", s.getDescription());
 		values.put("priority", s.getPriority().toString());
 		try {
-			db.insert("contact", null, values);
+			db.insert("situation", null, values);
 		} catch (Exception e) {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();

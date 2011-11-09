@@ -17,7 +17,7 @@ public class MapObject extends OverlayItem {
 		this.id = id;
 		this.icon = icon;
 	}
-	
+
 	public GeoPoint getPoint() {
 		return point;
 	}
@@ -49,7 +49,7 @@ public class MapObject extends OverlayItem {
 	public void setId(String id) {
 		this.id = id;
 	}
-	
+
 	public int getIcon() {
 		return icon;
 	}
@@ -57,7 +57,7 @@ public class MapObject extends OverlayItem {
 	public void setIcon(int icon) {
 		this.icon = icon;
 	}
-	
+
 	public String getAdress() {
 		return adress;
 	}
@@ -67,3 +67,4 @@ public class MapObject extends OverlayItem {
 	}
 
 }
+
