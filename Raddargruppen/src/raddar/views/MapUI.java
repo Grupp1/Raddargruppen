@@ -44,16 +44,19 @@ public class MapUI extends MapActivity implements Observer {
 	private GeoPoint touchedPoint, liu, myLocation, sthlmLocation;
 	private List<Overlay> mapOverlays;
 	private GPSModel gps;
-	private MapCont mapCont;
+	
 	private boolean follow;
 	private You you;
 	private Toast toast;
+	
+	public static MapCont mapCont;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.maps);
-
+		mapCont = new MapCont(MapUI.this, you);
+		
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 		mapView.setSatellite(true);
@@ -74,7 +77,7 @@ public class MapUI extends MapActivity implements Observer {
 		you = new You(myLocation, "Min position", "Här är jag", R.drawable.niklas, "000000", ResourceStatus.FREE);
 		gps = new GPSModel(this);
 
-		mapCont = new MapCont(MapUI.this, you);
+		
 		
 		controller.animateTo(myLocation);
 		controller.setZoom(13);

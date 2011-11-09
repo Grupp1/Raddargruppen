@@ -35,10 +35,13 @@ public class MapCont implements Observer, Runnable{
 	}
 
 	public void add(MapObject o){
-		o.setAdress(calcAdress(o.getPoint()));
 		mapModel.add(o);
 	}
 
+	public void updateSnippet(MapObject o, String s){
+		mapModel.updateSnippet(o,s);
+	}
+	
 	public void run() {
 		add(o);
 	}

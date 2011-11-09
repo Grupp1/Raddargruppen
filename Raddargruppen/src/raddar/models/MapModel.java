@@ -74,6 +74,28 @@ public class MapModel extends Observable {
 			notifyObservers(resourceList);
 		}		
 	}
+	
+	public void updateSnippet(MapObject o, String s){
+		setChanged();
+		o.setSnippet(s);
+		
+		if (o instanceof Fire){
+			notifyObservers(fireList);
+		}
+		else if(o instanceof FireTruck){
+			notifyObservers(fireTruckList);
+		}
+		else if(o instanceof You){
+			notifyObservers(youList);
+		}
+		else if(o instanceof Situation){
+			notifyObservers(situationList);
+		}
+		else if(o instanceof Resource){
+			notifyObservers(resourceList);
+		}
+	}
+	
 
 	/*
 	 * Alla situationer utplacerade på kartan sparas här
