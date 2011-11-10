@@ -20,6 +20,7 @@ public class MapCont implements Observer, Runnable{
 
 	private MapModel mapModel;
 	private Thread thread = new Thread(this);
+
 	private ArrayList<MapObject>  olist;
 	
 	private MapUI mapUI;

@@ -18,6 +18,7 @@ public class StartView extends Activity {
 	private EditText user;
 	private EditText password;
 
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -36,13 +37,11 @@ public class StartView extends Activity {
 		user.setText("Alice");
 		password.setText("longshot");
 
-
 		loginButton = (Button) this.findViewById(R.id.okButton);
 		loginButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				boolean valid = LoginManager.evaluate(MainView.controller
-						.getUser(), password.getText().toString());
+				boolean valid = LoginManager.evaluate(user.getText().toString(), password.getText().toString());
 
 				if (valid) {
 					Intent nextIntent = new Intent(StartView.this,
@@ -61,5 +60,6 @@ public class StartView extends Activity {
 	public void onRestart() {
 		super.onRestart();
 		finish();
+
 	}
 }

@@ -65,8 +65,8 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 	@Override
 	protected boolean onTap(int index) {
 
-		final CharSequence [] situationPriority = {"Hög", "Mellan", "Låg"};
-		final CharSequence [] resourceStatus = {"Upptagen", "Ledig"};
+		final CharSequence [] situationPriority = {SituationPriority.HIGH.toString(), SituationPriority.NORMAL.toString(), SituationPriority.LOW.toString()};
+		final CharSequence [] resourceStatus = {ResourceStatus.BUSY.toString(), ResourceStatus.FREE.toString()};
 
 		item = (MapObject) mOverlays.get(index);
 		AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
