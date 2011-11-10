@@ -30,7 +30,7 @@ public class ReciveHandler implements Runnable {
 			while (true) 
 				// När ett inkommande meddelande tas emot skapa en ny Receiver
 				// som körs i en egen tråd
-				new Reciver(so.accept(),this);
+				new Receiver(so.accept(),this);
 
 		} catch (IOException ie) {
 			ie.printStackTrace();
