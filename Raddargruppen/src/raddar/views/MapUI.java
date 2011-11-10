@@ -98,9 +98,6 @@ public class MapUI extends MapActivity implements Observer {
 		ArrayList<MapObject> olist = MainView.db.getAllRowsAsArrays("map");
 		olist.add(you);
 		mapCont = new MapCont(MapUI.this, olist);
-		
-		controller.animateTo(myLocation);
-		controller.setZoom(13);
 
 		Touchy t = new Touchy(this);
 		mapOverlays.add(t);
@@ -109,7 +106,7 @@ public class MapUI extends MapActivity implements Observer {
 
 	@Override
 	protected void onStart() {
-		follow = false;
+		follow = true;
 		super.onStart();
 	}
 
@@ -250,8 +247,7 @@ public class MapUI extends MapActivity implements Observer {
 	public void update(Observable observable, Object data) {
 		if (data instanceof GeoPoint){
 			myLocation = (GeoPoint) data;
-			you.setPoint(myLocation);
-			you.updateData(geocoder);
+			you.setPoint(myLocation);	
 			if (follow){
 				controller.animateTo(myLocation);
 			}

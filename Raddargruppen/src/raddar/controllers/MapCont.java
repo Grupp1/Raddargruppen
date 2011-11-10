@@ -51,8 +51,14 @@ public class MapCont implements Observer, Runnable{
 	}
 	
 	public void run() {
-		for(int i = 0; i < olist.size();i++)
+		for(int i = 0; i < olist.size();i++){
+			olist.get(i).updateData(new Geocoder(mapUI.getBaseContext(), Locale.getDefault()));
 			mapModel.add(olist.get(i));
+		}
+	}
+	
+	public void removeObject(MapObject mo){
+		mapModel.removeObject(mo);
 	}
 	
 	public void update(Observable o, Object data) {

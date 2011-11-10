@@ -33,7 +33,7 @@ public class ClientDatabaseManager extends Observable {
 			"srcUser","rDate","subject","mData"};
 	private final String[] CONTACT_TABLE_ROWS = new String[] { "userName", "isGroup"};
 	private final String[] SITUATION_TABLE_ROWS = new String[] { "title", "description", "priority" };
-	private final String[] MAP_TABLE_ROWS = new String[] { "mapObject","class"};
+	private final String[] MAP_TABLE_ROWS = new String[] { "mapObject","class","id"};
 
 
 	/**********************************************************************
@@ -104,6 +104,7 @@ public class ClientDatabaseManager extends Observable {
 		Gson gson = new Gson();
 		values.put("mapObject", gson.toJson(mo));
 		values.put("class", mo.getClass().getName());
+		values.put("id", mo.getId());
 		try {
 			db.insert("map", null, values);
 		} catch (Exception e) {
@@ -149,6 +150,16 @@ public class ClientDatabaseManager extends Observable {
 		setChanged();
 		notifyObservers(c);
 	}
+	public void deleteRow(MapObject mo) {
+		try {
+			db.delete("map", "id = '" +mo.getId()+"'", null);
+		} catch (Exception e) {
+			Log.e("DB ERROR", e.toString());
+			e.printStackTrace();
+		}
+		setChanged();
+		notifyObservers(mo);
+	}
 
 	/**********************************************************************
 	 * UPDATING A ROW IN THE CONTACT TABLE
@@ -164,60 +175,6 @@ public class ClientDatabaseManager extends Observable {
 			e.printStackTrace();
 		}
 	}
-
-	/**********************************************************************
-	 * RETRIEVING A ROW FROM THE DATABASE TABLE
-	 * 
-	 * This is an example of how to retrieve a row from a database table using
-	 * this class. You should edit this method to suit your needs.
-	 * 
-	 * @param rowID
-	 *            the id of the row to retrieve
-	 * @return an array containing the data from the row
-	 */
-	/*	public ArrayList<Message> getRowAsArray() {
-		// create an array list to store data from the database row.
-		// I would recommend creating a JavaBean compliant object
-		// to store this data instead. That way you can ensure
-		// data types are correct.
-		ArrayList<Message> rowArray = new ArrayList<Message>();
-		Cursor cursor;
-
-		try {
-			// this is a database call that creates a "cursor" object.
-			// the cursor object store the information collected from the
-			// database and is used to iterate through the data.
-			cursor = db.query("message", new String[] { "msgId",
-					"srcUser","rDate","subject","mData"}, null,
-					null, null, null, null, null);
-
-			// move the pointer to position zero in the cursor.
-			cursor.moveToFirst();
-
-			// if there is data available after the cursor's pointer, add
-			// it to the ArrayList that will be returned by the method.
-			if (!cursor.isAfterLast()) {
-				do {
-					Message m = new TextMessage(MessageType.TEXT, 
-							cursor.getString(1), 
-							DB_NAME, 
-							MessagePriority.NORMAL, 
-							cursor.getString(4));
-					rowArray.add(m);
-				} while (cursor.moveToNext());
-			}
-
-			// let java know that you are through with the cursor.
-			cursor.close();
-		} catch (SQLException e) {
-			Log.e("DB ERROR", e.toString());
-			e.printStackTrace();
-		}
-
-		// return the ArrayList containing the given row from the database.
-		return rowArray;
-	} */
-
 
 	/**
 	 * RETRIEVE ALL ROWS IN A TABLE AS AN ArrayList
@@ -315,7 +272,8 @@ public class ClientDatabaseManager extends Observable {
 					"isGroup text)";
 			String mapTableQueryString = "create table map (" +
 					"mapObject text," +
-					"class text)";
+					"class text," +
+					"id text)";
 			/*
 			 * String newTableQueryString = "create table " + TABLE_NAME + " ("
 			 * + TABLE_ROW_ID + " integer primary key autoincrement not null," +

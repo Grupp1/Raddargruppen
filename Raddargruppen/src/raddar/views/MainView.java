@@ -163,7 +163,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	public void update(Observable observable, final Object data) {
 		runOnUiThread(new Runnable(){
 			public void run(){	
-				if(data != null)
+				if(data != null && data instanceof Message)
 					Toast.makeText(getApplicationContext(), "Meddelande från "+
 							((Message)data).getSrcUser()
 							,Toast.LENGTH_LONG).show();
