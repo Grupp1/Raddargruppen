@@ -68,33 +68,33 @@ public class StartView extends Activity {
 				NotificationMessage nm = new NotificationMessage(user.getText().toString(), 
 						NotificationType.CONNECT, 
 						password.getText().toString());
-				try {
+			//	try {
 					// Skapa socket som används för att skicka NotificationMessage
-					Socket so = new Socket(InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
+				//	Socket so = new Socket(InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
 					
 					
 					
-					PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
-					pw.println(nm.getFormattedMessage());
+			//		PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
+			//		pw.println(nm.getFormattedMessage());
 					
-					BufferedReader br = new BufferedReader(
-							new InputStreamReader(so.getInputStream()));
+			//		BufferedReader br = new BufferedReader(
+			//				new InputStreamReader(so.getInputStream()));
 					
 					// Läs in ett svar från servern via SAMMA socket
-					String response = br.readLine();
+			//		String response = br.readLine();
 					
 					
 					// Om servern säger att användarnamn och lösenord är OK så loggas man in 
-					if (response.equalsIgnoreCase("OK")) {
+			//		if (response.equalsIgnoreCase("OK")) {
 						Intent nextIntent = new Intent(StartView.this, MainView.class);
 						nextIntent.putExtra("user",user.getText().toString());
 						startActivity(nextIntent);
-					}
+			//		}
 					//new Sender(nm, InetAddress.getByName("130.236.227.95"), 4043);
 					
-				} catch (IOException e) {
+			//	} catch (IOException e) {
 					Log.d("NotificationMessage", "Connect failed");
-				}
+		//		}
 				
 				
 				/* if (Login.checkPassword(user.getText().toString(), password.getText().toString()) == LoginResponse.ACCEPTED) {

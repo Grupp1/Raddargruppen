@@ -113,7 +113,6 @@ public class MapModel extends Observable {
 		o.setSnippet(snippet);
 		updateObject(o);
 	}
-	
 
 	public List<Overlay> getMapOverlays() {
 		return mapOverlays;

@@ -1,9 +1,11 @@
 package raddar.models;
 
 import java.io.IOException;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
-
+import raddar.views.MainView;
 import android.location.Address;
 import android.location.Geocoder;
 
@@ -13,8 +15,9 @@ import com.google.android.maps.OverlayItem;
 public class MapObject extends OverlayItem {
 
 	private GeoPoint point;
-	private String title, snippet, id, adress, description;
+	private String title, snippet, id, adress, description, addedBy, date;
 	private int icon;
+	
 	
 	/*
 	 * MapObject är ett object som kan placeras ut på kartan
@@ -27,6 +30,16 @@ public class MapObject extends OverlayItem {
 		this.snippet = snippet;
 		this.id = id;
 		this.icon = icon;
+		this.addedBy = MainView.controller.getUser();
+		this.date = new SimpleDateFormat("yyyy:MM:dd 'kl' HH:mm:ss").format(new Date());
+	}
+	
+	public String getAddedBy(){
+		return addedBy;
+	}
+	
+	public String getDate(){
+		return date;
 	}
 	
 	public GeoPoint getPoint() {
@@ -96,6 +109,7 @@ public class MapObject extends OverlayItem {
 	/*
 	 * Uppdaterar adressen när den ändras
 	 */
+	
 	public void updateAdress(Geocoder geocoder){
 		String display ="";
 		try{
@@ -111,14 +125,15 @@ public class MapObject extends OverlayItem {
 			
 		}
 		if (display.equals("")){
-			display = "Kunde inte hämta adress";
+			display = "Kunde inte hämta adress\n";
 		}
 		setAdress(display);
 	}
 	
 	public void updateDescription(){
 		setDescription("Beskrivning: "+getSnippet()+"\nAdress: "+getAdress()+
-				  "Koordinater: "+getPoint().getLatitudeE6()/1E6+", "+getPoint().getLongitudeE6()/1E6);
+				  "Koordinater: "+getPoint().getLatitudeE6()/1E6+", "+getPoint().getLongitudeE6()/1E6 + "\nSkapad: " + 
+				getDate() + "\nSkapad av: " + getAddedBy());
 	}
 	
 }
