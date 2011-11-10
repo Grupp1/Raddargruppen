@@ -1,17 +1,20 @@
 package raddar.controllers;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
+import raddar.enums.ResourceStatus;
+import raddar.enums.SituationPriority;
 import raddar.models.MapModel;
 import raddar.models.MapObject;
+import raddar.views.MainView;
 import raddar.views.MapUI;
 import android.location.Address;
 import android.location.Geocoder;
-import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 
@@ -19,7 +22,7 @@ public class MapCont implements Observer, Runnable{
 
 	private MapModel mapModel;
 	private Thread thread = new Thread(this);
-	private MapObject o;
+	private ArrayList<MapObject>  olist;
 	
 	private MapUI mapUI;
 
@@ -27,20 +30,35 @@ public class MapCont implements Observer, Runnable{
 	 * Kontrollerar vilken typ av objekt som lagts till på kartan. 
 	 */
 
-	public MapCont(final MapUI mapUI, MapObject o){
+	public MapCont(final MapUI mapUI, ArrayList<MapObject> olist){
 		this.mapUI = mapUI;
-		this.o = o;
+		this.olist = olist;
 		mapModel = new MapModel(mapUI, this);
 		thread.start();
 	}
 
 	public void add(MapObject o){
-		//o.setAdress(o.updateAdress(o.getPoint()));
+		MainView.db.addRow(o);
 		mapModel.add(o);
 	}
 
+	public void updateObject(MapObject o){
+		mapModel.updateObject(o);
+	}
+	
+	public void updateObject(MapObject o, String snippet){
+		mapModel.updateObject(o, snippet);
+	}
+	
 	public void run() {
-		add(o);
+		for(int i = 0; i < olist.size();i++){
+			olist.get(i).updateData(new Geocoder(mapUI.getBaseContext(), Locale.getDefault()));
+			mapModel.add(olist.get(i));
+		}
+	}
+	
+	public void removeObject(MapObject mo){
+		mapModel.removeObject(mo);
 	}
 	
 	public void update(Observable o, Object data) {
