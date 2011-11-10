@@ -61,6 +61,10 @@ public class Sender implements Runnable {
 			rSocket.close();
 			
 		} catch (IOException e) {
+			// Logga ut denna användaren om 
+			LoginManager.logoutUser(m.getDestUser());
+			// Mottagaren är inte online
+			// Buffra meddelandet
 			e.printStackTrace();
 		}
 	}
