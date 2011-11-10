@@ -1,5 +1,6 @@
 package raddar.views;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Observable;
@@ -22,6 +23,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,6 +37,12 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
+
+
+import com.google.gson.Gson;
+
+import com.google.android.maps.OverlayItem;
+
 
 
 public class MapUI extends MapActivity implements Observer {
@@ -89,19 +97,18 @@ public class MapUI extends MapActivity implements Observer {
 		you.updateData(geocoder);
 		gps = new GPSModel(this);
 
-		mapCont = new MapCont(MapUI.this, you);
-
-		controller.animateTo(myLocation);
-		controller.setZoom(13);
+		ArrayList<MapObject> olist = MainView.db.getAllRowsAsArrays("map");
+		olist.add(you);
+		mapCont = new MapCont(MapUI.this, olist);
 
 		Touchy t = new Touchy(this);
 		mapOverlays.add(t);
-
+		
 	}
 
 	@Override
 	protected void onStart() {
-		follow = false;
+		follow = true;
 		super.onStart();
 	}
 
@@ -243,8 +250,7 @@ public class MapUI extends MapActivity implements Observer {
 	public void update(Observable observable, Object data) {
 		if (data instanceof GeoPoint){
 			myLocation = (GeoPoint) data;
-			you.setPoint(myLocation);
-			you.updateData(geocoder);
+			you.setPoint(myLocation);	
 			if (follow){
 				controller.animateTo(myLocation);
 			}

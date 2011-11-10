@@ -5,7 +5,11 @@ import java.util.ArrayList;
 
 import raddar.enums.ResourceStatus;
 import raddar.enums.SituationPriority;
+
 import raddar.gruppen.R;
+
+import raddar.views.MainView;
+
 import raddar.views.MapUI;
 
 import android.app.AlertDialog;
@@ -114,7 +118,8 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 			alert.setButton2("Ta bort", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
 					mOverlays.remove(item);
-					//MapUI.mapCont.updateObject(item);
+					MapUI.mapCont.removeObject(item);
+					MainView.db.deleteRow(item);
 				}
 
 			});

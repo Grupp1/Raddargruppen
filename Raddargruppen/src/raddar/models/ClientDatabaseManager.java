@@ -3,8 +3,12 @@ package raddar.models;
 import java.util.ArrayList;
 import java.util.Observable;
 
+import com.google.android.maps.GeoPoint;
+import com.google.gson.Gson;
+
 import raddar.enums.MessagePriority;
 import raddar.enums.MessageType;
+import raddar.enums.SituationPriority;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -29,7 +33,7 @@ public class ClientDatabaseManager extends Observable {
 			"srcUser","rDate","subject","mData"};
 	private final String[] CONTACT_TABLE_ROWS = new String[] { "userName", "isGroup"};
 	private final String[] SITUATION_TABLE_ROWS = new String[] { "title", "description", "priority" };
-	private final String[] RESOURCE_TABLE_ROWS = new String[] { "title", "status" };
+	private final String[] MAP_TABLE_ROWS = new String[] { "mapObject","class","id"};
 
 
 	/**********************************************************************
@@ -46,6 +50,9 @@ public class ClientDatabaseManager extends Observable {
 		addRow(new Contact("Alice",false));
 		addRow(new Contact("Borche",false));
 		addRow(new Contact("Daniel",false));
+		
+		//TEST KOD FÖR MAP
+		addRow(new Fire(new GeoPoint(58395730, 15573080), "HAHAHA", "HAHHAHA", SituationPriority.HIGH));
 	}
 
 	/**********************************************************************
@@ -83,8 +90,8 @@ public class ClientDatabaseManager extends Observable {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
-		//setChanged();
-		//notifyObservers(c);
+		setChanged();
+		notifyObservers(c);
 	}
 
 	/**********************************************************************
@@ -92,19 +99,20 @@ public class ClientDatabaseManager extends Observable {
 	 * 
 	 * @param s The situation that is to be added
 	 */
-	public void addRow(Situation s){
+	public void addRow(MapObject mo){
 		ContentValues values = new ContentValues();
-		values.put("title", s.getTitle());
-		//values.put("description", s.getDescription());
-		values.put("priority", s.getPriority().toString());
+		Gson gson = new Gson();
+		values.put("mapObject", gson.toJson(mo));
+		values.put("class", mo.getClass().getName());
+		values.put("id", mo.getId());
 		try {
-			db.insert("contact", null, values);
+			db.insert("map", null, values);
 		} catch (Exception e) {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
-		setChanged();
-		notifyObservers(s);
+	//	setChanged();
+	//	notifyObservers(mo);
 	}
 
 	/**********************************************************************
@@ -134,7 +142,7 @@ public class ClientDatabaseManager extends Observable {
 	 */
 	public void deleteRow(Contact c) {
 		try {
-			db.delete("contact", "userName =" + c.getUserName(), null);
+			db.delete("contact", "userName = '" + c.getUserName()+"'", null);
 		} catch (Exception e) {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
@@ -142,75 +150,33 @@ public class ClientDatabaseManager extends Observable {
 		setChanged();
 		notifyObservers(c);
 	}
+	public void deleteRow(MapObject mo) {
+		try {
+			db.delete("map", "id = '" +mo.getId()+"'", null);
+		} catch (Exception e) {
+			Log.e("DB ERROR", e.toString());
+			e.printStackTrace();
+		}
+		setChanged();
+		notifyObservers(mo);
+	}
 
 	/**********************************************************************
 	 * UPDATING A ROW IN THE CONTACT TABLE
 	 * 
+	 * @param c Contact that is to be updated (with its old name)
+	 * @param userName The new user name for contact c
 	 */
 	public void updateRow(Contact c, String userName) {
 		ContentValues values = new ContentValues();
-		values.put("srcUser", userName);
+		values.put("userName", userName);
 		try {
-			db.update("contact", values, "userName" + c.getUserName(), null);
+			db.update("contact", values, "userName = '" + c.getUserName()+"'", null);
 		} catch (Exception e) {
 			Log.e("DB Error", e.toString());
 			e.printStackTrace();
 		}
 	}
-
-	/**********************************************************************
-	 * RETRIEVING A ROW FROM THE DATABASE TABLE
-	 * 
-	 * This is an example of how to retrieve a row from a database table using
-	 * this class. You should edit this method to suit your needs.
-	 * 
-	 * @param rowID
-	 *            the id of the row to retrieve
-	 * @return an array containing the data from the row
-	 */
-	/*	public ArrayList<Message> getRowAsArray() {
-		// create an array list to store data from the database row.
-		// I would recommend creating a JavaBean compliant object
-		// to store this data instead. That way you can ensure
-		// data types are correct.
-		ArrayList<Message> rowArray = new ArrayList<Message>();
-		Cursor cursor;
-
-		try {
-			// this is a database call that creates a "cursor" object.
-			// the cursor object store the information collected from the
-			// database and is used to iterate through the data.
-			cursor = db.query("message", new String[] { "msgId",
-					"srcUser","rDate","subject","mData"}, null,
-					null, null, null, null, null);
-
-			// move the pointer to position zero in the cursor.
-			cursor.moveToFirst();
-
-			// if there is data available after the cursor's pointer, add
-			// it to the ArrayList that will be returned by the method.
-			if (!cursor.isAfterLast()) {
-				do {
-					Message m = new TextMessage(MessageType.TEXT, 
-							cursor.getString(1), 
-							DB_NAME, 
-							MessagePriority.NORMAL, 
-							cursor.getString(4));
-					rowArray.add(m);
-				} while (cursor.moveToNext());
-			}
-
-			// let java know that you are through with the cursor.
-			cursor.close();
-		} catch (SQLException e) {
-			Log.e("DB ERROR", e.toString());
-			e.printStackTrace();
-		}
-
-		// return the ArrayList containing the given row from the database.
-		return rowArray;
-	} */
-
 
 	/**
 	 * RETRIEVE ALL ROWS IN A TABLE AS AN ArrayList
@@ -237,6 +203,12 @@ public class ClientDatabaseManager extends Observable {
 						CONTACT_TABLE_ROWS,
 						null, null, null, null, null);
 			}
+			else if(table.equals("map")){
+				cursor = db.query(
+						"map",
+						MAP_TABLE_ROWS,
+						null, null, null, null, null);
+			}
 			cursor.moveToFirst();
 			//If it is a message table
 			if (!cursor.isAfterLast())
@@ -255,6 +227,17 @@ public class ClientDatabaseManager extends Observable {
 					else if(table.equals("contact")){
 						Contact c = new Contact(cursor.getString(0),false);
 						dataArrays.add(c);
+					}
+					else if(table.equals("map")){
+						Gson gson = new Gson();
+						Class c = null;
+						try {
+							c = Class.forName(cursor.getString(1));
+						} catch (ClassNotFoundException e) {
+							e.printStackTrace();
+						}					
+						MapObject mo = gson.fromJson(cursor.getString(0), c);
+						dataArrays.add(mo);
 					}
 				}
 				// move the cursor's pointer up one position.
@@ -289,12 +272,17 @@ public class ClientDatabaseManager extends Observable {
 			String contactTableQueryString = "create table contact (" +
 					"userName text, " +
 					"isGroup text)";
+			String mapTableQueryString = "create table map (" +
+					"mapObject text," +
+					"class text," +
+					"id text)";
 			/*
 			 * String newTableQueryString = "create table " + TABLE_NAME + " ("
 			 * + TABLE_ROW_ID + " integer primary key autoincrement not null," +
 			 * TABLE_ROW_ONE + " text," + TABLE_ROW_TWO + " text" + ");";
 			 */
 			// execute the query string to the database.
+			db.execSQL(mapTableQueryString);
 			db.execSQL(contactTableQueryString);
 			db.execSQL(messageTableQueryString);
 		}

@@ -1,6 +1,7 @@
 package raddar.controllers;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Observable;
@@ -8,6 +9,7 @@ import java.util.Observer;
 
 import raddar.models.MapModel;
 import raddar.models.MapObject;
+import raddar.views.MainView;
 import raddar.views.MapUI;
 import android.location.Address;
 import android.location.Geocoder;
@@ -18,7 +20,7 @@ public class MapCont implements Observer, Runnable{
 
 	private MapModel mapModel;
 	private Thread thread = new Thread(this);
-	private MapObject o;
+	private ArrayList<MapObject>  olist;
 	
 	private MapUI mapUI;
 
@@ -26,14 +28,15 @@ public class MapCont implements Observer, Runnable{
 	 * Skickar vidare operationer i en ny tråd till MapModel 
 	 */
 
-	public MapCont(final MapUI mapUI, MapObject o){
+	public MapCont(final MapUI mapUI, ArrayList<MapObject> olist){
 		this.mapUI = mapUI;
-		this.o = o;
+		this.olist = olist;
 		mapModel = new MapModel(mapUI, this);
 		thread.start();
 	}
 
 	public void add(MapObject o){
+		MainView.db.addRow(o);
 		mapModel.add(o);
 	}
 
@@ -46,8 +49,14 @@ public class MapCont implements Observer, Runnable{
 	}
 	
 	public void run() {
-		add(o);
-		
+		for(int i = 0; i < olist.size();i++){
+			olist.get(i).updateData(new Geocoder(mapUI.getBaseContext(), Locale.getDefault()));
+			mapModel.add(olist.get(i));
+		}
+	}
+	
+	public void removeObject(MapObject mo){
+		mapModel.removeObject(mo);
 	}
 	
 	public void update(Observable o, Object data) {

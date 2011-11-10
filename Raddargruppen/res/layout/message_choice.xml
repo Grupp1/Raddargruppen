@@ -10,8 +10,8 @@
 		android:layout_width="match_parent"
 		android:id="@+id/linearLayoutNew"
 		android:orientation="vertical"
-		android:layout_marginLeft="60dip"
-		android:layout_marginRight="160dip"
+		android:layout_marginLeft="50dip"
+		android:layout_marginRight="170dip"
 		android:layout_marginTop="20dip">
 		<ImageButton
 			android:layout_width="90dp"
@@ -35,8 +35,8 @@
 		android:layout_width="match_parent"
 		android:id="@+id/linearLayoutInbox"
 		android:orientation="vertical"
-		android:layout_marginLeft="160dip"
-		android:layout_marginRight="60dip"
+		android:layout_marginLeft="170dip"
+		android:layout_marginRight="50dip"
 		android:layout_marginTop="20dip">
 		<ImageButton
 			android:layout_width="90dp"
