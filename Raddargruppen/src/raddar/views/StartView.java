@@ -73,7 +73,6 @@ public class StartView extends Activity {
 					Socket so = new Socket(InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
 					
 					
-					
 					PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
 					pw.println(nm.getFormattedMessage());
 					
