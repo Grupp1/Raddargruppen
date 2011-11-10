@@ -1,5 +1,6 @@
 package raddar.views;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Observable;
@@ -22,6 +23,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,7 +37,11 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
+
+import com.google.gson.Gson;
+
 import com.google.android.maps.OverlayItem;
+
 
 public class MapUI extends MapActivity implements Observer {
 
@@ -84,18 +90,18 @@ public class MapUI extends MapActivity implements Observer {
 		geocoder = new Geocoder(getBaseContext(), Locale.getDefault());
 
 		// SKAPA METOD SÅ ATT YOU INTE SKAPAS FÖRRÄN GPS:EN HITTAR EN POSITION!!
-		mapCont = new MapCont(MapUI.this/*, you*/);
 		you = new You(myLocation, "Din position", "Här är du", R.drawable.niklas, ResourceStatus.FREE);
-		gps = new GPSModel(this);
-
-		
+		gps = new GPSModel(this);		
 
 		controller.animateTo(sthlmLocation);
 
-		Touchy t = new Touchy(this);
-		mapOverlays.add(t);
-
 		youFind = false;
+
+		ArrayList<MapObject> olist = MainView.db.getAllRowsAsArrays("map");
+		olist.add(you);
+		mapCont = new MapCont(MapUI.this, olist);
+
+
 		
 	}
 
@@ -103,6 +109,7 @@ public class MapUI extends MapActivity implements Observer {
 	protected void onStart() {
 		follow = false;
 		//youFind = false;
+
 		super.onStart();
 	}
 
@@ -243,6 +250,7 @@ public class MapUI extends MapActivity implements Observer {
 	public void update(Observable observable, Object data) {
 		if (data instanceof GeoPoint){
 			myLocation = (GeoPoint) data;
+
 			if (!youFind){
 				mapCont.add(you);
 				controller.animateTo(myLocation);
@@ -252,6 +260,7 @@ public class MapUI extends MapActivity implements Observer {
 			}
 			you.setPoint(myLocation);	
 			you.updateData(geocoder);
+			
 			if (follow){
 				controller.animateTo(myLocation);
 			}

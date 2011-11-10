@@ -108,7 +108,7 @@ public class MapObject extends OverlayItem {
 			
 		}
 		if (display.equals("")){
-			display = "Kunde inte hämta adress";
+			display = "Kunde inte hämta adress\n";
 		}
 		setAdress(display);
 	}
