@@ -35,8 +35,9 @@ public class TextMessage extends Message {
 		formattedMessage += Message.HEADER_TO + toUser + CRLF;
 		formattedMessage += Message.HEADER_DATE + getFormattedDate() + CRLF;
 		formattedMessage += Message.HEADER_SUBJECT + subject + CRLF;
-		formattedMessage += CRLF + CRLF;
+		formattedMessage += CRLF;
 		formattedMessage += data;
+		formattedMessage += CRLF;
 		
 		return formattedMessage;
 	}

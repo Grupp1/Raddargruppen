@@ -15,6 +15,10 @@ public class MapObject extends OverlayItem {
 	private GeoPoint point;
 	private String title, snippet, id, adress, description;
 	private int icon;
+	
+	/*
+	 * MapObject är ett object som kan placeras ut på kartan
+	 */
 
 	public MapObject(GeoPoint point, String title, String snippet, int icon, String id) {
 		super(point, title, snippet);
@@ -24,7 +28,7 @@ public class MapObject extends OverlayItem {
 		this.id = id;
 		this.icon = icon;
 	}
-	
+
 	public GeoPoint getPoint() {
 		return point;
 	}
@@ -56,7 +60,7 @@ public class MapObject extends OverlayItem {
 	public void setId(String id) {
 		this.id = id;
 	}
-	
+
 	public int getIcon() {
 		return icon;
 	}
@@ -64,7 +68,7 @@ public class MapObject extends OverlayItem {
 	public void setIcon(int icon) {
 		this.icon = icon;
 	}
-	
+
 	public String getAdress() {
 		if(adress == null){
 			return "";
@@ -89,6 +93,9 @@ public class MapObject extends OverlayItem {
 		updateDescription();
 	}
 	
+	/*
+	 * Uppdaterar adressen när den ändras
+	 */
 	public void updateAdress(Geocoder geocoder){
 		String display ="";
 		try{
@@ -104,7 +111,7 @@ public class MapObject extends OverlayItem {
 			
 		}
 		if (display.equals("")){
-			display = "Kunde inte hämta adress";
+			display = "Kunde inte hämta adress\n";
 		}
 		setAdress(display);
 	}
@@ -115,3 +122,4 @@ public class MapObject extends OverlayItem {
 	}
 	
 }
+

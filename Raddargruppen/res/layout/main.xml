@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout
+
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical"
 	android:layout_width="fill_parent"
-	android:layout_height="fill_parent" android:gravity="top">
+	android:layout_height="fill_parent"
+	android:gravity="top">
 
 	<LinearLayout
 		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
 		android:id="@+id/linearLayoutCall"
 		android:orientation="vertical"
-		android:layout_marginLeft="60dip" android:layout_marginRight="160dip" android:layout_marginTop="20dip">
+		android:layout_marginLeft="50dip"
+		android:layout_marginRight="170dip"
+		android:layout_marginTop="20dip">
 		<ImageButton
 			android:layout_width="90dp"
 			android:layout_height="80dp"
@@ -34,7 +39,9 @@
 		android:layout_width="match_parent"
 		android:id="@+id/linearLayoutMessages"
 		android:orientation="vertical"
-		android:layout_marginLeft="160dip" android:layout_marginRight="60dip" android:layout_marginTop="20dip">
+		android:layout_marginLeft="170dip"
+		android:layout_marginRight="50dip"
+		android:layout_marginTop="20dip">
 		<ImageButton
 			android:layout_width="90dp"
 			android:layout_height="80dp"
@@ -60,7 +67,7 @@
 		android:orientation="vertical"
 		android:layout_below="@+id/linearLayoutCall"
 		android:layout_alignLeft="@+id/linearLayoutCall"
-		android:layout_marginRight="160dip"
+		android:layout_marginRight="170dip"
 		android:layout_marginTop="10dip">
 		<ImageButton
 			android:layout_width="90dp"
@@ -83,25 +90,25 @@
 	<LinearLayout
 		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
-		android:id="@+id/linearLayoutReport"
+		android:id="@+id/linearLayoutContact"
 		android:orientation="vertical"
 		android:layout_below="@+id/linearLayoutMessages"
 		android:layout_alignRight="@+id/linearLayoutMessages"
-		android:layout_marginLeft="160dip"
+		android:layout_marginLeft="170dip"
 		android:layout_marginTop="10dip">
 		<ImageButton
 			android:layout_width="90dp"
 			android:layout_height="80dp"
 			android:background="#000000"
-			android:src="@drawable/report"
-			android:id="@+id/reportButton"
+			android:src="@drawable/contact"
+			android:id="@+id/contactButton"
 			android:layout_gravity="center"></ImageButton>
 		<TextView
 			android:layout_width="wrap_content"
 			android:id="@+id/textView3"
 			android:textAppearance="?android:attr/textAppearanceSmall"
 			android:layout_height="wrap_content"
-			android:text="@string/main_report"
+			android:text="@string/main_contact_list"
 			android:layout_gravity="center"></TextView>
 	</LinearLayout>
 
@@ -114,7 +121,7 @@
 		android:orientation="vertical"
 		android:layout_below="@+id/linearLayoutMap"
 		android:layout_alignLeft="@+id/linearLayoutMap"
-		android:layout_marginRight="160dip"
+		android:layout_marginRight="170dip"
 		android:layout_marginTop="10dip">
 		<ImageButton
 			android:layout_width="90dp"
@@ -131,16 +138,16 @@
 			android:layout_gravity="center"
 			android:text="@string/main_services"></TextView>
 	</LinearLayout>
-	
-	
+
+
 	<LinearLayout
 		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
 		android:id="@+id/linearLayoutSetup"
 		android:orientation="vertical"
-		android:layout_below="@+id/linearLayoutReport"
-		android:layout_alignRight="@+id/linearLayoutReport"
-		android:layout_marginLeft="160dip"
+		android:layout_below="@+id/linearLayoutContact"
+		android:layout_alignRight="@+id/linearLayoutContact"
+		android:layout_marginLeft="170dip"
 		android:layout_marginTop="10dip">
 		<ImageButton
 			android:layout_width="90dp"
@@ -166,7 +173,7 @@
 		android:orientation="vertical"
 		android:layout_below="@+id/linearLayoutServices"
 		android:layout_alignLeft="@+id/linearLayoutServices"
-		android:layout_marginRight="160dip"
+		android:layout_marginRight="170dip"
 		android:layout_marginTop="10dip">
 		<ImageButton
 			android:layout_width="90dp"
@@ -192,7 +199,7 @@
 		android:orientation="vertical"
 		android:layout_below="@+id/linearLayoutSetup"
 		android:layout_alignRight="@+id/linearLayoutSetup"
-		android:layout_marginLeft="160dip"
+		android:layout_marginLeft="170dip"
 		android:layout_marginTop="10dip">
 		<ImageButton
 			android:layout_width="90dp"
