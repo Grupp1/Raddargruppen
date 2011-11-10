@@ -2,27 +2,16 @@ package raddar.views;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
-
-import com.google.android.maps.GeoPoint;
-import com.google.gson.Gson;
 
 import raddar.controllers.InternalComManager;
 import raddar.controllers.ReciveHandler;
 import raddar.controllers.Sender;
 import raddar.enums.NotificationType;
-import raddar.enums.SituationPriority;
-import raddar.gruppen.R;
-import raddar.models.ClientDatabaseManager;
-import raddar.models.Fire;
-import raddar.models.Inbox;
-import raddar.models.MapObject;
 import raddar.enums.ServerInfo;
 import raddar.gruppen.R;
 import raddar.models.ClientDatabaseManager;
-
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
 import android.app.Activity;

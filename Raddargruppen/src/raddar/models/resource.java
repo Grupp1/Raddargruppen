@@ -3,7 +3,7 @@ package raddar.models;
 import com.google.android.maps.GeoPoint;
 
 import raddar.enums.ResourceStatus;
-import raddar.gruppen.R;
+
 
 
 public class Resource extends MapObject {

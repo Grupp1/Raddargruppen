@@ -5,6 +5,9 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
+
+import com.google.gson.Gson;
+
 public class Sender implements Runnable {
 	
 	private Thread thread = new Thread(this);
@@ -47,20 +50,23 @@ public class Sender implements Runnable {
 			// Skapa en socket för att kunna skicka meddelandet till mottagaren
 			Socket rSocket = new Socket(adr, port);
 			
-			// Skapa en PrintWriter för att förenkla skickandet av meddelandet via socketen
-			PrintWriter pw = new PrintWriter(rSocket.getOutputStream(), true);
-			
-			// Formatera meddelandet enligt HTTP-standard och skicka iväg det
-			pw.println(m.getFormattedMessage());
+			Gson gson = new Gson();
+			String send = m.getClass().getName()+"\r\n";
+			send +=	gson.toJson(m);
+			PrintWriter out = new PrintWriter(rSocket.getOutputStream(), true);
+			out.println(send);
 			
 			// Skriv ut vilken sorts meddelande som har skickats
 			System.out.println("["+rSocket.getInetAddress().getHostAddress()+"] << " + m.getType().toString() + " has been sent. ");
 			
-			// Stäng ner utströmmen och socket när vi är färdiga
-			pw.close();
+			out.close();
 			rSocket.close();
 			
 		} catch (IOException e) {
+			// Logga ut denna användaren om 
+			LoginManager.logoutUser(m.getDestUser());
+			// Mottagaren är inte online
+			// Buffra meddelandet
 			e.printStackTrace();
 		}
 	}

@@ -38,9 +38,11 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 
+
 import com.google.gson.Gson;
 
 import com.google.android.maps.OverlayItem;
+
 
 
 public class MapUI extends MapActivity implements Observer {
@@ -89,20 +91,16 @@ public class MapUI extends MapActivity implements Observer {
 
 		geocoder = new Geocoder(getBaseContext(), Locale.getDefault());
 
-		// SKAPA METOD SÅ ATT YOU INTE SKAPAS FÖRRÄN GPS:EN HITTAR EN POSITION!!
+		
+		ArrayList<MapObject> olist = MainView.db.getAllRowsAsArrays("map");
+		mapCont = new MapCont(MapUI.this, olist);
 		you = new You(myLocation, "Din position", "Här är du", R.drawable.niklas, ResourceStatus.FREE);
 		gps = new GPSModel(this);		
-
-		controller.animateTo(sthlmLocation);
-
-		youFind = false;
-
-		ArrayList<MapObject> olist = MainView.db.getAllRowsAsArrays("map");
 		olist.add(you);
-		mapCont = new MapCont(MapUI.this, olist);
-
-
 		
+		
+		controller.animateTo(sthlmLocation);
+		youFind = false;
 	}
 
 	@Override
@@ -145,7 +143,8 @@ public class MapUI extends MapActivity implements Observer {
 		return false;
 	}
 
-
+	// Tar hand om inmatning från skärmen, ritar ut knappar och anropar MapCont
+	
 	class Touchy extends Overlay{
 		private Context context;
 		private CharSequence [] items = {"Brand", "Brandbil", "Situation", "Resurs"};
