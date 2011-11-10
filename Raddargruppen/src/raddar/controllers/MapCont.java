@@ -8,6 +8,7 @@ import java.util.Observer;
 
 import raddar.enums.ResourceStatus;
 import raddar.enums.SituationPriority;
+import raddar.models.ID;
 import raddar.models.MapModel;
 import raddar.models.MapObject;
 import raddar.views.MapUI;
@@ -21,16 +22,15 @@ public class MapCont implements Observer, Runnable{
 	private MapModel mapModel;
 	private Thread thread = new Thread(this);
 	private MapObject o;
-	
 	private MapUI mapUI;
 
 	/*
 	 * Kontrollerar vilken typ av objekt som lagts till på kartan. 
 	 */
 
-	public MapCont(final MapUI mapUI, MapObject o){
+	public MapCont(final MapUI mapUI/*, MapObject o*/){
 		this.mapUI = mapUI;
-		this.o = o;
+		//this.o = o;
 		mapModel = new MapModel(mapUI, this);
 		thread.start();
 	}
@@ -48,7 +48,7 @@ public class MapCont implements Observer, Runnable{
 	}
 	
 	public void run() {
-		add(o);
+		//add(o);
 		
 	}
 	

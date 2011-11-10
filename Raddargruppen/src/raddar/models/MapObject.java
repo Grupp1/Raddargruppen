@@ -2,7 +2,6 @@ package raddar.models;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
 
 import android.location.Address;
 import android.location.Geocoder;
@@ -15,18 +14,20 @@ public class MapObject extends OverlayItem {
 	private GeoPoint point;
 	private String title, snippet, id, adress, description;
 	private int icon;
+	private ID idGen;
 	
 	/*
 	 * MapObject är ett object som kan placeras ut på kartan
 	 */
 
-	public MapObject(GeoPoint point, String title, String snippet, int icon, String id) {
+	public MapObject(GeoPoint point, String title, String snippet, int icon) {
 		super(point, title, snippet);
 		this.point = point;
 		this.title = title;
 		this.snippet = snippet;
-		this.id = id;
 		this.icon = icon;
+		idGen = new ID("user",point.getLatitudeE6(),point.getLongitudeE6(),"tid");
+		id = idGen.generateID();
 	}
 	
 	public GeoPoint getPoint() {
@@ -55,10 +56,6 @@ public class MapObject extends OverlayItem {
 
 	public String getId() {
 		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
 	}
 	
 	public int getIcon() {

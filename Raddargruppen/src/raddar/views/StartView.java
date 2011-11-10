@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 public class StartView extends Activity {
@@ -68,11 +69,11 @@ public class StartView extends Activity {
 				NotificationMessage nm = new NotificationMessage(user.getText().toString(), 
 						NotificationType.CONNECT, 
 						password.getText().toString());
+				
+				
 				try {
 					// Skapa socket som används för att skicka NotificationMessage
 					Socket so = new Socket(InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
-					
-					
 					
 					PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
 					pw.println(nm.getFormattedMessage());
@@ -97,13 +98,15 @@ public class StartView extends Activity {
 				}
 				
 				
-				/* if (Login.checkPassword(user.getText().toString(), password.getText().toString()) == LoginResponse.ACCEPTED) {
+				/*
+				if (Login.checkPassword(user.getText().toString(), password.getText().toString()) == LoginResponse.ACCEPTED) {
 					Intent nextIntent = new Intent(StartView.this, MainView.class);
 					nextIntent.putExtra("user",user.getText().toString());
 					startActivity(nextIntent);
-				} else {
+				}else{
 					Toast.makeText(StartView.this, "Fel användarnamn eller lösenord", Toast.LENGTH_LONG).show();
-				} */
+				}
+				*/
 			}
 
 		});
