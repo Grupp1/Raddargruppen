@@ -1,11 +1,7 @@
 package tddd36.server;
 
-import java.awt.TrayIcon.MessageType;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.List;
-
-import raddar.enums.MessagePriority;
 
 public class Server {
 	
@@ -37,8 +33,7 @@ public class Server {
 			while (true) 
 				// Acceptera en inkommande klient och skapa en ny ClientHandler 
 				// som hanterar klienten i en egen tråd
-				new Receiver(so.accept());
-			
+				new Receiver(so.accept());			
 		} catch (IOException ie) {
 			ie.printStackTrace();
 		}

@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import raddar.enums.MessageType;
 import raddar.enums.NotificationType;
 
 import com.google.gson.Gson;
@@ -35,7 +34,6 @@ public class Receiver implements Runnable {
 		clientThread.start();
 	}
 
-
 	@Override
 	public void run() {
 		try {
@@ -43,7 +41,7 @@ public class Receiver implements Runnable {
 
 			// För att läsa inkommande data från klienten
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
-			Gson gson = new Gson();
+			
 			Class c= null ;
 			try {
 				c = Class.forName(in.readLine());
@@ -51,13 +49,8 @@ public class Receiver implements Runnable {
 				e.printStackTrace();
 			}
 			String temp = in.readLine();
+			
 			Message m = new Gson().fromJson(temp, c);
-			//		so.close();
-			// Läs in vilken typ av meddelande som klienten skickar
-			String t = in.readLine().split(" ")[1];
-
-			// Konvertera från sträng till MessageType
-			MessageType type = MessageType.convert(t);
 
 			// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
 			// meddelandet som klienten har skickat blir inläst på korrekt sätt
