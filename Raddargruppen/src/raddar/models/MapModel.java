@@ -5,8 +5,6 @@ import java.util.Locale;
 import java.util.Observable;
 
 import raddar.controllers.MapCont;
-import raddar.enums.ResourceStatus;
-import raddar.enums.SituationPriority;
 import raddar.views.MapUI;
 import android.graphics.drawable.Drawable;
 import android.location.Geocoder;

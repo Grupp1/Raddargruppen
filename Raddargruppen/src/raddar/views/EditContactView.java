@@ -9,7 +9,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import raddar.models.Contact;
 
 public class EditContactView extends Activity implements OnClickListener{
 	private static final int RESULT_FIRST_USER_EDIT = 0;

@@ -23,7 +23,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -37,11 +36,6 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
-
-
-import com.google.gson.Gson;
-
-import com.google.android.maps.OverlayItem;
 
 
 

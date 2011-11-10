@@ -17,7 +17,6 @@ public class StartView extends Activity {
 	private Button loginButton;
 	private EditText user;
 	private EditText password;
-	InternalComManager controller;
 
 	/** Called when the activity is first created. */
 	@Override

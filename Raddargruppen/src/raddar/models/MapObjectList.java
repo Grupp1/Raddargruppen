@@ -2,22 +2,15 @@ package raddar.models;
 
 import java.util.ArrayList;
 
-
 import raddar.enums.ResourceStatus;
 import raddar.enums.SituationPriority;
-
-import raddar.gruppen.R;
-
 import raddar.views.MainView;
-
 import raddar.views.MapUI;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.OverlayItem;
