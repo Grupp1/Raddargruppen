@@ -3,7 +3,6 @@ package tddd36.server;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.Socket;
 
 import raddar.enums.NotificationType;
@@ -56,7 +55,7 @@ public class Receiver implements Runnable {
 			// meddelandet som klienten har skickat blir inläst på korrekt sätt
 			switch (m.getType()) {
 			case NOTIFICATION:
-				handleNotification((NotificationMessage)m);
+				handleNotification((NotificationMessage) m);
 				break;
 			case TEXT:
 				Database.storeTextMessage((TextMessage)m);
@@ -80,100 +79,21 @@ public class Receiver implements Runnable {
 	 * Klienterna bör skicka ett NotificationMessage av typen CONNECT när de loggar
 	 * online, samt ett NotificationMessage av typen DISCONNECT när de loggar off.
 	 */
-	private void handleNotification() {
-
-		boolean passwordCheck = false;
-
-		try {
-			// Read from who the notification is from
-			String fromUser = in.readLine().split(" ")[1];
-
-			// Read the password
-			String password = in.readLine().split(" ")[1];
-
-			// Read in the notification itself
-			String notification = in.readLine().split(" ")[1];
-
-			// Convert the notification from String to NotificationType
-			NotificationType nt = NotificationType.convert(notification);
-
-			switch (nt) {
+	private void handleNotification(NotificationMessage nm) {
+		// Kolla vilken sorts notification vi har att göra med
+		NotificationType nt = nm.getNotification();
+		switch (nt) {
 			case CONNECT:
-				// Spara användaren och dennes IP-address (skriv över eventuell gammal IP-address)
-
-				passwordCheck = Database.evalutateUser(fromUser, password);
-				System.out.println("PASSWORD = "+passwordCheck);
-				System.out.println("user " + fromUser);
-				System.out.println("pass " + password);
-
-				if (passwordCheck){			
-					System.out.println(fromUser + " is now associated with " + so.getInetAddress().getHostAddress());
-					Server.onlineUsers.addUser(fromUser, so.getInetAddress());
-
-					PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
-					pw.println("OK");
-				}
-				else{
-					System.out.println("Användarnamn eller lösenord fel");
-					PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
-					pw.println("Not OK");
-				}break;
-
+				// Behandla loginförsöket
+				LoginManager.evaluateUser(nm.getSrcUser(), nm.getPassword(), so);
+				break;
 			case DISCONNECT:
-				// Ta bort användaren och dennes IP-address
-				System.out.println(fromUser + " is no longer associated with " + so.getInetAddress().getHostAddress());
-				Server.onlineUsers.removeUser(fromUser);
+				// Behandla logoutförsöket
+				LoginManager.logoutUser(nm.getSrcUser());
 				break;
 			default:
-				// Här hamnar vi om något gått fel i formatteringen eler inläsandet av meddelandet
+				// Här hamnar vi om något gått fel i formatteringen eller inläsandet av meddelandet
 				System.out.println("Unknown NotificationType... ");
-			}
-
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void handleNotification(NotificationMessage m) {
-		boolean passwordCheck = false;
-		switch (m.getNotification()) {
-		case CONNECT:
-			passwordCheck = Database.evalutateUser(m.getSrcUser(), m.getPassword());
-			System.out.println("PASSWORD = "+passwordCheck);
-			System.out.println("user " + m.getSrcUser());
-			System.out.println("pass " + m.getPassword());
-			try{
-				if (passwordCheck){	
-					System.out.println(m.getSrcUser() + " is now associated with " + so.getInetAddress().getHostAddress());
-					Server.onlineUsers.addUser(m.getSrcUser(), so.getInetAddress());
-
-					PrintWriter pw;
-
-					pw = new PrintWriter(so.getOutputStream(), true);
-
-
-
-					pw.println("OK");
-				}
-				else{
-					System.out.println("Användarnamn eller lösenord fel");
-					PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
-					pw.println("Not OK");
-				}break;
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			break;
-		case DISCONNECT:
-			// Ta bort användaren och dennes IP-address
-			System.out.println(m.getSrcUser() + " is no longer associated with " + so.getInetAddress().getHostAddress());
-			Server.onlineUsers.removeUser(m.getSrcUser());
-			break;
-		default:
-			// Här hamnar vi om något gått fel i formatteringen eler inläsandet av meddelandet
-			System.out.println("Unknown NotificationType... ");
 		}
 	}
 

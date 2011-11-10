@@ -38,9 +38,11 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 
+
 import com.google.gson.Gson;
 
 import com.google.android.maps.OverlayItem;
+
 
 
 public class MapUI extends MapActivity implements Observer {
@@ -55,8 +57,8 @@ public class MapUI extends MapActivity implements Observer {
 	private List<Overlay> mapOverlays;
 	private GPSModel gps;
 
-	private boolean follow;
-	private You you;
+	private boolean follow, youFind;
+	private You you; 
 	private Toast toast;
 
 
@@ -89,24 +91,23 @@ public class MapUI extends MapActivity implements Observer {
 
 		geocoder = new Geocoder(getBaseContext(), Locale.getDefault());
 
-		// SKAPA METOD SÅ ATT YOU INTE SKAPAS FÖRRÄN GPS:EN HITTAR EN POSITION!!
-
-		you = new You(myLocation, "Min position", "Här är jag", R.drawable.niklas, "000000", ResourceStatus.FREE);
-		you.updateData(geocoder);
-		gps = new GPSModel(this);
-
-		ArrayList<MapObject> olist = MainView.db.getAllRowsAsArrays("map");
-		olist.add(you);
-		mapCont = new MapCont(MapUI.this, olist);
-
-		Touchy t = new Touchy(this);
-		mapOverlays.add(t);
 		
+		ArrayList<MapObject> olist = MainView.db.getAllRowsAsArrays("map");
+		mapCont = new MapCont(MapUI.this, olist);
+		you = new You(myLocation, "Din position", "Här är du", R.drawable.niklas, ResourceStatus.FREE);
+		gps = new GPSModel(this);		
+		olist.add(you);
+		
+		
+		controller.animateTo(sthlmLocation);
+		youFind = false;
 	}
 
 	@Override
 	protected void onStart() {
-		follow = true;
+		follow = false;
+		//youFind = false;
+
 		super.onStart();
 	}
 
@@ -142,7 +143,8 @@ public class MapUI extends MapActivity implements Observer {
 		return false;
 	}
 
-
+	// Tar hand om inmatning från skärmen, ritar ut knappar och anropar MapCont
+	
 	class Touchy extends Overlay{
 		private Context context;
 		private CharSequence [] items = {"Brand", "Brandbil", "Situation", "Resurs"};
@@ -190,16 +192,16 @@ public class MapUI extends MapActivity implements Observer {
 								value = input.getText().toString();
 								MapObject o = null;
 								if(Touchy.this.item == 0){		
-									mapCont.add(o = new Fire(touchedPoint, value, "00000", SituationPriority.HIGH));
+									mapCont.add(o = new Fire(touchedPoint, value, SituationPriority.HIGH));
 								}
 								if(Touchy.this.item == 1){
-									mapCont.add(o = new FireTruck(touchedPoint, value, "00000", ResourceStatus.BUSY));
+									mapCont.add(o = new FireTruck(touchedPoint, value, ResourceStatus.BUSY));
 								}
 								if(Touchy.this.item == 2){
-									mapCont.add(o = new Situation(touchedPoint, "Situation", value, R.drawable.situation, "00000", SituationPriority.NORMAL));
+									mapCont.add(o = new Situation(touchedPoint, "Situation", value, R.drawable.situation, SituationPriority.NORMAL));
 								}
 								if(Touchy.this.item == 3){
-									mapCont.add(o = new Resource(touchedPoint, "Resurs", value, R.drawable.resource, "00000", ResourceStatus.BUSY));
+									mapCont.add(o = new Resource(touchedPoint, "Resurs", value, R.drawable.resource, ResourceStatus.BUSY));
 								}
 								o.updateData(geocoder);;
 								Toast.makeText(getApplicationContext(), items[Touchy.this.item]+" utplacerad", Toast.LENGTH_LONG).show();
@@ -247,7 +249,17 @@ public class MapUI extends MapActivity implements Observer {
 	public void update(Observable observable, Object data) {
 		if (data instanceof GeoPoint){
 			myLocation = (GeoPoint) data;
+
+			if (!youFind){
+				mapCont.add(you);
+				controller.animateTo(myLocation);
+				controller.setZoom(13);
+				youFind = true;
+				follow = true;
+			}
 			you.setPoint(myLocation);	
+			you.updateData(geocoder);
+			
 			if (follow){
 				controller.animateTo(myLocation);
 			}

@@ -31,7 +31,7 @@ public class Server {
 			System.out.println("Listening on port: " + port + "... ");
 			
 			while (true) 
-				// Acceptera en inkommande klient och skapa en ny ClientHandler 
+				// Acceptera en inkommande klient och skapa en ny Receiver 
 				// som hanterar klienten i en egen tråd
 				new Receiver(so.accept());			
 		} catch (IOException ie) {
@@ -40,6 +40,11 @@ public class Server {
 	}
 	
 	public static void main(String[] args) {
+		System.out.println(Database.getAllUsers());
+		
+		
+		
 		new Server();
+
 	}	
 }
