@@ -51,9 +51,11 @@ public class MapUI extends MapActivity implements Observer {
 	private List<Overlay> mapOverlays;
 	private GPSModel gps;
 
+	private Touchy touchy;
 	private boolean follow, youFind;
 	private You you; 
 	private Toast toast;
+	private Context context;
 
 
 	public static MapCont mapCont;
@@ -84,7 +86,9 @@ public class MapUI extends MapActivity implements Observer {
 		sthlmLocation = new GeoPoint(59357290, 17960050);
 
 		geocoder = new Geocoder(getBaseContext(), Locale.getDefault());
-
+		
+		touchy = new Touchy(context);
+		mapOverlays.add(touchy);
 		
 		ArrayList<MapObject> olist = MainView.db.getAllRowsAsArrays("map");
 		mapCont = new MapCont(MapUI.this, olist);

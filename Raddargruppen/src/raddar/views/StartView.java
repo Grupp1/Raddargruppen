@@ -1,6 +1,5 @@
 package raddar.views;
 
-import raddar.controllers.InternalComManager;
 import raddar.gruppen.R;
 import raddar.models.LoginManager;
 import android.app.Activity;
@@ -41,15 +40,15 @@ public class StartView extends Activity {
 		loginButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				boolean valid = LoginManager.evaluate(user.getText().toString(), password.getText().toString());
+			//	boolean valid = LoginManager.evaluate(user.getText().toString(), password.getText().toString());
 
-				if (valid) {
+				//if (valid) {
 					Intent nextIntent = new Intent(StartView.this,
 							MainView.class);
 					nextIntent.putExtra("user", user.getText().toString());
 
 					startActivity(nextIntent);
-				} else
+			//	} else
 					Toast.makeText(StartView.this,
 							"Ogiltigt användarnamn eller lösenord",
 							Toast.LENGTH_LONG).show();
