@@ -66,8 +66,8 @@ public class Receiver implements Runnable {
 				handleNotification((NotificationMessage)m);
 				break;
 			case TEXT:
+				Database.storeTextMessage((TextMessage)m);
 				new Sender(m, m.getDestUser(), 6789);
-				//	handleTextMessage();
 				break;
 			case IMAGE:
 				handleImageMessage();
