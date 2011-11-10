@@ -3,6 +3,7 @@ package tddd36.server;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Locale;
 
 import raddar.enums.MessagePriority;
 import raddar.enums.MessageType;
@@ -108,11 +109,8 @@ public abstract class Message {
 		this.date = date;
 	}
 	
-
-	
-	 // Behöver man kunna "seta" datum? DateFormat ska vara .SHORT på båda troligtvis
 	  public void setDate(String date) {
-		DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.DEFAULT);
+		  DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, new Locale("sv", "SE"));
 
 		try {
 			this.date = df.parse(date);
@@ -127,7 +125,7 @@ public abstract class Message {
 	
 	public String getFormattedDate() {
 
-		DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+		DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, new Locale("sv", "SE"));
 
 		return df.format(date);
 	}

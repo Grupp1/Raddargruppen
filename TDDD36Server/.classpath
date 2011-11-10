@@ -2,7 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+<<<<<<< HEAD
+	<classpathentry kind="lib" path="Z:/Downloads/mysql-connector-java-3.1.14/mysql-connector-java-3.1.14-bin.jar"/>
+=======
 	<classpathentry kind="lib" path="Z:/Downloads/mysql-connector-java-5.1.18.zip"/>
+>>>>>>> 5f63643ff2313b96314021934f602e15db13317c
 	<classpathentry kind="lib" path="Z:/Downloads/google-gson-1.7.1/gson-1.7.1.jar"/>
 	<classpathentry kind="lib" path="Z:/Downloads/google-gson-1.7.1/gson-1.7.1-javadoc.jar"/>
 	<classpathentry kind="lib" path="Z:/Downloads/google-gson-1.7.1/gson-1.7.1-sources.jar"/>
