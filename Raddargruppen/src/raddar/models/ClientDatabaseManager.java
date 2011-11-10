@@ -83,8 +83,8 @@ public class ClientDatabaseManager extends Observable {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
-		//setChanged();
-		//notifyObservers(c);
+		setChanged();
+		notifyObservers(c);
 	}
 
 	/**********************************************************************
@@ -134,7 +134,7 @@ public class ClientDatabaseManager extends Observable {
 	 */
 	public void deleteRow(Contact c) {
 		try {
-			db.delete("contact", "userName =" + c.getUserName(), null);
+			db.delete("contact", "userName = '" + c.getUserName()+"'", null);
 		} catch (Exception e) {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
@@ -146,12 +146,14 @@ public class ClientDatabaseManager extends Observable {
 	/**********************************************************************
 	 * UPDATING A ROW IN THE CONTACT TABLE
 	 * 
+	 * @param c Contact that is to be updated (with its old name)
+	 * @param userName The new user name for contact c
 	 */
 	public void updateRow(Contact c, String userName) {
 		ContentValues values = new ContentValues();
-		values.put("srcUser", userName);
+		values.put("userName", userName);
 		try {
-			db.update("contact", values, "userName" + c.getUserName(), null);
+			db.update("contact", values, "userName = '" + c.getUserName()+"'", null);
 		} catch (Exception e) {
 			Log.e("DB Error", e.toString());
 			e.printStackTrace();

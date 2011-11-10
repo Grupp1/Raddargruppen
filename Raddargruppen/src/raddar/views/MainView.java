@@ -31,7 +31,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	private ImageButton callButton;
 	private ImageButton messageButton;
 	private ImageButton mapButton;
-	private ImageButton reportButton;
+	private ImageButton contactButton;
 	private ImageButton serviceButton;
 	private ImageButton sosButton;
 	private ImageButton setupButton;
@@ -76,8 +76,8 @@ public class MainView extends Activity implements OnClickListener, Observer{
 		mapButton = (ImageButton)this.findViewById(R.id.mapButton);
 		mapButton.setOnClickListener(this);
 
-		reportButton = (ImageButton)this.findViewById(R.id.reportButton);
-		reportButton.setOnClickListener(this);
+		contactButton = (ImageButton)this.findViewById(R.id.contactButton);
+		contactButton.setOnClickListener(this);
 
 		serviceButton = (ImageButton)this.findViewById(R.id.serviceButton);
 		serviceButton.setOnClickListener(this);
@@ -106,8 +106,9 @@ public class MainView extends Activity implements OnClickListener, Observer{
 			Intent nextIntent = new Intent(MainView.this, MapUI.class);
 			startActivity(nextIntent);
 		}
-		if(v == reportButton){
-			//finish();
+		if(v == contactButton){
+			Intent nextIntent = new Intent(MainView.this, ContactListView.class);
+			startActivity(nextIntent);
 		}
 		if(v == serviceButton){
 			Intent nextIntent = new Intent(MainView.this, ServiceView.class);
@@ -117,8 +118,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 			//finish();
 		}
 		if(v == setupButton){
-			Intent nextIntent = new Intent(MainView.this, AddContactView.class);
-			startActivity(nextIntent);
+			
 		}
 		if(v == logButton){
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -158,7 +158,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	public void update(Observable observable, final Object data) {
 		runOnUiThread(new Runnable(){
 			public void run(){	
-				if(data != null)
+				if(data != null && data instanceof Message)
 					Toast.makeText(getApplicationContext(), "Meddelande från "+
 							((Message)data).getSrcUser()
 							,Toast.LENGTH_LONG).show();

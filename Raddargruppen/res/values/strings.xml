@@ -22,7 +22,7 @@
 	<string name="contact_foot">Lägg till dessa mottagare</string>
 	<string name="main_logout">Logga ut</string>
 	<string name="main_setup">Inställningar</string>
-	<string name="main_report">Rapportera</string>
+	<string name="main_contact_list">Kontaktlista</string>
 	<string name="main_map">Karta</string>
 	<string name="main_call">Samtal</string>
 	<string name="main_message">Meddelanden</string>
@@ -35,6 +35,7 @@
     <string name="map_menu_toggle">Satelitvy</string>
     <string name="map_menu_myLocation">Min position</string>
     <string name="map_menu_traffic">Trafik</string>
+    <string name="edit_contact_edit">Redigera kontakt:</string>
 
 
 </resources>

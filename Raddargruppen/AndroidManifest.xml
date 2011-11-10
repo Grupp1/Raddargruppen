@@ -74,6 +74,8 @@
 		android:screenOrientation="portrait"></activity>
 		<activity android:name="raddar.views.AddContactView"
 		android:screenOrientation="portrait"></activity>
+		<activity android:name="raddar.views.ContactListView" android:screenOrientation="portrait"></activity>
+		<activity android:screenOrientation="portrait" android:name="raddar.views.EditContactView"></activity>
 
 
 
