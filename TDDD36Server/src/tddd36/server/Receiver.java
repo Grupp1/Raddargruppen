@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-import raddar.enums.MessagePriority;
 import raddar.enums.MessageType;
-import raddar.enums.NotificationType;
+
+import com.google.gson.Gson;
 
 
 /**
@@ -41,7 +41,16 @@ public class Receiver implements Runnable {
 			
 			// För att läsa inkommande data från klienten
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
-						
+			Gson gson = new Gson();
+			Class c= null ;
+			try {
+				c = Class.forName(in.readLine());
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			String temp = in.readLine();
+			Message m = new Gson().fromJson(temp, c);
+	//		so.close();
 			// Läs in vilken typ av meddelande som klienten skickar
 			String t = in.readLine().split(" ")[1];
 			
@@ -50,12 +59,13 @@ public class Receiver implements Runnable {
 			
 			// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
 			// meddelandet som klienten har skickat blir inläst på korrekt sätt
-			switch (type) {
+			switch (m.getType()) {
 				case NOTIFICATION:
-					handleNotification();
+					handleNotification((NotificationMessage)m);
 					break;
 				case TEXT:
-					handleTextMessage();
+					new Sender(m, m.getDestUser(), 6789);
+				//	handleTextMessage();
 					break;
 				case IMAGE:
 					handleImageMessage();
@@ -75,107 +85,21 @@ public class Receiver implements Runnable {
 	 * Klienterna bör skicka ett NotificationMessage av typen CONNECT när de loggar
 	 * online, samt ett NotificationMessage av typen DISCONNECT när de loggar off.
 	 */
-	private void handleNotification() {
-		try {
-			// Read from who the notification is from
-			String fromUser = in.readLine().split(" ")[1];
-			
-			// Read in the notification itself
-			String notification = in.readLine().split(" ")[1];
-			
-			// Convert the notification from String to NotificationType
-			NotificationType nt = NotificationType.convert(notification);
-			
-			switch (nt) {
-				case CONNECT:
-					// Spara användaren och dennes IP-address (skriv över eventuell gammal IP-address)
-					System.out.println(fromUser + " is now associated with " + so.getInetAddress().getHostAddress());
-					Server.onlineUsers.addUser(fromUser, so.getInetAddress());
-					break;
-				case DISCONNECT:
-					// Ta bort användaren och dennes IP-address
-					System.out.println(fromUser + " is no longer associated with " + so.getInetAddress().getHostAddress());
-					Server.onlineUsers.removeUser(fromUser);
-					break;
-				default:
-					// Här hamnar vi om något gått fel i formatteringen eler inläsandet av meddelandet
-					System.out.println("Unknown NotificationType... ");
-			}
-			
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/*
-	 * Ta emot ett textmeddelande och skapa en Sender som ser till att
-	 * det skickas vidare till rätt mottagare
-	 */
-	private void handleTextMessage() {
-		try {
-			System.out.println("["+so.getInetAddress().getHostAddress()+"] >> text/plain message has been received. ");
-			
-			// Läs in värden från headern
-			String priority = in.readLine().split(" ")[1];
-			String fromUser = in.readLine().split(" ")[1];
-			String toUser = in.readLine().split(" ")[1];
-			String date = getAttrValue(in.readLine());
-			String subject = getAttrValue(in.readLine());
-			
-			// Skippa den tomma raden som alla HTTP-formaterade meddelanden har
-			in.readLine();
-			
-			// Läs in meddelandets data/text
-			String data = "";
-			while (in.ready())
-				data += in.readLine();
-			
-			// Skapa ett nytt TextMessage med inlästa värden
-			TextMessage tm = new TextMessage(MessageType.TEXT, fromUser, toUser, MessagePriority.convert(priority), data);
-			
-			// Lägg till lite text så att klienten kan se att denna testserver fungerar
-			//tm.prepend("Borche (OK): ");
-			
-			// Sätt datum och ämnesrad
-			tm.setDate(date);
-			tm.setSubject(subject);
-
-			// Skapa en Sender som tar hand om att skicka vidare meddelandet
-			new Sender(tm, toUser, 6789);
-			
-			/*
-			// Hämta mottagarens IP-address från serverns lista 
-			InetAddress address = Server.onlineUsers.getUserAddress(toUser);
-			
-			if (address == null) {
-				// Kolla om användaren existerar om JA, buffra, annars discard.
-				// Användaren är offline
-				// Buffra meddelandet (to be implemented...)
-				return;
-			}
-				
-			// Skapa en socket med mottagarens address och den porten som klienten
-			// ligger och lyssnar på (hårdkodat på klienterna är 6789 när detta skrevs).
-			Socket forward = new Socket(address, 6789);			
-			
-			// Ny PrintWriter för mottagarens socket
-			PrintWriter fOut = new PrintWriter(forward.getOutputStream(), true);
-			
-			
-			// Formatera och vidarebefordra meddelandet
-			fOut.println(tm.getFormattedMessage());
-			
-			System.out.println("["+forward.getInetAddress().getHostAddress()+"] << Forwarding text message. ");
-			
-			// Stäng ner
-			fOut.close();
-			forward.close();
-									
-			System.out.println("["+so.getInetAddress().getHostAddress()+"] ** Connection closed. ");*/
-			
-		} catch (IOException ie) {
-			ie.printStackTrace();
+	private void handleNotification(NotificationMessage m) {
+		switch (m.getNotification()) {
+			case CONNECT:
+				// Spara användaren och dennes IP-address (skriv över eventuell gammal IP-address)
+				System.out.println(m.getSrcUser() + " is now associated with " + so.getInetAddress().getHostAddress());
+				Server.onlineUsers.addUser(m.getSrcUser(), so.getInetAddress());
+				break;
+			case DISCONNECT:
+				// Ta bort användaren och dennes IP-address
+				System.out.println(m.getSrcUser() + " is no longer associated with " + so.getInetAddress().getHostAddress());
+				Server.onlineUsers.removeUser(m.getSrcUser());
+				break;
+			default:
+				// Här hamnar vi om något gått fel i formatteringen eler inläsandet av meddelandet
+				System.out.println("Unknown NotificationType... ");
 		}
 	}
 	
