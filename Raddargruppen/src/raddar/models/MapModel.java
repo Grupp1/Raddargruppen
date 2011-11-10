@@ -88,6 +88,24 @@ public class MapModel extends Observable {
 	public void updateObject(MapObject o){
 		setChanged();
 		o.updateData(new Geocoder(mapUI.getBaseContext(), Locale.getDefault()));
+		updateUI(o);
+	}
+	
+	/*
+	 * updateObject(MapObject, String) anropas när beskrivningen av ett MapObject ändras
+	 */
+	
+	public void updateObject(MapObject o, String snippet){
+		o.setSnippet(snippet);
+		updateObject(o);
+	}
+	
+	public void removeObject(MapObject o){
+		setChanged();
+		updateUI(o);
+	}
+	
+	public void updateUI(MapObject o){
 		if (o instanceof Fire){
 			notifyObservers(fireList);
 		}
@@ -104,16 +122,6 @@ public class MapModel extends Observable {
 			notifyObservers(resourceList);
 		}
 	}
-	
-	/*
-	 * updateObject(MapObject, String) anropas när beskrivningen av ett MapObject ändras
-	 */
-	
-	public void updateObject(MapObject o, String snippet){
-		o.setSnippet(snippet);
-		updateObject(o);
-	}
-	
 
 	public List<Overlay> getMapOverlays() {
 		return mapOverlays;

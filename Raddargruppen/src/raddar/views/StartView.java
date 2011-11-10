@@ -1,6 +1,5 @@
 package raddar.views;
 
-
 import raddar.controllers.InternalComManager;
 import raddar.gruppen.R;
 import raddar.models.LoginManager;
@@ -13,15 +12,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-
 public class StartView extends Activity {
 
 	private Button loginButton;
 	private EditText user;
 	private EditText password;
 	InternalComManager controller;
-	
-
 
 	/** Called when the activity is first created. */
 	@Override
@@ -32,34 +28,36 @@ public class StartView extends Activity {
 		LoginManager.cache("Borche", "hej123");
 		LoginManager.cache("Danne", "raddar");
 		LoginManager.cache("Alice", "longshot");
-		//Endast för lättare testning
+		// Endast för lättare testning
 		this.deleteDatabase("Alice");
 
-		user = (EditText)this.findViewById(R.id.userText);
-		password = (EditText)this.findViewById(R.id.passwordText);
-		//Endast för lättare testning
+		user = (EditText) this.findViewById(R.id.userText);
+		password = (EditText) this.findViewById(R.id.passwordText);
+		// Endast för lättare testning
 		user.setText("Alice");
 		password.setText("longshot");
-		
-		loginButton = (Button)this.findViewById(R.id.okButton);
-		loginButton.setOnClickListener(new OnClickListener(){
 
-			public void onClick(View v) { 
-				
-				boolean valid = LoginManager.evaluate(MainView.controller.getUser(), 
-						password.getText().toString());
-				
+		loginButton = (Button) this.findViewById(R.id.okButton);
+		loginButton.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+				boolean valid = LoginManager.evaluate(MainView.controller
+						.getUser(), password.getText().toString());
+
 				if (valid) {
-					Intent nextIntent = new Intent(StartView.this, MainView.class);
-					nextIntent.putExtra("user",user.getText().toString());
+					Intent nextIntent = new Intent(StartView.this,
+							MainView.class);
+					nextIntent.putExtra("user", user.getText().toString());
 					startActivity(nextIntent);
 				} else
-					Toast.makeText(StartView.this, "Ogiltigt användarnamn eller lösenord", Toast.LENGTH_LONG).show();
+					Toast.makeText(StartView.this,
+							"Ogiltigt användarnamn eller lösenord",
+							Toast.LENGTH_LONG).show();
 			}
-
 		});
 	}
-	public void onRestart(){
+
+	public void onRestart() {
 		super.onRestart();
 		finish();
 	}
