@@ -2,7 +2,7 @@ package raddar.models;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
+
 
 import android.location.Address;
 import android.location.Geocoder;

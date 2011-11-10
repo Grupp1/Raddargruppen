@@ -6,8 +6,6 @@ import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
-import raddar.enums.ResourceStatus;
-import raddar.enums.SituationPriority;
 import raddar.models.MapModel;
 import raddar.models.MapObject;
 import raddar.views.MapUI;
@@ -25,7 +23,7 @@ public class MapCont implements Observer, Runnable{
 	private MapUI mapUI;
 
 	/*
-	 * Kontrollerar vilken typ av objekt som lagts till på kartan. 
+	 * Skickar vidare operationer i en ny tråd till MapModel 
 	 */
 
 	public MapCont(final MapUI mapUI, MapObject o){

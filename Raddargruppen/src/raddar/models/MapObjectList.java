@@ -2,8 +2,7 @@ package raddar.models;
 
 import java.util.ArrayList;
 
-import raddar.controllers.MapCont;
-import raddar.enums.SituationPriority;
+
 import raddar.views.MapUI;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -23,8 +22,10 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 	private String value;
 	private MapObject item;
 
-
-
+	/*
+	 * I en MapObjectList ligger MapObjects 
+	 */
+	
 	public MapObjectList(Drawable defaultMarker) {
 		super(boundCenterBottom(defaultMarker));
 	}
@@ -57,6 +58,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 	/**
 	 * Vad som händer när man trycker på en situation
 	 */
+	
 	@Override
 	protected boolean onTap(int index) {
 		item = (MapObject) mOverlays.get(index);

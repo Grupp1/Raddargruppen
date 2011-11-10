@@ -35,7 +35,7 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
-import com.google.android.maps.OverlayItem;
+
 
 public class MapUI extends MapActivity implements Observer {
 
@@ -137,7 +137,8 @@ public class MapUI extends MapActivity implements Observer {
 		return false;
 	}
 
-
+	// Tar hand om inmatning från skärmen, ritar ut knappar och anropar MapCont
+	
 	class Touchy extends Overlay{
 		private Context context;
 		private CharSequence [] items = {"Brand", "Brandbil", "Situation", "Resurs"};
