@@ -1,5 +1,6 @@
 package tddd36.server;
 
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -27,8 +28,11 @@ public class Receiver implements Runnable {
 
 	private Socket so;
 	private BufferedReader in;
+	
+	private ServerGUI serverGUI;
 
-	public Receiver(Socket clientSocket) {
+	public Receiver(Socket clientSocket, ServerGUI gui) {
+		serverGUI = gui;
 		so = clientSocket;
 		clientThread.start();
 	}
@@ -37,6 +41,7 @@ public class Receiver implements Runnable {
 	public void run() {
 		try {
 			System.out.println("["+so.getInetAddress().getHostAddress()+"] ** Connection established. ");
+			serverGUI.append(Color.blue, "["+so.getInetAddress().getHostAddress()+"] ** Connection established. ");
 
 			// För att läsa inkommande data från klienten
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
@@ -66,6 +71,7 @@ public class Receiver implements Runnable {
 				break;
 			default:
 				System.out.println("Received message has unknown type. Discarding... ");
+				serverGUI.append(Color.red, "Received message has unknown type. Discarding... ");
 			}
 
 		} catch (IOException ie) {
@@ -94,6 +100,7 @@ public class Receiver implements Runnable {
 			default:
 				// Här hamnar vi om något gått fel i formatteringen eller inläsandet av meddelandet
 				System.out.println("Unknown NotificationType... ");
+				serverGUI.append(Color.red, "Unknown NotificationType... ");
 		}
 	}
 
