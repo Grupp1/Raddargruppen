@@ -7,6 +7,9 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 import raddar.enums.NotificationType;
+import raddar.models.Message;
+import raddar.models.NotificationMessage;
+import raddar.models.TextMessage;
 
 import com.google.gson.Gson;
 
@@ -122,5 +125,4 @@ public class Receiver implements Runnable {
 
 		return sb.toString();
 	}
-
 }

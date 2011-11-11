@@ -13,6 +13,8 @@ import raddar.enums.NotificationType;
 import raddar.enums.ServerInfo;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 public class LoginManager extends Observable {
 	
 	private static HashMap<String, String> passwordCache = new HashMap<String, String>();
@@ -35,7 +37,11 @@ public class LoginManager extends Observable {
 			Socket so = new Socket(InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
 			
 			PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
-			pw.println(nm.getFormattedMessage());
+			
+			String type = nm.getClass().getName();
+			
+			pw.println(type);
+			pw.println(new Gson().toJson(nm));
 			
 			BufferedReader br = new BufferedReader(
 					new InputStreamReader(so.getInputStream()));

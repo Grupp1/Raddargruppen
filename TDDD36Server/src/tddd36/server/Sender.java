@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import raddar.models.Message;
 
 import com.google.gson.Gson;
 
