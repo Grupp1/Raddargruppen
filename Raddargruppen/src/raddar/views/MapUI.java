@@ -55,7 +55,6 @@ public class MapUI extends MapActivity implements Observer {
 	private boolean follow, youFind;
 	private You you; 
 	private Toast toast;
-	private Context context;
 
 
 	public static MapCont mapCont;
@@ -87,7 +86,7 @@ public class MapUI extends MapActivity implements Observer {
 
 		geocoder = new Geocoder(getBaseContext(), Locale.getDefault());
 		
-		touchy = new Touchy(context);
+		touchy = new Touchy(mapView.getContext());
 		mapOverlays.add(touchy);
 		
 		ArrayList<MapObject> olist = MainView.db.getAllRowsAsArrays("map");

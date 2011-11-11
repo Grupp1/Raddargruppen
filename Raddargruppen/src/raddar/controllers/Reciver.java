@@ -4,14 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.text.DateFormat;
+
+import raddar.models.Message;
+import android.util.Log;
 
 import com.google.gson.Gson;
-
-import raddar.enums.MessageType;
-import raddar.models.Message;
-import raddar.models.TextMessage;
-import android.util.Log;
 
 public class Reciver implements Runnable {
 

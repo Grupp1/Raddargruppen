@@ -110,13 +110,31 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 		if(!(item instanceof You)){
 			alert.setButton2("Ta bort", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
-					mOverlays.remove(item);
-					MapUI.mapCont.removeObject(item);
-					MainView.db.deleteRow(item);
-				}
 
+					AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+
+					alertDialog.setTitle("Är du säker på att du vill ta bort objektet?");
+
+
+					alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+							mOverlays.remove(item);
+							MapUI.mapCont.removeObject(item);
+							MainView.db.deleteRow(item);
+						}
+
+					});
+
+					alertDialog.setNegativeButton("Nej", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+
+						}
+					});
+					alertDialog.show();
+				}
 			});
 		}
+
 
 		/*
 		 * Ändra prioritet på situation på kartan
@@ -185,13 +203,10 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 					builder.setTitle("Status");
 					builder.setItems(resourceStatus, new DialogInterface.OnClickListener() {
 
-
-
-
 						public void onClick(DialogInterface dialog, int i) {
 
 							whichItem = i;
-							
+
 							AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
 							alertDialog.setTitle("Är du säker på att du vill ändra status?");
