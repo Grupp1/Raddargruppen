@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import raddar.enums.MessageType;
+import raddar.models.TextMessage;
 
 /**
  * -- ANVÄNDARGRÄNSSNITT MOT DATABASEN --
@@ -236,7 +237,7 @@ public class Database {
 			String query = "INSERT INTO messages VALUES (idmessages, \'" + mes.getType() + "\', \'" +
 					mes.getSrcUser() + "\', \'" + mes.getDestUser() + "\', \'" +
 					mes.getFormattedDate() + "\', \'" + mes.getSubject() + "\', \'" +
-				    mes.getMessage() +  "\');";
+				    mes.getData() +  "\');";
 			st.executeUpdate(query);
 		} catch (SQLException ex) {
 			System.out.println("Fel syntax i MySQL-queryn i storeTextMessage(). ");

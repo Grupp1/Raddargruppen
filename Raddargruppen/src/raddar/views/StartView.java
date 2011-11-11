@@ -3,6 +3,7 @@ package raddar.views;
 import raddar.gruppen.R;
 import raddar.models.LoginManager;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -40,18 +41,25 @@ public class StartView extends Activity {
 		loginButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-			//	boolean valid = LoginManager.evaluate(user.getText().toString(), password.getText().toString());
-
+				loginButton.setEnabled(false);
+				
+				//ProgressDialog dialog = ProgressDialog.show(StartView.this, "", 
+                      //  "Loggar in... ", true);
+				//dialog.show();
+				//boolean valid = LoginManager.evaluate(user.getText().toString(), password.getText().toString());
+				
 				//if (valid) {
 					Intent nextIntent = new Intent(StartView.this,
 							MainView.class);
 					nextIntent.putExtra("user", user.getText().toString());
 
 					startActivity(nextIntent);
-			//	} else
-					Toast.makeText(StartView.this,
-							"Ogiltigt användarnamn eller lösenord",
-							Toast.LENGTH_LONG).show();
+				//} else
+					//Toast.makeText(StartView.this,
+					//		"Ogiltigt användarnamn eller lösenord",
+					//		Toast.LENGTH_LONG).show();
+				
+				loginButton.setEnabled(true);
 			}
 		});
 	}

@@ -7,6 +7,9 @@ import java.net.Socket;
 
 import raddar.enums.MessageType;
 import raddar.enums.NotificationType;
+import raddar.models.Message;
+import raddar.models.NotificationMessage;
+import raddar.models.TextMessage;
 
 import com.google.gson.Gson;
 

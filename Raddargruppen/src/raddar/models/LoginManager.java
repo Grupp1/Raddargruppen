@@ -34,6 +34,8 @@ public class LoginManager extends Observable {
 			// Skapa socket som används för att skicka NotificationMessage
 			Socket so = new Socket(InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
 			
+			Log.d("Efter socketen", "lawl");
+			
 			PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
 			pw.println(nm.getFormattedMessage());
 			
