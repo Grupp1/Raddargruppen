@@ -25,9 +25,9 @@ public class StartView extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.start);
 		// Lite hårdkodade testanvändare att testa med
-		LoginManager.cache("Borche", "hej123");
+/*		LoginManager.cache("Borche", "hej123");
 		LoginManager.cache("Danne", "raddar");
-		LoginManager.cache("Alice", "longshot");
+		LoginManager.cache("Alice", "longshot");*/
 		// Endast för lättare testning
 		this.deleteDatabase("Alice");
 
@@ -46,18 +46,18 @@ public class StartView extends Activity {
 				//ProgressDialog dialog = ProgressDialog.show(StartView.this, "", 
                       //  "Loggar in... ", true);
 				//dialog.show();
-				//boolean valid = LoginManager.evaluate(user.getText().toString(), password.getText().toString());
+				boolean valid = LoginManager.evaluate(user.getText().toString(), password.getText().toString());
 				
-				//if (valid) {
+				if (valid) {
 					Intent nextIntent = new Intent(StartView.this,
 							MainView.class);
 					nextIntent.putExtra("user", user.getText().toString());
 
 					startActivity(nextIntent);
-				//} else
-					//Toast.makeText(StartView.this,
-					//		"Ogiltigt användarnamn eller lösenord",
-					//		Toast.LENGTH_LONG).show();
+				} else
+					Toast.makeText(StartView.this,
+							"Ogiltigt användarnamn eller lösenord",
+							Toast.LENGTH_LONG).show();
 				
 				loginButton.setEnabled(true);
 			}
