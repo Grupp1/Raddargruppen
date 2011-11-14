@@ -9,6 +9,8 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Observable;
 
+import com.google.gson.Gson;
+
 import raddar.enums.NotificationType;
 import raddar.enums.ServerInfo;
 import android.util.Log;
@@ -35,9 +37,10 @@ public class LoginManager extends Observable {
 			Socket so = new Socket(InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
 			
 			Log.d("Efter socketen", "lawl");
-			
+			String send = nm.getClass().getName()+"\r\n";
+			send +=	new Gson().toJson(nm);
 			PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
-			pw.println(nm.getFormattedMessage());
+			pw.println(send);
 			
 			BufferedReader br = new BufferedReader(
 					new InputStreamReader(so.getInputStream()));
