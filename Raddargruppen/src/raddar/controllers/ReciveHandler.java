@@ -9,7 +9,7 @@ import raddar.views.MainView;
 
 public class ReciveHandler implements Runnable {
 	// Standard port = 6789
-	private int port = 6789;
+	private int port = 4043;
 	private Thread reciveHandler = new Thread(this);
 
 	public ReciveHandler() {

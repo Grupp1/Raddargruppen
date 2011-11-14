@@ -86,7 +86,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 			m.setSubject(subject.getText() + "");
 			m.setData(messageData.getText() + "");
 			try {
-				new Sender(m, InetAddress.getByName("127.0.0.1"), 6789);
+				new Sender(m, InetAddress.getByName(raddar.enums.ServerInfo.SERVER_IP), raddar.enums.ServerInfo.SERVER_PORT);
 			} catch (UnknownHostException e) {
 			}
 		}
