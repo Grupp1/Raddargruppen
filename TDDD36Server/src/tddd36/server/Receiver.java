@@ -55,12 +55,7 @@ public class Receiver implements Runnable {
 			String temp = in.readLine();
 			Message m = new Gson().fromJson(temp, c);
 			//		so.close();
-			// Läs in vilken typ av meddelande som klienten skickar
-			String t = in.readLine().split(" ")[1];
-
-			// Konvertera från sträng till MessageType
-			MessageType type = MessageType.convert(t);
-
+		
 			// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
 			// meddelandet som klienten har skickat blir inläst på korrekt sätt
 			switch (m.getType()) {
@@ -68,8 +63,9 @@ public class Receiver implements Runnable {
 				handleNotification((NotificationMessage) m);
 				break;
 			case TEXT:
-				Database.storeTextMessage((TextMessage)m);
-				new Sender(m, m.getDestUser(), 6789);
+				System.out.println("fått ett meddelande till " + m.getDestUser());
+				//Database.storeTextMessage((TextMessage)m);
+				new Sender(m, m.getDestUser(), 4043);
 				break;
 			case IMAGE:
 				handleImageMessage();

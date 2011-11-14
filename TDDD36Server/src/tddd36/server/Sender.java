@@ -32,7 +32,7 @@ public class Sender implements Runnable {
 	
 	public Sender(Message m, String toUser) {
 		// Sätt port till 6789 och låt annan konstruktor göra resten av jobbet
-		this(m, toUser, 6789);
+		this(m, toUser, 4043);
 	}
 	
 	public Sender(Message m, InetAddress address) {
