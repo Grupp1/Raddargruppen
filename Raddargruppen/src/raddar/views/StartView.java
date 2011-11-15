@@ -26,8 +26,8 @@ public class StartView extends Activity {
 		setContentView(R.layout.start);
 		// Lite hårdkodade testanvändare att testa med
 /*		LoginManager.cache("Borche", "hej123");
-		LoginManager.cache("Danne", "raddar");
-		LoginManager.cache("Alice", "longshot");*/
+		LoginManager.cache("Danne", "raddar");*/
+		LoginManager.cache("Alice", "longshot");
 		// Endast för lättare testning
 		this.deleteDatabase("Alice");
 
@@ -46,7 +46,16 @@ public class StartView extends Activity {
 				//ProgressDialog dialog = ProgressDialog.show(StartView.this, "", 
                       //  "Loggar in... ", true);
 				//dialog.show();
-				boolean valid = LoginManager.evaluate(user.getText().toString(), password.getText().toString());
+				
+				
+				
+				
+				
+				//boolean valid = LoginManager.evaluate(user.getText().toString(), password.getText().toString());
+				boolean valid = true;
+				
+				
+				
 				
 				if (valid) {
 					Intent nextIntent = new Intent(StartView.this,

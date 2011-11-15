@@ -16,6 +16,7 @@ import raddar.models.GPSModel;
 import raddar.models.MapObject;
 import raddar.models.MapObjectList;
 import raddar.models.Resource;
+import raddar.models.SOS;
 import raddar.models.Situation;
 import raddar.models.You;
 import android.app.AlertDialog;
@@ -98,6 +99,7 @@ public class MapUI extends MapActivity implements Observer {
 		
 		controller.animateTo(sthlmLocation);
 		youFind = false;
+
 	}
 
 	@Override
@@ -253,6 +255,9 @@ public class MapUI extends MapActivity implements Observer {
 				controller.setZoom(13);
 				youFind = true;
 				follow = true;
+				
+				setSOS();
+				
 			}
 			you.setPoint(myLocation);	
 			you.updateData(geocoder);
@@ -325,6 +330,14 @@ public class MapUI extends MapActivity implements Observer {
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
+		}
+	}
+	
+	private void setSOS(){
+		if (MainView.getSos()){
+			SOS sos = new SOS(myLocation, "Här är det kaoz");
+			mapCont.add(sos);
+			MainView.changeSos();
 		}
 	}
 

@@ -21,6 +21,7 @@ public class MapModel extends Observable {
 	private MapObjectList situationList;
 	private MapObjectList resourceList;
 	private MapObjectList youList;
+	private MapObjectList sosList;
 
 	private MapUI mapUI;
 	
@@ -55,6 +56,13 @@ public class MapModel extends Observable {
 			}
 			fireTruckList.addOverlay(o);
 			notifyObservers(fireTruckList);
+		}
+		else if(o instanceof SOS){
+			if(sosList == null){
+				sosList = new MapObjectList(d, mapUI);
+			}
+			sosList.addOverlay(o);
+			notifyObservers(sosList);
 		}
 		else if(o instanceof You){
 			if(youList == null){
