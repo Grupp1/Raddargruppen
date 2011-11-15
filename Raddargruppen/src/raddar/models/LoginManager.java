@@ -9,11 +9,12 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Observable;
 
-import com.google.gson.Gson;
-
+import raddar.enums.LoginResponse;
 import raddar.enums.NotificationType;
 import raddar.enums.ServerInfo;
 import android.util.Log;
+
+import com.google.gson.Gson;
 
 public class LoginManager extends Observable {
 	
@@ -28,7 +29,8 @@ public class LoginManager extends Observable {
 	 * @param password Lösenordet
 	 * @return true om verifieringen går bra, false annars
 	 */
-	public static boolean evaluate(String username, String password) {
+	public void evaluate(String username, String password) {
+		LoginResponse logIn = LoginResponse.NO_SUCH_USER_OR_PASSWORD;
 		NotificationMessage nm = new NotificationMessage(username, 
 				NotificationType.CONNECT, 
 				password);
@@ -55,13 +57,13 @@ public class LoginManager extends Observable {
 		
 			// Om servern säger att inmatade uppgifter är giltiga, returnera true
 			if (response.equals("OK")) 
-				return true;
+				logIn = LoginResponse.ACCEPTED;
 		} catch (IOException e) {
 			Log.d("NotificationMessage", "Server connection failed");
-			return evaluateLocally(username, password);
+			logIn = evaluateLocally(username, password);
 		}
-		// annars returnera false
-		return false;
+		setChanged();
+		notifyObservers(logIn);
 	}
 		
 	/**
@@ -73,11 +75,11 @@ public class LoginManager extends Observable {
 	 * @param password Lösenordet
 	 * @return true om verifieringen går bra, false annars
 	 */
-	private static boolean evaluateLocally(String username, String password){
+	private static LoginResponse evaluateLocally(String username, String password){
 		String temp = passwordCache.get(username);
-		if (temp == null) return false;
-		if (password.equals(temp)) return true;
-		return false;
+		if (temp == null) return LoginResponse.NO_CONNECTION;
+		if (password.equals(temp)) return LoginResponse.ACCEPTED_NO_CONNECTION;
+		return LoginResponse.NO_CONNECTION;
 	}
 	
 	public static String cache(String username, String password) {
