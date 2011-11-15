@@ -1,4 +1,4 @@
-package tddd36.server;
+package raddar.models;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -19,8 +19,20 @@ public class Encryption {
 	 * @param salt Saltet som skall användas
 	 * @return Det krypterade lösenordet
 	 */
-	public static String hashPassword(String password, String salt) {
+	public static String encrypt(String password, String salt) {
 		return byteArrayToHexString(computeHash(password, salt));
+	}
+	
+	/**
+	 * Skapar ett nytt 4-tecken (32-bitars) långt salt
+	 * @return Ett nyskapat salt
+	 */
+	public static String newSalt() {
+		StringBuilder sb = new StringBuilder("");
+		
+		for (int i = 0; i < 4; i++)
+			sb.append((int) (Math.random() * 10));
+		return sb.toString();
 	}
 	
 	/*
@@ -47,18 +59,13 @@ public class Encryption {
 	 * Översätter en byte-array till hexadecimalt format
 	 */
 	private static String byteArrayToHexString(byte[] b) {
-		System.out.println("B-length: " + b.length);
 		StringBuffer sb = new StringBuffer(b.length * 2);
 		for (int i = 0; i < b.length; i++) {
-			System.out.println((int)b[i]);
 			int v = b[i] & 0xff;
-			System.out.println(v);
 			if (v < 16) {
 				sb.append('0');
-				System.out.println("Appending 0: " + sb);
 			}
 			sb.append(Integer.toHexString(v));
-			System.out.println(sb);
 		}
 		return sb.toString().toUpperCase();
 	}

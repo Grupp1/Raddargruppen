@@ -8,7 +8,11 @@ import java.net.Socket;
 import raddar.models.Message;
 
 import com.google.gson.Gson;
-
+/**
+ * 
+ * @author andbo265
+ *
+ */
 public class Sender implements Runnable {
 	
 	private Thread thread = new Thread(this);
