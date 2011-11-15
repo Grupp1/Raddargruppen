@@ -3,9 +3,8 @@ package raddar.enums;
 public enum LoginResponse {
 
 	ACCEPTED,
-	NO_SUCH_USER,
-	WRONG_PASSWORD,
+	NO_SUCH_USER_OR_PASSWORD,
 	NO_CONNECTION,
-	ERROR;
+	ACCEPTED_NO_CONNECTION;
 	
 }
