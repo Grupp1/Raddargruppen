@@ -254,10 +254,7 @@ public class MapUI extends MapActivity implements Observer {
 				controller.animateTo(myLocation);
 				controller.setZoom(13);
 				youFind = true;
-				follow = true;
-				
-				setSOS();
-				
+				follow = true;		
 			}
 			you.setPoint(myLocation);	
 			you.updateData(geocoder);
@@ -330,14 +327,6 @@ public class MapUI extends MapActivity implements Observer {
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
-		}
-	}
-	
-	private void setSOS(){
-		if (MainView.getSos()){
-			SOS sos = new SOS(myLocation, "Här är det kaoz");
-			mapCont.add(sos);
-			MainView.changeSos();
 		}
 	}
 

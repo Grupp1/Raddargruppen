@@ -35,12 +35,12 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	private ImageButton sosButton;
 	private ImageButton setupButton;
 	private ImageButton logButton;
+	private boolean isConnectedWithServer;
 	//Håller reda på interna kommunikationen på servern. I dagsläget
 	//håller den endast reda på vilken användare som är online
 	public static InternalComManager controller; 
 	//Pekare på databasen. Ska användas för att komma åt databasen
 	public static ClientDatabaseManager db;
-	private static boolean sos = false;
 
 
 	/** Called when the activity is first created. */
@@ -89,6 +89,8 @@ public class MainView extends Activity implements OnClickListener, Observer{
 
 		logButton = (ImageButton)this.findViewById(R.id.logButton);
 		logButton.setOnClickListener(this);
+		
+		
 
 	}
 
@@ -114,9 +116,6 @@ public class MainView extends Activity implements OnClickListener, Observer{
 			startActivity(nextIntent);
 		}
 		if(v == sosButton){
-			Intent nextIntent = new Intent(MainView.this, MapUI.class);
-			startActivity(nextIntent);
-			sos = true;
 			Toast.makeText(getBaseContext(), "Hjääälp mig!", Toast.LENGTH_LONG).show();
 		}
 		if(v == setupButton){
@@ -177,18 +176,5 @@ public class MainView extends Activity implements OnClickListener, Observer{
 			}
 		});
 
-	}
-	
-	public static boolean getSos(){
-		return sos;
-	}
-	
-	public static void changeSos(){
-		if (sos==true){
-			sos = false;
-		}
-		else{
-			sos = true;
-		}
 	}
 }

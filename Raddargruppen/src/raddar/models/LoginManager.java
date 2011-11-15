@@ -62,6 +62,10 @@ public class LoginManager extends Observable {
 			Log.d("NotificationMessage", "Server connection failed");
 			logIn = evaluateLocally(username, password);
 		}
+		
+		// debug mode
+		logIn = LoginResponse.ACCEPTED;
+		
 		setChanged();
 		notifyObservers(logIn);
 	}
