@@ -38,7 +38,10 @@ public class LoginManager {
 				// Skapa utströmmen till klienten
 				pw = new PrintWriter(so.getOutputStream(), true);
 				
-				// Skicka det krypterade lösenordet och användarens salt tillbaka till användaren
+				// Svara med att det är OK
+				pw.println("OK");
+				
+				// Fortsätt med att skicka det krypterade lösenordet och användarens salt tillbaka till användaren
 				// så att denne kan lagra det lokalt på sin telefon
 				pw.println(encryptedPassword);
 				pw.println(salt);

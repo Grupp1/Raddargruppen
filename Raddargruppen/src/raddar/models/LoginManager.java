@@ -50,14 +50,18 @@ public class LoginManager extends Observable {
 			// Läs in ett svar från servern via SAMMA socket
 			String response = br.readLine();
 			
+			// Om servern säger att inmatade uppgifter är giltiga, returnera true
+			if (response.equals("OK")) {
+				logIn = LoginResponse.ACCEPTED;
+				String encryptedPassword = br.readLine();
+				String salt = br.readLine();
+				// Cacha det krypterade lösenordet och saltet i SQLite?
+			}
+			
 			// Stäng ner strömmar och socket
 			pw.close();
 			br.close();
 			so.close();
-		
-			// Om servern säger att inmatade uppgifter är giltiga, returnera true
-			if (response.equals("OK")) 
-				logIn = LoginResponse.ACCEPTED;
 		} catch (IOException e) {
 			Log.d("NotificationMessage", "Server connection failed");
 			logIn = evaluateLocally(username, password);
