@@ -52,7 +52,7 @@ public class ClientDatabaseManager extends Observable {
 		addRow(new Contact("Daniel",false));
 		
 		//TEST KOD FÖR MAP
-		addRow(new Fire(new GeoPoint(58395730, 15573080), "HAHAHA", "HAHHAHA", SituationPriority.HIGH));
+		addRow(new Fire(new GeoPoint(58395730, 15573080), "HAHAHA", SituationPriority.HIGH));
 	}
 
 	/**********************************************************************

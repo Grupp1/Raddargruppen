@@ -1,21 +1,14 @@
 package raddar.views;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
 
-import raddar.enums.MessageType;
 import raddar.gruppen.R;
 import raddar.models.Contact;
-import raddar.models.Message;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;

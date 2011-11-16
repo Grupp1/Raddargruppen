@@ -1,31 +1,25 @@
 package raddar.views;
 import java.util.ArrayList;
-import java.util.Collection;
 
-import raddar.enums.MessageType;
 import raddar.gruppen.R;
 import raddar.models.Contact;
-import raddar.models.Message;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class ContactView extends ListActivity implements OnClickListener{
+	
 	private ContactAdapter ia;
 	private ArrayList<Contact> contacts;
 	private ArrayList selected;

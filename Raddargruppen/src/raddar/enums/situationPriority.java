@@ -9,7 +9,7 @@ public enum SituationPriority {
 	},
 	NORMAL(){
 		public String toString(){
-			return "Normal";
+			return "Mellan";
 		}
 	},
 	LOW(){

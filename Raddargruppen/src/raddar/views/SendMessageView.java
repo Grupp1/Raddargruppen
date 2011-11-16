@@ -3,15 +3,11 @@ package raddar.views;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import raddar.controllers.InternalComManager;
 import raddar.controllers.Sender;
-import raddar.enums.ServerInfo;
 import raddar.gruppen.R;
 import raddar.models.Message;
 import raddar.models.TextMessage;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -90,7 +86,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 			m.setSubject(subject.getText() + "");
 			m.setData(messageData.getText() + "");
 			try {
-				new Sender(m, InetAddress.getByName("127.0.0.1"), 6789);
+				new Sender(m, InetAddress.getByName(raddar.enums.ServerInfo.SERVER_IP), raddar.enums.ServerInfo.SERVER_PORT);
 			} catch (UnknownHostException e) {
 			}
 		}

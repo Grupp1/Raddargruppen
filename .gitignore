@@ -2,6 +2,11 @@
 # built application files
 *.apk
 *.ap_
+Raddargruppen/.classpath
+TDDD36Server/.classpath
+Raddargruppen/.settings
+TDDD36Server/.settings
+Raddargruppen/.metadata/
 
 # files for the dex VM
 *.dex

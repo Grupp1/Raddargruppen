@@ -1,9 +1,11 @@
 package raddar.models;
 
 import java.io.IOException;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Locale;
 
+import raddar.views.MainView;
 import android.location.Address;
 import android.location.Geocoder;
 
@@ -13,22 +15,37 @@ import com.google.android.maps.OverlayItem;
 public class MapObject extends OverlayItem {
 
 	private GeoPoint point;
-	private String title, snippet, id, adress, description;
+	private String title, snippet, id, adress, description, addedBy, date;
 	private int icon;
+	private ID idGen;
+	
 	
 	/*
 	 * MapObject är ett object som kan placeras ut på kartan
 	 */
 
-	public MapObject(GeoPoint point, String title, String snippet, int icon, String id) {
+	public MapObject(GeoPoint point, String title, String snippet, int icon) {
 		super(point, title, snippet);
 		this.point = point;
 		this.title = title;
 		this.snippet = snippet;
-		this.id = id;
 		this.icon = icon;
+		this.addedBy = MainView.controller.getUser();
+		this.date = new SimpleDateFormat("yyyy:MM:dd 'kl' HH:mm:ss").format(new Date());
+		this.adress = "Kunde inte hämta adress";
+		
+		idGen = new ID(addedBy,point.getLatitudeE6(),point.getLongitudeE6(), date);
+		id = idGen.generateID();
 	}
 	
+	public String getAddedBy(){
+		return addedBy;
+	}
+	
+	public String getDate(){
+		return date;
+	}
+
 	public GeoPoint getPoint() {
 		return point;
 	}
@@ -57,10 +74,6 @@ public class MapObject extends OverlayItem {
 		return id;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
-	
 	public int getIcon() {
 		return icon;
 	}
@@ -68,11 +81,8 @@ public class MapObject extends OverlayItem {
 	public void setIcon(int icon) {
 		this.icon = icon;
 	}
-	
+
 	public String getAdress() {
-		if(adress == null){
-			return "";
-		}
 		return adress;
 	}
 
@@ -96,6 +106,7 @@ public class MapObject extends OverlayItem {
 	/*
 	 * Uppdaterar adressen när den ändras
 	 */
+	
 	public void updateAdress(Geocoder geocoder){
 		String display ="";
 		try{
@@ -110,15 +121,14 @@ public class MapObject extends OverlayItem {
 		}finally{
 			
 		}
-		if (display.equals("")){
-			display = "Kunde inte hämta adress\n";
-		}
 		setAdress(display);
 	}
 	
 	public void updateDescription(){
 		setDescription("Beskrivning: "+getSnippet()+"\nAdress: "+getAdress()+
-				  "Koordinater: "+getPoint().getLatitudeE6()/1E6+", "+getPoint().getLongitudeE6()/1E6);
+				  "\nKoordinater: "+getPoint().getLatitudeE6()/1E6+", "+getPoint().getLongitudeE6()/1E6 + "\nSkapad: " + 
+				getDate() + "\nSkapad av: " + getAddedBy() + "\n ID: " + getId());
 	}
 	
 }
+

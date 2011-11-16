@@ -8,8 +8,8 @@ public class Situation extends MapObject {
 
 	private SituationPriority priority;
 	
-	public Situation(GeoPoint point, String title, String snippet, int icon, String id, SituationPriority priority) {
-		super(point, title, snippet, icon, id);
+	public Situation(GeoPoint point, String title, String snippet, int icon, SituationPriority priority) {
+		super(point, title, snippet, icon);
 		this.priority = priority;
 	}
 	

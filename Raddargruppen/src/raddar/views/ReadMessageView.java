@@ -3,7 +3,6 @@ package raddar.views;
 import raddar.gruppen.R;
 import android.app.Activity;
 import android.os.Bundle;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class ReadMessageView extends Activity{
