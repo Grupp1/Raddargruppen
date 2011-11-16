@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -26,10 +27,13 @@ public class NotificationService extends Service implements Runnable {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		super.onStartCommand(intent, flags, startId);
+		
 		Log.d("NOTIFICATION TEST 4", "Borje");
 		
-		//Bundle b = intent.getExtras();
-		//contentText = (CharSequence) b.get("msg");
+		Bundle b = intent.getExtras();
+		if (b == null) Log.d("TEST BB", (String) contentText);
+		contentText = (CharSequence) b.get("msg");
 		
 		return 1;
 	}

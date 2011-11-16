@@ -85,8 +85,6 @@ public class Receiver implements Runnable {
 		switch (nt) {
 			case CONNECT:
 				// Behandla loginförsöket
-				if (nm.getPassword() == null) System.out.println("Password = null");
-				if (nm.getSrcUser() == null) System.out.println("Source user = null");
 				LoginManager.evaluateUser(nm.getSrcUser(), nm.getPassword(), so);
 				break;
 			case DISCONNECT:

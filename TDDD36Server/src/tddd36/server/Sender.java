@@ -49,7 +49,7 @@ public class Sender implements Runnable {
 		try {
 			// Kolla om vi har en address att skicka till innan vi skapar en anslutning
 			if (adr == null) {
-				System.out.println("Receiver's address is unknown. ");	// Skriv ut att vi inte känner till mottagarens adress
+				System.out.println("Mottagarens IP-adress är inte känd. ");	// Skriv ut att vi inte känner till mottagarens adress
 				return;
 			}
 			// Skapa en socket för att kunna skicka meddelandet till mottagaren
@@ -62,7 +62,7 @@ public class Sender implements Runnable {
 			out.println(send);
 			
 			// Skriv ut vilken sorts meddelande som har skickats
-			System.out.println("["+rSocket.getInetAddress().getHostAddress()+"] << " + m.getType().toString() + " has been sent. ");
+			System.out.println("["+rSocket.getInetAddress().getHostAddress()+"] << " + m.getType().toString() + " har vidarebefordats till " + m.getDestUser());
 			
 			out.close();
 			rSocket.close();

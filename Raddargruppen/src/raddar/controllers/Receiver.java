@@ -43,8 +43,9 @@ public class Receiver implements Runnable {
 			
 			Log.d("NOTIFICATION TEST 1", "Borje");
 			Intent intent = new Intent(context, NotificationService.class);
-			context.startService(intent);
-			//intent.putExtra("msg", m.getData().substring(0, 30));
+			context.startService(intent.putExtra("msg", m.getSubject()));
+			
+			
 			Log.d("NOTIFICATION TEST 2", "Borje");
 			
 		} catch (IOException ie) {
