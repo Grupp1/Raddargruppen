@@ -1,16 +1,10 @@
 package raddar.views;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 
-import raddar.controllers.Sender;
 import raddar.enums.MessageType;
 import raddar.gruppen.R;
 import raddar.models.Message;
-import raddar.models.TextMessage;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -25,59 +19,57 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class InboxView extends ListActivity implements Observer{
+/**
+ * Denna klass tar hand om utritningen av outboxen.   
+ * @author magkj501
+ *
+ */
 
-	private InboxAdapter ia;
-	private ArrayList<Message> inbox;
+public class OutBoxView extends ListActivity {
 
+	private OutboxAdapter ia;
+	private ArrayList<Message> outbox;
+
+	/**
+	 * 
+	 */
+	
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-		MainView.db.addObserver(this);
-		inbox = MainView.db.getAllRowsAsArrays("message");
-		
-		ia = new InboxAdapter(this, R.layout.row,inbox);
+
+		outbox = MainView.db.getAllRowsAsArrays("outbox");
+
+		ia = new OutboxAdapter(this, R.layout.row,outbox);
 		setListAdapter(ia);
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
-		
+
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				Intent nextIntent = new Intent(InboxView.this, ReadMessageView.class);
-				nextIntent.putExtra("sender",inbox.get(position).getSrcUser());
-				nextIntent.putExtra("subject",inbox.get(position).getSubject());
-				nextIntent.putExtra("data",inbox.get(position).getData());
-				nextIntent.putExtra("date", inbox.get(position).getDate());
-				nextIntent.putExtra("type", inbox.get(position).getType());
+				Intent nextIntent = new Intent(OutBoxView.this, SentMessageView.class);
+				nextIntent.putExtra("reciever",outbox.get(position).getSrcUser());
+				nextIntent.putExtra("subject",outbox.get(position).getSubject());
+				nextIntent.putExtra("data",outbox.get(position).getData());
+				nextIntent.putExtra("date", outbox.get(position).getDate());
+				nextIntent.putExtra("type", outbox.get(position).getType());
 				startActivity(nextIntent);
 
 			}
 		});
-		
-		Message m = new TextMessage(MessageType.convert("text/plain"),"Daniel","Daniel");
-		m.setData("HOPPAS DET FUNGERAR");
-		m.setSubject("VIKTIGT");
-		MainView.db.addRow(m);
-		try {
-			new Sender (m, InetAddress.getByName("127.0.0.1"), 6789);
-		} catch (UnknownHostException e) {
-			
-		}
-	}
-	
-	public void update(final Observable observable, final Object data) {
-		runOnUiThread(new Runnable(){
-			public void run(){
-				inbox.add((Message) data);
-				ia.notifyDataSetChanged();
-			}
-		});
 	}
 
-	private class InboxAdapter extends ArrayAdapter<Message>{
+	/**
+	 * Denna klass används vid utritning av outboxen.
+	 * @author magkj501
+	 *
+	 */
+	
+	private class OutboxAdapter extends ArrayAdapter<Message>{
+
 		private ArrayList<Message> items;
 
-		public InboxAdapter(Context context, int textViewResourceId,ArrayList<Message> items) {
+		public OutboxAdapter(Context context, int textViewResourceId,ArrayList<Message> items) {
 			super(context, textViewResourceId,items);
 			this.items = items;
 		}
@@ -92,15 +84,17 @@ public class InboxView extends ListActivity implements Observer{
 			if (m != null) {
 				TextView tt = (TextView) v.findViewById(R.id.toptext);
 				TextView bt = (TextView) v.findViewById(R.id.bottomtext);
-				ImageView iv = (ImageView)v.findViewById(R.id.icon);
+				ImageView iv = (ImageView) v.findViewById(R.id.icon);
 				if(m.getType() == MessageType.TEXT)
 					iv.setImageResource(R.drawable.magnus);
 				if (tt != null) 
-					tt.setText("Avsändare: "+m.getSrcUser());                            
+					tt.setText("Mottagare: "+m.getDestUser());                            
 				if(bt != null)
 					bt.setText("Ämne: "+ m.getSubject());
 			}			
 			return v;
 		}
 	}
+
+
 }

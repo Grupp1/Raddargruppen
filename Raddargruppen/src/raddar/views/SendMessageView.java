@@ -16,12 +16,14 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 /**
  * This class shows the view which allows users to send 
  * 
  * @author danan612
- *
+ * 
  */
+
 public class SendMessageView extends Activity implements OnClickListener {
 	private EditText destUser;
 	private EditText subject;
@@ -87,6 +89,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 			m.setData(messageData.getText() + "");
 			try {
 				new Sender(m, InetAddress.getByName("127.0.0.1"), 6789);
+				MainView.db.addOutboxRow(m);
 			} catch (UnknownHostException e) {
 			}
 		}

@@ -3,9 +3,6 @@ package raddar.models;
 import java.util.ArrayList;
 import java.util.Observable;
 
-import com.google.android.maps.GeoPoint;
-import com.google.gson.Gson;
-
 import raddar.enums.MessagePriority;
 import raddar.enums.MessageType;
 import raddar.enums.SituationPriority;
@@ -16,6 +13,9 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import com.google.android.maps.GeoPoint;
+import com.google.gson.Gson;
 
 public class ClientDatabaseManager extends Observable {
 	// the Activity or Application that is creating an object from this class.
@@ -34,6 +34,7 @@ public class ClientDatabaseManager extends Observable {
 	private final String[] CONTACT_TABLE_ROWS = new String[] { "userName", "isGroup"};
 	private final String[] SITUATION_TABLE_ROWS = new String[] { "title", "description", "priority" };
 	private final String[] MAP_TABLE_ROWS = new String[] { "mapObject","class","id"};
+	private final String[] OUTBOX_TABLE_ROWS = new String[] { "msgID", "destUser", "rDate", "subject", "mData"};
 
 
 	/**********************************************************************
@@ -50,7 +51,7 @@ public class ClientDatabaseManager extends Observable {
 		addRow(new Contact("Alice",false));
 		addRow(new Contact("Borche",false));
 		addRow(new Contact("Daniel",false));
-		
+
 		//TEST KOD FÖR MAP
 		addRow(new Fire(new GeoPoint(58395730, 15573080), "HAHAHA", SituationPriority.HIGH));
 	}
@@ -74,6 +75,27 @@ public class ClientDatabaseManager extends Observable {
 		}
 		setChanged();
 		notifyObservers(m);
+	}
+	/**********************************************************************
+	 * ADDING A CONTACT ROW IN THE DATABASE TABLE
+	 *
+	 * Messages to be addad to the outbox
+	 * @param m The message that is to be added to the database
+	 */
+	public void addOutboxRow(Message m){
+		ContentValues values = new ContentValues();
+		values.put("destUser", m.getDestUser());
+		values.put("rDate", m.getFormattedDate());
+		values.put("subject", m.getSubject());
+		values.put("mData", m.getData());
+		try {
+			db.insert("outbox", null, values);
+		} catch (Exception e) {
+			Log.e("DB ERROR", e.toString());
+			e.printStackTrace();
+		}
+		setChanged();
+		notifyObservers(m);			
 	}
 	/**********************************************************************
 	 * ADDING A CONTACT ROW IN THE DATABASE TABLE
@@ -111,8 +133,8 @@ public class ClientDatabaseManager extends Observable {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
-	//	setChanged();
-	//	notifyObservers(mo);
+		//	setChanged();
+		//	notifyObservers(mo);
 	}
 
 	/**********************************************************************
@@ -178,7 +200,7 @@ public class ClientDatabaseManager extends Observable {
 		}
 	}
 
-	/**
+	/********************************************************************
 	 * RETRIEVE ALL ROWS IN A TABLE AS AN ArrayList
 	 * @param table The table that is to be retrieved
 	 * @return
@@ -196,6 +218,10 @@ public class ClientDatabaseManager extends Observable {
 						"message",
 						TEXT_MESSAGE_TABLE_ROWS,
 						null, null, null, null, null);
+			}
+			else if (table.equals("outbox")){
+				cursor = db.query("outbox",	OUTBOX_TABLE_ROWS,
+						null, null , null, null, null);
 			}
 			else if(table.equals("contact")){
 				cursor = db.query(
@@ -216,6 +242,15 @@ public class ClientDatabaseManager extends Observable {
 				do
 				{
 					if(table.equals("message")){
+						Message m = new TextMessage(MessageType.TEXT, 
+								cursor.getString(1), 
+								DB_NAME, 
+								MessagePriority.NORMAL, 
+								cursor.getString(4));
+						m.setSubject(cursor.getString(3));
+						dataArrays.add(m);
+					}
+					else if(table.equals("outbox")){
 						Message m = new TextMessage(MessageType.TEXT, 
 								cursor.getString(1), 
 								DB_NAME, 
@@ -276,6 +311,13 @@ public class ClientDatabaseManager extends Observable {
 					"mapObject text," +
 					"class text," +
 					"id text)";
+			String outboxTableQueryString = "create table outbox (" 
+					+ "msgId integer primary key autoincrement not null," + 
+					"destUser text," +
+					"rDate integer," +
+					"subject text," +
+					"mData text)";
+
 			/*
 			 * String newTableQueryString = "create table " + TABLE_NAME + " ("
 			 * + TABLE_ROW_ID + " integer primary key autoincrement not null," +
@@ -285,6 +327,7 @@ public class ClientDatabaseManager extends Observable {
 			db.execSQL(mapTableQueryString);
 			db.execSQL(contactTableQueryString);
 			db.execSQL(messageTableQueryString);
+			db.execSQL(outboxTableQueryString);
 		}
 
 		@Override

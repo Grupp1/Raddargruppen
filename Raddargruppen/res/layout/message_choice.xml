@@ -52,7 +52,31 @@
 			android:layout_height="wrap_content"
 			android:layout_gravity="center" android:text="@string/messagechoice_inbox"></TextView>
 	</LinearLayout>
-
+	
+	
+		<LinearLayout
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:id="@+id/linearLayoutInbox"
+		android:orientation="vertical"
+		android:layout_marginLeft="170dip"
+		android:layout_marginRight="50dip"
+		android:layout_marginTop="140dip">
+		<ImageButton 
+			android:layout_width="90dp" 
+			android:layout_gravity="center" 
+			android:src="@drawable/inbox" 
+			android:layout_height="80dp" 
+			android:id="@+id/outboxButton" 
+			android:background="#000000"></ImageButton>
+		<TextView
+			android:layout_width="wrap_content"
+			android:id="@+id/textView3"
+			android:textAppearance="?android:attr/textAppearanceSmall"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center" 
+			android:text="@string/messagechoice_outbox"></TextView>
+	</LinearLayout>
 
 
 </RelativeLayout>
