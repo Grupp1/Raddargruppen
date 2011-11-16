@@ -63,14 +63,20 @@ public class Database {
 				// Hämta saltet
 				String salt = rs.getString("salt");
 				if (salt == null) {
-					System.out.println("Salt får inte vara null. ");
+					System.out.println("Salt får inte vara null (Database.java). ");
+					return false;
+				}
+				if (password == null) {
+					System.out.println("Lösenordet får inte vara null (Database.java). ");
 					return false;
 				}
 				// Kryptera det klara lösenordet
 				password = Encryption.encrypt(password, salt);
 				// Jämför med det lagrade, krypterade lösenordet
-				if (password.equals(rs.getString("password")))
+				if (password.equals(rs.getString("password"))) {
+					System.out.println(username + " har angivit korrekt lösenord. ");
 					return true;
+				}
 			}
 		} catch (SQLException ex) {
 			System.out.println("Fel syntax i MySQL-queryn i evaluateUser(). ");

@@ -41,7 +41,6 @@ public class Server {
 	}
 	
 	public static void main(String[] args) {
-		Database.addUser("Doombringer", "lawl!", 'u', "noob");
 		System.out.println(Database.getEncryptedPassword("Alice"));
 		
 		new Server();

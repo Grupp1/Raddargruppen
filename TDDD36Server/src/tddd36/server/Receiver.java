@@ -39,11 +39,8 @@ public class Receiver implements Runnable {
 	@Override
 	public void run() {
 		try {
-			System.out.println("["+so.getInetAddress().getHostAddress()+"] ** Connection established. ");
-
 			// För att läsa inkommande data från klienten
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
-			Gson gson = new Gson();
 			Class c= null ;
 			try {
 				c = Class.forName(in.readLine());
@@ -61,7 +58,6 @@ public class Receiver implements Runnable {
 				handleNotification((NotificationMessage) m);
 				break;
 			case TEXT:
-				System.out.println("fått ett meddelande till " + m.getDestUser());
 				//Database.storeTextMessage((TextMessage)m);
 				new Sender(m, m.getDestUser(), 4043);
 				break;
@@ -89,6 +85,8 @@ public class Receiver implements Runnable {
 		switch (nt) {
 			case CONNECT:
 				// Behandla loginförsöket
+				if (nm.getPassword() == null) System.out.println("Password = null");
+				if (nm.getSrcUser() == null) System.out.println("Source user = null");
 				LoginManager.evaluateUser(nm.getSrcUser(), nm.getPassword(), so);
 				break;
 			case DISCONNECT:

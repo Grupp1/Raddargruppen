@@ -38,9 +38,11 @@ public class LoginManager extends Observable {
 			// Skapa socket som används för att skicka NotificationMessage
 			Socket so = new Socket(InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
 			
-			Log.d("Efter socketen", "lawl");
+			Log.d("Efter socketen", password.toString());
 			String send = nm.getClass().getName()+"\r\n";
-			send +=	new Gson().toJson(nm);
+			String gg = new Gson().toJson(nm);
+			send +=	gg;
+			Log.d("Gson Test", gg.toString());
 			PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
 			pw.println(send);
 			
@@ -83,7 +85,7 @@ public class LoginManager extends Observable {
 		/*
 		 * Hämta användarens salt så att encrypt() kan hasha korrekt
 		 String salt = ClientDatabaseManager.getSalt(username);
-		 password = Encryption.encrypt(oassword, salt);
+		 password = Encryption.encrypt(password, salt);
 		 */
 		String cachedPassword = passwordCache.get(username);
 		if (cachedPassword == null) return LoginResponse.NO_CONNECTION;

@@ -43,7 +43,8 @@ public class Encryption {
 			MessageDigest md = null;
 			md = MessageDigest.getInstance("SHA-1");
 			md.reset();
-			md.update(str.getBytes("UTF-8"));
+			byte[] b = str.getBytes("UTF-8");
+			md.update(b);
 			md.reset();
 			md.update(salt.getBytes("UTF-8"));
 			return md.digest();

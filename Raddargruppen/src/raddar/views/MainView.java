@@ -51,17 +51,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 		controller = new InternalComManager();
 		controller.setUser(extras.get("user").toString());
 		db = new ClientDatabaseManager(this,controller.getUser());
-		new ReciveHandler();
-
-		//TEMPORÄRT MÅSTE FIXAS
-		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
-		try {
-			// Ändra localhost till serverns address när den
-			// är fastställd och portarna har öppnats i projektrummet
-			new Sender(nm, InetAddress.getByName("130.236.227.95"), 4043);	
-		} catch (UnknownHostException e) {
-			Log.d("NotificationMessage", "Connect failed");
-		}
+		new ReciveHandler(this);
 		 
 		db.addObserver(this);
 
