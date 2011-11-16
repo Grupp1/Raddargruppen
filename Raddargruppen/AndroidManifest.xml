@@ -11,7 +11,7 @@
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.RECORD_AUDIO" />
-	>
+	
 
 	<uses-feature android:name="android.hardware.sip.voip"
 		android:required="true" />
@@ -80,8 +80,17 @@
 		<activity android:name="raddar.views.ReadMessageView"
 			android:screenOrientation="portrait"></activity>
 
+
 		<activity android:name="raddar.views.MessageChoiceView"
 			android:screenOrientation="portrait"></activity>
+
+		<activity android:name="raddar.views.ServiceView"
+			android:screenOrientation="portrait"></activity>
+		<activity android:name="raddar.views.AddContactView"
+			android:screenOrientation="portrait"></activity>
+		<activity android:name="raddar.views.SendImageMessageView"
+			android:screenOrientation="portrait"></activity>
+
 
 		<activity android:name="raddar.views.SendMessageView"
 			android:screenOrientation="portrait"></activity>

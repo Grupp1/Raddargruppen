@@ -95,6 +95,8 @@ public class InboxView extends ListActivity implements Observer{
 				ImageView iv = (ImageView)v.findViewById(R.id.icon);
 				if(m.getType() == MessageType.TEXT)
 					iv.setImageResource(R.drawable.magnus);
+				if(m.getType() == MessageType.IMAGE)
+					iv.setImageResource(R.drawable.icon);
 				if (tt != null) 
 					tt.setText("Avsändare: "+m.getSrcUser());                            
 				if(bt != null)

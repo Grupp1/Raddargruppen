@@ -31,7 +31,7 @@ public class ClientDatabaseManager extends Observable {
 	// Table row constants
 	private final String[] TEXT_MESSAGE_TABLE_ROWS = new String[] { "msgId",
 			"srcUser","rDate","subject","mData"};
-	private final String[] CONTACT_TABLE_ROWS = new String[] { "userName", "isGroup"};
+	private final String[] CONTACT_TABLE_ROWS = new String[] { "userName", "isGroup", "sipUsr", "sipPw"};
 	private final String[] SITUATION_TABLE_ROWS = new String[] { "title", "description", "priority" };
 	private final String[] MAP_TABLE_ROWS = new String[] { "mapObject","class","id"};
 
@@ -47,9 +47,9 @@ public class ClientDatabaseManager extends Observable {
 		CustomSQLiteOpenHelper helper = new CustomSQLiteOpenHelper(context);
 		this.db = helper.getWritableDatabase();
 		//TEST KOD ANVÄNDS FÖR ATT TESTA KONTAKTLISTAN
-		addRow(new Contact("Alice",false));
+	/*addRow(new Contact("Alice",false));
 		addRow(new Contact("Borche",false));
-		addRow(new Contact("Daniel",false));
+		addRow(new Contact("Daniel",false)); */
 		
 		//TEST KOD FÖR MAP
 		addRow(new Fire(new GeoPoint(58395730, 15573080), "HAHAHA", SituationPriority.HIGH));
@@ -84,6 +84,8 @@ public class ClientDatabaseManager extends Observable {
 		ContentValues values = new ContentValues();
 		values.put("userName", c.getUserName());
 		values.put("isGroup", "0");
+		values.put("sipusr", c.getSipUsr());
+		values.put("sipPw", c.getSipPw());
 		try {
 			db.insert("contact", null, values);
 		} catch (Exception e) {
@@ -170,6 +172,8 @@ public class ClientDatabaseManager extends Observable {
 	public void updateRow(Contact c, String userName) {
 		ContentValues values = new ContentValues();
 		values.put("userName", userName);
+		values.put("sipusr", c.getSipUsr());
+		values.put("sipPw", c.getSipPw());
 		try {
 			db.update("contact", values, "userName = '" + c.getUserName()+"'", null);
 		} catch (Exception e) {
@@ -251,6 +255,7 @@ public class ClientDatabaseManager extends Observable {
 		}
 		// return the ArrayList that holds the data collected from
 		// the database.
+		cursor.close();
 		return dataArrays;
 	}
 
@@ -271,7 +276,9 @@ public class ClientDatabaseManager extends Observable {
 					"mData text)";
 			String contactTableQueryString = "create table contact (" +
 					"userName text, " +
-					"isGroup text)";
+					"isGroup text, " +
+					"sipUsr text, " +
+					"sipPw text)";
 			String mapTableQueryString = "create table map (" +
 					"mapObject text," +
 					"class text," +

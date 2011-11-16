@@ -25,8 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class ContactListView extends ListActivity implements OnClickListener{
-	private static final int RESULT_FIRST_USER_EDIT = 0;
-	private static final int RESULT_FIRST_USER_DELETE = 0;
+	private static final int RESULT_FIRST_USER_EDIT = 5;
 	private ContactAdapter ia;
 	private ArrayList<Contact> contacts;
 	private int newButton = Menu.FIRST;  
@@ -138,8 +137,9 @@ public class ContactListView extends ListActivity implements OnClickListener{
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if(requestCode == 1){
-			Bundle extras = data.getExtras();
+			
 			if(resultCode == RESULT_OK){
+				Bundle extras = data.getExtras();
 				String name = extras.getString("name");
 				Contact c = new Contact(name, false);	
 				contacts.add(c);
@@ -147,6 +147,7 @@ public class ContactListView extends ListActivity implements OnClickListener{
 				SessionController.db.addRow(c);
 			}
 			else if(resultCode == RESULT_FIRST_USER_EDIT){
+				Bundle extras = data.getExtras();
 				String oldName = extras.getString("oldName");
 				String name = extras.getString("name");
 				int position = extras.getInt("position");
@@ -157,6 +158,7 @@ public class ContactListView extends ListActivity implements OnClickListener{
 				ia.notifyDataSetChanged();
 				SessionController.db.updateRow(c, name);
 				
+			
 			}
 			
 		}

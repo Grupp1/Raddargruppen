@@ -22,13 +22,23 @@
 		android:id="@+id/addContactEditText">
 		<requestFocus></requestFocus>
 	</EditText>
-	<Button
+	<LinearLayout
+		android:id="@+id/linearLayout1"
 		android:layout_height="wrap_content"
-		android:layout_width="wrap_content"
-		android:layout_gravity="right"
-		android:layout_marginRight="30dip"
-		android:text="@string/add_contact_save"
-		android:id="@+id/addContactButton"></Button>
+		android:layout_gravity="right" android:layout_width="wrap_content">
+		<Button
+	android:id="@+id/addContactCancel"
+	android:layout_width="wrap_content"
+	android:text="@string/cancel"
+	android:layout_height="wrap_content"
+	android:layout_gravity="right"></Button>
+		<Button
+			android:id="@+id/addContactButton"
+			android:layout_marginRight="30dip"
+			android:layout_width="wrap_content"
+			android:text="@string/add_contact_save"
+			android:layout_height="wrap_content" android:layout_gravity="right"></Button>
+	</LinearLayout>
 
 
 </LinearLayout>
