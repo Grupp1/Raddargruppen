@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 /**
- * Denna klass ritar ut det skickade meddelande som klickas på 
+ * Denna klass ritar ut det skickade meddelandet som klickas på 
  * @author magkj501
  *
  */

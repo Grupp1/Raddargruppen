@@ -19,27 +19,20 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-/**
- * Denna klass tar hand om utritningen av outboxen.   
- * @author magkj501
- *
- */
-
-public class OutBoxView extends ListActivity {
-
-	private OutboxAdapter ia;
-	private ArrayList<Message> outbox;
+public class DraftView extends ListActivity {
+	private DraftAdapter ia;
+	private ArrayList<Message> drafts;
 
 	/**
 	 * 
 	 */
-	
+
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 
-		outbox = MainView.db.getAllRowsAsArrays("outbox");
+		drafts = MainView.db.getAllRowsAsArrays("drafts");
 
-		ia = new OutboxAdapter(this, R.layout.row,outbox);
+		ia = new DraftAdapter(this, R.layout.row,drafts);
 		setListAdapter(ia);
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
@@ -47,12 +40,12 @@ public class OutBoxView extends ListActivity {
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				Intent nextIntent = new Intent(OutBoxView.this, SentMessageView.class);
-				nextIntent.putExtra("reciever",outbox.get(position).getDestUser());
-				nextIntent.putExtra("subject",outbox.get(position).getSubject());
-				nextIntent.putExtra("data",outbox.get(position).getData());
-				nextIntent.putExtra("date", outbox.get(position).getDate());
-				nextIntent.putExtra("type", outbox.get(position).getType());
+				Intent nextIntent = new Intent(DraftView.this, DraftMessageView.class);
+				nextIntent.putExtra("reciever", drafts.get(position).getSrcUser());
+				nextIntent.putExtra("subject", drafts.get(position).getSubject());
+				nextIntent.putExtra("data", drafts.get(position).getData());
+				nextIntent.putExtra("date", drafts.get(position).getDate());
+				nextIntent.putExtra("type", drafts.get(position).getType());
 				startActivity(nextIntent);
 
 			}
@@ -60,16 +53,16 @@ public class OutBoxView extends ListActivity {
 	}
 
 	/**
-	 * Denna klass används vid utritning av outboxen.
+	 * Denna klass används vid utritning av drafts.
 	 * @author magkj501
 	 *
 	 */
-	
-	private class OutboxAdapter extends ArrayAdapter<Message>{
+
+	private class DraftAdapter extends ArrayAdapter<Message>{
 
 		private ArrayList<Message> items;
 
-		public OutboxAdapter(Context context, int textViewResourceId,ArrayList<Message> items) {
+		public DraftAdapter(Context context, int textViewResourceId,ArrayList<Message> items) {
 			super(context, textViewResourceId,items);
 			this.items = items;
 		}
@@ -95,6 +88,5 @@ public class OutBoxView extends ListActivity {
 			return v;
 		}
 	}
-
-
 }
+

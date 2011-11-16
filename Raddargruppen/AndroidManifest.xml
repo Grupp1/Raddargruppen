@@ -46,18 +46,23 @@
 
 		<activity android:name="raddar.views.SendMessageView"
 			android:screenOrientation="portrait"></activity>
-		
+
+		<activity android:name="raddar.views.DraftView"
+			android:screenOrientation="portrait"></activity>
+
 		<activity android:name="raddar.views.ServiceView"
 			android:screenOrientation="portrait"></activity>
 
 
-		<activity android:name="raddar.views.SendMessageView"
+		<activity android:name="raddar.views.DraftMessageView"
 			android:screenOrientation="portrait"></activity>
+			
 		<activity android:name="raddar.views.ContactView"
 			android:screenOrientation="portrait"></activity>
 
 		<activity android:name="raddar.views.ServiceView"
 			android:screenOrientation="portrait"></activity>
+			
 		<activity android:name="raddar.views.AddContactView"
 			android:screenOrientation="portrait"></activity>
 

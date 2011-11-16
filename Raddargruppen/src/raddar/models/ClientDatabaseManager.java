@@ -35,6 +35,7 @@ public class ClientDatabaseManager extends Observable {
 	private final String[] SITUATION_TABLE_ROWS = new String[] { "title", "description", "priority" };
 	private final String[] MAP_TABLE_ROWS = new String[] { "mapObject","class","id"};
 	private final String[] OUTBOX_TABLE_ROWS = new String[] { "msgID", "destUser", "rDate", "subject", "mData"};
+	private final String[] DRAFT_TABLE_ROWS = new String[] { "msgID", "destUser", "rDate", "subject", "mData"};
 
 
 	/**********************************************************************
@@ -97,6 +98,29 @@ public class ClientDatabaseManager extends Observable {
 		setChanged();
 		notifyObservers(m);			
 	}
+	
+	/**********************************************************************
+	 * ADDING A CONTACT ROW IN THE DATABASE TABLE
+	 *
+	 * Messages to be addad to drafts
+	 * @param m The message that is to be added to the database
+	 */
+	public void addDraftRow(Message m){
+		ContentValues values = new ContentValues();
+		values.put("destUser", m.getDestUser());
+		values.put("rDate", m.getFormattedDate());
+		values.put("subject", m.getSubject());
+		values.put("mData", m.getData());
+		try {
+			db.insert("drafts", null, values);
+		} catch (Exception e) {
+			Log.e("DB ERROR", e.toString());
+			e.printStackTrace();
+		}
+		setChanged();
+		notifyObservers(m);			
+	}
+	
 	/**********************************************************************
 	 * ADDING A CONTACT ROW IN THE DATABASE TABLE
 	 * 
@@ -223,6 +247,10 @@ public class ClientDatabaseManager extends Observable {
 				cursor = db.query("outbox",	OUTBOX_TABLE_ROWS,
 						null, null , null, null, null);
 			}
+			else if (table.equals("drafts")){
+				cursor = db.query("drafts",	DRAFT_TABLE_ROWS,
+						null, null , null, null, null);
+			}
 			else if(table.equals("contact")){
 				cursor = db.query(
 						"contact",
@@ -251,6 +279,15 @@ public class ClientDatabaseManager extends Observable {
 						dataArrays.add(m);
 					}
 					else if(table.equals("outbox")){
+						Message m = new TextMessage(MessageType.TEXT, 
+								cursor.getString(1), 
+								DB_NAME, 
+								MessagePriority.NORMAL, 
+								cursor.getString(4));
+						m.setSubject(cursor.getString(3));
+						dataArrays.add(m);
+					}
+					else if(table.equals("drafts")){
 						Message m = new TextMessage(MessageType.TEXT, 
 								cursor.getString(1), 
 								DB_NAME, 
@@ -317,6 +354,13 @@ public class ClientDatabaseManager extends Observable {
 					"rDate integer," +
 					"subject text," +
 					"mData text)";
+			
+			String draftTableQueryString = "create table drafts (" 
+					+ "msgId integer primary key autoincrement not null," + 
+					"destUser text," +
+					"rDate integer," +
+					"subject text," +
+					"mData text)";
 
 			/*
 			 * String newTableQueryString = "create table " + TABLE_NAME + " ("
@@ -328,6 +372,7 @@ public class ClientDatabaseManager extends Observable {
 			db.execSQL(contactTableQueryString);
 			db.execSQL(messageTableQueryString);
 			db.execSQL(outboxTableQueryString);
+			db.execSQL(draftTableQueryString);
 		}
 
 		@Override

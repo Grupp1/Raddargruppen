@@ -30,6 +30,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 	private EditText messageData;
 	private Button sendButton;
 
+
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.send_message);
@@ -68,14 +69,23 @@ public class SendMessageView extends Activity implements OnClickListener {
 
 			}
 			 */
+//			Toast.makeText(getApplicationContext(), "Meddelande till "+destUser.getText().
+//					toString().trim(),
+//					Toast.LENGTH_SHORT).show();
+			
 			Toast.makeText(getApplicationContext(), "Meddelande till "+destUser.getText().
-					toString().trim(),
+					toString().trim() + " sparat i utkast",
 					Toast.LENGTH_SHORT).show();
+			
+			
 			finish();
-		} else {
-
+		}		
+		else {
+			onBackPressed();
 			Intent nextIntent = new Intent(SendMessageView.this, ContactView.class);
 			startActivityForResult(nextIntent,0);
+			
+			finish();
 		}
 	}
 
@@ -87,13 +97,31 @@ public class SendMessageView extends Activity implements OnClickListener {
 					+ destUsers[i]);
 			m.setSubject(subject.getText() + "");
 			m.setData(messageData.getText() + "");
+			MainView.db.addDraftRow(m);
 			try {
 				new Sender(m, InetAddress.getByName("127.0.0.1"), 6789);
 				MainView.db.addOutboxRow(m);
+				
 			} catch (UnknownHostException e) {
+				MainView.db.addDraftRow(m);
 			}
 		}
 	}
+	
+	public void onBackPressed() {
+		String[] destUsers = (destUser.getText().toString()+";").split(";");
+		Log.d("number of messages",destUsers.length+"");
+		for(int i = 0; i < destUsers.length;i++){
+			Message m = new TextMessage(MainView.controller.getUser(), ""
+					+ destUsers[i]);
+			m.setSubject(subject.getText() + "");
+			m.setData(messageData.getText() + "");
+			MainView.db.addDraftRow(m);
+		}
+		
+		super.onBackPressed();
+	}
+	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if(requestCode == 0){
 			if(resultCode == RESULT_OK){

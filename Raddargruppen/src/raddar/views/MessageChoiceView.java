@@ -14,6 +14,7 @@ public class MessageChoiceView extends Activity implements OnClickListener {
 	private ImageButton newMessageButton;
 	private ImageButton inboxButton;
 	private ImageButton outboxButton;
+	private ImageButton draftButton;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -27,6 +28,9 @@ public class MessageChoiceView extends Activity implements OnClickListener {
 		
 		outboxButton = (ImageButton)this.findViewById(R.id.outboxButton);
 		outboxButton.setOnClickListener(this);
+		
+		draftButton = (ImageButton)this.findViewById(R.id.draftButton);
+		draftButton.setOnClickListener(this);
 		
 }
 
@@ -46,5 +50,11 @@ public class MessageChoiceView extends Activity implements OnClickListener {
 			Intent nextIntent = new Intent(MessageChoiceView.this, OutBoxView.class);
 			startActivity(nextIntent);
 		}
+		
+		if(v == draftButton){
+			Intent nextIntent = new Intent(MessageChoiceView.this, DraftView.class);
+			startActivity(nextIntent);
+		}
+		
 	}
 }
