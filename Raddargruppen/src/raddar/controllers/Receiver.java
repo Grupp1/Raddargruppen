@@ -26,15 +26,21 @@ public class Receiver implements Runnable {
 	public void run() {
 		try {
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
+
 			Class c = Class.forName(in.readLine());
 			String temp = in.readLine();
 			Log.d("Reciver", "temp");
 			Message m = new Gson().fromJson(temp, c);
+
 			so.close();
 			rh.newMessage(m.getType(), m);
 
 		} catch (IOException ie) {
 			ie.printStackTrace();
+
+		}
+		catch(ArrayIndexOutOfBoundsException e){
+			Log.d("Undersök","ArrayIndexOutOfBounds i receiver");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
