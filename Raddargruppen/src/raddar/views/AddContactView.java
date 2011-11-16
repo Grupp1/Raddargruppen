@@ -14,6 +14,7 @@ import raddar.models.Contact;
 public class AddContactView extends Activity implements OnClickListener{
 	private EditText addContactEditText;
 	private Button addContactButton;
+	private Button cancelButton;
 
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -23,6 +24,10 @@ public class AddContactView extends Activity implements OnClickListener{
 		addContactEditText = (EditText)this.findViewById(R.id.addContactEditText);
 		addContactButton = (Button)this.findViewById(R.id.addContactButton);
 		addContactButton.setOnClickListener(this);
+		cancelButton = (Button)this.findViewById(R.id.addContactCancel);
+		cancelButton.setOnClickListener(this);
+	
+
 	}
 
 
@@ -44,8 +49,9 @@ public class AddContactView extends Activity implements OnClickListener{
 				finish();
 			}
 		}
-
-
+		if(v == cancelButton){
+			finish();
+		}
 
 	}
 }

@@ -93,6 +93,7 @@
 
 		<activity android:name="raddar.views.ServiceView" android:screenOrientation="portrait"></activity>
 		<activity android:name="raddar.views.AddContactView" android:screenOrientation="portrait"></activity>
+		<activity android:name="raddar.views.SendImageMessageView" android:screenOrientation="portrait"></activity>
 
 
 

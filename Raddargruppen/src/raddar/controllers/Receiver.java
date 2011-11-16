@@ -57,7 +57,7 @@ public class Receiver implements Runnable {
 				break;			
 			}
 			if(rh == null)
-				Log.d("NULL","ReciveHandler");
+				Log.d("NULL","ReceiveHandler");
 			so.close();
 			rh.newMessage(type,m);
 
@@ -65,7 +65,7 @@ public class Receiver implements Runnable {
 			ie.printStackTrace();
 		}
 		catch(ArrayIndexOutOfBoundsException e){
-			Log.d("Undersök","ArrayIndexOutOfBounds i reciver");
+			Log.d("Undersök","ArrayIndexOutOfBounds i receiver");
 		}
 
 	}

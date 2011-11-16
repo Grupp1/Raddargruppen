@@ -12,9 +12,10 @@ import android.widget.Toast;
 import raddar.models.Contact;
 
 public class EditContactView extends Activity implements OnClickListener{
-	private static final int RESULT_FIRST_USER_EDIT = 0;
+	private static final int RESULT_FIRST_USER_EDIT = 5;
 	private EditText editContactEditText;
 	private Button editContactButton;
+	private Button cancelButton;
 	int namePosition = ContactListView.namePosition;
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -23,9 +24,12 @@ public class EditContactView extends Activity implements OnClickListener{
 		editContactEditText = (EditText)this.findViewById(R.id.editContactEditText);
 		editContactButton = (Button)this.findViewById(R.id.editContactButton);
 		editContactButton.setOnClickListener(this);
+		cancelButton = (Button)this.findViewById(R.id.editContactCancel);
+		cancelButton.setOnClickListener(this);
 		editContactEditText.setText(ContactListView.nameChoice);
 		editContactEditText.requestFocus();
 		editContactEditText.selectAll();
+
 	}
 
 	public void onClick(View v) {
@@ -46,11 +50,12 @@ public class EditContactView extends Activity implements OnClickListener{
 						Toast.LENGTH_SHORT).show();
 				setResult(RESULT_FIRST_USER_EDIT,in);
 				finish();
-				
+
 			}
 		}
+		if(v == cancelButton){
+			finish();
 
-
-
+		}
 	}
 }
