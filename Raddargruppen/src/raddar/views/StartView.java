@@ -3,6 +3,7 @@ package raddar.views;
 import java.util.Observable;
 import java.util.Observer;
 
+import raddar.enums.ConnectionStatus;
 import raddar.enums.LoginResponse;
 import raddar.gruppen.R;
 import raddar.models.LoginManager;
@@ -78,6 +79,7 @@ public class StartView extends Activity implements Observer{
 					Intent nextIntent = new Intent(StartView.this,
 							MainView.class);
 					nextIntent.putExtra("user", user.getText().toString());
+					nextIntent.putExtra("connectionStatus", ConnectionStatus.CONNECTED);
 					startActivity(nextIntent);
 					
 				} else if((LoginResponse)data == LoginResponse.NO_SUCH_USER_OR_PASSWORD)
@@ -95,7 +97,7 @@ public class StartView extends Activity implements Observer{
 					Intent nextIntent = new Intent(StartView.this,
 							MainView.class);
 					nextIntent.putExtra("user", user.getText().toString());
-
+					nextIntent.putExtra("connectionStatus", ConnectionStatus.DISCONNECTED);
 					startActivity(nextIntent);
 				}
 				loginButton.setEnabled(true);

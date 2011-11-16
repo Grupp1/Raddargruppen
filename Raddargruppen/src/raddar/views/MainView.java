@@ -8,6 +8,7 @@ import java.util.Observer;
 import raddar.controllers.InternalComManager;
 import raddar.controllers.ReciveHandler;
 import raddar.controllers.Sender;
+import raddar.enums.ConnectionStatus;
 import raddar.enums.NotificationType;
 import raddar.enums.ServerInfo;
 import raddar.gruppen.R;
@@ -23,6 +24,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 public class MainView extends Activity implements OnClickListener, Observer{
@@ -35,7 +37,8 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	private ImageButton sosButton;
 	private ImageButton setupButton;
 	private ImageButton logButton;
-	private boolean isConnectedWithServer;
+	private ImageButton connectionButton;
+	private Bundle extras;
 	//Håller reda på interna kommunikationen på servern. I dagsläget
 	//håller den endast reda på vilken användare som är online
 	public static InternalComManager controller; 
@@ -48,12 +51,12 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		Bundle extras = getIntent().getExtras();
+		extras = getIntent().getExtras();
 		controller = new InternalComManager();
 		controller.setUser(extras.get("user").toString());
 		db = new ClientDatabaseManager(this,controller.getUser());
 		new ReciveHandler();
-
+		
 		//TEMPORÄRT MÅSTE FIXAS
 		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
 		try {
@@ -90,8 +93,14 @@ public class MainView extends Activity implements OnClickListener, Observer{
 		logButton = (ImageButton)this.findViewById(R.id.logButton);
 		logButton.setOnClickListener(this);
 		
-		
-
+		connectionButton = (ImageButton) findViewById(R.id.presence);
+		connectionButton.setOnClickListener(this);
+		if (extras.get("connectionStatus").equals(ConnectionStatus.CONNECTED)){
+			connectionButton.setImageResource(R.drawable.connected);
+		}
+		else if (extras.get("connectionStatus").equals(ConnectionStatus.DISCONNECTED)){
+			connectionButton.setImageResource(R.drawable.disconnected);
+		}
 	}
 
 	public void onClick(View v) {
@@ -149,6 +158,9 @@ public class MainView extends Activity implements OnClickListener, Observer{
 			AlertDialog alert = builder.create();
 			alert.show();
 		}
+		if (v == connectionButton){
+			Toast.makeText(getBaseContext(), "Anslutningen är: "+ extras.get("connectionStatus"), Toast.LENGTH_LONG).show();
+		}
 	}
 
 	@Override
@@ -168,11 +180,19 @@ public class MainView extends Activity implements OnClickListener, Observer{
 
 	public void update(Observable observable, final Object data) {
 		runOnUiThread(new Runnable(){
-			public void run(){	
+			public void run(){
 				if(data != null && data instanceof Message)
 					Toast.makeText(getApplicationContext(), "Meddelande från "+
 							((Message)data).getSrcUser()
 							,Toast.LENGTH_LONG).show();
+				
+				if(data == ConnectionStatus.CONNECTED){
+					connectionButton.setImageResource(R.drawable.connected);
+					Toast.makeText(getApplicationContext(), "Ansluten till servern",Toast.LENGTH_LONG).show();
+				}else if (data == ConnectionStatus.DISCONNECTED){
+					connectionButton.setImageResource(R.drawable.disconnected);
+					Toast.makeText(getApplicationContext(), "Tappad anslutning mot servern",Toast.LENGTH_LONG).show();
+				}
 			}
 		});
 

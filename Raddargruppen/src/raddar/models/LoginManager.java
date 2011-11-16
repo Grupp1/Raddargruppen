@@ -17,9 +17,14 @@ import android.util.Log;
 import com.google.gson.Gson;
 
 public class LoginManager extends Observable {
-	
+
 	private static HashMap<String, String> passwordCache = new HashMap<String, String>();
-	
+
+	/**
+	 * Hårdkoda denna boolean true om klienten inte ska kontakta servern för inloggning
+	 */
+	public boolean debugMode = true;
+
 	/**
 	 * Verifierar att username och password är giltiga. Denna metoden kommer att
 	 * försöker verifiera med servern. Om klienten inte får kontakt med servern så 
@@ -34,42 +39,44 @@ public class LoginManager extends Observable {
 		NotificationMessage nm = new NotificationMessage(username, 
 				NotificationType.CONNECT, 
 				password);
-		try {
-			// Skapa socket som används för att skicka NotificationMessage
-			Socket so = new Socket(InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
-			
-			Log.d("Efter socketen", "lawl");
-			String send = nm.getClass().getName()+"\r\n";
-			send +=	new Gson().toJson(nm);
-			PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
-			pw.println(send);
-			
-			BufferedReader br = new BufferedReader(
-					new InputStreamReader(so.getInputStream()));
-			
-			// Läs in ett svar från servern via SAMMA socket
-			String response = br.readLine();
-			
-			// Stäng ner strömmar och socket
-			pw.close();
-			br.close();
-			so.close();
-		
-			// Om servern säger att inmatade uppgifter är giltiga, returnera true
-			if (response.equals("OK")) 
-				logIn = LoginResponse.ACCEPTED;
-		} catch (IOException e) {
-			Log.d("NotificationMessage", "Server connection failed");
-			logIn = evaluateLocally(username, password);
+		if (!debugMode){
+			try {
+				// Skapa socket som används för att skicka NotificationMessage
+				Socket so = new Socket(InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
+
+				Log.d("Efter socketen", "lawl");
+				String send = nm.getClass().getName()+"\r\n";
+				send +=	new Gson().toJson(nm);
+				PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
+				pw.println(send);
+
+				BufferedReader br = new BufferedReader(
+						new InputStreamReader(so.getInputStream()));
+
+				// Läs in ett svar från servern via SAMMA socket
+				String response = br.readLine();
+
+				// Stäng ner strömmar och socket
+				pw.close();
+				br.close();
+				so.close();
+
+				// Om servern säger att inmatade uppgifter är giltiga, returnera true
+				if (response.equals("OK")) 
+					logIn = LoginResponse.ACCEPTED;
+			} catch (IOException e) {
+				Log.d("NotificationMessage", "Server connection failed");
+				logIn = evaluateLocally(username, password);
+			}
 		}
-		
-		// debug mode
-		logIn = LoginResponse.ACCEPTED;
-		
+		else{
+			//logIn = LoginResponse.ACCEPTED;
+			logIn = LoginResponse.ACCEPTED_NO_CONNECTION;
+		}
 		setChanged();
 		notifyObservers(logIn);
 	}
-		
+
 	/**
 	 * Denna metoden kollar lokalt i cachen om användaren finns sparad
 	 * i cachen och försöker i sådana fall verifiera inmatade
@@ -85,11 +92,11 @@ public class LoginManager extends Observable {
 		if (password.equals(temp)) return LoginResponse.ACCEPTED_NO_CONNECTION;
 		return LoginResponse.NO_CONNECTION;
 	}
-	
+
 	public static String cache(String username, String password) {
 		return passwordCache.put(username, password);
 	}
-	
+
 	public static String removeCache(String username) {
 		return passwordCache.remove(username);
 	}
