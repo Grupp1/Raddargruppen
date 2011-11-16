@@ -64,6 +64,10 @@ public class StartView extends Activity implements Observer{
 				s.start();
 			}
 		});
+		Intent nextIntent = new Intent(StartView.this,
+				MainView.class);
+		nextIntent.putExtra("user", user.getText().toString());
+		startActivity(nextIntent);
 	}
 
 	public void onRestart() {

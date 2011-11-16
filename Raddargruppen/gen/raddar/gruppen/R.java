@@ -46,17 +46,20 @@ public final class R {
         public static final int TableLayout01=0x7f060008;
         public static final int TableRow01=0x7f060009;
         public static final int TextView01=0x7f06000a;
+        public static final int acceptCall=0x7f06003b;
         public static final int addContactButton=0x7f060002;
         public static final int addContactEditText=0x7f060001;
         public static final int bottomtext=0x7f06002f;
         public static final int callButton=0x7f060011;
+        public static final int callerText=0x7f06003a;
         public static final int check=0x7f060004;
         public static final int contactButton=0x7f060019;
+        public static final int denyCall=0x7f06003d;
         public static final int destUser=0x7f060030;
         public static final int editContactButton=0x7f06000f;
         public static final int editContactEditText=0x7f06000e;
         public static final int editText1=0x7f060023;
-        public static final int follow=0x7f06003b;
+        public static final int follow=0x7f06003f;
         public static final int foot=0x7f060005;
         public static final int icon=0x7f06002d;
         public static final int image=0x7f06000c;
@@ -71,6 +74,7 @@ public final class R {
         public static final int linearLayoutMap=0x7f060016;
         public static final int linearLayoutMessages=0x7f060013;
         public static final int linearLayoutNew=0x7f060025;
+        public static final int linearLayoutNewPicture=0x7f06003c;
         public static final int linearLayoutServices=0x7f06001a;
         public static final int linearLayoutSetup=0x7f06001c;
         public static final int linearLayoutSos=0x7f06001e;
@@ -79,7 +83,7 @@ public final class R {
         public static final int mapview=0x7f060022;
         public static final int messageButton=0x7f060014;
         public static final int messageData=0x7f060032;
-        public static final int myLocation=0x7f06003c;
+        public static final int myLocation=0x7f060040;
         public static final int newMessageButton=0x7f060026;
         public static final int okButton=0x7f060039;
         public static final int passwordText=0x7f060038;
@@ -96,9 +100,9 @@ public final class R {
         public static final int textView1=0x7f060000;
         public static final int textView2=0x7f060012;
         public static final int textView3=0x7f060015;
-        public static final int toggle=0x7f06003a;
+        public static final int toggle=0x7f06003e;
         public static final int toptext=0x7f06002e;
-        public static final int traffic=0x7f06003d;
+        public static final int traffic=0x7f060041;
         public static final int trafikverketButton=0x7f060036;
         public static final int userText=0x7f060037;
         public static final int yrButton=0x7f060034;
@@ -121,15 +125,20 @@ public final class R {
         public static final int send_message=0x7f03000e;
         public static final int services=0x7f03000f;
         public static final int start=0x7f030010;
+        public static final int walkietalkie=0x7f030011;
     }
     public static final class menu {
         public static final int mapmenu=0x7f050000;
     }
     public static final class string {
+        public static final int accept_call_answer=0x7f040021;
+        public static final int accept_call_deny=0x7f040022;
+        public static final int accept_call_incoming=0x7f040023;
         public static final int add_contact_add=0x7f040018;
         public static final int add_contact_save=0x7f040019;
         public static final int app_name=0x7f040001;
         public static final int button1=0x7f040002;
+        public static final int contactAddress=0x7f04001f;
         public static final int contact_foot=0x7f04000f;
         public static final int edit_contact_edit=0x7f04001e;
         public static final int main_call=0x7f040014;
@@ -157,5 +166,6 @@ public final class R {
         public static final int start_ok=0x7f040006;
         public static final int start_password=0x7f040004;
         public static final int start_user=0x7f040003;
+        public static final int talk=0x7f040020;
     }
 }

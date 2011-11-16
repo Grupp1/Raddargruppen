@@ -37,5 +37,10 @@
     <string name="map_menu_traffic">Trafik</string>
     <string name="edit_contact_edit">Redigera kontakt:</string>
 
+    <string name="contactAddress">SIP Address to contact</string>
+    <string name="talk">Talk</string>
+    <string name="accept_call_answer">Svara</string>
+    <string name="accept_call_deny">Lägg på</string>
+    <string name="accept_call_incoming">Det ringer</string>
 
 </resources>

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import raddar.controllers.SessionController;
 import raddar.views.MainView;
 import android.location.Address;
 import android.location.Geocoder;
@@ -30,7 +31,7 @@ public class MapObject extends OverlayItem {
 		this.title = title;
 		this.snippet = snippet;
 		this.icon = icon;
-		this.addedBy = MainView.controller.getUser();
+		this.addedBy = SessionController.getUser();
 		this.date = new SimpleDateFormat("yyyy:MM:dd 'kl' HH:mm:ss").format(new Date());
 		this.adress = "Kunde inte hämta adress";
 		

@@ -2,9 +2,9 @@ package raddar.models;
 
 import java.util.ArrayList;
 
+import raddar.controllers.SessionController;
 import raddar.enums.ResourceStatus;
 import raddar.enums.SituationPriority;
-import raddar.views.MainView;
 import raddar.views.MapUI;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -120,7 +120,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 						public void onClick(DialogInterface dialog, int whichButton) {
 							mOverlays.remove(item);
 							MapUI.mapCont.removeObject(item);
-							MainView.db.deleteRow(item);
+							SessionController.db.deleteRow(item);
 						}
 
 					});

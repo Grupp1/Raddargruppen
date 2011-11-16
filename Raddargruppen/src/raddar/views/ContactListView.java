@@ -1,6 +1,7 @@
 package raddar.views;
 import java.util.ArrayList;
 
+import raddar.controllers.SessionController;
 import raddar.gruppen.R;
 import raddar.models.Contact;
 import android.app.AlertDialog;
@@ -36,7 +37,7 @@ public class ContactListView extends ListActivity implements OnClickListener{
 
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-		contacts = MainView.db.getAllRowsAsArrays("contact");
+		contacts = SessionController.db.getAllRowsAsArrays("contact");
 		//	for(int i = 0;i <10;i++)
 		//		contacts.add(new Contact("Peter"+i, false));
 		ia = new ContactAdapter(this, R.layout.contact_list,contacts);
@@ -114,7 +115,7 @@ public class ContactListView extends ListActivity implements OnClickListener{
 				public void onClick(DialogInterface dialog, int id) {
 					Contact c = new Contact(nameChoice, false);
 					contacts.remove(info.position);
-					MainView.db.deleteRow(c);
+					SessionController.db.deleteRow(c);
 					ia.notifyDataSetChanged();
 					dialog.cancel();
 					Toast.makeText(getApplicationContext(), "Kontakt "+ nameChoice + " borttagen",
@@ -143,7 +144,7 @@ public class ContactListView extends ListActivity implements OnClickListener{
 				Contact c = new Contact(name, false);	
 				contacts.add(c);
 				ia.notifyDataSetChanged();
-				MainView.db.addRow(c);
+				SessionController.db.addRow(c);
 			}
 			else if(resultCode == RESULT_FIRST_USER_EDIT){
 				String oldName = extras.getString("oldName");
@@ -154,7 +155,7 @@ public class ContactListView extends ListActivity implements OnClickListener{
 				contacts.remove(position);
 				contacts.add(nc);	
 				ia.notifyDataSetChanged();
-				MainView.db.updateRow(c, name);
+				SessionController.db.updateRow(c, name);
 				
 			}
 			
