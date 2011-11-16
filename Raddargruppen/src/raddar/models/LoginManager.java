@@ -55,7 +55,7 @@ public class LoginManager extends Observable {
 				logIn = LoginResponse.ACCEPTED;
 				String encryptedPassword = br.readLine();
 				String salt = br.readLine();
-				// Cacha det krypterade lösenordet och saltet i SQLite?
+				// Cacha det krypterade lösenordet och saltet i SQLite-databasen?
 			}
 			
 			// Stäng ner strömmar och socket
@@ -80,9 +80,14 @@ public class LoginManager extends Observable {
 	 * @return true om verifieringen går bra, false annars
 	 */
 	private static LoginResponse evaluateLocally(String username, String password){
-		String temp = passwordCache.get(username);
-		if (temp == null) return LoginResponse.NO_CONNECTION;
-		if (password.equals(temp)) return LoginResponse.ACCEPTED_NO_CONNECTION;
+		/*
+		 * Hämta användarens salt så att encrypt() kan hasha korrekt
+		 String salt = ClientDatabaseManager.getSalt(username);
+		 password = Encryption.encrypt(oassword, salt);
+		 */
+		String cachedPassword = passwordCache.get(username);
+		if (cachedPassword == null) return LoginResponse.NO_CONNECTION;
+		if (password.equals(cachedPassword)) return LoginResponse.ACCEPTED_NO_CONNECTION;
 		return LoginResponse.NO_CONNECTION;
 	}
 	
