@@ -9,7 +9,7 @@
 		android:layout_height="wrap_content"
 		android:layout_width="wrap_content"
 		android:textAppearance="?android:attr/textAppearanceMedium"
-		android:text="@string/add_contact_add"
+		android:text="@string/edit_contact_edit"
 		android:layout_marginLeft="30dip"
 		android:layout_marginTop="20dip"></TextView>
 	<EditText
@@ -18,26 +18,29 @@
 		android:layout_marginLeft="30dip"
 		android:layout_marginRight="30dip"
 		android:maxLength="30"
-		android:singleLine="true"
-		android:id="@+id/addContactEditText">
+		android:id="@+id/editContactEditText"
+		android:selectAllOnFocus="true">
 		<requestFocus></requestFocus>
 	</EditText>
+
 	<LinearLayout
 		android:id="@+id/linearLayout1"
 		android:layout_height="wrap_content"
-		android:layout_gravity="right" android:layout_width="wrap_content">
+		android:layout_gravity="right"
+		android:layout_width="wrap_content">
 		<Button
-	android:id="@+id/addContactCancel"
-	android:layout_width="wrap_content"
-	android:text="@string/cancel"
-	android:layout_height="wrap_content"
-	android:layout_gravity="right"></Button>
+			android:id="@+id/editContactCancel"
+			android:layout_width="wrap_content"
+			android:text="@string/cancel"
+			android:layout_height="wrap_content"
+			android:layout_gravity="right"></Button>
 		<Button
-			android:id="@+id/addContactButton"
+			android:id="@+id/editContactButton"
 			android:layout_marginRight="30dip"
 			android:layout_width="wrap_content"
 			android:text="@string/add_contact_save"
-			android:layout_height="wrap_content" android:layout_gravity="right"></Button>
+			android:layout_height="wrap_content"
+			android:layout_gravity="right"></Button>
 	</LinearLayout>
 
 

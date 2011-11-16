@@ -1,21 +1,14 @@
 package raddar.controllers;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
-import raddar.enums.MessagePriority;
-import raddar.enums.MessageType;
 import raddar.models.Message;
-import raddar.models.TextMessage;
 import android.util.Log;
-import android.widget.EditText;
-import android.widget.TextView;
+
+import com.google.gson.Gson;
 
 public class Sender implements Runnable {
 
@@ -40,21 +33,20 @@ public class Sender implements Runnable {
 			Socket so = new Socket(address, port);
 			so.setSoTimeout(5000);
 
-		//	Formatera och skicka meddelandet till servern
-			if (MessageType.IMAGE == message.getType()) {
-
-				
-			} else {
-				PrintWriter out = new PrintWriter(so.getOutputStream(), true);
-				out.println(message.getFormattedMessage());
-			}
+			Gson gson = new Gson();
+			String send = message.getClass().getName()+"\r\n";
+			send +=	gson.toJson(message);
+			Log.d("Gson test",send);
+			PrintWriter out = new PrintWriter(so.getOutputStream(), true);
+			out.println(send);
 
 			so.close();
+			out.close();
 
 		} catch (IOException ie) {
 			Log.d("Skapandet av socket [2]", ie.toString());
 		} //catch (InterruptedException e) {
-			//Log.d("Avruten väntan", "Gick inte");
+		//Log.d("Avruten väntan", "Gick inte");
 		//}
 	}
 }

@@ -57,11 +57,11 @@ public class InboxView extends ListActivity implements Observer{
 		Message m = new TextMessage(MessageType.convert("text/plain"),"Daniel","Daniel");
 		m.setData("HOPPAS DET FUNGERAR");
 		m.setSubject("VIKTIGT");
-		/*try {
+		try {
 			new Sender (m, InetAddress.getByName("127.0.0.1"), 6789);
 		} catch (UnknownHostException e) {
 			
-		}*/
+		}
 	}
 	
 	public void update(final Observable observable, final Object data) {
@@ -94,6 +94,8 @@ public class InboxView extends ListActivity implements Observer{
 				ImageView iv = (ImageView)v.findViewById(R.id.icon);
 				if(m.getType() == MessageType.TEXT)
 					iv.setImageResource(R.drawable.magnus);
+				if(m.getType() == MessageType.IMAGE)
+					iv.setImageResource(R.drawable.icon);
 				if (tt != null) 
 					tt.setText("Avsändare: "+m.getSrcUser());                            
 				if(bt != null)

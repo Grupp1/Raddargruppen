@@ -8,17 +8,17 @@
 	<LinearLayout
 		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
-		android:id="@+id/linearLayoutNew"
+		android:id="@+id/linearLayoutNewText"
 		android:orientation="vertical"
-		android:layout_marginLeft="60dip"
-		android:layout_marginRight="160dip"
+		android:layout_marginLeft="50dip"
+		android:layout_marginRight="170dip"
 		android:layout_marginTop="20dip">
 		<ImageButton
 			android:layout_width="90dp"
 			android:layout_height="80dp"
 			android:background="#000000"
 			android:src="@drawable/icon"
-			android:id="@+id/newMessageButton"
+			android:id="@+id/newTextButton"
 			android:layout_gravity="center"></ImageButton>
 		<TextView
 			android:layout_width="wrap_content"
@@ -26,18 +26,43 @@
 			android:textAppearance="?android:attr/textAppearanceSmall"
 			android:layout_height="wrap_content"
 			android:layout_gravity="center"
-			android:text="@string/messagechoice_new"></TextView>
+			android:text="@string/messagechoice_new_text"></TextView>
 	</LinearLayout>
 
 
 	<LinearLayout
 		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
+		android:id="@+id/linearLayoutNewPicture"
+		android:orientation="vertical"
+		android:layout_marginLeft="170dip"
+		android:layout_marginRight="50dip"
+		android:layout_marginTop="20dip">
+		<ImageButton
+			android:layout_width="90dp"
+			android:layout_height="80dp"
+			android:background="#000000"
+			android:src="@drawable/icon"
+			android:id="@+id/newPictureButton"
+			android:layout_gravity="center"></ImageButton>
+		<TextView
+			android:layout_width="wrap_content"
+			android:id="@+id/textView3"
+			android:textAppearance="?android:attr/textAppearanceSmall"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center" 
+			android:text="@string/messagechoice_new_picture"></TextView>
+	</LinearLayout>
+
+<LinearLayout
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
 		android:id="@+id/linearLayoutInbox"
 		android:orientation="vertical"
-		android:layout_marginLeft="160dip"
-		android:layout_marginRight="60dip"
-		android:layout_marginTop="20dip">
+		android:layout_below="@+id/linearLayoutNewText"
+		android:layout_alignLeft="@+id/linearLayoutNewText"
+		android:layout_marginRight="170dip"
+		android:layout_marginTop="10dip">
 		<ImageButton
 			android:layout_width="90dp"
 			android:layout_height="80dp"
@@ -47,12 +72,61 @@
 			android:layout_gravity="center"></ImageButton>
 		<TextView
 			android:layout_width="wrap_content"
+			android:id="@+id/textView2"
+			android:textAppearance="?android:attr/textAppearanceSmall"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:text="@string/messagechoice_inbox"></TextView>
+	</LinearLayout>
+	
+		<LinearLayout
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:id="@+id/linearLayoutOutbox"
+		android:orientation="vertical"
+		android:layout_below="@+id/linearLayoutNewPicture"
+		android:layout_alignRight="@+id/linearLayoutNewPicture"
+		android:layout_marginLeft="170dip"
+		android:layout_marginTop="10dip">
+		<ImageButton
+			android:layout_width="90dp"
+			android:layout_height="80dp"
+			android:background="#000000"
+			android:src="@drawable/icon"
+			android:id="@+id/outboxButton"
+			android:layout_gravity="center"></ImageButton>
+		<TextView
+			android:layout_width="wrap_content"
 			android:id="@+id/textView3"
 			android:textAppearance="?android:attr/textAppearanceSmall"
 			android:layout_height="wrap_content"
-			android:layout_gravity="center" android:text="@string/messagechoice_inbox"></TextView>
+			android:text="@string/messagechoice_outbox"
+			android:layout_gravity="center"></TextView>
 	</LinearLayout>
-
-
+	
+	<LinearLayout
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:id="@+id/linearLayoutDraft"
+		android:orientation="vertical"
+		android:layout_below="@+id/linearLayoutInbox"
+		android:layout_alignLeft="@+id/linearLayoutInbox"
+		android:layout_marginRight="170dip"
+		android:layout_marginTop="10dip">
+		<ImageButton
+			android:layout_width="90dp"
+			android:layout_height="80dp"
+			android:background="#000000"
+			android:src="@drawable/icon"
+			android:id="@+id/draftButton"
+			android:layout_gravity="center"></ImageButton>
+		<TextView
+			android:layout_width="wrap_content"
+			android:id="@+id/textView2"
+			android:textAppearance="?android:attr/textAppearanceSmall"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:text="@string/messagechoice_draft"></TextView>
+	</LinearLayout>
 
 </RelativeLayout>
