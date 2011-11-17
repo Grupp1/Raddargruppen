@@ -6,7 +6,7 @@
 	android:layout_height="match_parent">
 	<LinearLayout android:orientation="vertical"
 		android:layout_height="106dp" android:layout_width="match_parent">
-		
+
 		<TextView android:layout_height="wrap_content"
 			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:text="TextView" android:layout_width="wrap_content"
@@ -16,16 +16,23 @@
 			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:text="TextView" android:layout_width="wrap_content"
 			android:id="@+id/draftMessageDate"></TextView>
-			
+
 		<TextView android:layout_height="wrap_content"
 			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:text="TextView" android:layout_width="wrap_content"
 			android:id="@+id/draftMessageSubject"></TextView>
-			
+
 		<TextView android:layout_height="wrap_content"
 			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:text="TextView" android:layout_width="wrap_content"
 			android:id="@+id/draftMessage"></TextView>
+
+		<Button android:layout_marginTop="10dip"
+			android:layout_marginBottom="20dip" android:text="@string/draft_draft"
+			android:layout_height="wrap_content" android:layout_width="wrap_content"
+			android:id="@+id/editDraftButton" android:layout_marginRight="30dip"
+			android:layout_gravity="right"></Button>
+
 	</LinearLayout>
 
 </ScrollView>

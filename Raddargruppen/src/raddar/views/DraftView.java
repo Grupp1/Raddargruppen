@@ -19,14 +19,18 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+/**
+ * Denna klass används vid utritning av drafts.
+ * @author magkj501
+ *
+ */
+
 public class DraftView extends ListActivity {
 	private DraftAdapter ia;
 	private ArrayList<Message> drafts;
-
-	/**
-	 * 
-	 */
-
+	private int pos;
+	
+	
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 
@@ -46,10 +50,22 @@ public class DraftView extends ListActivity {
 				nextIntent.putExtra("data", drafts.get(position).getData());
 				nextIntent.putExtra("date", drafts.get(position).getDate());
 				nextIntent.putExtra("type", drafts.get(position).getType());
+				
+				pos = position;
+				
 				startActivity(nextIntent);
 
 			}
 		});
+	}
+	
+	public int getPosistion(){
+		return pos;
+	}
+	
+	public ArrayList<Message> getDrafts(){
+		drafts = MainView.db.getAllRowsAsArrays("drafts");
+		return drafts;
 	}
 
 	/**

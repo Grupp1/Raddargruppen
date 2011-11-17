@@ -25,6 +25,7 @@ import android.widget.Toast;
  */
 
 public class SendMessageView extends Activity implements OnClickListener {
+
 	private EditText destUser;
 	private EditText subject;
 	private EditText messageData;
@@ -33,13 +34,36 @@ public class SendMessageView extends Activity implements OnClickListener {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.send_message);
-		destUser = (EditText) this.findViewById(R.id.destUser);
-		subject = (EditText) this.findViewById(R.id.subject);
-		messageData = (EditText) this.findViewById(R.id.messageData);
-		sendButton = (Button) this.findViewById(R.id.sendButton);
-		sendButton.setOnClickListener(this);
-		destUser.setOnClickListener(this);
+
+		try{
+
+			Bundle extras = getIntent().getExtras();
+			String [] items = (String[]) extras.get("message");
+
+			destUser = (EditText) this.findViewById(R.id.destUser);
+			subject = (EditText) this.findViewById(R.id.subject);
+			messageData = (EditText) this.findViewById(R.id.messageData);
+
+			destUser.setText(items[0]);
+			subject.setText(items[1]);
+			messageData.setText(items[2]);
+			
+			sendButton = (Button) this.findViewById(R.id.sendButton);
+			sendButton.setOnClickListener(this);
+			destUser.setOnClickListener(this);
+
+		}catch(Exception e){
+			
+			destUser = (EditText) this.findViewById(R.id.destUser);
+			subject = (EditText) this.findViewById(R.id.subject);
+			messageData = (EditText) this.findViewById(R.id.messageData);
+			sendButton = (Button) this.findViewById(R.id.sendButton);
+			sendButton.setOnClickListener(this);
+			destUser.setOnClickListener(this);
+		
+		}
 	}
 
 	public void onClick(View v) {
@@ -57,6 +81,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 						Toast.LENGTH_SHORT).show();
 				return;
 			}
+			
 			sendMessages();
 			/*
 			Message m = new TextMessage(MainView.controller.getUser(), ""
@@ -69,25 +94,22 @@ public class SendMessageView extends Activity implements OnClickListener {
 
 			}
 			 */
-//			Toast.makeText(getApplicationContext(), "Meddelande till "+destUser.getText().
-//					toString().trim(),
-//					Toast.LENGTH_SHORT).show();
-			
-			Toast.makeText(getApplicationContext(), "Meddelande till "+destUser.getText().
-					toString().trim() + " sparat i utkast",
-					Toast.LENGTH_SHORT).show();
-			
-			
+			//			Toast.makeText(getApplicationContext(), "Meddelande till "+destUser.getText().
+			//					toString().trim(),
+			//					Toast.LENGTH_SHORT).show();
+
 			finish();
 		}		
 		else {
 			onBackPressed();
 			Intent nextIntent = new Intent(SendMessageView.this, ContactView.class);
 			startActivityForResult(nextIntent,0);
-			
+
 			finish();
 		}
 	}
+
+
 
 	private void sendMessages(){
 		String[] destUsers = (destUser.getText().toString()+";").split(";");
@@ -97,17 +119,15 @@ public class SendMessageView extends Activity implements OnClickListener {
 					+ destUsers[i]);
 			m.setSubject(subject.getText() + "");
 			m.setData(messageData.getText() + "");
-			MainView.db.addDraftRow(m);
 			try {
 				new Sender(m, InetAddress.getByName("127.0.0.1"), 6789);
 				MainView.db.addOutboxRow(m);
-				
 			} catch (UnknownHostException e) {
 				MainView.db.addDraftRow(m);
 			}
 		}
 	}
-	
+
 	public void onBackPressed() {
 		String[] destUsers = (destUser.getText().toString()+";").split(";");
 		Log.d("number of messages",destUsers.length+"");
@@ -118,10 +138,11 @@ public class SendMessageView extends Activity implements OnClickListener {
 			m.setData(messageData.getText() + "");
 			MainView.db.addDraftRow(m);
 		}
-		
+
 		super.onBackPressed();
 	}
-	
+
+
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if(requestCode == 0){
 			if(resultCode == RESULT_OK){

@@ -98,7 +98,7 @@ public class ClientDatabaseManager extends Observable {
 		setChanged();
 		notifyObservers(m);			
 	}
-	
+
 	/**********************************************************************
 	 * ADDING A CONTACT ROW IN THE DATABASE TABLE
 	 *
@@ -120,7 +120,7 @@ public class ClientDatabaseManager extends Observable {
 		setChanged();
 		notifyObservers(m);			
 	}
-	
+
 	/**********************************************************************
 	 * ADDING A CONTACT ROW IN THE DATABASE TABLE
 	 * 
@@ -196,16 +196,6 @@ public class ClientDatabaseManager extends Observable {
 		setChanged();
 		notifyObservers(c);
 	}
-	public void deleteRow(MapObject mo) {
-		try {
-			db.delete("map", "id = '" +mo.getId()+"'", null);
-		} catch (Exception e) {
-			Log.e("DB ERROR", e.toString());
-			e.printStackTrace();
-		}
-		setChanged();
-		notifyObservers(mo);
-	}
 
 	/**********************************************************************
 	 * UPDATING A ROW IN THE CONTACT TABLE
@@ -223,6 +213,40 @@ public class ClientDatabaseManager extends Observable {
 			e.printStackTrace();
 		}
 	}
+
+	/********************************************************************
+	 * 
+	 * @param 
+	 * @return
+	 */
+	public void deleteDraftRow(Message m) {
+		try {
+			db.delete("drafts", "destUser = '" + m.getDestUser().toString() +"'", null);
+		} catch (Exception e) {
+			Log.e("DB ERROR", e.toString());
+			e.printStackTrace();
+		}
+		setChanged();
+		notifyObservers(m);
+	}
+	
+	/********************************************************************
+	 * 
+	 * @param 
+	 * @return
+	 */
+	
+	public void deleteRow(MapObject mo) {
+		try {
+			db.delete("map", "id = '" +mo.getId()+"'", null);
+		} catch (Exception e) {
+			Log.e("DB ERROR", e.toString());
+			e.printStackTrace();
+		}
+		setChanged();
+		notifyObservers(mo);
+	}
+
 
 	/********************************************************************
 	 * RETRIEVE ALL ROWS IN A TABLE AS AN ArrayList
@@ -341,20 +365,23 @@ public class ClientDatabaseManager extends Observable {
 					"rDate integer, " +
 					"subject text, " +
 					"mData text)";
+
 			String contactTableQueryString = "create table contact (" +
 					"userName text, " +
 					"isGroup text)";
+
 			String mapTableQueryString = "create table map (" +
 					"mapObject text," +
 					"class text," +
 					"id text)";
+
 			String outboxTableQueryString = "create table outbox (" 
 					+ "msgId integer primary key autoincrement not null," + 
 					"destUser text," +
 					"rDate integer," +
 					"subject text," +
 					"mData text)";
-			
+
 			String draftTableQueryString = "create table drafts (" 
 					+ "msgId integer primary key autoincrement not null," + 
 					"destUser text," +
