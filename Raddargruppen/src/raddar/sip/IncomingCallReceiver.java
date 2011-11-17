@@ -27,6 +27,7 @@ public class IncomingCallReceiver extends BroadcastReceiver {
 		SessionController.hasCall = true;
 		Intent nextIntent = new Intent(context, CallView.class);
 		nextIntent.putExtra("intent", intent);
+		nextIntent.putExtra("sip", "incoming");
 		context.startActivity(nextIntent);
 	}
 }

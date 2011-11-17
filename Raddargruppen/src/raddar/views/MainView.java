@@ -85,31 +85,32 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	public void onClick(View v) {
 
 		if(v == callButton){
-			//finish();
+			Intent nextIntent = new Intent(this,EnterNumberView.class);
+			startActivity(nextIntent);
 		}
-		if(v == messageButton){
+		else if(v == messageButton){
 			Intent nextIntent = new Intent(MainView.this, MessageChoiceView.class);
 			startActivity(nextIntent);
 		}
-		if(v == mapButton){
+		else if(v == mapButton){
 			Intent nextIntent = new Intent(MainView.this, MapUI.class);
 			startActivity(nextIntent);
 		}
-		if(v == contactButton){
+		else if(v == contactButton){
 			Intent nextIntent = new Intent(MainView.this, ContactListView.class);
 			startActivity(nextIntent);
 		}
-		if(v == serviceButton){
+		else if(v == serviceButton){
 			Intent nextIntent = new Intent(MainView.this, ServiceView.class);
 			startActivity(nextIntent);
 		}
-		if(v == sosButton){
+		else if(v == sosButton){
 			//finish();
 		}
-		if(v == setupButton){
+		else if(v == setupButton){
 
 		}
-		if(v == logButton){
+		else if(v == logButton){
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage("Är du säker på att du vill logga ut?")
 			.setCancelable(false)

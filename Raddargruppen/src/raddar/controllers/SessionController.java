@@ -28,12 +28,17 @@ public class SessionController implements Observer {
 	public static SipProfile me;
 	private static Context con;
 	public static boolean hasCall = false;
+	
+	//TEMPORÄR TEST KOD
+	public static String sipUser;
+	public static String sipPassword;
 
 	public SessionController(Context con,String user){
 		this.user = user;
 		this.con = con;
 		
 		db = new ClientDatabaseManager(con,user);
+		db.addSipProfile(sipUser, sipPassword);
 		
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("android.SipDemo.INCOMING_CALL");
@@ -41,9 +46,7 @@ public class SessionController implements Observer {
 		con.registerReceiver(callReceiver, filter);	
 
 		me = null;
-		String password = "raddar";
-		String username =  "danan612";
-		String domain = "ekiga.net";
+		String[] temp = db.getSipProfile();
 
 		if(manager == null) {
 			manager = SipManager.newInstance(con);
@@ -51,11 +54,11 @@ public class SessionController implements Observer {
 
 		SipProfile.Builder builder;
 		try {
-			builder = new SipProfile.Builder(username, domain);
+			builder = new SipProfile.Builder(temp[0], temp[2]);
 
-			builder.setPassword(password);
+			builder.setPassword(temp[1]);
 			me = builder.build();
-
+			Log.d("SesionController",temp[0]+" "+temp[1]+" "+" "+temp[2]);
 			Intent i = new Intent();
 			i.setAction("android.SipDemo.INCOMING_CALL");
 			PendingIntent pi = PendingIntent.getBroadcast(con, 0, i, Intent.FILL_IN_DATA);

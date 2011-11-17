@@ -101,14 +101,10 @@
 			android:screenOrientation="portrait"></activity>
 		<activity android:name="raddar.views.AddContactView"
 			android:screenOrientation="portrait"></activity>
-		<activity android:name="raddar.views.VoiceCallView">
-
-
-		</activity>
-		<activity android:name="raddar.sip.SipSettings"
-			android:label="set_preferences" />
-		<receiver android:name=".IncomingCallReceiver" android:label="Call Receiver" />
-		<activity android:name="raddar.views.CallView"></activity>
+		
+		<receiver android:label="Call Receiver" android:name="raddar.sip.IncomingCallReceiver"/>
+		<activity android:name="raddar.views.CallView" android:screenOrientation="portrait"></activity>
+		<activity android:name="raddar.views.EnterNumberView"></activity>
 
 	</application>
 
