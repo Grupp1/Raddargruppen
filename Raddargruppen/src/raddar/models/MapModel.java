@@ -21,7 +21,6 @@ public class MapModel extends Observable {
 	private MapObjectList situationList;
 	private MapObjectList resourceList;
 	private MapObjectList youList;
-	private MapObjectList sosList;
 
 	private MapUI mapUI;
 	
@@ -89,16 +88,7 @@ public class MapModel extends Observable {
 		o.updateData(new Geocoder(mapUI.getBaseContext(), Locale.getDefault()));
 		updateUI(o);
 	}
-	
-	/*
-	 * updateObject(MapObject, String) anropas när beskrivningen av ett MapObject ändras
-	 */
-	
-	public void updateObject(MapObject o, String snippet){
-		o.setSnippet(snippet);
-		updateObject(o);
-	}
-	
+
 	public void removeObject(MapObject o){
 		setChanged();
 		updateUI(o);

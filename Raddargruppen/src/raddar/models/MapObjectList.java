@@ -72,7 +72,6 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 		AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
 		dialog.setTitle(item.getTitle());
 		dialog.setMessage(item.getDescription());
-		// Lägga till String onTouch i MapObject???
 
 		AlertDialog alert = dialog.create();
 
@@ -88,8 +87,8 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 				alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
-						value = input.getText().toString();
-						MapUI.mapCont.updateObject(item, value);		
+						item.setSnippet(input.getText().toString());
+						MainView.mapCont.updateObject(item);		
 					}
 				});
 
@@ -119,7 +118,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 					alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int whichButton) {
 							mOverlays.remove(item);
-							MapUI.mapCont.removeObject(item);
+							MainView.mapCont.removeObject(item);
 							MainView.db.deleteRow(item);
 						}
 
@@ -162,15 +161,15 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 									if(whichItem == 0){
 										((Situation) item).setPriority(SituationPriority.HIGH);
-										MapUI.mapCont.updateObject(item);
+										MainView.mapCont.updateObject(item);
 									}
 									if(whichItem == 1){
 										((Situation) item).setPriority(SituationPriority.NORMAL);
-										MapUI.mapCont.updateObject(item);
+										MainView.mapCont.updateObject(item);
 									}
 									if(whichItem == 2){
 										((Situation) item).setPriority(SituationPriority.LOW);
-										MapUI.mapCont.updateObject(item);
+										MainView.mapCont.updateObject(item);
 									}
 
 								}
@@ -217,11 +216,11 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 									if(whichItem == 0){
 										((Resource) item).setStatus(ResourceStatus.BUSY);
-										MapUI.mapCont.updateObject(item);
+										MainView.mapCont.updateObject(item);
 									}
 									if(whichItem == 1){
 										((Resource) item).setStatus(ResourceStatus.FREE);
-										MapUI.mapCont.updateObject(item);
+										MainView.mapCont.updateObject(item);
 									}
 								}
 							});

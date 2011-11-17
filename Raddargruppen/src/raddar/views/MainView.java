@@ -6,6 +6,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import raddar.controllers.InternalComManager;
+import raddar.controllers.MapCont;
 import raddar.controllers.ReciveHandler;
 import raddar.controllers.Sender;
 import raddar.enums.ConnectionStatus;
@@ -13,6 +14,7 @@ import raddar.enums.NotificationType;
 import raddar.enums.ServerInfo;
 import raddar.gruppen.R;
 import raddar.models.ClientDatabaseManager;
+import raddar.models.GPSModel;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
 import android.app.Activity;
@@ -24,8 +26,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.google.android.maps.GeoPoint;
 
 public class MainView extends Activity implements OnClickListener, Observer{
 
@@ -44,6 +47,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	public static InternalComManager controller; 
 	//Pekare på databasen. Ska användas för att komma åt databasen
 	public static ClientDatabaseManager db;
+	public static MapCont mapCont;
 
 
 	/** Called when the activity is first created. */
@@ -101,6 +105,13 @@ public class MainView extends Activity implements OnClickListener, Observer{
 		else if (extras.get("connectionStatus").equals(ConnectionStatus.DISCONNECTED)){
 			connectionButton.setImageResource(R.drawable.disconnected);
 		}
+		
+		/**
+		 * Initierar kartans controller för att kunna få gps koordinaterna för sin position
+		 */
+		mapCont = new MapCont(this);
+		
+		
 	}
 
 	public void onClick(View v) {
@@ -193,6 +204,12 @@ public class MainView extends Activity implements OnClickListener, Observer{
 					connectionButton.setImageResource(R.drawable.disconnected);
 					Toast.makeText(getApplicationContext(), "Tappad anslutning mot servern",Toast.LENGTH_LONG).show();
 				}
+				
+				if (data instanceof GeoPoint){
+					// Send information to server
+					//mapCont.updateMyLocation((GeoPoint)data);
+				}
+					
 			}
 		});
 

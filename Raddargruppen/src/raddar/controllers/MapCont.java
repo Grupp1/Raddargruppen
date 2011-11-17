@@ -7,8 +7,13 @@ import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
+import raddar.enums.ResourceStatus;
+import raddar.gruppen.R;
+import raddar.models.ConnectionTimer;
+import raddar.models.GPSModel;
 import raddar.models.MapModel;
 import raddar.models.MapObject;
+import raddar.models.You;
 import raddar.views.MainView;
 import raddar.views.MapUI;
 import android.location.Address;
@@ -19,23 +24,37 @@ import com.google.android.maps.GeoPoint;
 public class MapCont implements Observer, Runnable{
 
 	private MapModel mapModel;
+	public static GPSModel gps;
 	private Thread thread = new Thread(this);
-
 	private ArrayList<MapObject>  olist;
-	
 	private MapUI mapUI;
-
+	public boolean areYouFind = false;
+	private You you;
+	private Geocoder geocoder;
+	/**
+	 * En timer som notifierar controllern att kolla om anslutning till servern finns
+	 */
+	private ConnectionTimer timer;
+	private int updateTime = 5000;
+			
 	/*
 	 * Skickar vidare operationer i en ny tråd till MapModel 
 	 */
 
-	public MapCont(final MapUI mapUI, ArrayList<MapObject> olist){
-		this.mapUI = mapUI;
-		this.olist = olist;
-		mapModel = new MapModel(mapUI, this);
-		thread.start();
+	public MapCont(MainView m){
+		gps  = new GPSModel(m, this);
+		olist = MainView.db.getAllRowsAsArrays("map");
+		timer = new ConnectionTimer(this, updateTime);
 	}
 
+	public void declareMapUI(MapUI mapUI){
+		this.mapUI = mapUI;
+		geocoder = new Geocoder(mapUI.getBaseContext(), Locale.getDefault());
+		if (!thread.isAlive()){
+			run();
+		}
+	}
+	
 	public void add(MapObject o){
 		MainView.db.addRow(o);
 		mapModel.add(o);
@@ -44,24 +63,39 @@ public class MapCont implements Observer, Runnable{
 	public void updateObject(MapObject o){
 		mapModel.updateObject(o);
 	}
-	
-	public void updateObject(MapObject o, String snippet){
-		mapModel.updateObject(o, snippet);
-	}
-	
+
 	public void run() {
 		for(int i = 0; i < olist.size();i++){
 			olist.get(i).updateData(new Geocoder(mapUI.getBaseContext(), Locale.getDefault()));
+			mapModel = new MapModel(mapUI, this);
 			mapModel.add(olist.get(i));
 		}
 	}
-	
+
 	public void removeObject(MapObject mo){
 		mapModel.removeObject(mo);
 	}
-	
-	public void update(Observable o, Object data) {
 
+	public void update(Observable o, Object data) {
+		if (data instanceof GeoPoint){
+			if (!areYouFind){
+				areYouFind = true;
+				you = new You((GeoPoint)data, "Din position", "Här är du", R.drawable.niklas, ResourceStatus.FREE);
+				olist.add(you); // databas
+				add(you);		// karta
+				mapUI.controller.animateTo(you.getPoint());
+				mapUI.controller.setZoom(13);
+				mapUI.follow = true;
+			}
+			else{
+				you.updateData(geocoder);
+			}
+			you.setPoint((GeoPoint)data);	
+
+			if (mapUI.follow){
+				mapUI.controller.animateTo(you.getPoint());
+			}			
+		}
 	}
 
 	public String calcAdress(GeoPoint point){
@@ -77,9 +111,9 @@ public class MapCont implements Observer, Runnable{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}finally{
-			
+
 		}
 		return display;
 	}
-	
+
 }

@@ -40,7 +40,6 @@ public class MapObject extends OverlayItem {
 		this.icon = icon;
 		this.addedBy = MainView.controller.getUser();
 		this.date = new SimpleDateFormat("yyyy:MM:dd 'kl' HH:mm:ss").format(new Date());
-		this.adress = "Kunde inte hämta adress";
 		
 		idGen = new ID(addedBy,point.getLatitudeE6(),point.getLongitudeE6(), date);
 		id = idGen.generateID();
@@ -164,9 +163,10 @@ public class MapObject extends OverlayItem {
 	 * @param geocoder Kartans geocoder
 	 */
 	public void updateAdress(Geocoder geocoder){
-		String display ="";
+		String display ="Kunde inte hämta adress";
 		try{
 			List<Address> address = geocoder.getFromLocation(point.getLatitudeE6() / 1E6, point.getLongitudeE6() / 1E6, 1);
+			display = "";
 			if(address.size() > 0){
 				for(int i = 0; i<address.get(0).getMaxAddressLineIndex(); i++){
 					display += address.get(0).getAddressLine(i) + "\n";
