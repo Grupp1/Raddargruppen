@@ -14,6 +14,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
@@ -27,6 +28,7 @@ public class ClientDatabaseManager extends Observable {
 	// Databse constants
 	private String DB_NAME; // Same as username
 	private final int DB_VERSION = 1;
+	private static final String DB_PATH = "/data/data/YOUR_PACKAGE/databases/";
 
 	// Table row constants
 	private final String[] TEXT_MESSAGE_TABLE_ROWS = new String[] { "msgId",
@@ -41,7 +43,6 @@ public class ClientDatabaseManager extends Observable {
 
 	/**********************************************************************
 	 * CREATE OR OPEN A DATABASE SPECIFIC TO THE USER
-	 * 
 	 * @param context 
 	 * @param userName The name of the database is equal to the user name
 	 */
@@ -68,10 +69,10 @@ public class ClientDatabaseManager extends Observable {
 
 	/**********************************************************************
 	 * ADDING A MESSAGE ROW TO THE DATABASE TABLE
-	 * 
 	 * @param m The message that is to be added to the database
 	 */
 	public void addRow(Message m) {
+		openDatabaseReadWrite();
 		ContentValues values = new ContentValues();
 		values.put("srcUser", m.getSrcUser());
 		values.put("rDate", m.getFormattedDate());
@@ -85,6 +86,7 @@ public class ClientDatabaseManager extends Observable {
 		}
 		setChanged();
 		notifyObservers(m);
+		db.close();
 	}
 
 	/**********************************************************************
@@ -210,8 +212,8 @@ public class ClientDatabaseManager extends Observable {
 			e.printStackTrace();
 		}
 	}
-	/**
-	 * 
+	/**********************************************************************
+	 * DENNA METOD SKA INTE AVRA KVAR I SLUTÄNDAN
 	 * @return
 	 */
 	public String[] getSipProfile() {
@@ -235,9 +237,8 @@ public class ClientDatabaseManager extends Observable {
 	/**
 	 * RETRIEVE ALL ROWS IN A TABLE AS AN ArrayList
 	 * 
-	 * @param table
-	 *            The table that is to be retrieved
-	 * @return
+	 * @param table The table that is to be retrieved
+	 * @return an ArrayList that contains all rows in a table. Each row in itself is an ArrayList that contains each collumn of a row.
 	 */
 	public ArrayList getAllRowsAsArrays(String table) {
 		// TODO gör så denna funktion fungerar med alla databastabeller
@@ -294,7 +295,20 @@ public class ClientDatabaseManager extends Observable {
 		cursor.close();
 		return dataArrays;
 	}
-
+	
+	
+	private void openDatabaseReadOnly() throws SQLiteException{
+		String myPath = DB_PATH + DB_NAME;
+		db = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
+	}
+	
+	private void openDatabaseReadWrite() throws SQLiteException{
+		String myPath = DB_PATH + DB_NAME;
+		db = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
+	}
+	/**
+	 * CREATES A CostumSQLiteHelper THAT MANAGES DATABASE CREATION IN SQLITE
+	 */
 	private class CustomSQLiteOpenHelper extends SQLiteOpenHelper {
 		public CustomSQLiteOpenHelper(Context context) {
 			super(context, DB_NAME, null, DB_VERSION);
@@ -326,11 +340,15 @@ public class ClientDatabaseManager extends Observable {
 			db.execSQL(contactTableQueryString);
 			db.execSQL(messageTableQueryString);
 		}
-
+		
+		/**
+		 * Used only if you want to update the SQLite database version. (Will not be used.)
+		 */
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			// NOTHING TO DO HERE. THIS IS THE ORIGINAL DATABASE VERSION.
 			// OTHERWISE, YOU WOULD SPECIFIY HOW TO UPGRADE THE DATABASE.
 		}
 	}
+	
 }
