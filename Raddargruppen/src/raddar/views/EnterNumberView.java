@@ -8,7 +8,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
-
+/**
+ * Temporary solution to make it possible for the user to manually 
+ * enter a sipContact to call
+ * @author danan612
+ *
+ */
 public class EnterNumberView extends Activity implements OnClickListener{
 	private Button call;
 	private TextView enterNumber;
@@ -31,6 +36,7 @@ public class EnterNumberView extends Activity implements OnClickListener{
 			startActivityForResult(nextIntent,9);
 		}
 	}
+
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == 9) {
 			finish();

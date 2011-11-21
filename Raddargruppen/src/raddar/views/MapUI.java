@@ -6,8 +6,8 @@ import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
+import raddar.controllers.DatabaseController;
 import raddar.controllers.MapCont;
-import raddar.controllers.SessionController;
 import raddar.enums.ResourceStatus;
 import raddar.enums.SituationPriority;
 import raddar.gruppen.R;
@@ -90,7 +90,7 @@ public class MapUI extends MapActivity implements Observer {
 		touchy = new Touchy(mapView.getContext());
 		mapOverlays.add(touchy);
 		
-		ArrayList<MapObject> olist = SessionController.db.getAllRowsAsArrays("map");
+		ArrayList<MapObject> olist = DatabaseController.db.getAllRowsAsArrays("map");
 		mapCont = new MapCont(MapUI.this, olist);
 		you = new You(myLocation, "Din position", "Här är du", R.drawable.niklas, ResourceStatus.FREE);
 		gps = new GPSModel(this);		

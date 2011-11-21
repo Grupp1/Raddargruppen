@@ -63,7 +63,9 @@ public class ClientDatabaseManager extends Observable {
 		//TEST KOD FÖR SAMTAL
 		//addSipProfile( user, String password);
 		Contact einar = new Contact("Einar", false, "marcuseinar", "einar");
+		Contact danan = new Contact("danan612", false, "danan612", "raddar");
 		addRow(einar);
+		addRow(danan);
 	}
 
 	/**********************************************************************
@@ -230,6 +232,12 @@ public class ClientDatabaseManager extends Observable {
 		}
 		cursor.close();
 		return temp;
+	}
+	/**
+	 * Closes the database
+	 */
+	public void close(){
+		db.close();
 	}
 
 	/**

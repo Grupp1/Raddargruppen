@@ -2,6 +2,7 @@ package raddar.views;
 
 import java.util.ArrayList;
 
+import raddar.controllers.DatabaseController;
 import raddar.controllers.SessionController;
 import raddar.gruppen.R;
 import raddar.models.Contact;
@@ -10,9 +11,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.sip.SipAudioCall;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -38,7 +37,7 @@ public class ContactListView extends ListActivity implements OnClickListener {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		contacts = SessionController.db.getAllRowsAsArrays("contact");
+		contacts = DatabaseController.db.getAllRowsAsArrays("contact");
 		// for(int i = 0;i <10;i++)
 		// contacts.add(new Contact("Peter"+i, false));
 		ia = new ContactAdapter(this, R.layout.contact_list, contacts);
@@ -128,7 +127,7 @@ public class ContactListView extends ListActivity implements OnClickListener {
 										int id) {
 									Contact c = new Contact(nameChoice, false);
 									contacts.remove(info.position);
-									SessionController.db.deleteRow(c);
+									DatabaseController.db.deleteRow(c);
 									ia.notifyDataSetChanged();
 									dialog.cancel();
 									Toast.makeText(
@@ -169,7 +168,7 @@ public class ContactListView extends ListActivity implements OnClickListener {
 				Contact c = new Contact(name, false);
 				contacts.add(c);
 				ia.notifyDataSetChanged();
-				SessionController.db.addRow(c);
+				DatabaseController.db.addRow(c);
 			} else if (resultCode == RESULT_FIRST_USER_EDIT) {
 				Bundle extras = data.getExtras();
 				String oldName = extras.getString("oldName");
@@ -180,7 +179,7 @@ public class ContactListView extends ListActivity implements OnClickListener {
 				contacts.remove(position);
 				contacts.add(nc);
 				ia.notifyDataSetChanged();
-				SessionController.db.updateRow(c, name);
+				DatabaseController.db.updateRow(c, name);
 
 			}
 

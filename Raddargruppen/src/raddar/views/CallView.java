@@ -1,12 +1,12 @@
 package raddar.views;
 
 import raddar.controllers.SessionController;
+import raddar.controllers.SipController;
 import raddar.gruppen.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.sip.SipAudioCall;
 import android.net.sip.SipException;
-import android.net.sip.SipManager;
 import android.net.sip.SipProfile;
 import android.net.sip.SipSession;
 import android.os.Bundle;
@@ -15,14 +15,20 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
-
+/**
+ * The view that is shown when the user is in a call
+ * @author danan612
+ *
+ */
 public class CallView extends Activity implements OnClickListener {
 	private SipAudioCall call = null;
 	private Button acceptCall;
 	private Button denyCall;
 	private TextView callerText;
-	private SipSession sipSession;
-
+	/**
+	 * Initiate all variables to diffrent values depening on if we are making a call
+	 * or recieving a call.
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -45,30 +51,39 @@ public class CallView extends Activity implements OnClickListener {
 						Log.d("Andreas ringer", e.toString());
 					}
 				}
+				
 
 				public void onCallEnded(SipAudioCall call) {
-					denyCall();
+					finish();
+				}
+
+				@Override
+				public void onError(SipAudioCall call, int errorCode,
+						String errorMessage) {
+					finish();
 				}
 			};
 			try {
-				sipSession = SessionController.manager.getSessionFor(intent);
-				call = SessionController.manager
+				call = SipController.manager
 						.takeAudioCall(intent, listener);
-				updateText(call.getPeerProfile().getUserName() + " ringer...");
+				updateText("sip:"+call.getPeerProfile().getUserName() + "@ekiga.net ringer...");
 			} catch (SipException e) {
 				e.printStackTrace();
 			}
 
 		} else {
 			updateText("Ringer " + sip + "...");
-			SessionController.hasCall = true;
+			SipController.hasCall = true;
 			acceptCall.setClickable(false);
 			acceptCall.setVisibility(View.INVISIBLE);
 			initiateCall(sip);
 		}
 
 	}
-
+	/**
+	 * Updates the texview. Used to notify the user on the status of the call
+	 * @param caller the string you want to set
+	 */
 	private void updateText(final String caller) {
 		runOnUiThread(new Runnable() {
 			public void run() {
@@ -76,6 +91,10 @@ public class CallView extends Activity implements OnClickListener {
 			}
 		});
 	}
+	/**
+	 * Updates the text on the deny button
+	 * @param caller The string you want to have on the denybutton
+	 */
 	private void updateButton(final String caller) {
 		runOnUiThread(new Runnable() {
 			public void run() {
@@ -83,9 +102,11 @@ public class CallView extends Activity implements OnClickListener {
 			}
 		});
 	}
-
+	/**
+	 * Used to initiate a call with the specified sipAddress
+	 * @param sipAddress the sipaddress you want to call
+	 */
 	private void initiateCall(final String sipAddress) {
-		Log.d("EINAR", sipAddress);
 		try {
 			SipAudioCall.Listener audioListener = new SipAudioCall.Listener() {
 				@Override
@@ -98,7 +119,6 @@ public class CallView extends Activity implements OnClickListener {
 						call.toggleMute();
 					}
 				}
-
 				@Override
 				public void onCallEnded(SipAudioCall session) {
 					finish();
@@ -108,28 +128,22 @@ public class CallView extends Activity implements OnClickListener {
 						String errorMessage) {
 						finish();
 				}
-			};
-			SipSession.Listener sessionListener = new SipSession.Listener() {
 				@Override
-				public void onCallBusy(SipSession session) {
-					finish();
-				}
-
-				@Override
-				public void onCallEnded(SipSession session) {
+				public void onCallBusy(SipAudioCall call) {
 					finish();
 				}
 			};
-			call = SessionController.manager.makeAudioCall(
-					SessionController.me.getUriString(), sipAddress,
+			
+			call = SipController.manager.makeAudioCall(
+					SipController.me.getUriString(), sipAddress,
 					audioListener, 30);
 
 		} catch (Exception e) {
 			Log.i("WalkieTalkieActivity/InitiateCall",
 					"Error when trying to close manager.", e);
-			if (SessionController.me != null) {
+			if (SipController.me != null) {
 				try {
-					SessionController.manager.close(SessionController.me
+					SipController.manager.close(SipController.me
 							.getUriString());
 				} catch (Exception ee) {
 					Log.i("WalkieTalkieActivity/InitiateCall",
@@ -142,30 +156,28 @@ public class CallView extends Activity implements OnClickListener {
 			}
 		}
 	}
-
+	/**
+	 * Called when the activity is beeing paused.
+	 * Shuts down all current calls
+	 */
 	public void onPause() {
 		super.onPause();
 		try {
 			if (call != null) {
-				call.close();
 				call.endCall();
-			}
-			if (sipSession != null) {
-				sipSession.endCall();
-			}
+				call.close();
+			}else Log.d("call", "är null");
 		} catch (SipException e) {
 			e.printStackTrace();
 		}
-		SessionController.hasCall = false;
+		SipController.hasCall = false;
 	}
-
-	private void denyCall() {
-		finish();
-	}
-
+	/**
+	 * Accepts the incoming call and starts it
+	 */
 	private void acceptCall() {
 		try {
-			updateText("Pratar med " + call.getPeerProfile().getUserName());
+			updateText("Pratar med " + "sip:"+call.getPeerProfile().getUserName() + "@ekiga.net");
 			updateButton("Lägg på");
 			call.answerCall(30);
 			call.startAudio();
@@ -180,7 +192,10 @@ public class CallView extends Activity implements OnClickListener {
 
 		}
 	}
-
+	/**
+	 * Checks if the user denies or accepts an incoming call.
+	 * It is also used to hang up the current call.
+	 */
 	public void onClick(View v) {
 		if (v == acceptCall) {
 			acceptCall();
@@ -188,7 +203,7 @@ public class CallView extends Activity implements OnClickListener {
 			acceptCall.setVisibility(View.INVISIBLE);
 
 		} else if (v == denyCall) {
-			denyCall();
+			finish();
 		}
 	}
 }

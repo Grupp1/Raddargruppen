@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
+import raddar.controllers.DatabaseController;
 import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
 import raddar.enums.MessageType;
@@ -33,8 +34,8 @@ public class InboxView extends ListActivity implements Observer{
 
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-		SessionController.db.addObserver(this);
-		inbox = SessionController.db.getAllRowsAsArrays("message");
+		DatabaseController.db.addObserver(this);
+		inbox = DatabaseController.db.getAllRowsAsArrays("message");
 		
 		ia = new InboxAdapter(this, R.layout.row,inbox);
 		setListAdapter(ia);

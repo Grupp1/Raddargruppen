@@ -12,16 +12,25 @@ public class ReciveHandler implements Runnable {
 	private int port = 4043;
 	private Thread reciveHandler = new Thread(this);
 
+	/**
+	 * Start a new ReciveHandler to listen on the standard port.
+	 */
 	public ReciveHandler() {
 		reciveHandler.start();
 	}
-
+	/**
+	 * Starts new ReciveHandler listening on a port
+	 * @param port the port to listen to
+	 */
 	public ReciveHandler( int port) {
 		this.port = port;
 		reciveHandler.start();
 	}
 
-
+	/**
+	 * Every time new information comes in to the client a
+	 * new thread is started to handle the message.
+	 */
 	public void run() {
 		try {
 			// Skapa en ServerSocket för att lyssna på inkommande meddelanden
@@ -39,7 +48,7 @@ public class ReciveHandler implements Runnable {
 	}
 	public void newMessage(MessageType mt, Message m){
 		if(mt == MessageType.TEXT){
-			SessionController.db.addRow(m);
+			DatabaseController.db.addRow(m);
 		}
 	}
 }

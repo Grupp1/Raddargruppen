@@ -2,29 +2,23 @@ package raddar.views;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.text.ParseException;
 import java.util.Observable;
 import java.util.Observer;
 
+import raddar.controllers.DatabaseController;
 import raddar.controllers.ReciveHandler;
 import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
+import raddar.controllers.SipController;
 import raddar.enums.NotificationType;
 import raddar.enums.ServerInfo;
 import raddar.gruppen.R;
-import raddar.models.ClientDatabaseManager;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
-import raddar.sip.IncomingCallReceiver;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.sip.SipException;
-import android.net.sip.SipManager;
-import android.net.sip.SipProfile;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -51,10 +45,12 @@ public class MainView extends Activity implements OnClickListener, Observer{
 		setContentView(R.layout.main);
 		Bundle extras = getIntent().getExtras();
 		
-		new SessionController(this,extras.get("user").toString());
+		new SessionController(extras.get("user").toString());
+		new DatabaseController(this);
+		new SipController(this);
 		new ReciveHandler();
 
-		SessionController.db.addObserver(this);
+		DatabaseController.db.addObserver(this);
 
 		callButton = (ImageButton)this.findViewById(R.id.callButton);
 		callButton.setOnClickListener(this);
@@ -143,7 +139,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		SessionController.onDestroy();
+		SipController.onClose();
 		// Notifiera servern att vi går offline
 		NotificationMessage nm = new NotificationMessage(SessionController.getUser(), 
 				NotificationType.DISCONNECT);
@@ -153,7 +149,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 		} catch (UnknownHostException e) {
 			Log.d("NotificationMessage", "Disconnect failed");
 		}
-
+		DatabaseController.db.close();
 	}
 	
 	public void update(Observable observable, final Object data) {
