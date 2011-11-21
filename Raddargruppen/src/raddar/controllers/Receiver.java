@@ -41,12 +41,9 @@ public class Receiver implements Runnable {
 			so.close();
 			rh.newMessage(m.getType(), m);
 			
-			Log.d("NOTIFICATION TEST 1", "Borje");
 			Intent intent = new Intent(context, NotificationService.class);
 			context.startService(intent.putExtra("msg", m.getSubject()));
 			
-			
-			Log.d("NOTIFICATION TEST 2", "Borje");
 			
 		} catch (IOException ie) {
 			ie.printStackTrace();
@@ -58,16 +55,5 @@ public class Receiver implements Runnable {
 			e.printStackTrace();
 		}
 
-	}
-
-	private String extractValue(String str) {
-		int index = 0;
-		for (int i = 0; i < str.length(); i++) {
-			if (str.charAt(i) == ' ') {
-				index = i;
-				break;
-			}
-		}
-		return str.substring(index);
 	}
 }
