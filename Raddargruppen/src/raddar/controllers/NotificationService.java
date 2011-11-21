@@ -38,7 +38,6 @@ public class NotificationService extends Service implements Runnable {
 		return 1;
 	}
 
-	@Override
 	public void run() {
 		NotificationManager nManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 		

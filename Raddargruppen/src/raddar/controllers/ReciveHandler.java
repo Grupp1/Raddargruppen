@@ -25,7 +25,10 @@ public class ReciveHandler implements Runnable {
 		thread.start();
 	}
 
-
+	/**
+	 * Every time new information comes in to the client a
+	 * new thread is started to handle the message.
+	 */
 	public void run() {
 		try {
 			// Skapa en ServerSocket för att lyssna på inkommande meddelanden
@@ -43,7 +46,7 @@ public class ReciveHandler implements Runnable {
 	}
 	public void newMessage(MessageType mt, Message m){
 		if(mt == MessageType.TEXT){
-			MainView.db.addRow(m);
+			DatabaseController.db.addRow(m);
 		}
 	}
 }

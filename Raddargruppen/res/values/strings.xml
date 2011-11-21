@@ -45,5 +45,8 @@
     <string name="accept_call_answer">Svara</string>
     <string name="accept_call_deny">Avvisa</string>
 
+    <string name="contactAddress">SIP Address to contact</string>
+    <string name="talk">Talk</string>
+    <string name="enter_number">Skriv in ditt nummer här...</string>
 
 </resources>

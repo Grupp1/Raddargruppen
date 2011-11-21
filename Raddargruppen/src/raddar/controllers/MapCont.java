@@ -37,7 +37,7 @@ public class MapCont implements Observer, Runnable{
 	}
 
 	public void add(MapObject o){
-		MainView.db.addRow(o);
+		DatabaseController.db.addRow(o);
 		mapModel.add(o);
 	}
 
