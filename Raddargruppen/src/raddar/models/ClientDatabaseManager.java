@@ -74,7 +74,6 @@ public class ClientDatabaseManager extends Observable {
 	 * @param m The message that is to be added to the database
 	 */
 	public void addRow(Message m) {
-		openDatabaseReadWrite();
 		ContentValues values = new ContentValues();
 		values.put("srcUser", m.getSrcUser());
 		values.put("rDate", m.getFormattedDate());
