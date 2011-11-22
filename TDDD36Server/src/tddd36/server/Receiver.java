@@ -5,11 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-import raddar.enums.MessageType;
 import raddar.enums.NotificationType;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
-import raddar.models.TextMessage;
 
 import com.google.gson.Gson;
 
@@ -41,11 +39,8 @@ public class Receiver implements Runnable {
 	@Override
 	public void run() {
 		try {
-			System.out.println("["+so.getInetAddress().getHostAddress()+"] ** Connection established. ");
-
 			// För att läsa inkommande data från klienten
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
-			Gson gson = new Gson();
 			Class c= null ;
 			try {
 				c = Class.forName(in.readLine());
@@ -63,7 +58,6 @@ public class Receiver implements Runnable {
 				handleNotification((NotificationMessage) m);
 				break;
 			case TEXT:
-				System.out.println("fått ett meddelande till " + m.getDestUser());
 				//Database.storeTextMessage((TextMessage)m);
 				new Sender(m, m.getDestUser(), 4043);
 				break;

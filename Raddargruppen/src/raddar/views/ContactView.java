@@ -1,6 +1,7 @@
 package raddar.views;
 import java.util.ArrayList;
 
+import raddar.controllers.DatabaseController;
 import raddar.gruppen.R;
 import raddar.models.Contact;
 import android.app.ListActivity;
@@ -27,7 +28,7 @@ public class ContactView extends ListActivity implements OnClickListener{
 
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-		contacts = MainView.db.getAllRowsAsArrays("contact");
+		contacts = DatabaseController.db.getAllRowsAsArrays("contact");
 		selected = new ArrayList<String>();
 	//	for(int i = 0;i <10;i++)
 	//		contacts.add(new Contact("Peter"+i, false));

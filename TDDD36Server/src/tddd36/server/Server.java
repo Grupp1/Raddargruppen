@@ -41,9 +41,8 @@ public class Server {
 	}
 	
 	public static void main(String[] args) {
-		//System.out.println(Database.getAllUsers());
+		System.out.println(Database.getEncryptedPassword("Alice"));
 		
 		new Server();
-
 	}	
 }

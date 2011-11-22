@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import raddar.controllers.Sender;
+import raddar.controllers.SessionController;
 import raddar.gruppen.R;
 import raddar.models.Message;
 import raddar.models.TextMessage;
@@ -102,7 +103,9 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 		String[] destUsers = (destUser.getText().toString()+";").split(";");
 		Log.d("number of messages",destUsers.length+"");
 		for(int i = 0; i < destUsers.length;i++){
-			Message m = new TextMessage(MainView.controller.getUser(), ""    //ska vara new ImageMessage
+
+
+			Message m = new TextMessage(SessionController.getUser(), ""
 					+ destUsers[i]);
 			m.setSubject(subject.getText() + "");
 			try {

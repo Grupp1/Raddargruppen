@@ -1,5 +1,7 @@
 package tddd36.server;
 
+
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -8,7 +10,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import raddar.enums.MessageType;
+import raddar.models.Encryption;
 import raddar.models.TextMessage;
+
 
 /**
  * -- ANVÄNDARGRÄNSSNITT MOT DATABASEN --
@@ -30,11 +34,14 @@ public class Database {
 	 */
 	private static Statement openConnection() {
 		try {
+			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection(url, dbuser,
 					dbpassword);
 			return con.createStatement();
 		} catch (SQLException ex) {
 			System.out.println("Kunde inte ansluta till databasen. Kollat Library efter JDBC Plugin? ");
+		} catch (ClassNotFoundException e) {
+			System.out.println("Fel i i Class.forname()-anropet");
 		}
 		return null;
 	}
@@ -48,21 +55,33 @@ public class Database {
 	 * @return true om lösenorden stämmer överens, false annars
 	 */
 	public static boolean evalutateUser(String username, String password) {
-		boolean response = false;
-		
 		try {
 			Statement st = openConnection();
 			ResultSet rs = st.executeQuery("SELECT * FROM users WHERE userName = \'" + username + "\';");
 			
 			if (rs.next()) {
-				if (password.equals(rs.getString(3)))
-					response = true;
+				// Hämta saltet
+				String salt = rs.getString("salt");
+				if (salt == null) {
+					System.out.println("Salt får inte vara null (Database.java). ");
+					return false;
+				}
+				if (password == null) {
+					System.out.println("Lösenordet får inte vara null (Database.java). ");
+					return false;
+				}
+				// Kryptera det klara lösenordet
+				password = Encryption.encrypt(password, salt);
+				// Jämför med det lagrade, krypterade lösenordet
+				if (password.equals(rs.getString("password"))) {
+					System.out.println(username + " har angivit korrekt lösenord. ");
+					return true;
+				}
 			}
-			
 		} catch (SQLException ex) {
 			System.out.println("Fel syntax i MySQL-queryn i evaluateUser(). ");
 		}
-		return response;
+		return false;
 	}
 
 	/**
@@ -77,12 +96,53 @@ public class Database {
 	public static void addUser(String username, String password, char level,
 			String group) {
 		try {
+			// Skapa ett nytt salt för denna användaren
+			String salt = Encryption.newSalt();
+			// Salta och hasha lösenordet innan det läggs in i databasen
+			password = Encryption.encrypt(password, salt);
 			Statement st = openConnection();
 			st.executeUpdate("INSERT INTO users VALUES (idusers, \'" + 
-					username + "\', \'" + password + "\', \'" + level + "\', \'" + group + "\');");
+					username + "\', \'" + password + "\', \'" + level + "\', \'" + group + "\', \'" + salt + "\');");
 		} catch (SQLException ex) {
 			System.out.println("Fel syntax i MySQL-queryn i addUser(). ");
 		}
+	}
+	
+	/**
+	 * Hämta en användares salt
+	 * @param username Användaren
+	 * @return Användarens salt
+	 */
+	public static String getSalt(String username) {
+		try {
+			Statement st = openConnection();
+			ResultSet rs = st.executeQuery("SELECT * FROM users WHERE userName = \'" + username + "\';");
+			
+			if (rs.next()) 
+				return rs.getString("salt");
+		} catch (SQLException ex) {
+			System.out.println("Fel syntax i MySQL-queryn i getSalt(). ");
+		}
+		return null;
+	}
+	
+	/**
+	 * Hämtar en användares krypterade lösenord. Denna metoden finns endast för att vi ska kunna
+	 * lagra det krypterade lösenordet på klienten. Annars behövs inte denna (ska inte behövas...)
+	 * @param username Användaren
+	 * @return Användarens krypterade lösenord
+	 */
+	public static String getEncryptedPassword(String username) {
+		try {
+			Statement st = openConnection();
+			ResultSet rs = st.executeQuery("SELECT * FROM users WHERE userName = \'" + username + "\';");
+			
+			if (rs.next()) 
+				return rs.getString("password");
+		} catch (SQLException ex) {
+			System.out.println("Fel syntax i MySQL-queryn i getSalt(). ");
+		}
+		return null;
 	}
 
 	/**

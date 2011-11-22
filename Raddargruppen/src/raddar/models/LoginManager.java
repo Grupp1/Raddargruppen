@@ -38,9 +38,11 @@ public class LoginManager extends Observable {
 			// Skapa socket som används för att skicka NotificationMessage
 			Socket so = new Socket(InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
 			
-			Log.d("Efter socketen", "lawl");
+			Log.d("Efter socketen", password.toString());
 			String send = nm.getClass().getName()+"\r\n";
-			send +=	new Gson().toJson(nm);
+			String gg = new Gson().toJson(nm);
+			send +=	gg;
+			Log.d("Gson Test", gg.toString());
 			PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
 			pw.println(send);
 			
@@ -50,14 +52,18 @@ public class LoginManager extends Observable {
 			// Läs in ett svar från servern via SAMMA socket
 			String response = br.readLine();
 			
+			// Om servern säger att inmatade uppgifter är giltiga, returnera true
+			if (response.equals("OK")) {
+				logIn = LoginResponse.ACCEPTED;
+				String encryptedPassword = br.readLine();
+				String salt = br.readLine();
+				// Cacha det krypterade lösenordet och saltet i SQLite-databasen?
+			}
+			
 			// Stäng ner strömmar och socket
 			pw.close();
 			br.close();
 			so.close();
-		
-			// Om servern säger att inmatade uppgifter är giltiga, returnera true
-			if (response.equals("OK")) 
-				logIn = LoginResponse.ACCEPTED;
 		} catch (IOException e) {
 			Log.d("NotificationMessage", "Server connection failed");
 			logIn = evaluateLocally(username, password);
@@ -76,9 +82,14 @@ public class LoginManager extends Observable {
 	 * @return true om verifieringen går bra, false annars
 	 */
 	private static LoginResponse evaluateLocally(String username, String password){
-		String temp = passwordCache.get(username);
-		if (temp == null) return LoginResponse.NO_CONNECTION;
-		if (password.equals(temp)) return LoginResponse.ACCEPTED_NO_CONNECTION;
+		/*
+		 * Hämta användarens salt så att encrypt() kan hasha korrekt
+		 String salt = ClientDatabaseManager.getSalt(username);
+		 password = Encryption.encrypt(password, salt);
+		 */
+		String cachedPassword = passwordCache.get(username);
+		if (cachedPassword == null) return LoginResponse.NO_CONNECTION;
+		if (password.equals(cachedPassword)) return LoginResponse.ACCEPTED_NO_CONNECTION;
 		return LoginResponse.NO_CONNECTION;
 	}
 	
