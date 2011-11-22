@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
+import raddar.enums.MessageType;
 import raddar.models.Message;
 import raddar.views.InboxView;
 import android.content.Context;
@@ -33,13 +34,17 @@ public class Receiver implements Runnable {
 		try {
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
 			String test = in.readLine();
+			boolean notify = false;
 			Message m = null;
 			while (test != null) {
 				Class c = Class.forName(test);
 				String temp = in.readLine();
 				Log.d("!!!Reciver", "temp");
 				m = new Gson().fromJson(temp, c);
-				rh.newMessage(m.getType(), m);
+				//If we get a request message, dont notify users of the new message
+				if(m.getType() == MessageType.REQUEST)
+					notify = true;
+				rh.newMessage(m.getType(), m,notify);
 				test = in.readLine();
 				Log.d("test", test + " ");
 			}

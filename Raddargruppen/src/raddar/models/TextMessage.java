@@ -24,8 +24,7 @@ public class TextMessage extends Message {
 		this.data = data;
 		subject = "DEFAULT";
 	}
-	
-	
+
 	public String getFormattedMessage() {
 		return toString();
 	}
@@ -37,7 +36,7 @@ public class TextMessage extends Message {
 		formattedMessage += Message.HEADER_PRIO + priority + CRLF;
 		formattedMessage += Message.HEADER_FROM + fromUser + CRLF;
 		formattedMessage += Message.HEADER_TO + toUser + CRLF;
-		formattedMessage += Message.HEADER_DATE + getFormattedDate() + CRLF;
+		formattedMessage += Message.HEADER_DATE + getDate() + CRLF;
 		formattedMessage += Message.HEADER_SUBJECT + subject + CRLF;
 		formattedMessage += CRLF + CRLF;
 		formattedMessage += data;

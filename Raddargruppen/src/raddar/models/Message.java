@@ -57,7 +57,7 @@ public abstract class Message {
 	// Ämnesrad
 	protected String subject;
 	// Meddelandets datum. Default är då meddelandet skapades.
-	protected Date date = new Date();
+	protected String date = new Date().toString();
 	// Meddelandets data
 	//Temporärt en string bara för att testa
 	protected String data;
@@ -114,26 +114,12 @@ public abstract class Message {
 		return toUser;
 	}
 	
-	public void setDate(Date date) {
-		this.date = date;
-	}
-	
 	public void setDate(String date) {
-		DateFormat df = DateFormat.getDateTimeInstance();
-		try {
-			this.date = df.parse(date);
-		} catch (ParseException e) { 
-			e.printStackTrace();
-		}
+			this.date = date;
 	}
 	
-	public Date getDate() {
+	public String getDate() {
 		return date;
-	}
-	
-	public String getFormattedDate() {
-		DateFormat df = DateFormat.getDateTimeInstance();
-		return df.format(date);
 	}
 	
 

@@ -76,10 +76,10 @@ public class ClientDatabaseManager extends Observable {
 	 * ADDING A MESSAGE ROW TO THE DATABASE TABLE
 	 * @param m The message that is to be added to the database
 	 */
-	public void addRow(Message m) {
+	public void addRow(Message m,boolean notify) {
 		ContentValues values = new ContentValues();
 		values.put("srcUser", m.getSrcUser());
-		values.put("rDate", m.getFormattedDate());
+		values.put("rDate", m.getDate());
 		values.put("subject", m.getSubject());
 		values.put("mData", m.getData());
 		try {
@@ -88,8 +88,10 @@ public class ClientDatabaseManager extends Observable {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
+		if(!notify){
 		setChanged();
 		notifyObservers(m);
+		}
 	}
 
 	/**********************************************************************

@@ -297,7 +297,7 @@ public class Database {
 			
 			String query = "INSERT INTO messages VALUES (idmessages, \'" + mes.getType() + "\', \'" +
 					mes.getSrcUser() + "\', \'" + mes.getDestUser() + "\', \'" +
-					mes.getFormattedDate() + "\', \'" + mes.getSubject() + "\', \'" +
+					mes.getDate() + "\', \'" + mes.getSubject() + "\', \'" +
 				    mes.getData() +  "\');";
 			st.executeUpdate(query);
 		} catch (SQLException ex) {
@@ -336,8 +336,8 @@ public class Database {
 	 * @param username Mottagaren
 	 * @return En ArrayList med alla textmeddelanden till username
 	 */
-	public static ArrayList<TextMessage> retrieveAllTextMessagesTo(String username) {
-		ArrayList<TextMessage> list = new ArrayList<TextMessage>();
+	public static ArrayList<Message> retrieveAllTextMessagesTo(String username) {
+		ArrayList<Message> list = new ArrayList<Message>();
 		try {
 			Statement st = openConnection();
 			ResultSet rs = st.executeQuery("SELECT * FROM messages WHERE toUser = \'" + username + "\';");
@@ -360,29 +360,7 @@ public class Database {
 	 * 
 	 * @return En ArrayList med alla textmeddelanden i databasen
 	 */
-	public static ArrayList<TextMessage> retrieveAllTextMessages() {
-		ArrayList<TextMessage> list = new ArrayList<TextMessage>();
-		try {
-			Statement st = openConnection();
-			ResultSet rs = st.executeQuery("SELECT * FROM messages;");
-			
-			while (rs.next()) { 
-				TextMessage tm = new TextMessage(MessageType.TEXT, rs.getString(3), rs.getString(4));
-			//	tm.setDate(rs.getString(5));
-				tm.setSubject(rs.getString(6));
-				tm.setMessage(rs.getString(7));
-				list.add(tm);
-			}
-		} catch (SQLException ex) {
-			System.out.println("Fel syntax i MySQL-queryn i getAllTextMessages(). ");
-		}
-		return list;
-	}
-	/**
-	 * Hämta alla meddelanden
-	 * @return En arrayList med alla meddelanden
-	 */
-	public static ArrayList<Message> retrieveAllMessages() {
+	public static ArrayList<Message> retrieveAllTextMessages() {
 		ArrayList<Message> list = new ArrayList<Message>();
 		try {
 			Statement st = openConnection();
@@ -400,6 +378,7 @@ public class Database {
 		}
 		return list;
 	}
+
 	
 	/**
 	 * Hämta alla textmeddelanden som har skickats en specifik dag 
@@ -407,8 +386,8 @@ public class Database {
 	 * @param day En specifik dag i detta formatet: yyyy-mm-dd
 	 * @return En ArrayList med alla textmeddelanden som skickats på day
 	 */
-	public static ArrayList<TextMessage> retrieveAllTextMessagesOnDay(String date) {
-		ArrayList<TextMessage> list = new ArrayList<TextMessage>();
+	public static ArrayList<Message> retrieveAllTextMessagesOnDay(String date) {
+		ArrayList<Message> list = new ArrayList<Message>();
 		try {
 			Statement st = openConnection();
 			ResultSet rs = st.executeQuery("SELECT * FROM messages WHERE date LIKE \'" + date + "%\';");

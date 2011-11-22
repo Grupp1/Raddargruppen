@@ -44,7 +44,11 @@ public class Sender implements Runnable {
 		// Sätt port till 6789 och låt annan konstruktor göra resten av jobbet
 		this(m, address, 4043);
 	}
-
+	/**
+	 * Create new sender to send messages to a user
+	 * @param messages the list of messages to send
+	 * @param toUser The user to send messages to
+	 */
 	public Sender(ArrayList<Message> messages, String toUser){
 		this.messages = messages;
 		adr = Server.onlineUsers.getUserAddress(toUser);
@@ -72,8 +76,8 @@ public class Sender implements Runnable {
 				System.out.println(m.getSubject());
 			}
 			// Skriv ut vilken sorts meddelande som har skickats
-			System.out.println("["+rSocket.getInetAddress().getHostAddress()+"] << " + messages.get(0).getType().toString() + " har vidarebefordats till " 
-			+ messages.get(0).getDestUser());
+			//System.out.println("["+rSocket.getInetAddress().getHostAddress()+"] << " + messages.get(0).getType().toString() + " har vidarebefordats till " 
+			//+ messages.get(0).getDestUser());
 			if(out != null)
 				out.close();
 			rSocket.close();
