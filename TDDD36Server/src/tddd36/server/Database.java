@@ -298,7 +298,7 @@ public class Database {
 			String query = "INSERT INTO messages VALUES (idmessages, \'" + mes.getType() + "\', \'" +
 					mes.getSrcUser() + "\', \'" + mes.getDestUser() + "\', \'" +
 					mes.getDate() + "\', \'" + mes.getSubject() + "\', \'" +
-				    mes.getData() +  "\');";
+				    mes.getData() +  "\', \'0\');";
 			st.executeUpdate(query);
 		} catch (SQLException ex) {
 			System.out.println("Fel syntax i MySQL-queryn i storeTextMessage(). ");

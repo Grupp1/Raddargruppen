@@ -11,6 +11,7 @@ import raddar.enums.NotificationType;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
 import raddar.models.RequestMessage;
+import raddar.models.TextMessage;
 
 import com.google.gson.Gson;
 
@@ -61,7 +62,7 @@ public class Receiver implements Runnable {
 				handleNotification((NotificationMessage) m);
 				break;
 			case TEXT:
-				//Database.storeTextMessage((TextMessage)m);
+				Database.storeTextMessage((TextMessage)m);
 				new Sender(m, m.getDestUser());
 				break;
 			case IMAGE:

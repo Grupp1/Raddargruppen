@@ -40,9 +40,6 @@ public class StartView extends Activity implements Observer {
 		LoginManager.cache("Danne", "raddar");
 		LoginManager.cache("Alice", "longshot");
 		LoginManager.cache("danan612","raddar");
-		this.deleteDatabase("Alice");
-		this.deleteDatabase("danan612");
-		this.deleteDatabase("marcuseinar");
 
 		user = (EditText) this.findViewById(R.id.userText);
 		password = (EditText) this.findViewById(R.id.passwordText);
@@ -61,6 +58,7 @@ public class StartView extends Activity implements Observer {
 		loginButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
+				v.getContext().deleteDatabase(user.getText().toString());
 				String[] sipDetails = new String[3];
 				sipDetails[0] = user.getText().toString();
 				sipDetails[1] = password.getText().toString();
