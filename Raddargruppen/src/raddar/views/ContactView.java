@@ -34,7 +34,6 @@ public class ContactView extends ListActivity implements OnClickListener{
 	//		contacts.add(new Contact("Peter"+i, false));
 		ia = new ContactAdapter(this, R.layout.contact,contacts,selected);
 
-
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
 		View footer = ((LayoutInflater)this.getSystemService

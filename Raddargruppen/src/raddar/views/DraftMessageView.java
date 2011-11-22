@@ -2,6 +2,7 @@ package raddar.views;
 
 import java.util.ArrayList;
 
+import raddar.controllers.DatabaseController;
 import raddar.gruppen.R;
 import raddar.models.Message;
 import android.app.Activity;
@@ -10,12 +11,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class DraftMessageView extends Activity {
 	
 	private Button editDraftButton;
-	private DraftView draftView;
+
 	private ArrayList<Message> drafts;
 
 	public void onCreate(Bundle savedInstanceState){
@@ -23,7 +23,7 @@ public class DraftMessageView extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.draft_message);
-		Bundle extras = getIntent().getExtras();
+		final Bundle extras = getIntent().getExtras();
 		TextView draftMessageDestUser = (TextView)this.findViewById(R.id.draftMessageDestUser);
 		TextView draftMessageDate = (TextView)this.findViewById(R.id.draftMessageDate);
 		TextView draftMessageSubject =(TextView)this.findViewById(R.id.draftMessageSubject);
@@ -39,11 +39,10 @@ public class DraftMessageView extends Activity {
 		 */
 		
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				
-				draftView = new DraftView();
-				drafts = draftView.getDrafts();
-				Message m = drafts.get(draftView.getPosistion());
+				drafts = DatabaseController.db.getAllRowsAsArrays("drafts");
+				
+				Message m = drafts.get(extras.getInt("position"));
 				
 				String [] items = {m.getDestUser().toString(), m.getSubject().toString(), m.getData().toString()};
 				

@@ -6,7 +6,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 import raddar.models.Message;
-import raddar.views.MainView;
 import android.util.Log;
 
 import com.google.gson.Gson;

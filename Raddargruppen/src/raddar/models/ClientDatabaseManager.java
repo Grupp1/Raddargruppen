@@ -38,7 +38,7 @@ public class ClientDatabaseManager extends Observable {
 	private final String[] SIP_DETAILS = new String[] { "userName", "password" };
 	private final String[] OUTBOX_TABLE_ROWS = new String[] { "msgID", "destUser", "rDate", "subject", "mData"};
 	private final String[] DRAFT_TABLE_ROWS = new String[] { "msgID", "destUser", "rDate", "subject", "mData"};
-
+	private final String[] IMAGE_MESSAGE_TABLE_ROWS = new String [] {"msgId", "srcUser", "rDate", "subject", "filePath"};
 
 
 	/**********************************************************************
@@ -62,14 +62,14 @@ public class ClientDatabaseManager extends Observable {
 		// TEST KOD FÖR MAP
 		addRow(new Fire(new GeoPoint(58395730, 15573080), "HAHAHA",
 				SituationPriority.HIGH));
-		
+
 		//TEST KOD FÖR SAMTAL
 		//addSipProfile( user, String password);
 		Contact einar = new Contact("Einar", false, "marcuseinar", "einar");
 		Contact danan = new Contact("danan612", false, "danan612", "raddar");
 		addRow(einar);
 		addRow(danan);
-		
+
 		//TEST KOD ANVÄNDS FÖR ATT TESTA KONTAKTLISTAN
 		addRow(new Contact("Alice",false));
 		addRow(new Contact("Borche",false));
@@ -99,7 +99,7 @@ public class ClientDatabaseManager extends Observable {
 	}
 
 	/**********************************************************************
-	 * ADDING A CONTACT ROW IN THE DATABASE TABLE
+	 * 
 	 *
 	 * Messages to be addad to the outbox
 	 * @param m The message that is to be added to the database
@@ -112,6 +112,28 @@ public class ClientDatabaseManager extends Observable {
 		values.put("mData", m.getData());
 		try {
 			db.insert("outbox", null, values);
+		} catch (Exception e) {
+			Log.e("DB ERROR", e.toString());
+			e.printStackTrace();
+		}
+		setChanged();
+		notifyObservers(m);			
+	}
+
+	/**********************************************************************
+	 * ADDING A IMAGEMESSAGE ROW TO THE DATABASETABLE
+	 *
+	 * Messages to be added to the imageMessage database
+	 * @param m The message that is to be added to the database
+	 */
+	public void addImageMessageRow(Message m){
+		ContentValues values = new ContentValues();
+		values.put("destUser", m.getDestUser());
+		values.put("rDate", m.getFormattedDate());
+		values.put("subject", m.getSubject());
+		values.put("filePath", m.getFilePath());
+		try {
+			db.insert("imageMessage", null, values);
 		} catch (Exception e) {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
@@ -289,7 +311,7 @@ public class ClientDatabaseManager extends Observable {
 	 * @param 
 	 * @return
 	 */
-	
+
 	public void deleteDraftRow(Message m) {
 		try {
 			db.delete("drafts", "destUser = '" + m.getDestUser().toString().trim() +"'", null);
@@ -297,16 +319,16 @@ public class ClientDatabaseManager extends Observable {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
-//		setChanged();
-//		notifyObservers(m);
+		//		setChanged();
+		//		notifyObservers(m);
 	}
-	
+
 	/********************************************************************
 	 * 
 	 * @param 
 	 * @return
 	 */
-	
+
 	public void deleteRow(MapObject mo) {
 		try {
 			db.delete("map", "id = '" +mo.getId()+"'", null);
@@ -339,6 +361,12 @@ public class ClientDatabaseManager extends Observable {
 						TEXT_MESSAGE_TABLE_ROWS,
 						null, null, null, null, null);
 			}
+			else if(table.equals("imageMessage")){
+				cursor = db.query(
+						"imageMessage",
+						IMAGE_MESSAGE_TABLE_ROWS,
+						null, null, null, null, null);
+			}
 			else if (table.equals("outbox")){
 				cursor = db.query("outbox",	OUTBOX_TABLE_ROWS,
 						null, null , null, null, null);
@@ -349,8 +377,7 @@ public class ClientDatabaseManager extends Observable {
 			}
 			else if(table.equals("contact")){
 				cursor = db.query(
-						"contact",
-						CONTACT_TABLE_ROWS,
+						"contact", CONTACT_TABLE_ROWS,
 						null, null, null, null, null);
 			}
 			else if(table.equals("map")){
@@ -369,7 +396,15 @@ public class ClientDatabaseManager extends Observable {
 								MessagePriority.NORMAL, cursor.getString(4));
 						m.setSubject(cursor.getString(3));
 						dataArrays.add(m);
-					} else if (table.equals("contact")) {
+					} 
+					else if (table.equals("imageMessage")) {
+						Message m = new ImageMessage(MessageType.IMAGE,
+								cursor.getString(1), DB_NAME,
+								MessagePriority.NORMAL, cursor.getString(4));
+						m.setSubject(cursor.getString(3));
+						dataArrays.add(m);
+					}
+					else if (table.equals("contact")) {
 						Contact c = new Contact(cursor.getString(0), false,cursor.getString(2),cursor.getString(3));
 					}
 					else if(table.equals("outbox")){
@@ -414,13 +449,13 @@ public class ClientDatabaseManager extends Observable {
 		cursor.close();
 		return dataArrays;
 	}
-	
-	
+
+
 	private void openDatabaseReadOnly() throws SQLiteException{
 		String myPath = DB_PATH + DB_NAME;
 		db = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
 	}
-	
+
 	private void openDatabaseReadWrite() throws SQLiteException{
 		String myPath = DB_PATH + DB_NAME;
 		db = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
@@ -437,11 +472,11 @@ public class ClientDatabaseManager extends Observable {
 		public void onCreate(SQLiteDatabase db) {
 			// This string is used to create the database. It should
 			// be changed to suit your needs.
-		
+
 			String contactTableQueryString = "create table contact ("
 					+ "userName text, " + "isGroup text, " + "sipUsr text, "
 					+ "sipPw text)";
-			
+
 			String sipTableQueryString = "create table sip ("
 					+ "userName text," + "password text)";
 
@@ -452,6 +487,13 @@ public class ClientDatabaseManager extends Observable {
 					"subject text, " +
 					"mData text)";
 
+			String imageMessageTableQueryString = "create table imageMessage (" +
+					"msgId integer primary key autoincrement not null," +
+					"srcUser text, " +
+					"rDate integer, " +
+					"subject text, " +
+					"filePath text)";
+			
 			String mapTableQueryString = "create table map (" +
 					"mapObject text," +
 					"class text," +
@@ -481,10 +523,11 @@ public class ClientDatabaseManager extends Observable {
 			db.execSQL(mapTableQueryString);
 			db.execSQL(contactTableQueryString);
 			db.execSQL(messageTableQueryString);
+			db.execSQL(imageMessageTableQueryString);
 			db.execSQL(outboxTableQueryString);
 			db.execSQL(draftTableQueryString);
 		}
-		
+
 		/**
 		 * Used only if you want to update the SQLite database version. (Will not be used.)
 		 */
@@ -494,5 +537,5 @@ public class ClientDatabaseManager extends Observable {
 			// OTHERWISE, YOU WOULD SPECIFIY HOW TO UPGRADE THE DATABASE.
 		}
 	}
-	
+
 }

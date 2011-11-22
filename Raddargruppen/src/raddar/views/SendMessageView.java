@@ -51,9 +51,9 @@ public class SendMessageView extends Activity implements OnClickListener {
 			subject = (EditText) this.findViewById(R.id.subject);
 			messageData = (EditText) this.findViewById(R.id.messageData);
 
-			destUser.setText(items[0]);
-			subject.setText(items[1]);
-			messageData.setText(items[2]);
+			destUser.setText(items[0].toString());
+			subject.setText(items[1].toString());
+			messageData.setText(items[2].toString());
 			
 			sendButton = (Button) this.findViewById(R.id.sendButton);
 			sendButton.setOnClickListener(this);

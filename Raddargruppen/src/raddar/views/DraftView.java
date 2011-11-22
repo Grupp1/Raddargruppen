@@ -29,7 +29,7 @@ import android.widget.TextView;
 public class DraftView extends ListActivity {
 	private DraftAdapter ia;
 	private ArrayList<Message> drafts;
-	private int pos;
+	
 	
 	
 	public void onCreate(Bundle savedInstanceState){
@@ -52,23 +52,13 @@ public class DraftView extends ListActivity {
 				nextIntent.putExtra("date", drafts.get(position).getDate());
 				nextIntent.putExtra("type", drafts.get(position).getType());
 				
-				pos = position;
-				
+				nextIntent.putExtra("position", position);
 				startActivity(nextIntent);
 
 			}
 		});
 	}
 	
-	public int getPosistion(){
-		return pos;
-	}
-	
-	public ArrayList<Message> getDrafts(){
-		drafts = DatabaseController.db.getAllRowsAsArrays("drafts");
-		return drafts;
-	}
-
 	/**
 	 * Denna klass används vid utritning av drafts.
 	 * @author magkj501

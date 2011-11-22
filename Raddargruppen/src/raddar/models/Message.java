@@ -1,11 +1,13 @@
 package raddar.models;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 
 import raddar.enums.MessagePriority;
 import raddar.enums.MessageType;
+import android.graphics.Bitmap;
 
 /* Exempel meddelande */
 /*
@@ -61,6 +63,8 @@ public abstract class Message {
 	// Meddelandets data
 	//Temporärt en string bara för att testa
 	protected String data;
+
+	protected String filePath;
 
 	public String getSubject() {
 		return subject;
@@ -149,6 +153,14 @@ public abstract class Message {
 		this.data += message;
 	}
 
+	public String getFilePath(){
+		return filePath;
+	}
+	
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
+	
 	public abstract String getFormattedMessage();
 }
 
