@@ -33,29 +33,29 @@ public class Receiver implements Runnable {
 		try {
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
 			String test = in.readLine();
-			while(test != null){
+			Message m = null;
+			while (test != null) {
 				Class c = Class.forName(test);
 				String temp = in.readLine();
 				Log.d("!!!Reciver", "temp");
-				Message m = new Gson().fromJson(temp, c);
+				m = new Gson().fromJson(temp, c);
 				rh.newMessage(m.getType(), m);
 				test = in.readLine();
-				Log.d("test", test+" ");
+				Log.d("test", test + " ");
 			}
-				so.close();
-				
+			so.close();
 
-				Intent intent = new Intent(context, NotificationService.class);
-			//	context.startService(intent.putExtra("msg", m.getSubject()));
+			Intent intent = new Intent(context, NotificationService.class);
+			if (m != null)
+				context.startService(intent.putExtra("msg", m.getSubject()));
 
 		} catch (IOException ie) {
 			ie.printStackTrace();
 
-		}
-		catch(ArrayIndexOutOfBoundsException e){
-			Log.d("Undersök","ArrayIndexOutOfBounds i receiver");
+		} catch (ArrayIndexOutOfBoundsException e) {
+			Log.d("Undersök", "ArrayIndexOutOfBounds i receiver");
 		} catch (ClassNotFoundException e) {
-			Log.e("ClassnotFoundException",e.toString());
+			Log.e("ClassnotFoundException", e.toString());
 			return;
 		}
 

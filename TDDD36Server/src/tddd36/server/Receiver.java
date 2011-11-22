@@ -50,18 +50,7 @@ public class Receiver implements Runnable {
 			String temp = in.readLine();
 			Message m = new Gson().fromJson(temp, c);
 			//		so.close();
-		
-			// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
-			// meddelandet som klienten har skickat blir inläst på korrekt sätt
-//			if(o instanceof String){
-//				temp = (String)o;
-//				String tableVersion[] = temp.split(":");
-//				if(tableVersion[0].equals("message")){
-//					//tableVersion[1];
-//				}
-//				return;
-//			}
-//			Message m = (Message)o;
+			
 			switch (m.getType()) {
 			case NOTIFICATION:
 				handleNotification((NotificationMessage) m);

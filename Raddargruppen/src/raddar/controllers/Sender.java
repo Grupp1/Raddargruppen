@@ -20,23 +20,24 @@ public class Sender implements Runnable {
 	// Serverns port
 	private int port;
 	// Meddelandet som ska skickas
-	private Object message;
+	private Message message;
 
-	public Sender(Message message,InetAddress address, int port)  {
-		this.message = message;
-		this.port = port;
+	private Sender(InetAddress address, int port){
 		this.address = address;
+		this.port = port;
+	}
+	
+	public Sender(Message message,InetAddress address, int port)  {
+		this(address, port);
+		this.message = message;
 		thread.start();
+//		this.port = port;
+//		this.address = address;
+//		thread.start();
 	}
 	public Sender(Message message) throws UnknownHostException {
 		this.message = message;
-		this.port = Integer.parseInt(ServerInfo.SERVER_IP);
-		this.address = InetAddress.getByName(ServerInfo.SERVER_IP);
-		thread.start();
-	}
-	public Sender(Object message) throws UnknownHostException{
-		this.message = message;
-		this.port = Integer.parseInt(ServerInfo.SERVER_IP);
+		this.port = ServerInfo.SERVER_PORT;
 		this.address = InetAddress.getByName(ServerInfo.SERVER_IP);
 		thread.start();
 	}
