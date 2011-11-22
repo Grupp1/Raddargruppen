@@ -2,6 +2,7 @@ package raddar.models;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import raddar.enums.MessagePriority;
@@ -57,7 +58,7 @@ public abstract class Message {
 	// Ämnesrad
 	protected String subject;
 	// Meddelandets datum. Default är då meddelandet skapades.
-	protected Date date = new Date();
+	protected String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 	// Meddelandets data
 	//Temporärt en string bara för att testa
 	protected String data;
@@ -114,20 +115,11 @@ public abstract class Message {
 		return toUser;
 	}
 	
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 	
-	public void setDate(String date) {
-		DateFormat df = DateFormat.getDateTimeInstance();
-		try {
-			this.date = df.parse(date);
-		} catch (ParseException e) { 
-			e.printStackTrace();
-		}
-	}
-	
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
 	
