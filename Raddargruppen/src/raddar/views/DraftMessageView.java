@@ -32,7 +32,11 @@ public class DraftMessageView extends Activity {
 		editDraftButton.setOnClickListener(new View.OnClickListener() {
 			
 		
-		
+		/**
+		 * Måste fixas. Går man in i utkast och trycker på redigera utkast men sedan inte skickar det läggs det till 
+		 * på nytt i databasen, dvs det finns 2 likadana meddelanden i utkast. 
+		 * 
+		 */
 		
 			public void onClick(View v) {
 				// TODO Auto-generated method stub

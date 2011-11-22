@@ -45,7 +45,7 @@ public class DraftView extends ListActivity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				Intent nextIntent = new Intent(DraftView.this, DraftMessageView.class);
-				nextIntent.putExtra("reciever", drafts.get(position).getSrcUser());
+				nextIntent.putExtra("reciever", drafts.get(position).getDestUser());
 				nextIntent.putExtra("subject", drafts.get(position).getSubject());
 				nextIntent.putExtra("data", drafts.get(position).getData());
 				nextIntent.putExtra("date", drafts.get(position).getDate());

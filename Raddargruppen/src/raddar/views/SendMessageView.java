@@ -83,6 +83,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 			}
 			
 			sendMessages();
+			
 			/*
 			Message m = new TextMessage(MainView.controller.getUser(), ""
 					+ destUser.getText());
@@ -97,7 +98,8 @@ public class SendMessageView extends Activity implements OnClickListener {
 			//			Toast.makeText(getApplicationContext(), "Meddelande till "+destUser.getText().
 			//					toString().trim(),
 			//					Toast.LENGTH_SHORT).show();
-
+			Intent nextIntent = new Intent(SendMessageView.this, MessageChoiceView.class);
+			startActivity(nextIntent);
 			finish();
 		}		
 		else {
@@ -108,7 +110,6 @@ public class SendMessageView extends Activity implements OnClickListener {
 			finish();
 		}
 	}
-
 
 
 	private void sendMessages(){
@@ -122,6 +123,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 			try {
 				new Sender(m, InetAddress.getByName("127.0.0.1"), 6789);
 				MainView.db.addOutboxRow(m);
+				MainView.db.deleteDraftRow(m);
 			} catch (UnknownHostException e) {
 				MainView.db.addDraftRow(m);
 			}

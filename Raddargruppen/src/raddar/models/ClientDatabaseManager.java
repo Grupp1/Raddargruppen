@@ -215,19 +215,21 @@ public class ClientDatabaseManager extends Observable {
 	}
 
 	/********************************************************************
+	 * DELETING A ROW IN THE DRAFT TABLE
 	 * 
 	 * @param 
 	 * @return
 	 */
+	
 	public void deleteDraftRow(Message m) {
 		try {
-			db.delete("drafts", "destUser = '" + m.getDestUser().toString() +"'", null);
+			db.delete("drafts", "destUser = '" + m.getDestUser().toString().trim() +"'", null);
 		} catch (Exception e) {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
-		setChanged();
-		notifyObservers(m);
+//		setChanged();
+//		notifyObservers(m);
 	}
 	
 	/********************************************************************
