@@ -3,6 +3,7 @@ package tddd36.server;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.net.Socket;
 
 import raddar.enums.NotificationType;
@@ -54,6 +55,8 @@ public class Receiver implements Runnable {
 			// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
 			// meddelandet som klienten har skickat blir inläst på korrekt sätt
 			switch (m.getType()) {
+			case SOS:
+				broadcast(m);
 			case NOTIFICATION:
 				handleNotification((NotificationMessage) m);
 				break;
@@ -95,6 +98,14 @@ public class Receiver implements Runnable {
 				// Här hamnar vi om något gått fel i formatteringen eller inläsandet av meddelandet
 				System.out.println("Unknown NotificationType... ");
 		}
+	}
+
+	/*
+	 * Broadcasta ett meddelande m till alla i online-listan
+	 */
+	private void broadcast(Message m) {
+		for (InetAddress adr: Server.onlineUsers.getAllAssociations().values())
+			new Sender(m, adr, 4043);
 	}
 
 	/*
