@@ -25,6 +25,7 @@ public class GPSModel extends Observable implements LocationListener {
 	
 	public GPSModel(MainView m, MapCont cont){
 		addObserver(cont);
+		addObserver(m);
 		lm = (LocationManager) m.getSystemService(Context.LOCATION_SERVICE);
 		Criteria crit = new Criteria();
 	
@@ -39,7 +40,7 @@ public class GPSModel extends Observable implements LocationListener {
 			notifyObservers(myLocation);
 		}
 		else{
-			Toast.makeText(m, "Kan inte hitta leverantör", Toast.LENGTH_SHORT).show();
+			notifyObservers("Kan inte hitta leverantör");
 		}
 	}
 

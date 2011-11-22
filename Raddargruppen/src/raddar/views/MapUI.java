@@ -52,8 +52,6 @@ public class MapUI extends MapActivity implements Observer {
 	private List<Overlay> mapOverlays;
 	private Touchy touchy;
 	public boolean follow;
-	private boolean youFind;
-	private You you; 
 	private Toast toast;
 	private Geocoder geocoder;
 
@@ -91,7 +89,7 @@ public class MapUI extends MapActivity implements Observer {
 		MainView.mapCont.declareMapUI(this);
 		
 		controller.animateTo(sthlmLocation);
-		youFind = false;
+		controller.setZoom(8);
 
 	}
 
@@ -254,9 +252,6 @@ public class MapUI extends MapActivity implements Observer {
 		mapView.postInvalidate();
 		// RITA OM PÅ NÅGOT SÄTT
 		//använd mapView.invalidate() om du kör i UI tråden
-		
-		// skicka listornas information till servern
-		
 	}
 
 	@Override

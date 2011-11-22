@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
+import raddar.models.MapObject;
 import raddar.models.Message;
 import android.util.Log;
 
@@ -29,9 +30,18 @@ public class Receiver implements Runnable {
 			Class c = Class.forName(in.readLine());
 			String temp = in.readLine();
 			Log.d("Reciver", "temp");
-			Message m = new Gson().fromJson(temp, c);
+			
+			// if message
+			if (c.getName().equals(Message.class.getName())){
+				Message m = new Gson().fromJson(temp, c);
+				rh.newMessage(m.getType(), m);
+			}
+			// if mapobject
+			else if (c.getName().equals(MapObject.class.getName())){
+				MapObject o = new Gson().fromJson(temp, c);
+				rh.newMapObject(o);
+			}
 			so.close();
-			rh.newMessage(m.getType(), m);
 
 		} catch (IOException ie) {
 			ie.printStackTrace();

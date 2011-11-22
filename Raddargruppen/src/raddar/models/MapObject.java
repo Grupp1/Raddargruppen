@@ -8,6 +8,7 @@ import java.util.List;
 import raddar.views.MainView;
 import android.location.Address;
 import android.location.Geocoder;
+import android.util.Log;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
@@ -91,6 +92,13 @@ public class MapObject extends OverlayItem {
 	public void setSnippet(String snippet) {
 		this.snippet = snippet;
 	}
+	
+	/**
+	 * @return Objektets beskrivning
+	 */
+	public String getSnippet(){
+		return snippet;
+	}
 
 	/**
 	 * 
@@ -158,6 +166,10 @@ public class MapObject extends OverlayItem {
 		updateDescription();
 	}	
 	
+	public GeoPoint getPoint() {
+		return point;
+	}
+
 	/**
 	 * Tar fram objektets geografiska adress från dess koordinater
 	 * @param geocoder Kartans geocoder
@@ -173,7 +185,8 @@ public class MapObject extends OverlayItem {
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			Log.d("Geocoder", "Service not avalible");
 		}finally{
 			
 		}

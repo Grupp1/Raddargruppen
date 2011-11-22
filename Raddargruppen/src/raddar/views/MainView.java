@@ -48,8 +48,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	//Pekare på databasen. Ska användas för att komma åt databasen
 	public static ClientDatabaseManager db;
 	public static MapCont mapCont;
-
-
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -59,7 +58,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 		controller = new InternalComManager();
 		controller.setUser(extras.get("user").toString());
 		db = new ClientDatabaseManager(this,controller.getUser());
-		new ReciveHandler();
+		new ReciveHandler(this);
 		
 		//TEMPORÄRT MÅSTE FIXAS
 		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
@@ -109,8 +108,11 @@ public class MainView extends Activity implements OnClickListener, Observer{
 		/**
 		 * Initierar kartans controller för att kunna få gps koordinaterna för sin position
 		 */
-		mapCont = new MapCont(this);
-		
+		new Thread(new Runnable() {
+			public void run(){
+				mapCont = new MapCont(MainView.this);
+			}
+		}).start();
 		
 	}
 
@@ -208,6 +210,10 @@ public class MainView extends Activity implements OnClickListener, Observer{
 				if (data instanceof GeoPoint){
 					// Send information to server
 					//mapCont.updateMyLocation((GeoPoint)data);
+				}
+				
+				if (data instanceof String){
+					Toast.makeText(getBaseContext(), (String)data, Toast.LENGTH_SHORT).show();
 				}
 					
 			}

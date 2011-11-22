@@ -8,14 +8,19 @@ import raddar.controllers.MapCont;
 
 public class ConnectionTimer extends Observable {
 	
+	
+	
 	/**
 	 * 
 	 * @param updateTime Tiden i millisekunder som klienten ska bekräfta anslutningen
 	 */
+	
+	/*
 	public ConnectionTimer(MapCont mapCont, int updateTime){
 		addObserver(mapCont);
 		Timer timer = new Timer();
 		timer.schedule(send(), updateTime);
+		
 	}
 	
 	public TimerTask send(){
@@ -23,5 +28,5 @@ public class ConnectionTimer extends Observable {
 		notifyObservers("updater");
 		return null;
 	}
-
+*/
 }

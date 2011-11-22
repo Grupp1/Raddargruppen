@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.widget.EditText;
 
 import com.google.android.maps.ItemizedOverlay;
@@ -48,6 +49,10 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 		return mOverlays.size();
 	}
 
+	public ArrayList<OverlayItem> getOverlays(){
+		return mOverlays;
+	}
+	
 	public void addOverlay(OverlayItem overlay) {
 		mOverlays.add(overlay);
 		this.populate();
