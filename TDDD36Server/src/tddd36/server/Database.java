@@ -296,7 +296,7 @@ public class Database {
 			
 			String query = "INSERT INTO messages VALUES (idmessages, \'" + mes.getType() + "\', \'" +
 					mes.getSrcUser() + "\', \'" + mes.getDestUser() + "\', \'" +
-					mes.getFormattedDate() + "\', \'" + mes.getSubject() + "\', \'" +
+					mes.getDate() + "\', \'" + mes.getSubject() + "\', \'" +
 				    mes.getData() +  "\');";
 			st.executeUpdate(query);
 		} catch (SQLException ex) {

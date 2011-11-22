@@ -52,7 +52,6 @@ public abstract class Message {
 			
 	// Typ av message, sändare och mottagare
 	protected MessageType type;
-	protected MessagePriority priority;
 	protected String fromUser;
 	protected String toUser;
 	// Ämnesrad
@@ -70,13 +69,6 @@ public abstract class Message {
 	public void setSubject(String subject) {
 		this.subject = subject.trim();
 	}
-
-	public void setPriority(MessagePriority priority) {
-		if (priority == MessagePriority.NORMAL || priority == MessagePriority.HIGH)
-			this.priority = priority;
-		else
-			this.priority = MessagePriority.NORMAL;
-	}
 	
 	//Här också
 	public String getData() {
@@ -85,10 +77,6 @@ public abstract class Message {
 	
 	public void setData(String data) {
 		this.data = data;
-	}
-	
-	public MessagePriority getPriority() {
-		return priority;
 	}
 	
 	public void setType(MessageType type) {
@@ -123,12 +111,6 @@ public abstract class Message {
 		return date;
 	}
 	
-	public String getFormattedDate() {
-		DateFormat df = DateFormat.getDateTimeInstance();
-		return df.format(date);
-	}
-	
-
 	public void setMessage(String message) {
 		this.data = message;
 	}

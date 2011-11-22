@@ -76,7 +76,7 @@ public class ClientDatabaseManager extends Observable {
 	public void addRow(Message m) {
 		ContentValues values = new ContentValues();
 		values.put("srcUser", m.getSrcUser());
-		values.put("rDate", m.getFormattedDate());
+		values.put("rDate", m.getDate());
 		values.put("subject", m.getSubject());
 		values.put("mData", m.getData());
 		try {
