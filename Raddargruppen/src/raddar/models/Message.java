@@ -31,10 +31,10 @@ import raddar.enums.MessageType;
  * SUPERKLASS TILL ALLA ANDRA MEDDELANDEN
  */
 public abstract class Message {
-	
+
 	// Carriage-return och Line-feed
 	public static final String CRLF = "\r\n";
-		
+
 	// Header attributer
 	public static final String HEADER_TYPE = "Content-Type: ";
 	public static final String HEADER_PRIO = "Priority: ";
@@ -42,13 +42,13 @@ public abstract class Message {
 	public static final String HEADER_TO = "To-User: ";
 	public static final String HEADER_DATE = "Date: ";
 	public static final String HEADER_SUBJECT = "Subject: ";
-	
+
 	/* Värden på attributerna ovan */
-	
+
 	// Content-Type värden
 	public static final String TYPE_TEXT = "text/plain";
 	public static final String TYPE_JPEG = "image/jpeg";
-			
+
 	// Typ av message, sändare och mottagare
 	protected MessageType type;
 	protected MessagePriority priority;
@@ -61,7 +61,7 @@ public abstract class Message {
 	// Meddelandets data
 	//Temporärt en string bara för att testa
 	protected String data;
-	
+
 	public String getSubject() {
 		return subject;
 	}
@@ -76,48 +76,48 @@ public abstract class Message {
 		else
 			this.priority = MessagePriority.NORMAL;
 	}
-	
+
 	//Här också
 	public String getData() {
 		return data;
 	}
-	
+
 	public void setData(String data) {
 		this.data = data;
 	}
-	
+
 	public MessagePriority getPriority() {
 		return priority;
 	}
-	
+
 	public void setType(MessageType type) {
 		this.type = type;
 	}
-	
+
 	public MessageType getType() {
 		return type;
 	}
-	
+
 	public void setSrcUser(String srcUser) {
 		this.fromUser = srcUser.trim();
 	}
-	
+
 	public String getSrcUser() {
 		return fromUser.trim();
 	}
-	
+
 	public void setDestUser(String destUser) {
 		this.toUser = destUser.trim();
 	}
-	
+
 	public String getDestUser() {
 		return toUser;
 	}
-	
+
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	
+
 	public void setDate(String date) {
 		DateFormat df = DateFormat.getDateTimeInstance();
 		try {
@@ -126,29 +126,29 @@ public abstract class Message {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public Date getDate() {
 		return date;
 	}
-	
+
 	public String getFormattedDate() {
 		DateFormat df = DateFormat.getDateTimeInstance();
 		return df.format(date);
 	}
-	
+
 
 	public void setMessage(String message) {
 		this.data = message;
 	}
-	
+
 	public void prepend(String message) {
 		this.data = message + data;
 	}
-	
+
 	public void append(String message) {
 		this.data += message;
 	}
-	
+
 	public abstract String getFormattedMessage();
 }
 

@@ -1,7 +1,6 @@
 package raddar.models;
 
 import raddar.enums.SituationPriority;
-
 import raddar.gruppen.R;
 
 import com.google.android.maps.GeoPoint;

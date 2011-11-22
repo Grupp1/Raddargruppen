@@ -59,6 +59,7 @@ public class InboxView extends ListActivity implements Observer{
 		Message m = new TextMessage(MessageType.convert("text/plain"),"Daniel","Daniel");
 		m.setData("HOPPAS DET FUNGERAR");
 		m.setSubject("VIKTIGT");
+		DatabaseController.db.addRow(m);
 		try {
 			new Sender (m, InetAddress.getByName("127.0.0.1"), 6789);
 		} catch (UnknownHostException e) {
