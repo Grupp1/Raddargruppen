@@ -3,10 +3,6 @@ package raddar.models;
 import java.util.ArrayList;
 import java.util.Observable;
 
-import com.google.android.maps.GeoPoint;
-import com.google.gson.Gson;
-
-import raddar.enums.MessagePriority;
 import raddar.enums.MessageType;
 import raddar.enums.SituationPriority;
 import android.content.ContentValues;
@@ -17,6 +13,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import com.google.android.maps.GeoPoint;
+import com.google.gson.Gson;
 
 public class ClientDatabaseManager extends Observable {
 	// the Activity or Application that is creating an object from this class.
