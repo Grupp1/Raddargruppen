@@ -44,9 +44,9 @@ public class ReciveHandler implements Runnable {
 		}
 		
 	}
-	public void newMessage(MessageType mt, Message m){
+	public void newMessage(MessageType mt, Message m,boolean notify){
 		if(mt == MessageType.TEXT){
-			DatabaseController.db.addRow(m);
+			DatabaseController.db.addRow(m,notify);
 		}
 	}
 }

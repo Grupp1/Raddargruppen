@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Observable;
 
@@ -36,7 +38,15 @@ public class LoginManager extends Observable {
 				password);
 		try {
 			// Skapa socket som används för att skicka NotificationMessage
-			Socket so = new Socket(InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
+			Socket so = new Socket();
+			//Socket so = new Socket(InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
+			InetAddress addr = InetAddress.getByName(ServerInfo.SERVER_IP);
+			int port = ServerInfo.SERVER_PORT;
+			SocketAddress sockAddr = new InetSocketAddress(addr, port);
+			
+
+			int TIME_OUT = 5000;
+			so.connect(sockAddr, TIME_OUT);
 			
 			Log.d("Efter socketen", password.toString());
 			String send = nm.getClass().getName()+"\r\n";

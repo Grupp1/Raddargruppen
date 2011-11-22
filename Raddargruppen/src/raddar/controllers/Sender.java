@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
+import raddar.enums.ServerInfo;
 import raddar.models.Message;
 import android.util.Log;
 
@@ -20,10 +22,23 @@ public class Sender implements Runnable {
 	// Meddelandet som ska skickas
 	private Message message;
 
-	public Sender(Message message, InetAddress address, int port) {
-		this.message = message;
-		this.port = port;
+	private Sender(InetAddress address, int port){
 		this.address = address;
+		this.port = port;
+	}
+	
+	public Sender(Message message,InetAddress address, int port)  {
+		this(address, port);
+		this.message = message;
+		thread.start();
+//		this.port = port;
+//		this.address = address;
+//		thread.start();
+	}
+	public Sender(Message message) throws UnknownHostException {
+		this.message = message;
+		this.port = ServerInfo.SERVER_PORT;
+		this.address = InetAddress.getByName(ServerInfo.SERVER_IP);
 		thread.start();
 	}
 

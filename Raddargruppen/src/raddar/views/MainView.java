@@ -11,10 +11,12 @@ import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
 import raddar.controllers.SipController;
 import raddar.enums.NotificationType;
+import raddar.enums.RequestType;
 import raddar.enums.ServerInfo;
 import raddar.gruppen.R;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
+import raddar.models.RequestMessage;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -49,6 +51,11 @@ public class MainView extends Activity implements OnClickListener, Observer{
 		new DatabaseController(this);
 		new SipController(this);
 		new ReciveHandler(this);
+		try {
+			new Sender(new RequestMessage(RequestType.MESSAGE));
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
 
 		DatabaseController.db.addObserver(this);
 
@@ -118,7 +125,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 							NotificationType.DISCONNECT);
 					try {
 						// Skicka meddelandet
-						new Sender(nm, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);		
+						new Sender(nm);		
 					} catch (UnknownHostException e) {
 						Log.d("NotificationMessage", "Disconnect failed");
 					}
@@ -145,7 +152,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 				NotificationType.DISCONNECT);
 		try {
 			// Skicka meddelandet
-			new Sender(nm, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);		
+			new Sender(nm);		
 		} catch (UnknownHostException e) {
 			Log.d("NotificationMessage", "Disconnect failed");
 		}
