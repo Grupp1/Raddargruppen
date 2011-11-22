@@ -5,7 +5,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import raddar.enums.MessagePriority;
 import raddar.enums.MessageType;
 
 /* Exempel meddelande */
@@ -58,6 +57,7 @@ public abstract class Message {
 	protected String subject;
 	// Meddelandets datum. Default är då meddelandet skapades.
 	protected String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+
 	// Meddelandets data
 	//Temporärt en string bara för att testa
 	protected String data;

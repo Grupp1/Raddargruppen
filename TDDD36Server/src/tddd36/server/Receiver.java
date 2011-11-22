@@ -5,10 +5,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import raddar.enums.NotificationType;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
+import raddar.models.RequestMessage;
 
 import com.google.gson.Gson;
 
@@ -51,9 +53,7 @@ public class Receiver implements Runnable {
 			String temp = in.readLine();
 			Message m = new Gson().fromJson(temp, c);
 			//		so.close();
-		
-			// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
-			// meddelandet som klienten har skickat blir inläst på korrekt sätt
+			
 			switch (m.getType()) {
 			case SOS:
 				broadcast(m);
@@ -62,10 +62,13 @@ public class Receiver implements Runnable {
 				break;
 			case TEXT:
 				//Database.storeTextMessage((TextMessage)m);
-				new Sender(m, m.getDestUser(), 4043);
+				new Sender(m, m.getDestUser());
 				break;
 			case IMAGE:
 				handleImageMessage();
+				break;
+			case REQUEST:
+				handleRequest((RequestMessage) m);
 				break;
 			default:
 				System.out.println("Received message has unknown type. Discarding... ");
@@ -114,10 +117,26 @@ public class Receiver implements Runnable {
 	private void handleImageMessage() {
 
 	}
+	/**
+	 * Handles the request
+	 * @param rm The recived requestMessage
+	 */
+	private void handleRequest(RequestMessage rm){
+		switch(rm.getRequestType()){
+		case MESSAGE:
+			ArrayList<Message> messages =Database.retrieveAllTextMessagesTo(rm.getSrcUser());
+			messages.add(0,rm);
+			new Sender(messages,rm.getSrcUser());
+			break;
+		default:
+			System.out.println("Unknown RequestType");
+		}
+	}
 	/*
 	 * Denna funktionen används för att läsa in en rad och filtrera bort attributtaggen
 	 * 'Content-Type: text/plain' filtreras till exempel till text/plain
 	 */
+	
 	private String getAttrValue(String str) {
 		StringBuilder sb = new StringBuilder("");
 		String[] parts = str.split(" ");
