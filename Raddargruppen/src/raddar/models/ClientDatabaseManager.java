@@ -40,6 +40,7 @@ public class ClientDatabaseManager extends Observable {
 	private final String[] MAP_TABLE_ROWS = new String[] { "mapObject",
 			"class", "id" };
 	private final String[] SIP_DETAILS = new String[] { "userName", "password" };
+	private final String[]	TABEL_VERSION = new String[] { "message"};
 
 	/**********************************************************************
 	 * CREATE OR OPEN A DATABASE SPECIFIC TO THE USER
@@ -60,11 +61,13 @@ public class ClientDatabaseManager extends Observable {
 		// TEST KOD FÖR MAP
 		addRow(new Fire(new GeoPoint(58395730, 15573080), "HAHAHA",
 				SituationPriority.HIGH));
-		
+
 		//TEST KOD FÖR SAMTAL
 		//addSipProfile( user, String password);
 		Contact einar = new Contact("Einar", false, "marcuseinar", "einar");
 		Contact danan = new Contact("danan612", false, "danan612", "raddar");
+		Contact alice = new Contact("Alice",false,null,null);
+		addRow(alice);
 		addRow(einar);
 		addRow(danan);
 	}
@@ -87,7 +90,6 @@ public class ClientDatabaseManager extends Observable {
 		}
 		setChanged();
 		notifyObservers(m);
-		db.close();
 	}
 
 	/**********************************************************************
@@ -303,12 +305,39 @@ public class ClientDatabaseManager extends Observable {
 		return dataArrays;
 	}
 	
-	
+
+	public void updateVersion(int version,String rowName){
+		ContentValues values = new ContentValues();
+		values.put(rowName, version);
+		try {
+			db.update("version", values,
+					null, null);
+		} catch (Exception e) {
+			Log.e("DB Error", e.toString());
+			e.printStackTrace();
+		}
+	}
+	public int getVersionNumber(String rowName) {
+		int versionNumber = 0;
+		Cursor cursor = null;
+		try {
+			cursor = db.query("version", SIP_DETAILS, null, null, null, null, null);
+			cursor.moveToFirst();
+			versionNumber = cursor.getInt(0);
+
+		} catch (SQLException e) {
+			Log.e("DB Error", e.toString());
+			e.printStackTrace();
+		}
+		cursor.close();
+		return versionNumber;
+	}
+
 	private void openDatabaseReadOnly() throws SQLiteException{
 		String myPath = DB_PATH + DB_NAME;
 		db = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
 	}
-	
+
 	private void openDatabaseReadWrite() throws SQLiteException{
 		String myPath = DB_PATH + DB_NAME;
 		db = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
@@ -319,7 +348,7 @@ public class ClientDatabaseManager extends Observable {
 	private class CustomSQLiteOpenHelper extends SQLiteOpenHelper {
 		public CustomSQLiteOpenHelper(Context context) {
 			super(context, DB_NAME, null, DB_VERSION);
-		}
+	}
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
@@ -336,18 +365,21 @@ public class ClientDatabaseManager extends Observable {
 					+ "mapObject text," + "class text," + "id text)";
 			String sipTableQueryString = "create table sip ("
 					+ "userName text," + "password text)";
+			String tableVersion = "create table version ("
+					+ "mapId integer not null)";
 			/*
 			 * String newTableQueryString = "create table " + TABLE_NAME + " ("
 			 * + TABLE_ROW_ID + " integer primary key autoincrement not null," +
 			 * TABLE_ROW_ONE + " text," + TABLE_ROW_TWO + " text" + ");";
 			 */
 			// execute the query string to the database.
+			db.execSQL(tableVersion);
 			db.execSQL(sipTableQueryString);
 			db.execSQL(mapTableQueryString);
 			db.execSQL(contactTableQueryString);
 			db.execSQL(messageTableQueryString);
 		}
-		
+
 		/**
 		 * Used only if you want to update the SQLite database version. (Will not be used.)
 		 */
@@ -357,5 +389,5 @@ public class ClientDatabaseManager extends Observable {
 			// OTHERWISE, YOU WOULD SPECIFIY HOW TO UPGRADE THE DATABASE.
 		}
 	}
-	
+
 }

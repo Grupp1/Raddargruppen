@@ -19,7 +19,7 @@ public class Receiver implements Runnable {
 	private BufferedReader in;
 	private Socket so;
 	private ReciveHandler rh;
-	
+
 	private Context context;
 
 	public Receiver(Socket so, ReciveHandler rh, Context context) {
@@ -32,19 +32,22 @@ public class Receiver implements Runnable {
 	public void run() {
 		try {
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
+			String test = in.readLine();
+			while(test != null){
+				Class c = Class.forName(test);
+				String temp = in.readLine();
+				Log.d("!!!Reciver", "temp");
+				Message m = new Gson().fromJson(temp, c);
+				rh.newMessage(m.getType(), m);
+				test = in.readLine();
+				Log.d("test", test+" ");
+			}
+				so.close();
+				
 
-			Class c = Class.forName(in.readLine());
-			String temp = in.readLine();
-			Log.d("Reciver", "temp");
-			Message m = new Gson().fromJson(temp, c);
+				Intent intent = new Intent(context, NotificationService.class);
+			//	context.startService(intent.putExtra("msg", m.getSubject()));
 
-			so.close();
-			rh.newMessage(m.getType(), m);
-			
-			Intent intent = new Intent(context, NotificationService.class);
-			context.startService(intent.putExtra("msg", m.getSubject()));
-			
-			
 		} catch (IOException ie) {
 			ie.printStackTrace();
 
@@ -52,7 +55,8 @@ public class Receiver implements Runnable {
 		catch(ArrayIndexOutOfBoundsException e){
 			Log.d("Undersök","ArrayIndexOutOfBounds i receiver");
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			Log.e("ClassnotFoundException",e.toString());
+			return;
 		}
 
 	}

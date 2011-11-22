@@ -118,7 +118,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 							NotificationType.DISCONNECT);
 					try {
 						// Skicka meddelandet
-						new Sender(nm, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);		
+						new Sender(nm);		
 					} catch (UnknownHostException e) {
 						Log.d("NotificationMessage", "Disconnect failed");
 					}
@@ -145,7 +145,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 				NotificationType.DISCONNECT);
 		try {
 			// Skicka meddelandet
-			new Sender(nm, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);		
+			new Sender(nm);		
 		} catch (UnknownHostException e) {
 			Log.d("NotificationMessage", "Disconnect failed");
 		}

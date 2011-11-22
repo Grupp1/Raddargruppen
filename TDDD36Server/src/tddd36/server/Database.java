@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import raddar.enums.MessageType;
 import raddar.models.Encryption;
+import raddar.models.Message;
 import raddar.models.TextMessage;
 
 
@@ -367,7 +368,29 @@ public class Database {
 			
 			while (rs.next()) { 
 				TextMessage tm = new TextMessage(MessageType.TEXT, rs.getString(3), rs.getString(4));
-				tm.setDate(rs.getString(5));
+			//	tm.setDate(rs.getString(5));
+				tm.setSubject(rs.getString(6));
+				tm.setMessage(rs.getString(7));
+				list.add(tm);
+			}
+		} catch (SQLException ex) {
+			System.out.println("Fel syntax i MySQL-queryn i getAllTextMessages(). ");
+		}
+		return list;
+	}
+	/**
+	 * Hämta alla meddelanden
+	 * @return En arrayList med alla meddelanden
+	 */
+	public static ArrayList<Message> retrieveAllMessages() {
+		ArrayList<Message> list = new ArrayList<Message>();
+		try {
+			Statement st = openConnection();
+			ResultSet rs = st.executeQuery("SELECT * FROM messages;");
+			
+			while (rs.next()) { 
+				TextMessage tm = new TextMessage(MessageType.TEXT, rs.getString(3), rs.getString(4));
+			//	tm.setDate(rs.getString(5));
 				tm.setSubject(rs.getString(6));
 				tm.setMessage(rs.getString(7));
 				list.add(tm);

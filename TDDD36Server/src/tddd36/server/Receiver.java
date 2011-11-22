@@ -53,13 +53,22 @@ public class Receiver implements Runnable {
 		
 			// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
 			// meddelandet som klienten har skickat blir inläst på korrekt sätt
+//			if(o instanceof String){
+//				temp = (String)o;
+//				String tableVersion[] = temp.split(":");
+//				if(tableVersion[0].equals("message")){
+//					//tableVersion[1];
+//				}
+//				return;
+//			}
+//			Message m = (Message)o;
 			switch (m.getType()) {
 			case NOTIFICATION:
 				handleNotification((NotificationMessage) m);
 				break;
 			case TEXT:
 				//Database.storeTextMessage((TextMessage)m);
-				new Sender(m, m.getDestUser(), 4043);
+				new Sender(m, m.getDestUser());
 				break;
 			case IMAGE:
 				handleImageMessage();
