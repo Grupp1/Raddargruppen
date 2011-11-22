@@ -27,8 +27,9 @@ public class StartView extends Activity implements Observer {
 	 */
 	private ProgressDialog dialog;
 
-	/** Called when the activity is first created. 
-	 *  Starts a new thread to log on when the user presses a button
+	/**
+	 * Called when the activity is first created. Starts a new thread to log on
+	 * when the user presses a button
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -39,15 +40,16 @@ public class StartView extends Activity implements Observer {
 		LoginManager.cache("Danne", "raddar");
 		LoginManager.cache("Alice", "longshot");
 		LoginManager.cache("danan612","raddar");
-		// Endast för lättare testning
+		this.deleteDatabase("Alice");
 		this.deleteDatabase("danan612");
 		this.deleteDatabase("marcuseinar");
 
 		user = (EditText) this.findViewById(R.id.userText);
 		password = (EditText) this.findViewById(R.id.passwordText);
 		// Endast för lättare testning
-		user.setText("Borche");
-		password.setText("hej123");
+
+		user.setText("Alice");
+		password.setText("longshot");
 
 		final LoginManager lm = new LoginManager();
 		lm.addObserver(this);
@@ -88,6 +90,7 @@ public class StartView extends Activity implements Observer {
 		finish();
 
 	}
+
 	/**
 	 * Called when the login manager is done checking if our password is correct
 	 */
@@ -109,7 +112,8 @@ public class StartView extends Activity implements Observer {
 					Toast.makeText(StartView.this, "Ingen kontakt med servern",
 							Toast.LENGTH_LONG).show();
 				else if ((LoginResponse) data == LoginResponse.ACCEPTED_NO_CONNECTION) {
-					Toast.makeText(StartView.this, "Ingen kontakt med servern, du loggas in lokalt",
+					Toast.makeText(StartView.this,
+							"Ingen kontakt med servern, du loggas in lokalt",
 							Toast.LENGTH_LONG).show();
 					Intent nextIntent = new Intent(StartView.this,
 							MainView.class);

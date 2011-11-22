@@ -1,30 +1,24 @@
 package raddar.models;
 
-import raddar.enums.MessagePriority;
 import raddar.enums.MessageType;
 
 public class TextMessage extends Message {
 	
 	public TextMessage(MessageType type, String srcUser, String destUser) {
-		this(type, srcUser, destUser, MessagePriority.NORMAL, "");
+		this(type, srcUser, destUser, "");
 	}
 	public TextMessage(String srcUser, String destUser) {
-		this(MessageType.TEXT, srcUser, destUser, MessagePriority.NORMAL, "");
+		this(MessageType.TEXT, srcUser, destUser, "");
 	}
 
 	public TextMessage(MessageType type, String srcUser, String destUser, String data) {
-		this(type, srcUser, destUser, MessagePriority.NORMAL, data);
-	}
-	
-	public TextMessage(MessageType type, String srcUser, String destUser, MessagePriority priority, String data) {
 		this.type = type;
 		this.fromUser = srcUser.trim();
 		this.toUser = destUser.trim();		
 		this.data = data;
 		subject = "DEFAULT";
 	}
-	
-	
+
 	public String getFormattedMessage() {
 		return toString();
 	}
