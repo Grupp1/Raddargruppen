@@ -46,8 +46,8 @@ public class StartView extends Activity implements Observer {
 		user = (EditText) this.findViewById(R.id.userText);
 		password = (EditText) this.findViewById(R.id.passwordText);
 		// Endast för lättare testning
-		user.setText("danan612");
-		password.setText("raddar");
+		user.setText("Borche");
+		password.setText("hej123");
 
 		final LoginManager lm = new LoginManager();
 		lm.addObserver(this);
@@ -64,20 +64,20 @@ public class StartView extends Activity implements Observer {
 				sipDetails[1] = password.getText().toString();
 				sipDetails[2] = "ekiga.net";
 				SipController.setSipDetails(sipDetails);
-				Intent nextIntent = new Intent(StartView.this, MainView.class);
-				nextIntent.putExtra("user", user.getText().toString());
-				startActivity(nextIntent);
-//				loginButton.setEnabled(false);
-//
-//				dialog.show();
-//
-//				Thread s = new Thread(new Runnable(){
-//					public void run() {
-//						lm.evaluate(user.getText().toString(),
-//								password.getText().toString());
-//					}
-//				});
-//				s.start();
+				//Intent nextIntent = new Intent(StartView.this, MainView.class);
+				//nextIntent.putExtra("user", user.getText().toString());
+				//startActivity(nextIntent);
+				loginButton.setEnabled(false);
+
+				dialog.show();
+
+				Thread s = new Thread(new Runnable(){
+					public void run() {
+						lm.evaluate(user.getText().toString(),
+								password.getText().toString());
+					}
+				});
+				s.start();
 			}
 		});
 

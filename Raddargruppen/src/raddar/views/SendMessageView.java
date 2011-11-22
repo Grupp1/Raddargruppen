@@ -73,8 +73,8 @@ public class SendMessageView extends Activity implements OnClickListener {
 			finish();
 		} else {
 
-			Intent nextIntent = new Intent(SendMessageView.this, ContactView.class);
-			startActivityForResult(nextIntent,0);
+			//Intent nextIntent = new Intent(SendMessageView.this, ContactView.class);
+			//startActivityForResult(nextIntent,0);
 		}
 	}
 
