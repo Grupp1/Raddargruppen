@@ -3,7 +3,6 @@ package raddar.views;
 import java.util.Observable;
 import java.util.Observer;
 
-import raddar.controllers.DatabaseController;
 import raddar.controllers.SipController;
 import raddar.enums.LoginResponse;
 import raddar.gruppen.R;

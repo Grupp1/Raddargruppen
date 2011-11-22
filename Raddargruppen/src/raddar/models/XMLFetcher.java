@@ -5,6 +5,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -23,8 +24,14 @@ public class XMLFetcher extends DefaultHandler {
 	private final static String WEATHER_URL = "http://www.yr.no/place/Sweden/%C3%96sterg%C3%B6tland/Link%C3%B6ping/varsel.xml";
 
 	// private final static String TRAFFIC_URL = "";
-	
-	private int count = 0;
+
+	private WeatherDay wd = new WeatherDay(
+			new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+	private WeatherBlock wb;
+
+	public LinkedList<WeatherDay> list = new LinkedList<WeatherDay>();
+	public String sunrise = "";
+	public String sunset = "";
 
 	public XMLFetcher() {
 		parseDocument();
@@ -55,55 +62,62 @@ public class XMLFetcher extends DefaultHandler {
 
 	@Override
 	public void endDocument() throws SAXException {
-		Log.d("XML", "COUNT: " + count);
+
 	}
 
 	@Override
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException {
+		if (qName.equals("sun")) {
+			sunrise = attributes.getValue("rise").split("T")[1].substring(0,5);
+			sunset = attributes.getValue("set").split("T")[1].substring(0, 5);
+		}
 		if (qName.equals("time")) {
+			wb = new WeatherBlock();
 			String[] parts = attributes.getValue("from").split("T");
-			Log.d("XML", "FRÅN: ");
-			Log.d("XML", "Datum: " + parts[0]);
-			Log.d("XML", "Tid: " + parts[1]);
+			String date = parts[0];
+			String from = parts[1];
+			from = from.substring(0, 5);
+			if (!date.equals(wd.date)) {
+				list.add(wd);
+				wd = new WeatherDay(date);
+			}
+			wb.from = from;
 			parts = attributes.getValue("to").split("T");
-			Log.d("XML", "TILL: ");
-			Log.d("XML", "Datum: " + parts[0]);
-			Log.d("XML", "Tid: " + parts[1]);
-			count++;
+			String to = parts[1];
+			to = to.substring(0, 5);
+			wb.to = to;
 		}
 		if (qName.equals("symbol")) {
 			String weather_type = attributes.getValue("name");
-			Log.d("XML", "Väderlek: " + weather_type);
+			wb.weather = weather_type;
 		}
 		if (qName.equals("windDirection")) {
-			// String degrees = attributes.getValue("deg");
-			String direction = attributes.getValue("name");
-			Log.d("XML", "VIND: ");
-			Log.d("XML", "Riktning: " + direction);
-		} 
+			String direction = attributes.getValue("code");
+			wb.direction = direction;
+		}
 		if (qName.equals("windSpeed")) {
 			String speed = attributes.getValue("mps");
-			String wind_type = attributes.getValue("name");
-			Log.d("XML", "Fart: " + speed);
-			Log.d("XML", "Typ: " + wind_type);
+			wb.speed = speed + " mps";
 		}
 		if (qName.equals("temperature")) {
-			String unit = attributes.getValue("unit");
 			String value = attributes.getValue("value");
-			Log.d("XML", "Temperatur: " + value + " " + unit);
-			Log.d("XML", "##---------------------##: ");
+			wb.temp = value + "ËšC";
 		}
 	}
 
 	@Override
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {
+		if (qName.equals("time")) {
+			wd.blocks.add(new WeatherBlock(wb));
+			wb = new WeatherBlock();
+		}
 	}
 
 	@Override
 	public void characters(char[] ch, int start, int length) {
-		
+
 	}
 
 	@Override
@@ -115,11 +129,5 @@ public class XMLFetcher extends DefaultHandler {
 	public void warning(SAXParseException e) {
 		Log.d("XML", "WARNING: " + e.getMessage());
 	}
-	
-	private String getTodaysDate() {
-		Date d = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		return sdf.format(d);
-	}
-	
+
 }
