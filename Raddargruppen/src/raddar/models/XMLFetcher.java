@@ -29,15 +29,29 @@ public class XMLFetcher extends DefaultHandler {
 			new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 	private WeatherBlock wb;
 
+	/**
+	 * En lista som håller reda på väderinformationen vi läser in från yr.no
+	 */
 	public LinkedList<WeatherDay> list = new LinkedList<WeatherDay>();
+	
+	/**
+	 * Denna sträng ska representera klockslaget då solen går upp idag
+	 */
 	public String sunrise = "";
+	
+	/**
+	 * Denna sträng ska representera klockslaget då solen går ner idag
+	 */
 	public String sunset = "";
 
+	/**
+	 * Konstruktorn initierar hämtandet av väderinformation och sparar det i list
+	 */
 	public XMLFetcher() {
 		parseDocument();
 	}
 
-	public void parseDocument() {
+	private void parseDocument() {
 		SAXParserFactory spf = SAXParserFactory.newInstance();
 		spf.setValidating(false);
 		try {
@@ -65,6 +79,14 @@ public class XMLFetcher extends DefaultHandler {
 
 	}
 
+	/**
+	 * Metod som anropas varje gång XML-parsen stöter på en ny tagg
+	 * @param uri används inte
+	 * @param localName används inte
+	 * @param qName taggens namn
+	 * @param attributes taggens attribut
+	 * @throws SAXException
+	 */
 	@Override
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException {
@@ -106,6 +128,13 @@ public class XMLFetcher extends DefaultHandler {
 		}
 	}
 
+	/**
+	 * Metod som anropas när en sluttagg stöts på i XML-parsern
+	 * @param uri används inte
+	 * @param localName används inte
+	 * @param qName taggens namn
+	 * @throws SAXException
+	 */
 	@Override
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {
