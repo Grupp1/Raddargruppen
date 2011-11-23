@@ -3,6 +3,7 @@ package tddd36.server;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -53,11 +54,10 @@ public class Receiver implements Runnable {
 			}
 			String temp = in.readLine();
 			Message m = new Gson().fromJson(temp, c);
-			//		so.close();
-
 			switch (m.getType()) {
 			case SOS:
 				broadcast(m);
+				break;
 			case NOTIFICATION:
 				handleNotification((NotificationMessage) m);
 				break;
@@ -74,7 +74,6 @@ public class Receiver implements Runnable {
 			default:
 				System.out.println("Received message has unknown type. Discarding... ");
 			}
-
 		} catch (IOException ie) {
 			ie.printStackTrace();
 		}
@@ -137,8 +136,26 @@ public class Receiver implements Runnable {
 			new Sender(list,rm.getSrcUser());
 			Database.deleteFromBuffer(rm.getSrcUser());
 			break;
+		case SALT:
+			String salt = Database.getSalt(rm.getSrcUser());
+			try {
+				// Skicka saltet till klienten som requestar det
+				new PrintWriter(so.getOutputStream(), true).println(salt);
+				Class c= null ;
+				try {
+					c = Class.forName(in.readLine());
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+				String temp = in.readLine();
+				Message m = new Gson().fromJson(temp, c);
+				handleNotification((NotificationMessage) m);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			break;
 		default:
-			System.out.println("Unknown RequestType");
+			System.out.println("Okänd RequestType");
 		}
 	}
 	/*

@@ -67,7 +67,7 @@ public class Sender implements Runnable {
 					Database.storeIntoBuffer(m);
 					Database.deleteFromTextMessages((TextMessage)m);
 				}
-				System.out.println("Mottagarens IP-adress är inte känd. ");	// Skriv ut att vi inte känner till mottagarens adress
+				System.out.println("Mottagarens IP-adress är inte känd. Buffrar meddelandet... ");	// Skriv ut att vi inte känner till mottagarens adress
 				return;
 			}
 			// Skapa en socket för att kunna skicka meddelandet till mottagaren
@@ -79,8 +79,6 @@ public class Sender implements Runnable {
 				send +=	gson.toJson(m);
 				out = new PrintWriter(rSocket.getOutputStream(), true);
 				out.println(send);
-				System.out.println(m.getSubject());
-
 			}
 			// Skriv ut vilken sorts meddelande som har skickats
 			//System.out.println("["+rSocket.getInetAddress().getHostAddress()+"] << " + messages.get(0).getType().toString() + " har vidarebefordats till " 

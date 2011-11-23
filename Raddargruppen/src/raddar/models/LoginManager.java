@@ -13,6 +13,7 @@ import java.util.Observable;
 
 import raddar.enums.LoginResponse;
 import raddar.enums.NotificationType;
+import raddar.enums.RequestType;
 import raddar.enums.ServerInfo;
 import android.util.Log;
 
@@ -37,8 +38,7 @@ public class LoginManager extends Observable {
 	 */
 	public void evaluate(String username, String password) {
 		LoginResponse logIn = LoginResponse.NO_SUCH_USER_OR_PASSWORD;
-		NotificationMessage nm = new NotificationMessage(username,
-				NotificationType.CONNECT, password);
+		
 		try {
 			// Skapa socket som används för att skicka NotificationMessage
 			Socket so = new Socket();
@@ -52,29 +52,41 @@ public class LoginManager extends Observable {
 			int TIME_OUT = 5000;
 			so.connect(sockAddr, TIME_OUT);
 
-			Log.d("Efter socketen", password.toString());
-			String send = nm.getClass().getName() + "\r\n";
-			String gg = new Gson().toJson(nm);
-			send += gg;
-			Log.d("Gson Test", gg.toString());
 			PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
-			pw.println(send);
-
 			BufferedReader br = new BufferedReader(new InputStreamReader(
 					so.getInputStream()));
+			
+			RequestMessage rm = new RequestMessage(RequestType.SALT);
+			rm.setSrcUser(username);
+			String send = rm.getClass().getName() + "\r\n";
+			String gg = new Gson().toJson(rm);
+			send += gg;
+			// Skicka SALT-request
+			pw.println(send);
+			
+			// Läs in salt från server
+			String salt = br.readLine();
+			
+			// Använd saltet vi fick för att salta och kryptera lösenordet
+			password = Encryption.encrypt(password, salt);
+			
+			// Skapa msg med användarnamn och krypterat lösenord
+			NotificationMessage nm = new NotificationMessage(username,
+					NotificationType.CONNECT, password);
+			send = nm.getClass().getName() + "\r\n";
+			gg = new Gson().toJson(nm);
+			send += gg;
+			Log.d("Gson Test", gg.toString());
+			
+			// Skicka det saltade och krypterade lösenordet
+			pw.println(send);
 
 			// Läs in ett svar från servern via SAMMA socket
 			String response = br.readLine();
 
-			// Om servern säger att inmatade uppgifter är giltiga, returnera
-			// true
 			if (response.equals("OK")) {
 				logIn = LoginResponse.ACCEPTED;
 				s = null;
-				String encryptedPassword = br.readLine();
-				String salt = br.readLine();
-				// Cacha det krypterade lösenordet och saltet i
-				// SQLite-databasen?
 			}
 
 			// Stäng ner strömmar och socket
@@ -100,7 +112,6 @@ public class LoginManager extends Observable {
 	 * @return true om verifieringen går bra, false annars
 	 */
 	private LoginResponse evaluateLocally(String username, String password) {
-
 		/*
 		 * Hämta användarens salt så att encrypt() kan hasha korrekt String salt
 		 * = ClientDatabaseManager.getSalt(username); password =
@@ -146,6 +157,7 @@ public class LoginManager extends Observable {
 		public void run() {
 			while (true) {
 				try {
+					s = null;
 					if (s == null)
 						break;
 					LoginManager.this.evaluate(username, password);

@@ -24,31 +24,18 @@ public class LoginManager {
 		// Om användaren har loggat in med korrekt lösenord
 		PrintWriter pw;
 		if (Database.evalutateUser(username, password)) {
-			System.out.println(username + " is now associated with " + so.getInetAddress().getHostAddress());
-			
-			// Lägg till användaren i listan över inloggade användare
-			Server.onlineUsers.addUser(username, so.getInetAddress());
 			try {
-				// Hämta det krypterade lösenordet
-				String encryptedPassword = Database.getEncryptedPassword(username);
-				
-				// Hämta användarens salt
-				String salt = Database.getSalt(username);
-				
 				// Skapa utströmmen till klienten
 				pw = new PrintWriter(so.getOutputStream(), true);
 				
 				// Svara med att det är OK
 				pw.println("OK");
-				
-				// Fortsätt med att skicka det krypterade lösenordet och användarens salt tillbaka till användaren
-				// så att denne kan lagra det lokalt på sin telefon
-				pw.println(encryptedPassword);
-				pw.println(salt);
-				
-				// Här någonstans borde även meddelanden som buffrats upp under tiden användaren 
-				// varit offline skickas till användaren nu när denne loggat in
 				pw.close();
+				
+				System.out.println(username + " is now associated with " + so.getInetAddress().getHostAddress());
+				
+				// Lägg till användaren i listan över inloggade användare
+				Server.onlineUsers.addUser(username, so.getInetAddress());
 			} catch (IOException e) {
 				System.out.println("Could not respond with \"OK\" to client attempting to Log in. Socket error? ");
 				e.printStackTrace();
@@ -75,9 +62,9 @@ public class LoginManager {
 		InetAddress a = Server.onlineUsers.removeUser(username);
 		// Kolla om användaren redan är utloggad
 		if (a == null)
-			System.out.println(username + " isn\'t associated with any IP-adress. ");
+			System.out.println(username + " är inte associerad med någon IP-adress. ");
 		// ...annars loggar vi ut denne.
 		else			
-			System.out.println(username + " is no longer associated with " + a.getHostAddress());
+			System.out.println(username + " är inte längre associerad med " + a.getHostAddress());
 	}
 }
