@@ -5,7 +5,6 @@ import java.net.ServerSocket;
 
 import raddar.enums.MessageType;
 import raddar.models.Message;
-import raddar.views.MainView;
 import android.content.Context;
 
 public class ReciveHandler implements Runnable {
@@ -47,6 +46,12 @@ public class ReciveHandler implements Runnable {
 	public void newMessage(MessageType mt, Message m){
 		if(mt == MessageType.TEXT){
 			DatabaseController.db.addRow(m);
+		}
+		if(mt == MessageType.IMAGE){
+			//m.getImage(filePath)
+			
+			DatabaseController.db.addImageMessageRow(m);
+			
 		}
 	}
 }

@@ -2,16 +2,13 @@ package tddd36.server;
 
 
 
+import java.awt.TrayIcon.MessageType;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-
-import raddar.enums.MessageType;
-import raddar.models.Encryption;
-import raddar.models.TextMessage;
 
 
 /**

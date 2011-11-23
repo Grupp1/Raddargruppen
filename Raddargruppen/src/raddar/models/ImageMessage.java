@@ -1,10 +1,9 @@
 package raddar.models;
 
-import java.io.File;
-
 import raddar.enums.MessagePriority;
 import raddar.enums.MessageType;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 public class ImageMessage extends Message {
 
@@ -28,7 +27,7 @@ public class ImageMessage extends Message {
 	/*
 	 * Ett imagemessage innehåller en filePath till bilden som ska skickas.  
 	 * I databasen lagras filePathen. När bilden ska skickas hämtas bilden från telefonens minne mha filePathen. 
-	 * 
+	 * Imagemessage bör innehålla bilden för att kunna skickas.  
 	 */
 	
 	public ImageMessage(MessageType type, String srcUser, String destUser, MessagePriority priority, String filePath) {
@@ -39,7 +38,7 @@ public class ImageMessage extends Message {
 		this.filePath = filePath;
 		subject = "DEFAULT";
 	}
-
+	
 	@Override
 	public String getFormattedMessage() {
 		String formattedMessage = "";

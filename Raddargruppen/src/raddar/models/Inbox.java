@@ -3,7 +3,6 @@ package raddar.models;
 import java.util.ArrayList;
 import java.util.Observable;
 
-import raddar.enums.MessageType;
 import android.util.Log;
 
 public class Inbox extends Observable {

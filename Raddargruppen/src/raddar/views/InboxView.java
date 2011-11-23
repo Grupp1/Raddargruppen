@@ -56,7 +56,6 @@ public class InboxView extends ListActivity implements Observer{
 				nextIntent.putExtra("type", textInbox.get(position).getType());
 				nextIntent.putExtra("image", BitmapFactory.decodeResource(getResources(), R.drawable.inbox));
 				startActivity(nextIntent);
-
 			}
 		});
 		

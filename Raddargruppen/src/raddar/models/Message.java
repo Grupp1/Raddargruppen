@@ -8,6 +8,7 @@ import java.util.Date;
 import raddar.enums.MessagePriority;
 import raddar.enums.MessageType;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 /* Exempel meddelande */
 /*
@@ -160,6 +161,11 @@ public abstract class Message {
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;
 	}
+	
+	public Bitmap getImage(String filePath){
+		Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
+		return yourSelectedImage;
+	} 
 	
 	public abstract String getFormattedMessage();
 }
