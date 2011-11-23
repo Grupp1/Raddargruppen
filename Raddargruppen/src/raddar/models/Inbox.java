@@ -3,10 +3,8 @@ package raddar.models;
 import java.util.ArrayList;
 import java.util.Observable;
 
-import android.util.Log;
-
 import raddar.enums.MessageType;
-import raddar.views.MainView;
+import android.util.Log;
 
 public class Inbox extends Observable {
 
