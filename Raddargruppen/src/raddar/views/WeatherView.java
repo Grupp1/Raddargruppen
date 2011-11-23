@@ -154,6 +154,11 @@ public class WeatherView extends ExpandableListActivity {
         public boolean hasStableIds() {
             return true;
         }
+
+	
+
+
+
         
     }
     
