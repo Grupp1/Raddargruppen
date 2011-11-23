@@ -25,7 +25,7 @@ public class LoginManager extends Observable {
 	/**
 	 * Hårdkoda denna boolean true om klienten inte ska kontakta servern för inloggning
 	 */
-	public boolean debugMode = true;
+	public boolean debugMode = false;
 
 	/**
 	 * Verifierar att username och password är giltiga. Denna metoden kommer att
