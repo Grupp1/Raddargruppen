@@ -228,6 +228,10 @@ public class MapUI extends MapActivity implements Observer {
 		return false;
 	}
 
+	public MapView getMapView(){
+		return mapView;
+	}
+	
 	public void updateMyLocation(GeoPoint geopoint){
 		
 	}

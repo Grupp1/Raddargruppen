@@ -44,7 +44,8 @@ public final class R {
         public static final int sosicon=0x7f02001e;
         public static final int trafikverket=0x7f02001f;
         public static final int wordwriter=0x7f020020;
-        public static final int yr=0x7f020021;
+        public static final int you=0x7f020021;
+        public static final int yr=0x7f020022;
     }
     public static final class id {
         public static final int Button01=0x7f06000d;
