@@ -89,7 +89,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 				input = new EditText(mContext);
 				alertDialog.setView(input);
-
+				input.setText(item.getSnippet());
 				alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
 						item.setSnippet(input.getText().toString());

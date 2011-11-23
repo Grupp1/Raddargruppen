@@ -7,9 +7,11 @@ import java.net.Socket;
 
 import raddar.enums.MessageType;
 import raddar.enums.NotificationType;
+import raddar.models.MapObject;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
 import raddar.models.TextMessage;
+import sun.security.pkcs11.Secmod.DbMode;
 
 import com.google.gson.Gson;
 
@@ -45,7 +47,6 @@ public class Receiver implements Runnable {
 
 			// För att läsa inkommande data från klienten
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
-			Gson gson = new Gson();
 			Class c= null ;
 			try {
 				c = Class.forName(in.readLine());
@@ -53,26 +54,36 @@ public class Receiver implements Runnable {
 				e.printStackTrace();
 			}
 			String temp = in.readLine();
-			Message m = new Gson().fromJson(temp, c);
-			//		so.close();
-		
-			// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
-			// meddelandet som klienten har skickat blir inläst på korrekt sätt
-			switch (m.getType()) {
-			case NOTIFICATION:
-				handleNotification((NotificationMessage) m);
-				break;
-			case TEXT:
-				System.out.println("fått ett meddelande till " + m.getDestUser());
-				//Database.storeTextMessage((TextMessage)m);
-				new Sender(m, m.getDestUser(), 4043);
-				break;
-			case IMAGE:
-				handleImageMessage();
-				break;
-			default:
-				System.out.println("Received message has unknown type. Discarding... ");
+
+			// if message
+			if (c.getName().equals(Message.class.getName())){
+				Message m = new Gson().fromJson(temp, c);
+				// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
+				// meddelandet som klienten har skickat blir inläst på korrekt sätt
+				switch (m.getType()) {
+				case NOTIFICATION:
+					handleNotification((NotificationMessage) m);
+					break;
+				case TEXT:
+					System.out.println("fått ett meddelande till " + m.getDestUser());
+					//Database.storeTextMessage((TextMessage)m);
+					new Sender(m, m.getDestUser(), 4043);
+					break;
+				case IMAGE:
+					handleImageMessage();
+					break;
+				default:
+					System.out.println("Received message has unknown type. Discarding... ");
+				}
 			}
+			
+			// if mapobject
+			else if (c.getName().equals(MapObject.class.getName())){
+				MapObject o = new Gson().fromJson(temp, c);
+				// add to database
+				
+			}
+			//	so.close();
 
 		} catch (IOException ie) {
 			ie.printStackTrace();
@@ -89,17 +100,17 @@ public class Receiver implements Runnable {
 		// Kolla vilken sorts notification vi har att göra med
 		NotificationType nt = nm.getNotification();
 		switch (nt) {
-			case CONNECT:
-				// Behandla loginförsöket
-				LoginManager.evaluateUser(nm.getSrcUser(), nm.getPassword(), so);
-				break;
-			case DISCONNECT:
-				// Behandla logoutförsöket
-				LoginManager.logoutUser(nm.getSrcUser());
-				break;
-			default:
-				// Här hamnar vi om något gått fel i formatteringen eller inläsandet av meddelandet
-				System.out.println("Unknown NotificationType... ");
+		case CONNECT:
+			// Behandla loginförsöket
+			LoginManager.evaluateUser(nm.getSrcUser(), nm.getPassword(), so);
+			break;
+		case DISCONNECT:
+			// Behandla logoutförsöket
+			LoginManager.logoutUser(nm.getSrcUser());
+			break;
+		default:
+			// Här hamnar vi om något gått fel i formatteringen eller inläsandet av meddelandet
+			System.out.println("Unknown NotificationType... ");
 		}
 	}
 

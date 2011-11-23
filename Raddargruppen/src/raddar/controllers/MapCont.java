@@ -104,17 +104,15 @@ public class MapCont implements Observer, Runnable{
 		}
 		if (data instanceof MapObjectList){
 			// Send information to server
-			Log.d("HEEEJ", "HEEEJ");
 			Gson gson = new Gson();
 			for (int i=0; i<((MapObjectList) data).size(); i++){
-				Log.d("For loopen", "i="+i);
 				try {
 					gson.toJson((MapObject) ((MapObjectList) data).getItem(i));
 					new Sender((MapObject) ((MapObjectList) data).getItem(i),
 							InetAddress.getByName(raddar.enums.ServerInfo.SERVER_IP),
 							raddar.enums.ServerInfo.SERVER_PORT);
 				} catch (UnknownHostException e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 					Log.d("Send MapObjects", "UnknownHostException");
 				}
 			}

@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -143,17 +144,17 @@ public class MapUI extends MapActivity implements Observer {
 		}
 
 		public boolean onTouchEvent(MotionEvent e, MapView m) {
-
+			int holdTime = 800;
 			if(e.getAction() == MotionEvent.ACTION_DOWN){
 				start = e.getEventTime();
 				touchedX = (int) e.getX();
 				touchedY = (int) e.getY();
-				touchedPoint = mapView.getProjection().fromPixels(touchedX, touchedY);
+				touchedPoint = mapView.getProjection().fromPixels(touchedX, touchedY);				
 			}
 			if(e.getAction() == MotionEvent.ACTION_UP){
 				stop = e.getEventTime();
 			}
-			if(stop - start > 800){
+			if(stop - start > holdTime){
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(context);
 				builder.setTitle("Placera");
@@ -169,9 +170,6 @@ public class MapUI extends MapActivity implements Observer {
 
 						input = new EditText(context);
 						alertDialog.setView(input);
-						
-						// FOR SIMPLICITY
-						input.setText("Bögutskottet");
 
 						alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {

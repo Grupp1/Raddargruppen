@@ -208,8 +208,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 				}
 				
 				if (data instanceof GeoPoint){
-					// Send information to server
-					//mapCont.updateMyLocation((GeoPoint)data);
+
 				}
 				
 				if (data instanceof String){
