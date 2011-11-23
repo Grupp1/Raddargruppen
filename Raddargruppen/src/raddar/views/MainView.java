@@ -6,6 +6,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import raddar.controllers.DatabaseController;
+import raddar.controllers.NotificationService;
 import raddar.controllers.ReciveHandler;
 import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
@@ -53,6 +54,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 		new ReciveHandler(this);
 		try {
 			new Sender(new RequestMessage(RequestType.MESSAGE));
+			new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
@@ -162,11 +164,12 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	public void update(Observable observable, final Object data) {
 		runOnUiThread(new Runnable(){
 			public void run(){	
-				if(data != null && data instanceof Message)
+				if(data != null && data instanceof Message){
 					
 					Toast.makeText(getApplicationContext(), "Meddelande från "+
 							((Message)data).getSrcUser()
 							,Toast.LENGTH_LONG).show();
+				}
 			}
 		});
 

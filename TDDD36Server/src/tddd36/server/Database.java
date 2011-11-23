@@ -29,7 +29,7 @@ public class Database {
 	private static String url = "jdbc:mysql://db-und.ida.liu.se:3306/tddd36_proj1";
 	private static String dbuser = "tddd36_proj1";
 	private static String dbpassword = "tddd36_proj1_17a8";
-	
+
 	/*
 	 * Privat metod för att enkelt kunna ansluta till databasen.
 	 */
@@ -59,7 +59,7 @@ public class Database {
 		try {
 			Statement st = openConnection();
 			ResultSet rs = st.executeQuery("SELECT * FROM users WHERE userName = \'" + username + "\';");
-			
+
 			if (rs.next()) {
 				// Hämta saltet
 				String salt = rs.getString("salt");
@@ -108,7 +108,7 @@ public class Database {
 			System.out.println("Fel syntax i MySQL-queryn i addUser(). ");
 		}
 	}
-	
+
 	/**
 	 * Hämta en användares salt
 	 * @param username Användaren
@@ -118,7 +118,7 @@ public class Database {
 		try {
 			Statement st = openConnection();
 			ResultSet rs = st.executeQuery("SELECT * FROM users WHERE userName = \'" + username + "\';");
-			
+
 			if (rs.next()) 
 				return rs.getString("salt");
 		} catch (SQLException ex) {
@@ -126,7 +126,7 @@ public class Database {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Hämtar en användares krypterade lösenord. Denna metoden finns endast för att vi ska kunna
 	 * lagra det krypterade lösenordet på klienten. Annars behövs inte denna (ska inte behövas...)
@@ -137,7 +137,7 @@ public class Database {
 		try {
 			Statement st = openConnection();
 			ResultSet rs = st.executeQuery("SELECT * FROM users WHERE userName = \'" + username + "\';");
-			
+
 			if (rs.next()) 
 				return rs.getString("password");
 		} catch (SQLException ex) {
@@ -156,7 +156,7 @@ public class Database {
 		try {
 			Statement st = openConnection();
 			ResultSet rs = st.executeQuery("SELECT * FROM users WHERE userName = \'" + username + "\';");
-			
+
 			if (rs.next()) 
 				return rs.getString(4);
 		} catch (SQLException ex) {
@@ -175,7 +175,7 @@ public class Database {
 		try {
 			Statement st = openConnection();
 			ResultSet rs = st.executeQuery("SELECT * FROM users WHERE userName = \'" + username + "\';");
-			
+
 			if (rs.next()) 
 				return rs.getString(5);
 		} catch (SQLException ex) {
@@ -194,7 +194,7 @@ public class Database {
 		try {
 			Statement st = openConnection();
 			ResultSet rs = st.executeQuery("SELECT * FROM users WHERE userName = \'" + username + "\';");
-			
+
 			if (rs.next()) 
 				return Integer.parseInt(rs.getString(1));
 		} catch (SQLException ex) {
@@ -202,7 +202,7 @@ public class Database {
 		}
 		return 0;
 	}
-	
+
 	/**
 	 * Hämta användarnamnet som ett ID-nummer hör till
 	 * 
@@ -213,7 +213,7 @@ public class Database {
 		try {
 			Statement st = openConnection();
 			ResultSet rs = st.executeQuery("SELECT * FROM users WHERE idusers = \'" + ID + "\';");
-			
+
 			if (rs.next()) 
 				return rs.getString(2);
 		} catch (SQLException ex) {
@@ -221,29 +221,50 @@ public class Database {
 		}
 		return null;
 	}
+	public static void deleteFromBuffer(String toUser){
+		try{
+			Statement st = openConnection();
+			st.executeUpdate("DELETE FROM bufferedmessages WHERE toUser = \'" 
+			+ toUser + "\';");
+		} catch(SQLException ex){
+			System.out.println("Fel i deleteFromBuffer"+ ex);
+		}
+	}
 	
+	public static void deleteFromTextMessages(TextMessage tm){
+		try{
+			Statement st = openConnection();
+			st.executeUpdate("DELETE FROM messages WHERE toUser = \'" 
+			+ tm.getDestUser() + "\' and fromUser = \'"+tm.getSrcUser()+"\' and date = \'"
+			+tm.getDate()+"\';");
+			
+		} catch(SQLException ex){
+			System.out.println("Fel i deleteFromTextMessages "+ex);
+		}
+	}
+
 	/**
 	 * Hämta alla registrerade användare
 	 * 
 	 * @return En ArrayList med alla registrerade användare
 	 */
-	
-	
+
+
 	public static ArrayList<String> getAllUsers() {
 		ArrayList<String> list = new ArrayList<String>();
 		try {
 			Statement st = openConnection();
 			ResultSet rs = st.executeQuery("SELECT * FROM users;");
-			
+
 			while (rs.next()) 
 				list.add(rs.getString(2));
-			
+
 		} catch (SQLException ex) {
 			System.out.println("Fel syntax i MySQL-queryn i getAllUsers(). ");
 		}
 		return list;
 	}
-	
+
 	/**
 	 * Hämta alla användare i en viss grupp
 	 * 
@@ -255,16 +276,16 @@ public class Database {
 		try {
 			Statement st = openConnection();
 			ResultSet rs = st.executeQuery("SELECT * FROM users WHERE userGroup = \'" + group + "\';");
-			
+
 			while (rs.next()) 
 				list.add(rs.getString(2));
-			
+
 		} catch (SQLException ex) {
 			System.out.println("Fel syntax i MySQL-queryn i getAllUsersInGroup(). ");
 		}
 		return list;
 	}
-	
+
 	/**
 	 * Hämta alla användare med en viss användarnivå
 	 * 
@@ -276,10 +297,10 @@ public class Database {
 		try {
 			Statement st = openConnection();
 			ResultSet rs = st.executeQuery("SELECT * FROM users WHERE userLevel = \'" + level + "\';");
-			
+
 			while (rs.next()) 
 				list.add(rs.getString(2));
-			
+
 		} catch (SQLException ex) {
 			System.out.println("Fel syntax i MySQL-queryn i getAllUserWithUserLevel(). ");
 		}
@@ -290,18 +311,36 @@ public class Database {
 	 * Lagra ett textmeddelande
 	 * 
 	 * @param mes Textmeddelandet som ska lagras
+	 * @param tableName Var textmeddelandet ska lagras
 	 */
 	public static void storeTextMessage(TextMessage mes) {
 		try {
 			Statement st = openConnection();
-			
+
 			String query = "INSERT INTO messages VALUES (idmessages, \'" + mes.getType() + "\', \'" +
 					mes.getSrcUser() + "\', \'" + mes.getDestUser() + "\', \'" +
 					mes.getDate() + "\', \'" + mes.getSubject() + "\', \'" +
-				    mes.getData() +  "\', \'0\');";
+					mes.getData() +  "\', \'0\');";
 			st.executeUpdate(query);
 		} catch (SQLException ex) {
-			System.out.println("Fel syntax i MySQL-queryn i storeTextMessage(). ");
+			System.out.println("Fel syntax i MySQL-queryn i storeTextMessage(). "+ex);
+		}
+	}
+	/**
+	 * Lagrar ett Message i en buffer som tömms när en användare loggar in
+	 * @param mes
+	 */
+	public static void storeIntoBuffer(Message mes) {
+		try {
+			Statement st = openConnection();
+
+			String query = "INSERT INTO bufferedmessages VALUES (idbuffered_messages, \'" + mes.getType() + "\', \'" +
+					mes.getSrcUser() + "\', \'" + mes.getDestUser() + "\', \'" +
+					mes.getDate() + "\', \'" + mes.getSubject() + "\', \'" +
+					mes.getData() +  "\', \'0\');";
+			st.executeUpdate(query);
+		} catch (SQLException ex) {
+			System.out.println("Fel syntax i MySQL-queryn i storeIntoBuffer(). "+ ex);
 		}
 	}
 
@@ -316,7 +355,7 @@ public class Database {
 		try {
 			Statement st = openConnection();
 			ResultSet rs = st.executeQuery("SELECT * FROM messages WHERE fromUser = \'" + username + "\';");
-			
+
 			while (rs.next()) { 
 				TextMessage tm = new TextMessage(MessageType.TEXT, rs.getString(3), rs.getString(4));
 				tm.setDate(rs.getString(5));
@@ -329,7 +368,31 @@ public class Database {
 		}
 		return list;
 	}
-	
+	/**
+	 * Hämta buffrade meddelanden till en viss mottagare
+	 * @param username Mottagarens användarnamn
+	 * @return En arraylist med alla meddelanden till en person
+	 */
+	public static ArrayList<Message> retrieveAllBufferedMessagesTo(String username) {
+		ArrayList<Message> list = new ArrayList<Message>();
+		try {
+			Statement st = openConnection();
+			ResultSet rs = st.executeQuery("SELECT * FROM bufferedmessages WHERE toUser = \'" + username + "\';");
+
+			while (rs.next()) { 
+				TextMessage tm = new TextMessage(MessageType.TEXT, rs.getString(3), rs.getString(4));
+				tm.setDate(rs.getString(5));
+				tm.setSubject(rs.getString(6));
+				tm.setMessage(rs.getString(7));
+				list.add(tm);
+			}
+		} catch (SQLException ex) {
+			System.out.println("Fel syntax i MySQL-queryn i retrieveAllBufferedMessagesTo. ");
+			System.out.println(ex);
+		}
+		return list;
+	}
+
 	/**
 	 * Hämta alla textmeddelanden till en viss mottagare
 	 * 
@@ -341,7 +404,7 @@ public class Database {
 		try {
 			Statement st = openConnection();
 			ResultSet rs = st.executeQuery("SELECT * FROM messages WHERE toUser = \'" + username + "\';");
-			
+
 			while (rs.next()) { 
 				TextMessage tm = new TextMessage(MessageType.TEXT, rs.getString(3), rs.getString(4));
 				tm.setDate(rs.getString(5));
@@ -350,7 +413,7 @@ public class Database {
 				list.add(tm);
 			}
 		} catch (SQLException ex) {
-			System.out.println("Fel syntax i MySQL-queryn i getAllTextMessagesFrom(). ");
+			System.out.println("Fel syntax i MySQL-queryn i getAllTextMessagesTo(). ");
 		}
 		return list;
 	}
@@ -365,10 +428,10 @@ public class Database {
 		try {
 			Statement st = openConnection();
 			ResultSet rs = st.executeQuery("SELECT * FROM messages;");
-			
+
 			while (rs.next()) { 
 				TextMessage tm = new TextMessage(MessageType.TEXT, rs.getString(3), rs.getString(4));
-			//	tm.setDate(rs.getString(5));
+				//	tm.setDate(rs.getString(5));
 				tm.setSubject(rs.getString(6));
 				tm.setMessage(rs.getString(7));
 				list.add(tm);
@@ -379,7 +442,7 @@ public class Database {
 		return list;
 	}
 
-	
+
 	/**
 	 * Hämta alla textmeddelanden som har skickats en specifik dag 
 	 * 
@@ -391,7 +454,7 @@ public class Database {
 		try {
 			Statement st = openConnection();
 			ResultSet rs = st.executeQuery("SELECT * FROM messages WHERE date LIKE \'" + date + "%\';");
-			
+
 			while (rs.next()) { 
 				TextMessage tm = new TextMessage(MessageType.TEXT, rs.getString(3), rs.getString(4));
 				tm.setDate(rs.getString(5));

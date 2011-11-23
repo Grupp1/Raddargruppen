@@ -51,7 +51,7 @@ public class Receiver implements Runnable {
 			so.close();
 
 			Intent intent = new Intent(context, NotificationService.class);
-			if (m != null)
+			if (m != null&& !notify)
 				context.startService(intent.putExtra("msg", m.getSubject()));
 
 		} catch (IOException ie) {

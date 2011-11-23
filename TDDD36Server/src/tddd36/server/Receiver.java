@@ -54,7 +54,7 @@ public class Receiver implements Runnable {
 			String temp = in.readLine();
 			Message m = new Gson().fromJson(temp, c);
 			//		so.close();
-			
+
 			switch (m.getType()) {
 			case SOS:
 				broadcast(m);
@@ -62,7 +62,7 @@ public class Receiver implements Runnable {
 				handleNotification((NotificationMessage) m);
 				break;
 			case TEXT:
-				Database.storeTextMessage((TextMessage)m);
+				Database.storeTextMessage((TextMessage) m);
 				new Sender(m, m.getDestUser());
 				break;
 			case IMAGE:
@@ -90,17 +90,17 @@ public class Receiver implements Runnable {
 		// Kolla vilken sorts notification vi har att göra med
 		NotificationType nt = nm.getNotification();
 		switch (nt) {
-			case CONNECT:
-				// Behandla loginförsöket
-				LoginManager.evaluateUser(nm.getSrcUser(), nm.getPassword(), so);
-				break;
-			case DISCONNECT:
-				// Behandla logoutförsöket
-				LoginManager.logoutUser(nm.getSrcUser());
-				break;
-			default:
-				// Här hamnar vi om något gått fel i formatteringen eller inläsandet av meddelandet
-				System.out.println("Unknown NotificationType... ");
+		case CONNECT:
+			// Behandla loginförsöket
+			LoginManager.evaluateUser(nm.getSrcUser(), nm.getPassword(), so);
+			break;
+		case DISCONNECT:
+			// Behandla logoutförsöket
+			LoginManager.logoutUser(nm.getSrcUser());
+			break;
+		default:
+			// Här hamnar vi om något gått fel i formatteringen eller inläsandet av meddelandet
+			System.out.println("Unknown NotificationType... ");
 		}
 	}
 
@@ -125,9 +125,17 @@ public class Receiver implements Runnable {
 	private void handleRequest(RequestMessage rm){
 		switch(rm.getRequestType()){
 		case MESSAGE:
-			ArrayList<Message> messages =Database.retrieveAllTextMessagesTo(rm.getSrcUser());
+			ArrayList<Message> messages = Database.retrieveAllTextMessagesTo(rm.getSrcUser());
 			messages.add(0,rm);
 			new Sender(messages,rm.getSrcUser());
+			break;
+		case BUFFERED_MESSAGE:
+			ArrayList<Message> list = Database.retrieveAllBufferedMessagesTo(rm.getSrcUser());
+			for(Message m: list){
+				Database.storeTextMessage((TextMessage)m);
+			}
+			new Sender(list,rm.getSrcUser());
+			Database.deleteFromBuffer(rm.getSrcUser());
 			break;
 		default:
 			System.out.println("Unknown RequestType");
@@ -137,7 +145,7 @@ public class Receiver implements Runnable {
 	 * Denna funktionen används för att läsa in en rad och filtrera bort attributtaggen
 	 * 'Content-Type: text/plain' filtreras till exempel till text/plain
 	 */
-	
+
 	private String getAttrValue(String str) {
 		StringBuilder sb = new StringBuilder("");
 		String[] parts = str.split(" ");
