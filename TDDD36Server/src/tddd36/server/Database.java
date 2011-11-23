@@ -105,7 +105,7 @@ public class Database {
 			st.executeUpdate("INSERT INTO users VALUES (idusers, \'" + 
 					username + "\', \'" + password + "\', \'" + level + "\', \'" + group + "\', \'" + salt + "\');");
 		} catch (SQLException ex) {
-			System.out.println("Fel syntax i MySQL-queryn i addUser(). ");
+			System.out.println("Fel syntax i MySQL-queryn i addUser(). "+ex);
 		}
 	}
 
