@@ -8,12 +8,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import raddar.enums.NotificationType;
-import raddar.models.Message;
-import raddar.models.NotificationMessage;
-import raddar.models.RequestMessage;
-import raddar.models.TextMessage;
-import raddar.models.MapObject;
 
+import raddar.models.*;
 import com.google.gson.Gson;
 
 
@@ -53,28 +49,39 @@ public class Receiver implements Runnable {
 				e.printStackTrace();
 			}
 			String temp = in.readLine();
-			Message m = new Gson().fromJson(temp, c);
-			//		so.close();
 
-			switch (m.getType()) {
-			case SOS:
-				broadcast(m);
-			case NOTIFICATION:
-				handleNotification((NotificationMessage) m);
-				break;
-			case TEXT:
-				Database.storeTextMessage((TextMessage) m);
-				new Sender(m, m.getDestUser());
-				break;
-			case IMAGE:
-				handleImageMessage();
-				break;
-			case REQUEST:
-				handleRequest((RequestMessage) m);
-				break;
-			default:
-				System.out.println("Received message has unknown type. Discarding... ");
+
+			// if message
+			if (c.getName().equals(Message.class.getName())){
+				Message m = new Gson().fromJson(temp, c);
+				// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
+				// meddelandet som klienten har skickat blir inläst på korrekt sätt
+				switch (m.getType()) {
+				case SOS:
+					broadcast(m);
+				case NOTIFICATION:
+					handleNotification((NotificationMessage) m);
+					break;
+				case TEXT:
+					Database.storeTextMessage((TextMessage) m);
+					new Sender(m, m.getDestUser());
+					break;
+				case IMAGE:
+					handleImageMessage();
+					break;
+				case REQUEST:
+					handleRequest((RequestMessage) m);
+					break;
+				default:
+					System.out.println("Received message has unknown type. Discarding... ");
+				}
 			}
+			// if mapobject
+			else if (c.getName().equals(MapObject.class.getName())){
+				MapObject o = new Gson().fromJson(temp, c);
+				broadcast(o);
+			}
+			//	so.close();
 
 		} catch (IOException ie) {
 			ie.printStackTrace();
@@ -111,6 +118,17 @@ public class Receiver implements Runnable {
 	private void broadcast(Message m) {
 		for (InetAddress adr: Server.onlineUsers.getAllAssociations().values())
 			new Sender(m, adr, 4043);
+	}
+	
+	/*
+	 * Broadcasta ett mapobject o till alla i online-line
+	 */
+	private void broadcast(MapObject o) {
+		ArrayList<MapObject> mapObjects = new ArrayList<MapObject>();
+		mapObjects.add(o);
+		for (InetAddress adr: Server.onlineUsers.getAllAssociations().values())
+			new Sender(mapObjects, adr);
+			//new Sender(Database.getAllMapObjects(), adr, 4043);
 	}
 
 	/*

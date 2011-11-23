@@ -6,8 +6,8 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 import raddar.enums.MessageType;
+import raddar.models.MapObject;
 import raddar.models.Message;
-import raddar.views.InboxView;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -33,6 +33,7 @@ public class Receiver implements Runnable {
 	public void run() {
 		try {
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
+
 			String test = in.readLine();
 			boolean notify = false;
 			Message m = null;
@@ -40,19 +41,29 @@ public class Receiver implements Runnable {
 				Class c = Class.forName(test);
 				String temp = in.readLine();
 				Log.d("!!!Reciver", "temp");
-				m = new Gson().fromJson(temp, c);
-				//If we get a request message, dont notify users of the new message
-				if(m.getType() == MessageType.REQUEST)
-					notify = true;
-				rh.newMessage(m.getType(), m,notify);
+				
+				// if message
+				if (c.getName().equals(Message.class.getName())){
+					m = new Gson().fromJson(temp, c);
+					if(m.getType() == MessageType.REQUEST)
+						notify = true;
+					rh.newMessage(m.getType(), m,notify);
+					test = in.readLine();
+					Log.d("test", test + " ");
+				}
+				// if mapobject
+				else if (c.getName().equals(MapObject.class.getName())){
+					MapObject o = new Gson().fromJson(temp, c);
+					rh.newMapObject(o);
+				}
 				test = in.readLine();
-				Log.d("test", test + " ");
 			}
 			so.close();
 
 			Intent intent = new Intent(context, NotificationService.class);
 			if (m != null&& !notify)
 				context.startService(intent.putExtra("msg", m.getSubject()));
+
 
 		} catch (IOException ie) {
 			ie.printStackTrace();

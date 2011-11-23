@@ -4,6 +4,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import raddar.controllers.SipController;
+import raddar.enums.ConnectionStatus;
 import raddar.enums.LoginResponse;
 import raddar.gruppen.R;
 import raddar.models.LoginManager;
@@ -36,10 +37,10 @@ public class StartView extends Activity implements Observer {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.start);
 		// Lite hårdkodade testanvändare att testa med
-		LoginManager.cache("Borche", "hej123");
-		LoginManager.cache("Danne", "raddar");
+//		LoginManager.cache("Borche", "hej123");
+//		LoginManager.cache("Danne", "raddar");
+//		LoginManager.cache("danan612","raddar");
 		LoginManager.cache("Alice", "longshot");
-		LoginManager.cache("danan612","raddar");
 
 		user = (EditText) this.findViewById(R.id.userText);
 		password = (EditText) this.findViewById(R.id.passwordText);
@@ -56,7 +57,6 @@ public class StartView extends Activity implements Observer {
 
 		loginButton = (Button) this.findViewById(R.id.okButton);
 		loginButton.setOnClickListener(new OnClickListener() {
-
 			public void onClick(View v) {
 				v.getContext().deleteDatabase(user.getText().toString());
 				String[] sipDetails = new String[3];
@@ -68,7 +68,6 @@ public class StartView extends Activity implements Observer {
 				//nextIntent.putExtra("user", user.getText().toString());
 				//startActivity(nextIntent);
 				loginButton.setEnabled(false);
-
 				dialog.show();
 
 				Thread s = new Thread(new Runnable(){
@@ -100,6 +99,7 @@ public class StartView extends Activity implements Observer {
 					Intent nextIntent = new Intent(StartView.this,
 							MainView.class);
 					nextIntent.putExtra("user", user.getText().toString());
+					nextIntent.putExtra("connectionStatus", ConnectionStatus.CONNECTED);
 					startActivity(nextIntent);
 
 				} else if ((LoginResponse) data == LoginResponse.NO_SUCH_USER_OR_PASSWORD)
@@ -116,7 +116,7 @@ public class StartView extends Activity implements Observer {
 					Intent nextIntent = new Intent(StartView.this,
 							MainView.class);
 					nextIntent.putExtra("user", user.getText().toString());
-
+					nextIntent.putExtra("connectionStatus", ConnectionStatus.DISCONNECTED);
 					startActivity(nextIntent);
 				}
 				loginButton.setEnabled(true);

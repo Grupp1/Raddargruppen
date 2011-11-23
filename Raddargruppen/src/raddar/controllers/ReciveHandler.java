@@ -2,28 +2,26 @@ package raddar.controllers;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.Observable;
 
+import raddar.enums.ConnectionStatus;
 import raddar.enums.MessageType;
+import raddar.enums.ServerInfo;
+import raddar.models.MapObject;
 import raddar.models.Message;
+import raddar.views.MainView;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.widget.EditText;
+import android.util.Log;
 
-public class ReciveHandler implements Runnable {
-	// Standard port = 6789
-	private int port = 4043;
+public class ReciveHandler extends Observable implements Runnable {
 	private Thread thread = new Thread(this);
 
 	private Context context;
 
 	public ReciveHandler(Context context) {
-		this(4043, context);
-	}
-
-	public ReciveHandler(int port, Context context) {
-		this.port = port;
 		this.context = context;
 		thread.start();
 	}
@@ -35,15 +33,18 @@ public class ReciveHandler implements Runnable {
 	public void run() {
 		try {
 			// Skapa en ServerSocket för att lyssna på inkommande meddelanden
-			ServerSocket so = new ServerSocket(port);
+			ServerSocket so = new ServerSocket(ServerInfo.SERVER_PORT);
 
-			while (true)
+			while (true){
 				// När ett inkommande meddelande tas emot skapa en ny Receiver
 				// som körs i en egen tråd
 				new Receiver(so.accept(), this, context);
-
+				notifyObservers(ConnectionStatus.CONNECTED);
+			}
 		} catch (IOException ie) {
-			ie.printStackTrace();
+			notifyObservers(ConnectionStatus.DISCONNECTED);
+			Log.d("ReciveHandler", "Kunde inte ta emot meddelande, disconnected");
+			//ie.printStackTrace();
 		}
 
 	}
@@ -80,5 +81,8 @@ public class ReciveHandler implements Runnable {
 
 			});
 		}
+	}
+	public void newMapObject(MapObject o){
+		MainView.mapCont.add(o);
 	}
 }
