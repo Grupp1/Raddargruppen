@@ -16,7 +16,7 @@ public class AcceptCallView extends Activity implements OnClickListener{
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.start);
+		setContentView(R.layout.accept_call);
 
 		acceptCall = (Button)this.findViewById(R.id.denyCall);
 		acceptCall.setOnClickListener(this);

@@ -3,9 +3,9 @@ package raddar.models;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import raddar.enums.MessagePriority;
 import raddar.enums.MessageType;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -54,13 +54,13 @@ public abstract class Message {
 
 	// Typ av message, sändare och mottagare
 	protected MessageType type;
-	protected MessagePriority priority;
 	protected String fromUser;
 	protected String toUser;
 	// Ämnesrad
 	protected String subject;
 	// Meddelandets datum. Default är då meddelandet skapades.
-	protected Date date = new Date();
+	protected String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+
 	// Meddelandets data
 	//Temporärt en string bara för att testa
 	protected String data;
@@ -75,13 +75,6 @@ public abstract class Message {
 		this.subject = subject.trim();
 	}
 
-	public void setPriority(MessagePriority priority) {
-		if (priority == MessagePriority.NORMAL || priority == MessagePriority.HIGH)
-			this.priority = priority;
-		else
-			this.priority = MessagePriority.NORMAL;
-	}
-
 	//Här också
 	public String getData() {
 		return data;
@@ -89,10 +82,6 @@ public abstract class Message {
 
 	public void setData(String data) {
 		this.data = data;
-	}
-
-	public MessagePriority getPriority() {
-		return priority;
 	}
 
 	public void setType(MessageType type) {
@@ -119,29 +108,14 @@ public abstract class Message {
 		return toUser;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 
-	public void setDate(String date) {
-		DateFormat df = DateFormat.getDateTimeInstance();
-		try {
-			this.date = df.parse(date);
-		} catch (ParseException e) { 
-			e.printStackTrace();
-		}
-	}
-
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
-
-	public String getFormattedDate() {
-		DateFormat df = DateFormat.getDateTimeInstance();
-		return df.format(date);
-	}
-
-
+	
 	public void setMessage(String message) {
 		this.data = message;
 	}

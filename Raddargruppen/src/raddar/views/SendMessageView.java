@@ -36,8 +36,6 @@ public class SendMessageView extends Activity implements OnClickListener {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		
 
 		setContentView(R.layout.send_message);
 
@@ -45,7 +43,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 
 			Bundle extras = getIntent().getExtras();
 			new SessionController(extras.get("user").toString());
-			String [] items = (String[]) extras.get("message");
+			String [] items = (String[]) extras.getCharSequenceArray("message");
 
 			destUser = (EditText) this.findViewById(R.id.destUser);
 			subject = (EditText) this.findViewById(R.id.subject);
@@ -54,7 +52,6 @@ public class SendMessageView extends Activity implements OnClickListener {
 			destUser.setText(items[0].toString());
 			subject.setText(items[1].toString());
 			messageData.setText(items[2].toString());
-			
 			sendButton = (Button) this.findViewById(R.id.sendButton);
 			sendButton.setOnClickListener(this);
 			destUser.setOnClickListener(this);
@@ -106,6 +103,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 			Intent nextIntent = new Intent(SendMessageView.this, MessageChoiceView.class);
 			startActivity(nextIntent);
 			finish();
+
 		}		
 		else {
 			onBackPressed();
@@ -113,9 +111,9 @@ public class SendMessageView extends Activity implements OnClickListener {
 			startActivityForResult(nextIntent,0);
 
 			finish();
-		}
+			
+		} 
 	}
-
 
 	private void sendMessages(){
 		String[] destUsers = (destUser.getText().toString()+";").split(";");

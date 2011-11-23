@@ -52,7 +52,10 @@ public class DraftView extends ListActivity {
 				nextIntent.putExtra("date", drafts.get(position).getDate());
 				nextIntent.putExtra("type", drafts.get(position).getType());
 				
-				nextIntent.putExtra("position", position);
+				Message m = drafts.get(position);
+				String [] items = {m.getDestUser().toString(), m.getSubject().toString(), m.getData().toString()};
+				
+				nextIntent.putExtra("message", items);
 				startActivity(nextIntent);
 
 			}

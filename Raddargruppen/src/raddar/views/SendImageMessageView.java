@@ -102,6 +102,7 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 		String[] destUsers = (destUser.getText().toString()+";").split(";");
 		Log.d("number of messages",destUsers.length+"");
 		for(int i = 0; i < destUsers.length;i++){
+
 			Message m = new ImageMessage(SessionController.getUser(), ""
 					+ destUsers[i]);
 			m.setSubject(subject.getText() + "");

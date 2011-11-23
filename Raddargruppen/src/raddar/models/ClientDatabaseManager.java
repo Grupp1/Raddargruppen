@@ -3,7 +3,6 @@ package raddar.models;
 import java.util.ArrayList;
 import java.util.Observable;
 
-import raddar.enums.MessagePriority;
 import raddar.enums.MessageType;
 import raddar.enums.SituationPriority;
 import android.content.ContentValues;
@@ -41,6 +40,7 @@ public class ClientDatabaseManager extends Observable {
 	private final String[] IMAGE_MESSAGE_TABLE_ROWS = new String [] {"msgId", "srcUser", "rDate", "subject", "filePath"};
 
 
+
 	/**********************************************************************
 	 * CREATE OR OPEN A DATABASE SPECIFIC TO THE USER
 	 * @param context 
@@ -67,6 +67,8 @@ public class ClientDatabaseManager extends Observable {
 		//addSipProfile( user, String password);
 		Contact einar = new Contact("Einar", false, "marcuseinar", "einar");
 		Contact danan = new Contact("danan612", false, "danan612", "raddar");
+		Contact alice = new Contact("Alice",false,null,null);
+		addRow(alice);
 		addRow(einar);
 		addRow(danan);
 
@@ -81,10 +83,10 @@ public class ClientDatabaseManager extends Observable {
 	 * ADDING A MESSAGE ROW TO THE DATABASE TABLE
 	 * @param m The message that is to be added to the database
 	 */
-	public void addRow(Message m) {
+	public void addRow(Message m,boolean notify) {
 		ContentValues values = new ContentValues();
 		values.put("srcUser", m.getSrcUser());
-		values.put("rDate", m.getFormattedDate());
+		values.put("rDate", m.getDate());
 		values.put("subject", m.getSubject());
 		values.put("mData", m.getData());
 		try {
@@ -93,9 +95,10 @@ public class ClientDatabaseManager extends Observable {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
+		if(!notify){
 		setChanged();
 		notifyObservers(m);
-		db.close();
+		}
 	}
 
 	/**********************************************************************
@@ -107,7 +110,7 @@ public class ClientDatabaseManager extends Observable {
 	public void addOutboxRow(Message m){
 		ContentValues values = new ContentValues();
 		values.put("destUser", m.getDestUser());
-		values.put("rDate", m.getFormattedDate());
+		values.put("rDate", m.getDate());
 		values.put("subject", m.getSubject());
 		values.put("mData", m.getData());
 		try {
@@ -129,7 +132,7 @@ public class ClientDatabaseManager extends Observable {
 	public void addImageMessageRow(Message m){
 		ContentValues values = new ContentValues();
 		values.put("destUser", m.getDestUser());
-		values.put("rDate", m.getFormattedDate());
+		values.put("rDate", m.getDate());
 		values.put("subject", m.getSubject());
 		values.put("filePath", m.getFilePath());
 		try {
@@ -151,7 +154,7 @@ public class ClientDatabaseManager extends Observable {
 	public void addDraftRow(Message m){
 		ContentValues values = new ContentValues();
 		values.put("destUser", m.getDestUser());
-		values.put("rDate", m.getFormattedDate());
+		values.put("rDate", m.getDate());
 		values.put("subject", m.getSubject());
 		values.put("mData", m.getData());
 		try {
@@ -392,15 +395,15 @@ public class ClientDatabaseManager extends Observable {
 				do {
 					if (table.equals("message")) {
 						Message m = new TextMessage(MessageType.TEXT,
-								cursor.getString(1), DB_NAME,
-								MessagePriority.NORMAL, cursor.getString(4));
+								cursor.getString(1), DB_NAME);
 						m.setSubject(cursor.getString(3));
+						m.setData(cursor.getString(4));
 						dataArrays.add(m);
 					} 
 					else if (table.equals("imageMessage")) {
 						Message m = new ImageMessage(MessageType.IMAGE,
 								cursor.getString(1), DB_NAME,
-								MessagePriority.NORMAL, cursor.getString(4));
+								 cursor.getString(4));
 						m.setSubject(cursor.getString(3));
 						dataArrays.add(m);
 					}
@@ -410,8 +413,7 @@ public class ClientDatabaseManager extends Observable {
 					else if(table.equals("outbox")){
 						Message m = new TextMessage(MessageType.TEXT, 
 								cursor.getString(1), 
-								DB_NAME, 
-								MessagePriority.NORMAL, 
+								DB_NAME,  
 								cursor.getString(4));
 						m.setSubject(cursor.getString(3));
 						dataArrays.add(m);
@@ -419,8 +421,7 @@ public class ClientDatabaseManager extends Observable {
 					else if(table.equals("drafts")){
 						Message m = new TextMessage(MessageType.TEXT, 
 								cursor.getString(1), 
-								DB_NAME, 
-								MessagePriority.NORMAL, 
+								DB_NAME,  
 								cursor.getString(4));
 						m.setSubject(cursor.getString(3));
 						dataArrays.add(m);
@@ -466,7 +467,7 @@ public class ClientDatabaseManager extends Observable {
 	private class CustomSQLiteOpenHelper extends SQLiteOpenHelper {
 		public CustomSQLiteOpenHelper(Context context) {
 			super(context, DB_NAME, null, DB_VERSION);
-		}
+	}
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
@@ -512,6 +513,7 @@ public class ClientDatabaseManager extends Observable {
 					"rDate integer," +
 					"subject text," +
 					"mData text)";
+
 
 			/*
 			 * String newTableQueryString = "create table " + TABLE_NAME + " ("

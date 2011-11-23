@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
+import raddar.enums.MessageType;
 import raddar.models.Message;
 import raddar.views.InboxView;
 import android.content.Context;
@@ -19,7 +20,7 @@ public class Receiver implements Runnable {
 	private BufferedReader in;
 	private Socket so;
 	private ReciveHandler rh;
-	
+
 	private Context context;
 
 	public Receiver(Socket so, ReciveHandler rh, Context context) {
@@ -33,27 +34,35 @@ public class Receiver implements Runnable {
 		try {
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
 
-			Class c = Class.forName(in.readLine());
-			String temp = in.readLine();
-			Log.d("Reciver", "temp");
-			Message m = new Gson().fromJson(temp, c);
-			
-
+			String test = in.readLine();
+			boolean notify = false;
+			Message m = null;
+			while (test != null) {
+				Class c = Class.forName(test);
+				String temp = in.readLine();
+				Log.d("!!!Reciver", "temp");
+				m = new Gson().fromJson(temp, c);
+				//If we get a request message, dont notify users of the new message
+				if(m.getType() == MessageType.REQUEST)
+					notify = true;
+				rh.newMessage(m.getType(), m,notify);
+				test = in.readLine();
+				Log.d("test", test + " ");
+			}
 			so.close();
-			rh.newMessage(m.getType(), m);
-			
+
 			Intent intent = new Intent(context, NotificationService.class);
-			context.startService(intent.putExtra("msg", m.getSubject()));
-			
-			
+			if (m != null&& !notify)
+				context.startService(intent.putExtra("msg", m.getSubject()));
+
 		} catch (IOException ie) {
 			ie.printStackTrace();
 
-		}
-		catch(ArrayIndexOutOfBoundsException e){
-			Log.d("Undersök","ArrayIndexOutOfBounds i receiver");
+		} catch (ArrayIndexOutOfBoundsException e) {
+			Log.d("Undersök", "ArrayIndexOutOfBounds i receiver");
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			Log.e("ClassnotFoundException", e.toString());
+			return;
 		}
 
 	}

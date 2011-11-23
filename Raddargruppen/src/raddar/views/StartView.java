@@ -3,7 +3,6 @@ package raddar.views;
 import java.util.Observable;
 import java.util.Observer;
 
-import raddar.controllers.DatabaseController;
 import raddar.controllers.SipController;
 import raddar.enums.LoginResponse;
 import raddar.gruppen.R;
@@ -28,8 +27,9 @@ public class StartView extends Activity implements Observer {
 	 */
 	private ProgressDialog dialog;
 
-	/** Called when the activity is first created. 
-	 *  Starts a new thread to log on when the user presses a button
+	/**
+	 * Called when the activity is first created. Starts a new thread to log on
+	 * when the user presses a button
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -40,15 +40,13 @@ public class StartView extends Activity implements Observer {
 		LoginManager.cache("Danne", "raddar");
 		LoginManager.cache("Alice", "longshot");
 		LoginManager.cache("danan612","raddar");
-		// Endast för lättare testning
-		this.deleteDatabase("danan612");
-		this.deleteDatabase("marcuseinar");
 
 		user = (EditText) this.findViewById(R.id.userText);
 		password = (EditText) this.findViewById(R.id.passwordText);
 		// Endast för lättare testning
-		user.setText("danan612");
-		password.setText("raddar");
+
+		//user.setText("Alice");
+		//password.setText("longshot");
 
 		final LoginManager lm = new LoginManager();
 		lm.addObserver(this);
@@ -60,25 +58,26 @@ public class StartView extends Activity implements Observer {
 		loginButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
+				v.getContext().deleteDatabase(user.getText().toString());
 				String[] sipDetails = new String[3];
 				sipDetails[0] = user.getText().toString();
 				sipDetails[1] = password.getText().toString();
 				sipDetails[2] = "ekiga.net";
 				SipController.setSipDetails(sipDetails);
-				Intent nextIntent = new Intent(StartView.this, MainView.class);
-				nextIntent.putExtra("user", user.getText().toString());
-				startActivity(nextIntent);
-//				loginButton.setEnabled(false);
-//
-//				dialog.show();
-//
-//				Thread s = new Thread(new Runnable(){
-//					public void run() {
-//						lm.evaluate(user.getText().toString(),
-//								password.getText().toString());
-//					}
-//				});
-//				s.start();
+				//Intent nextIntent = new Intent(StartView.this, MainView.class);
+				//nextIntent.putExtra("user", user.getText().toString());
+				//startActivity(nextIntent);
+				loginButton.setEnabled(false);
+
+				dialog.show();
+
+				Thread s = new Thread(new Runnable(){
+					public void run() {
+						lm.evaluate(user.getText().toString(),
+								password.getText().toString());
+					}
+				});
+				s.start();
 			}
 		});
 
@@ -89,6 +88,7 @@ public class StartView extends Activity implements Observer {
 		finish();
 
 	}
+
 	/**
 	 * Called when the login manager is done checking if our password is correct
 	 */
@@ -110,7 +110,8 @@ public class StartView extends Activity implements Observer {
 					Toast.makeText(StartView.this, "Ingen kontakt med servern",
 							Toast.LENGTH_LONG).show();
 				else if ((LoginResponse) data == LoginResponse.ACCEPTED_NO_CONNECTION) {
-					Toast.makeText(StartView.this, "Ingen kontakt med servern, du loggas in lokalt",
+					Toast.makeText(StartView.this,
+							"Ingen kontakt med servern, du loggas in lokalt",
 							Toast.LENGTH_LONG).show();
 					Intent nextIntent = new Intent(StartView.this,
 							MainView.class);

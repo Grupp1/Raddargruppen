@@ -42,9 +42,9 @@ public class DraftMessageView extends Activity {
 				
 				drafts = DatabaseController.db.getAllRowsAsArrays("drafts");
 				
-				Message m = drafts.get(extras.getInt("position"));
+				String [] items = (String[]) extras.getCharSequenceArray("message");
 				
-				String [] items = {m.getDestUser().toString(), m.getSubject().toString(), m.getData().toString()};
+				 //= {m.getDestUser().toString(), m.getSubject().toString(), m.getData().toString()};
 				
 				Intent nextIntent = new Intent(DraftMessageView.this, SendMessageView.class);
 				nextIntent.putExtra("message", items);
