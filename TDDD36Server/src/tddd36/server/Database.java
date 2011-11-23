@@ -237,7 +237,7 @@ public class Database {
 	/**
 	 * Tar bort meddelande från messages databasem
 	 * @param tm Meddelanden då vill ta bort
-	 */
+	 */	
 	public static void deleteFromTextMessages(TextMessage tm){
 		try{
 			Statement st = openConnection();

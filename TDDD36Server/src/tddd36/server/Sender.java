@@ -61,6 +61,10 @@ public class Sender implements Runnable {
 		try {
 			// Kolla om vi har en address att skicka till innan vi skapar en anslutning
 			if (adr == null) {
+				for(Message m : messages){
+					Database.storeIntoBuffer(m);
+					Database.deleteFromTextMessages((TextMessage)m);
+				}
 				System.out.println("Mottagarens IP-adress är inte känd. ");	// Skriv ut att vi inte känner till mottagarens adress
 				return;
 			}
@@ -74,6 +78,7 @@ public class Sender implements Runnable {
 				out = new PrintWriter(rSocket.getOutputStream(), true);
 				out.println(send);
 				System.out.println(m.getSubject());
+
 			}
 			// Skriv ut vilken sorts meddelande som har skickats
 			//System.out.println("["+rSocket.getInetAddress().getHostAddress()+"] << " + messages.get(0).getType().toString() + " har vidarebefordats till " 
@@ -85,6 +90,10 @@ public class Sender implements Runnable {
 		} catch (IOException e) {
 			// Logga ut denna användaren om 
 			LoginManager.logoutUser(messages.get(0).getDestUser());
+			for(Message m : messages){
+				Database.storeIntoBuffer(m);
+				Database.deleteFromTextMessages((TextMessage)m);
+			}
 			// Mottagaren är inte online
 			// Buffra meddelandet
 			e.printStackTrace();

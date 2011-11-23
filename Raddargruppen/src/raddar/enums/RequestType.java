@@ -1,5 +1,6 @@
 package raddar.enums;
 
 public enum RequestType {
-	MESSAGE;
+	MESSAGE,
+	BUFFERED_MESSAGE;
 }

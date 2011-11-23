@@ -276,6 +276,7 @@ public class ClientDatabaseManager extends Observable {
 						Message m = new TextMessage(MessageType.TEXT,
 								cursor.getString(1), DB_NAME);
 						m.setSubject(cursor.getString(3));
+						m.setData(cursor.getString(4));
 						dataArrays.add(m);
 					} else if (table.equals("contact")) {
 						Contact c = new Contact(cursor.getString(0), false,cursor.getString(2),cursor.getString(3));
