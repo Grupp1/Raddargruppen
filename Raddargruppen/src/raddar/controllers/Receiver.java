@@ -40,21 +40,20 @@ public class Receiver implements Runnable {
 			while (test != null) {
 				Class c = Class.forName(test);
 				String temp = in.readLine();
-				Log.d("!!!Reciver", "temp");
-				
+				Object o = new Gson().fromJson(temp, c);
+				Log.d("RECEIVE",o.toString());
 				// if message
-				if (c.getName().equals(Message.class.getName())){
-					m = new Gson().fromJson(temp, c);
+				if (o instanceof Message){
+					m = (Message) o;
 					if(m.getType() == MessageType.REQUEST)
 						notify = true;
 					rh.newMessage(m.getType(), m,notify);
-					test = in.readLine();
 					Log.d("test", test + " ");
 				}
 				// if mapobject
-				else if (c.getName().equals(MapObject.class.getName())){
-					MapObject o = new Gson().fromJson(temp, c);
-					rh.newMapObject(o);
+				else if (o instanceof MapObject){
+					MapObject mo = (MapObject) o;
+					rh.newMapObject(mo);
 				}
 				test = in.readLine();
 			}
