@@ -68,6 +68,7 @@ public class LoginManager extends Observable {
 				String encryptedPassword = br.readLine();
 				String salt = br.readLine();
 				// Cacha det krypterade lösenordet och saltet i SQLite-databasen?
+				cache(username, password);
 			}
 			
 			// Stäng ner strömmar och socket
