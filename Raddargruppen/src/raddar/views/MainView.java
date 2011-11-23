@@ -1,19 +1,16 @@
 package raddar.views;
 
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Observable;
 import java.util.Observer;
 
 import raddar.controllers.DatabaseController;
-import raddar.controllers.NotificationService;
 import raddar.controllers.ReciveHandler;
 import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
 import raddar.controllers.SipController;
 import raddar.enums.NotificationType;
 import raddar.enums.RequestType;
-import raddar.enums.ServerInfo;
 import raddar.gruppen.R;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
