@@ -12,6 +12,7 @@ import raddar.models.Message;
 import raddar.models.NotificationMessage;
 import raddar.models.RequestMessage;
 import raddar.models.TextMessage;
+import raddar.models.MapObject;
 
 import com.google.gson.Gson;
 
