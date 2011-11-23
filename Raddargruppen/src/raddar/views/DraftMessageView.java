@@ -1,22 +1,15 @@
 package raddar.views;
 
-import java.util.ArrayList;
-
-import raddar.controllers.DatabaseController;
 import raddar.gruppen.R;
-import raddar.models.Message;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 public class DraftMessageView extends Activity {
-	
-	private Button editDraftButton;
-
-	private ArrayList<Message> drafts;
 
 	public void onCreate(Bundle savedInstanceState){
 
@@ -27,7 +20,7 @@ public class DraftMessageView extends Activity {
 		TextView draftMessageDestUser = (TextView)this.findViewById(R.id.draftMessageDestUser);
 		TextView draftMessageDate = (TextView)this.findViewById(R.id.draftMessageDate);
 		TextView draftMessageSubject =(TextView)this.findViewById(R.id.draftMessageSubject);
-		editDraftButton = (Button)this.findViewById(R.id.editDraftButton);
+		Button editDraftButton = (Button)this.findViewById(R.id.editDraftButton);
 		
 		editDraftButton.setOnClickListener(new View.OnClickListener() {
 			
@@ -40,17 +33,13 @@ public class DraftMessageView extends Activity {
 		
 			public void onClick(View v) {
 				
-				drafts = DatabaseController.db.getAllRowsAsArrays("drafts");
-				
 				String [] items = (String[]) extras.getCharSequenceArray("message");
-				
-				 //= {m.getDestUser().toString(), m.getSubject().toString(), m.getData().toString()};
-				
+				Log.d("DraftMessageView", "String [] mottagen");
 				Intent nextIntent = new Intent(DraftMessageView.this, SendMessageView.class);
 				nextIntent.putExtra("message", items);
 				startActivity(nextIntent);
 				 
-				
+				finish();
 				
 //				Toast.makeText(getApplicationContext(), "Knappen funkar! ",
 //						Toast.LENGTH_LONG).show();	

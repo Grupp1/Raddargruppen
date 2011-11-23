@@ -42,7 +42,6 @@ public class SendMessageView extends Activity implements OnClickListener {
 		try{
 
 			Bundle extras = getIntent().getExtras();
-			new SessionController(extras.get("user").toString());
 			String [] items = (String[]) extras.getCharSequenceArray("message");
 
 			destUser = (EditText) this.findViewById(R.id.destUser);
@@ -58,13 +57,14 @@ public class SendMessageView extends Activity implements OnClickListener {
 
 		}catch(Exception e){
 			
+			Log.d("SendMessageView", e.toString());
 			destUser = (EditText) this.findViewById(R.id.destUser);
 			subject = (EditText) this.findViewById(R.id.subject);
 			messageData = (EditText) this.findViewById(R.id.messageData);
 			sendButton = (Button) this.findViewById(R.id.sendButton);
 			sendButton.setOnClickListener(this);
 			destUser.setOnClickListener(this);
-		
+			
 		}
 	}
 

@@ -10,6 +10,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,9 +53,13 @@ public class DraftView extends ListActivity {
 				nextIntent.putExtra("date", drafts.get(position).getDate());
 				nextIntent.putExtra("type", drafts.get(position).getType());
 				
+				
+				
 				Message m = drafts.get(position);
 				String [] items = {m.getDestUser().toString(), m.getSubject().toString(), m.getData().toString()};
-				
+				for(int i=0; i<items.length; i++){
+				Log.d("DraftView", items[i]);
+				}
 				nextIntent.putExtra("message", items);
 				startActivity(nextIntent);
 
