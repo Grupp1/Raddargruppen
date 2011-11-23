@@ -152,7 +152,7 @@ public class LoginManager extends Observable {
 					if (s == null)
 						break;
 					// Vänta två minuter mellan varje försök
-					Thread.sleep(1000 * 120);
+					Thread.sleep(1000 * 10);
 
 				} catch (InterruptedException e) {
 					Log.d("LoginManager.java", "evaluateLocally FAILADE!!");

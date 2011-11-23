@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import raddar.models.Message;
+import raddar.models.RequestMessage;
 import raddar.models.TextMessage;
 
 import com.google.gson.Gson;
@@ -62,6 +63,7 @@ public class Sender implements Runnable {
 			// Kolla om vi har en address att skicka till innan vi skapar en anslutning
 			if (adr == null) {
 				for(Message m : messages){
+					if (m instanceof RequestMessage) continue;
 					Database.storeIntoBuffer(m);
 					Database.deleteFromTextMessages((TextMessage)m);
 				}

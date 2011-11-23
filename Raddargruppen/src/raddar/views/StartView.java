@@ -86,7 +86,6 @@ public class StartView extends Activity implements Observer {
 	public void onRestart() {
 		super.onRestart();
 		finish();
-
 	}
 
 	/**
