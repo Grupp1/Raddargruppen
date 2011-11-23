@@ -6,8 +6,12 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import raddar.models.MapObject;
 import raddar.models.Message;
+import raddar.models.RequestMessage;
 import raddar.models.TextMessage;
+
+import android.util.Log;
 
 import com.google.gson.Gson;
 /**
@@ -20,7 +24,7 @@ public class Sender implements Runnable {
 	private Thread thread = new Thread(this);
 	private InetAddress adr;		// Mottagarens IP-adress
 	private int port;	// Porten som mottagaren lyssnar på
-	private ArrayList<Message> messages;
+	private ArrayList messages;
 
 	public Sender(Message m, InetAddress address, int port) {
 		// Spara undan argumenten i klassens instansvariabler
@@ -30,7 +34,7 @@ public class Sender implements Runnable {
 		this.port = port;
 		thread.start();	// Starta denna tråden
 	}
-
+	
 	public Sender(Message m, String toUser, int port) {
 		// Hämta mottagarens IP-adress och låt annan konstruktor göra resten av jobbet
 		this(m, Server.onlineUsers.getUserAddress(toUser), port);
@@ -49,9 +53,16 @@ public class Sender implements Runnable {
 	 * @param messages the list of messages to send
 	 * @param toUser The user to send messages to
 	 */
-	public Sender(ArrayList<Message> messages, String toUser){
-		this.messages = messages;
+	public Sender(ArrayList list, String toUser){
+		this.messages = list;
 		adr = Server.onlineUsers.getUserAddress(toUser);
+		port = 4043;
+		thread.start();
+	}
+	
+	public Sender(ArrayList list, InetAddress toUser){
+		this.messages = list;
+		adr = toUser;
 		port = 4043;
 		thread.start();
 	}
@@ -61,8 +72,10 @@ public class Sender implements Runnable {
 		try {
 			// Kolla om vi har en address att skicka till innan vi skapar en anslutning
 			if (adr == null) {
-				for(Message m : messages){
-					Database.storeIntoBuffer(m);
+				if(messages.get(0) instanceof MapObject)return;
+				for(Object m : messages){
+					if(m instanceof RequestMessage) continue;
+					Database.storeIntoBuffer((Message)m);
 					Database.deleteFromTextMessages((TextMessage)m);
 				}
 				System.out.println("Mottagarens IP-adress är inte känd. ");	// Skriv ut att vi inte känner till mottagarens adress
@@ -71,15 +84,17 @@ public class Sender implements Runnable {
 			// Skapa en socket för att kunna skicka meddelandet till mottagaren
 			Socket rSocket = new Socket(adr, port);
 			PrintWriter out = null;
-			for(Message m : messages){	
-				Gson gson = new Gson();
-				String send = m.getClass().getName()+"\r\n";
-				send +=	gson.toJson(m);
-				out = new PrintWriter(rSocket.getOutputStream(), true);
-				out.println(send);
-				System.out.println(m.getSubject());
-
+			
+			if(messages!=null){
+				for(Object o : messages){	
+					Gson gson = new Gson();
+					String send = o.getClass().getName()+"\r\n";
+					send +=	gson.toJson(o);
+					out = new PrintWriter(rSocket.getOutputStream(), true);
+					out.println(send);
+				}
 			}
+		
 			// Skriv ut vilken sorts meddelande som har skickats
 			//System.out.println("["+rSocket.getInetAddress().getHostAddress()+"] << " + messages.get(0).getType().toString() + " har vidarebefordats till " 
 			//+ messages.get(0).getDestUser());
@@ -88,10 +103,11 @@ public class Sender implements Runnable {
 			rSocket.close();
 
 		} catch (IOException e) {
+			if(messages.get(0) instanceof MapObject)return;
 			// Logga ut denna användaren om 
-			LoginManager.logoutUser(messages.get(0).getDestUser());
-			for(Message m : messages){
-				Database.storeIntoBuffer(m);
+			LoginManager.logoutUser(((Message) messages.get(0)).getDestUser());
+			for(Object m : messages){
+				Database.storeIntoBuffer((Message)m);
 				Database.deleteFromTextMessages((TextMessage)m);
 			}
 			// Mottagaren är inte online
