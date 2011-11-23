@@ -2,15 +2,14 @@ package raddar.models;
 
 import java.util.ArrayList;
 
+import raddar.controllers.DatabaseController;
 import raddar.enums.ResourceStatus;
 import raddar.enums.SituationPriority;
 import raddar.views.MainView;
-import raddar.views.MapUI;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.widget.EditText;
 
 import com.google.android.maps.ItemizedOverlay;
@@ -22,7 +21,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
 	private Context mContext;
 	private EditText input;
-	private String value;
+	//private String value;
 	private MapObject item;
 	private int whichItem;
 
@@ -123,8 +122,10 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 					alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int whichButton) {
 							mOverlays.remove(item);
+
 							MainView.mapCont.removeObject(item);
-							MainView.db.deleteRow(item);
+							DatabaseController.db.deleteRow(item);
+
 						}
 
 					});

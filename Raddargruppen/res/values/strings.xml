@@ -13,8 +13,8 @@
 
 	<string name="map_close">Stäng programmet!</string>
 	<string name="map_header">Karta</string>
-	<string name="messagechoice_new">Skriv nytt</string>
-	<string name="messagechoice_inbox">Inbox</string>
+	<string name="messagechoice_new_text">Nytt textmedd.</string>
+	<string name="messagechoice_inbox">Inkorg</string>
 	<string name="send_destUser">Mottagare:</string>
 	<string name="send_subject">Ämne:</string>
 	<string name="send_message">Meddelande:</string>
@@ -36,6 +36,17 @@
     <string name="map_menu_myLocation">Min position</string>
     <string name="map_menu_traffic">Trafik</string>
     <string name="edit_contact_edit">Redigera kontakt:</string>
+    <string name="cancel">Avbryt</string>
+    <string name="messagechoice_outbox">Utkorg</string>
+    <string name="messagechoice_draft">Utkast</string>
+    <string name="messagechoice_new_picture">Nytt bildmedd.</string>
+    <string name="send_image_message_choice">Välj bild</string>
+    <string name="accept_call_incoming">Inkommer samtal från</string>
+    <string name="accept_call_answer">Svara</string>
+    <string name="accept_call_deny">Avvisa</string>
 
+    <string name="contactAddress">SIP Address to contact</string>
+    <string name="talk">Talk</string>
+    <string name="enter_number">Skriv in ditt nummer här...</string>
 
 </resources>

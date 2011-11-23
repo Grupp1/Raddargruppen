@@ -1,11 +1,11 @@
 package raddar.models;
 
 import java.io.IOException;
-import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
-import raddar.views.MainView;
+import raddar.controllers.SessionController;
 import android.location.Address;
 import android.location.Geocoder;
 import android.util.Log;
@@ -39,7 +39,7 @@ public class MapObject extends OverlayItem {
 		this.title = title;
 		this.snippet = snippet;
 		this.icon = icon;
-		this.addedBy = MainView.controller.getUser();
+		this.addedBy = SessionController.getUser();
 		this.date = new SimpleDateFormat("yyyy:MM:dd 'kl' HH:mm:ss").format(new Date());
 		
 		idGen = new ID(addedBy,point.getLatitudeE6(),point.getLongitudeE6(), date);
@@ -198,7 +198,7 @@ public class MapObject extends OverlayItem {
 	 */
 	public void updateDescription(){
 		setDescription("Beskrivning: "+getSnippet()+"\nAdress: "+getAdress()+
-				  "\nKoordinater: "+getPoint().getLatitudeE6()/1E6+", "+getPoint().getLongitudeE6()/1E6 + "\nSkapad: " + 
+				  "Koordinater: "+getPoint().getLatitudeE6()/1E6+", "+getPoint().getLongitudeE6()/1E6 + "\nSkapad: " + 
 				getDate() + "\nSkapad av: " + getAddedBy() + "\n ID: " + getId());
 	}
 	

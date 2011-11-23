@@ -2,7 +2,6 @@ package raddar.models;
 
 import java.util.Observable;
 
-import raddar.controllers.MapCont;
 import raddar.views.MainView;
 import android.content.Context;
 import android.location.Criteria;
@@ -10,7 +9,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 
@@ -23,8 +21,7 @@ public class GPSModel extends Observable implements LocationListener {
 	private LocationManager lm;
 	private String towers;
 	
-	public GPSModel(MainView m, MapCont cont){
-		addObserver(cont);
+	public GPSModel(MainView m){
 		addObserver(m);
 		lm = (LocationManager) m.getSystemService(Context.LOCATION_SERVICE);
 		Criteria crit = new Criteria();

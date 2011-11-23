@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
+import raddar.controllers.DatabaseController;
 import raddar.controllers.Sender;
+import raddar.controllers.SessionController;
 import raddar.enums.MessageType;
 import raddar.gruppen.R;
 import raddar.models.Message;
@@ -32,8 +34,8 @@ public class InboxView extends ListActivity implements Observer{
 
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-		MainView.db.addObserver(this);
-		inbox = MainView.db.getAllRowsAsArrays("message");
+		DatabaseController.db.addObserver(this);
+		inbox = DatabaseController.db.getAllRowsAsArrays("message");
 		
 		ia = new InboxAdapter(this, R.layout.row,inbox);
 		setListAdapter(ia);
@@ -53,15 +55,6 @@ public class InboxView extends ListActivity implements Observer{
 
 			}
 		});
-		
-		Message m = new TextMessage(MessageType.convert("text/plain"),"Daniel","Daniel");
-		m.setData("HOPPAS DET FUNGERAR");
-		m.setSubject("VIKTIGT");
-		try {
-			new Sender (m, InetAddress.getByName("127.0.0.1"), 6789);
-		} catch (UnknownHostException e) {
-			
-		}
 	}
 	
 	public void update(final Observable observable, final Object data) {
@@ -93,7 +86,9 @@ public class InboxView extends ListActivity implements Observer{
 				TextView bt = (TextView) v.findViewById(R.id.bottomtext);
 				ImageView iv = (ImageView)v.findViewById(R.id.icon);
 				if(m.getType() == MessageType.TEXT)
-					iv.setImageResource(R.drawable.magnus);
+					iv.setImageResource(R.drawable.wordwriter);
+				if(m.getType() == MessageType.IMAGE)
+					iv.setImageResource(R.drawable.picturewriter);
 				if (tt != null) 
 					tt.setText("Avsändare: "+m.getSrcUser());                            
 				if(bt != null)

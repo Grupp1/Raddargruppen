@@ -3,6 +3,8 @@ package tddd36.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 
+import raddar.models.TextMessage;
+
 public class Server {
 	
 	// Default-value: 6789
@@ -41,9 +43,7 @@ public class Server {
 	}
 	
 	public static void main(String[] args) {
-		//System.out.println(Database.getAllUsers());
-		
+		System.out.println(Database.getEncryptedPassword("Alice"));
 		new Server();
-
 	}	
 }

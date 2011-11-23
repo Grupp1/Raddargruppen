@@ -8,7 +8,9 @@
 		android:layout_width="fill_parent" android:clickable="true"
 		
 
+
 		android:apiKey="0b1qi7XBfQqm8teK24blL1Hhnfhqc9iOFejhYUw"
+
 
 
 		android:enabled="true" android:layout_height="match_parent"/>

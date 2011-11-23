@@ -1,6 +1,5 @@
 package raddar.views;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Observable;
@@ -12,19 +11,15 @@ import raddar.enums.SituationPriority;
 import raddar.gruppen.R;
 import raddar.models.Fire;
 import raddar.models.FireTruck;
-import raddar.models.GPSModel;
 import raddar.models.MapObject;
 import raddar.models.MapObjectList;
 import raddar.models.Resource;
-import raddar.models.SOS;
 import raddar.models.Situation;
-import raddar.models.You;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -88,7 +83,7 @@ public class MapUI extends MapActivity implements Observer {
 		mapOverlays.add(touchy);
 		
 		MainView.mapCont.declareMapUI(this);
-		
+
 		controller.animateTo(sthlmLocation);
 		controller.setZoom(8);
 
@@ -96,7 +91,10 @@ public class MapUI extends MapActivity implements Observer {
 
 	@Override
 	protected void onStart() {
-		follow = false;
+		if(MainView.mapCont.areYouFind){
+			follow = true;
+			controller.animateTo(MainView.mapCont.getYou().getPoint());
+		}
 		super.onStart();
 	}
 
@@ -289,7 +287,7 @@ public class MapUI extends MapActivity implements Observer {
 			return true;
 		case R.id.myLocation:
 			if (MainView.mapCont.areYouFind){
-				controller.animateTo(myLocation);
+				controller.animateTo(MainView.mapCont.getYou().getPoint());
 			}else{
 				toast = Toast.makeText(getBaseContext(), "Kan ej hitta position", Toast.LENGTH_LONG);
 				toast.show();

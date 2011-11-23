@@ -1,16 +1,13 @@
 package raddar.models;
 
 import java.util.Observable;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import raddar.controllers.MapCont;
 
 public class ConnectionTimer extends Observable {
 	
 	
 	
 	/**
+	 * Används ej för tillfället
 	 * 
 	 * @param updateTime Tiden i millisekunder som klienten ska bekräfta anslutningen
 	 */

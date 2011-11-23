@@ -11,7 +11,6 @@ import java.util.Observer;
 
 import raddar.enums.ResourceStatus;
 import raddar.gruppen.R;
-import raddar.models.ConnectionTimer;
 import raddar.models.GPSModel;
 import raddar.models.MapModel;
 import raddar.models.MapObject;
@@ -24,7 +23,6 @@ import android.location.Geocoder;
 import android.util.Log;
 
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.OverlayItem;
 import com.google.gson.Gson;
 
 public class MapCont implements Observer, Runnable{
@@ -40,16 +38,17 @@ public class MapCont implements Observer, Runnable{
 	/**
 	 * En timer som notifierar controllern att kolla om anslutning till servern finns
 	 */
-	private ConnectionTimer timer;
-	private int updateTime = 5000;
+	//private ConnectionTimer timer;
+	//private int updateTime = 5000;
 
 	/*
 	 * Skickar vidare operationer i en ny tråd till MapModel 
 	 */
 
 	public MapCont(MainView m){
-		gps  = new GPSModel(m, this);
-		olist = MainView.db.getAllRowsAsArrays("map");
+		gps  = new GPSModel(m);
+		gps.addObserver(this);
+		olist = DatabaseController.db.getAllRowsAsArrays("map");
 		//timer = new ConnectionTimer(this, updateTime);
 	}
 
@@ -62,7 +61,7 @@ public class MapCont implements Observer, Runnable{
 	}
 
 	public void add(MapObject o){
-		MainView.db.addRow(o);
+		DatabaseController.db.addRow(o);
 		mapModel.add(o);
 	}
 
@@ -82,11 +81,16 @@ public class MapCont implements Observer, Runnable{
 		mapModel.removeObject(mo);
 	}
 
+	public You getYou(){
+		return you;
+	}
+	
 	public void update(Observable o, Object data) {
 		if (data instanceof GeoPoint){
 			if (!areYouFind){
 				areYouFind = true;
 				you = new You((GeoPoint)data, "Din position", "Här är du", R.drawable.niklas, ResourceStatus.FREE);
+				you.updateData(geocoder);
 				olist.add(you); // databas
 				add(you);		// karta
 				mapUI.controller.animateTo(you.getPoint());
@@ -100,7 +104,7 @@ public class MapCont implements Observer, Runnable{
 
 			if (mapUI.follow){
 				mapUI.controller.animateTo(you.getPoint());
-			}			
+			}
 		}
 		if (data instanceof MapObjectList){
 			// Send information to server

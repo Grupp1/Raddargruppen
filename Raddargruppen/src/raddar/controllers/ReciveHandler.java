@@ -8,36 +8,35 @@ import android.util.Log;
 
 import raddar.enums.ConnectionStatus;
 import raddar.enums.MessageType;
+import raddar.enums.ServerInfo;
 import raddar.models.MapObject;
 import raddar.models.Message;
 import raddar.views.MainView;
+import android.content.Context;
 
 public class ReciveHandler extends Observable implements Runnable {
-	// Standard port = 6789
-	private int port = 4043;
-	private Thread reciveHandler = new Thread(this);
+	private Thread thread = new Thread(this);
+	
+	private Context context;
 
-	public ReciveHandler(MainView m){
-		addObserver(m);
-		reciveHandler.start();
+	public ReciveHandler(Context context) {
+		this.context = context;
+		thread.start();
 	}
 
-	public ReciveHandler(MainView m, int port){
-		addObserver(m);
-		this.port = port;
-		reciveHandler.start();
-	}
-
-
+	/**
+	 * Every time new information comes in to the client a
+	 * new thread is started to handle the message.
+	 */
 	public void run() {
 		try {
 			// Skapa en ServerSocket för att lyssna på inkommande meddelanden
-			ServerSocket so = new ServerSocket(port);
+			ServerSocket so = new ServerSocket(ServerInfo.SERVER_PORT);
 
 			while (true){
 				// När ett inkommande meddelande tas emot skapa en ny Receiver
 				// som körs i en egen tråd
-				new Receiver(so.accept(),this);
+				new Receiver(so.accept(), this, context);
 				notifyObservers(ConnectionStatus.CONNECTED);
 			}
 		} catch (IOException ie) {
@@ -47,9 +46,9 @@ public class ReciveHandler extends Observable implements Runnable {
 		}
 		
 	}
-	public void newMessage(MessageType mt, Message m){
+	public void newMessage(MessageType mt, Message m,boolean notify){
 		if(mt == MessageType.TEXT){
-			MainView.db.addRow(m);
+			DatabaseController.db.addRow(m,notify);
 		}
 	}
 	public void newMapObject(MapObject o){

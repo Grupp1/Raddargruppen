@@ -1,22 +1,22 @@
 package raddar.views;
 
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Observable;
 import java.util.Observer;
 
-import raddar.controllers.InternalComManager;
+import raddar.controllers.DatabaseController;
 import raddar.controllers.MapCont;
 import raddar.controllers.ReciveHandler;
 import raddar.controllers.Sender;
+import raddar.controllers.SessionController;
+import raddar.controllers.SipController;
 import raddar.enums.ConnectionStatus;
 import raddar.enums.NotificationType;
-import raddar.enums.ServerInfo;
+import raddar.enums.RequestType;
 import raddar.gruppen.R;
-import raddar.models.ClientDatabaseManager;
-import raddar.models.GPSModel;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
+import raddar.models.RequestMessage;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -42,11 +42,6 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	private ImageButton logButton;
 	private ImageButton connectionButton;
 	private Bundle extras;
-	//Håller reda på interna kommunikationen på servern. I dagsläget
-	//håller den endast reda på vilken användare som är online
-	public static InternalComManager controller; 
-	//Pekare på databasen. Ska användas för att komma åt databasen
-	public static ClientDatabaseManager db;
 	public static MapCont mapCont;
 	
 	/** Called when the activity is first created. */
@@ -54,23 +49,34 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		extras = getIntent().getExtras();
-		controller = new InternalComManager();
-		controller.setUser(extras.get("user").toString());
-		db = new ClientDatabaseManager(this,controller.getUser());
-		new ReciveHandler(this);
 		
-		//TEMPORÄRT MÅSTE FIXAS
-		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
+		
+		extras = getIntent().getExtras();
+//		controller = new InternalComManager();
+//		controller.setUser(extras.get("user").toString());
+//		db = new ClientDatabaseManager(this,controller.getUser());
+		
+//		//TEMPORÄRT MÅSTE FIXAS
+//		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
+
+		
+		
+		new SessionController(extras.get("user").toString());
+		new DatabaseController(this);
+		new SipController(this);
+		new ReciveHandler(this).addObserver(this);
+
+
+		
+
 		try {
-			// Ändra localhost till serverns address när den
-			// är fastställd och portarna har öppnats i projektrummet
-			new Sender(nm, InetAddress.getByName("130.236.227.95"), 4043);	
+			new Sender(new RequestMessage(RequestType.MESSAGE));
+			new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
 		} catch (UnknownHostException e) {
-			Log.d("NotificationMessage", "Connect failed");
+			e.printStackTrace();
 		}
-		 
-		db.addObserver(this);
+
+		DatabaseController.db.addObserver(this);
 
 		callButton = (ImageButton)this.findViewById(R.id.callButton);
 		callButton.setOnClickListener(this);
@@ -119,47 +125,48 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	public void onClick(View v) {
 
 		if(v == callButton){
-			//finish();
+			Intent nextIntent = new Intent(this,EnterNumberView.class);
+			startActivity(nextIntent);
 		}
-		if(v == messageButton){
+		else if(v == messageButton){
 			Intent nextIntent = new Intent(MainView.this, MessageChoiceView.class);
 			startActivity(nextIntent);
 		}
-		if(v == mapButton){
+		else if(v == mapButton){
 			Intent nextIntent = new Intent(MainView.this, MapUI.class);
 			startActivity(nextIntent);
 		}
-		if(v == contactButton){
+		else if(v == contactButton){
 			Intent nextIntent = new Intent(MainView.this, ContactListView.class);
 			startActivity(nextIntent);
 		}
-		if(v == serviceButton){
+		else if(v == serviceButton){
 			Intent nextIntent = new Intent(MainView.this, ServiceView.class);
 			startActivity(nextIntent);
 		}
-		if(v == sosButton){
-			Toast.makeText(getBaseContext(), "Hjääälp mig!", Toast.LENGTH_LONG).show();
+		else if(v == sosButton){
+
 		}
-		if(v == setupButton){
-			
+		else if(v == setupButton){
+
 		}
-		if(v == logButton){
+		else if(v == logButton){
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage("Är du säker på att du vill logga ut?")
 			.setCancelable(false)
 			.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
-				
+
 				public void onClick(DialogInterface dialog, int id) {
 					// Notifiera servern att vi går offline
-					NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), 
+					NotificationMessage nm = new NotificationMessage(SessionController.getUser(), 
 							NotificationType.DISCONNECT);
 					try {
 						// Skicka meddelandet
-						new Sender(nm, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);		
+						new Sender(nm);		
 					} catch (UnknownHostException e) {
 						Log.d("NotificationMessage", "Disconnect failed");
 					}
-					
+
 					MainView.this.finish();
 				}
 			})
@@ -172,25 +179,26 @@ public class MainView extends Activity implements OnClickListener, Observer{
 			alert.show();
 		}
 		if (v == connectionButton){
-			Toast.makeText(getBaseContext(), "Anslutningen är: "+ extras.get("connectionStatus"), Toast.LENGTH_LONG).show();
+			Toast.makeText(getBaseContext(), extras.get("connectionStatus").toString(), Toast.LENGTH_LONG).show();
 		}
 	}
-
+	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		SipController.onClose();
 		// Notifiera servern att vi går offline
-		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), 
+		NotificationMessage nm = new NotificationMessage(SessionController.getUser(), 
 				NotificationType.DISCONNECT);
 		try {
 			// Skicka meddelandet
-			new Sender(nm, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);		
+			new Sender(nm);		
 		} catch (UnknownHostException e) {
 			Log.d("NotificationMessage", "Disconnect failed");
 		}
-		 
+		DatabaseController.db.close();
 	}
-
+	
 	public void update(Observable observable, final Object data) {
 		runOnUiThread(new Runnable(){
 			public void run(){
@@ -214,7 +222,6 @@ public class MainView extends Activity implements OnClickListener, Observer{
 				if (data instanceof String){
 					Toast.makeText(getBaseContext(), (String)data, Toast.LENGTH_SHORT).show();
 				}
-					
 			}
 		});
 

@@ -17,7 +17,18 @@ public enum MessageType {
 		public String toString() {
 			return "image/jpeg";
 		}
+	},
+	SOS("SOS") {
+		public String toString() {
+			return "SOS";
+		}
+	},
+	REQUEST("request") {
+		public String toString() {
+			return("request");
+		}
 	};
+	
 	
 	private String name;
 	

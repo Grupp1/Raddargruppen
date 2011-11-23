@@ -25,10 +25,27 @@ public class LoginManager {
 		PrintWriter pw;
 		if (Database.evalutateUser(username, password)) {
 			System.out.println(username + " is now associated with " + so.getInetAddress().getHostAddress());
+			
+			// Lägg till användaren i listan över inloggade användare
 			Server.onlineUsers.addUser(username, so.getInetAddress());
 			try {
+				// Hämta det krypterade lösenordet
+				String encryptedPassword = Database.getEncryptedPassword(username);
+				
+				// Hämta användarens salt
+				String salt = Database.getSalt(username);
+				
+				// Skapa utströmmen till klienten
 				pw = new PrintWriter(so.getOutputStream(), true);
+				
+				// Svara med att det är OK
 				pw.println("OK");
+				
+				// Fortsätt med att skicka det krypterade lösenordet och användarens salt tillbaka till användaren
+				// så att denne kan lagra det lokalt på sin telefon
+				pw.println(encryptedPassword);
+				pw.println(salt);
+				
 				// Här någonstans borde även meddelanden som buffrats upp under tiden användaren 
 				// varit offline skickas till användaren nu när denne loggat in
 				pw.close();

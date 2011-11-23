@@ -3,15 +3,16 @@ package tddd36.server;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 
-import raddar.enums.MessageType;
 import raddar.enums.NotificationType;
 import raddar.models.MapObject;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
+import raddar.models.RequestMessage;
 import raddar.models.TextMessage;
-import sun.security.pkcs11.Secmod.DbMode;
 
 import com.google.gson.Gson;
 
@@ -43,8 +44,6 @@ public class Receiver implements Runnable {
 	@Override
 	public void run() {
 		try {
-			System.out.println("["+so.getInetAddress().getHostAddress()+"] ** Connection established. ");
-
 			// För att läsa inkommande data från klienten
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
 			Class c= null ;
@@ -55,33 +54,36 @@ public class Receiver implements Runnable {
 			}
 			String temp = in.readLine();
 
+
 			// if message
 			if (c.getName().equals(Message.class.getName())){
 				Message m = new Gson().fromJson(temp, c);
 				// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
 				// meddelandet som klienten har skickat blir inläst på korrekt sätt
 				switch (m.getType()) {
+				case SOS:
+					broadcast(m);
 				case NOTIFICATION:
 					handleNotification((NotificationMessage) m);
 					break;
 				case TEXT:
-					System.out.println("fått ett meddelande till " + m.getDestUser());
-					//Database.storeTextMessage((TextMessage)m);
-					new Sender(m, m.getDestUser(), 4043);
+					Database.storeTextMessage((TextMessage) m);
+					new Sender(m, m.getDestUser());
 					break;
 				case IMAGE:
 					handleImageMessage();
+					break;
+				case REQUEST:
+					handleRequest((RequestMessage) m);
 					break;
 				default:
 					System.out.println("Received message has unknown type. Discarding... ");
 				}
 			}
-			
 			// if mapobject
 			else if (c.getName().equals(MapObject.class.getName())){
 				MapObject o = new Gson().fromJson(temp, c);
 				// add to database
-				
 			}
 			//	so.close();
 
@@ -115,15 +117,47 @@ public class Receiver implements Runnable {
 	}
 
 	/*
+	 * Broadcasta ett meddelande m till alla i online-listan
+	 */
+	private void broadcast(Message m) {
+		for (InetAddress adr: Server.onlineUsers.getAllAssociations().values())
+			new Sender(m, adr, 4043);
+	}
+
+	/*
 	 * To be implemented
 	 */
 	private void handleImageMessage() {
 
 	}
+	/**
+	 * Handles the request
+	 * @param rm The recived requestMessage
+	 */
+	private void handleRequest(RequestMessage rm){
+		switch(rm.getRequestType()){
+		case MESSAGE:
+			ArrayList<Message> messages = Database.retrieveAllTextMessagesTo(rm.getSrcUser());
+			messages.add(0,rm);
+			new Sender(messages,rm.getSrcUser());
+			break;
+		case BUFFERED_MESSAGE:
+			ArrayList<Message> list = Database.retrieveAllBufferedMessagesTo(rm.getSrcUser());
+			for(Message m: list){
+				Database.storeTextMessage((TextMessage)m);
+			}
+			new Sender(list,rm.getSrcUser());
+			Database.deleteFromBuffer(rm.getSrcUser());
+			break;
+		default:
+			System.out.println("Unknown RequestType");
+		}
+	}
 	/*
 	 * Denna funktionen används för att läsa in en rad och filtrera bort attributtaggen
 	 * 'Content-Type: text/plain' filtreras till exempel till text/plain
 	 */
+
 	private String getAttrValue(String str) {
 		StringBuilder sb = new StringBuilder("");
 		String[] parts = str.split(" ");

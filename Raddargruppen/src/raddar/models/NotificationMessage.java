@@ -9,8 +9,9 @@ public class NotificationMessage extends Message {
 	public final static String HEADER_NOTIFICATION = "Notification: ";
 	public final static String HEADER_PASSWORD = "Password: ";
 	
-	private NotificationType notification;
 	private String password;
+	private NotificationType notification;
+	
 
 	public NotificationMessage(String fromUser, NotificationType notification) {
 		this(fromUser, notification, null);
