@@ -104,7 +104,6 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	}
 
 	public void onClick(View v) {
-
 		if(v == callButton){
 			//finish();
 		}
@@ -146,7 +145,6 @@ public class MainView extends Activity implements OnClickListener, Observer{
 					} catch (UnknownHostException e) {
 						Log.d("NotificationMessage", "Disconnect failed");
 					}
-					
 					MainView.this.finish();
 				}
 			})
