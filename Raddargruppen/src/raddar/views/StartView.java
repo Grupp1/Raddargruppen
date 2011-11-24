@@ -26,6 +26,7 @@ public class StartView extends Activity implements Observer {
 	 * The progressbar that is shown when the client is attempting to log in
 	 */
 	private ProgressDialog dialog;
+	private boolean local = false;
 
 	/**
 	 * Called when the activity is first created. Starts a new thread to log on
@@ -96,11 +97,15 @@ public class StartView extends Activity implements Observer {
 		runOnUiThread(new Runnable() {
 			public void run() {
 				if ((LoginResponse) data == LoginResponse.ACCEPTED) {
-					Intent nextIntent = new Intent(StartView.this,
-							MainView.class);
-					nextIntent.putExtra("user", user.getText().toString());
-					startActivity(nextIntent);
-
+					if (!local) {
+						Intent nextIntent = new Intent(StartView.this,
+								MainView.class);
+						nextIntent.putExtra("user", user.getText().toString());
+						startActivity(nextIntent);
+					}
+					Toast.makeText(StartView.this,
+							"Ansluten till servern",
+							Toast.LENGTH_LONG).show();
 				} else if ((LoginResponse) data == LoginResponse.NO_SUCH_USER_OR_PASSWORD)
 					Toast.makeText(StartView.this,
 							"Ogiltigt användarnamn eller lösenord",
@@ -109,6 +114,7 @@ public class StartView extends Activity implements Observer {
 					Toast.makeText(StartView.this, "Ingen kontakt med servern",
 							Toast.LENGTH_LONG).show();
 				else if ((LoginResponse) data == LoginResponse.ACCEPTED_NO_CONNECTION) {
+					local = true;
 					Toast.makeText(StartView.this,
 							"Ingen kontakt med servern, du loggas in lokalt",
 							Toast.LENGTH_LONG).show();

@@ -32,7 +32,7 @@ public class LoginManager {
 				pw.println("OK");
 				pw.close();
 				
-				System.out.println(username + " is now associated with " + so.getInetAddress().getHostAddress());
+				System.out.println(username + " har loggat in (" + so.getInetAddress().getHostAddress() + ") ");
 				
 				// Lägg till användaren i listan över inloggade användare
 				Server.onlineUsers.addUser(username, so.getInetAddress());
@@ -62,9 +62,9 @@ public class LoginManager {
 		InetAddress a = Server.onlineUsers.removeUser(username);
 		// Kolla om användaren redan är utloggad
 		if (a == null)
-			System.out.println(username + " är inte associerad med någon IP-adress. ");
+			System.out.println(username + " har loggat ut ");
 		// ...annars loggar vi ut denne.
 		else			
-			System.out.println(username + " är inte längre associerad med " + a.getHostAddress());
+			System.out.println(username + " har loggat ut (" + a.getHostAddress() + ") ");
 	}
 }

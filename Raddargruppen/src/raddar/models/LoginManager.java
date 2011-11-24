@@ -24,6 +24,7 @@ public class LoginManager extends Observable {
 	private static HashMap<String, String> passwordCache = new HashMap<String, String>();
 
 	private StubbornLoginThread s = null;
+	private LoginResponse logIn = LoginResponse.NO_SUCH_USER_OR_PASSWORD;
 
 	/**
 	 * Verifierar att username och password är giltiga. Denna metoden kommer att
@@ -37,8 +38,6 @@ public class LoginManager extends Observable {
 	 * @return true om verifieringen går bra, false annars
 	 */
 	public void evaluate(String username, String password) {
-		LoginResponse logIn = LoginResponse.NO_SUCH_USER_OR_PASSWORD;
-		
 		try {
 			// Skapa socket som används för att skicka NotificationMessage
 			Socket so = new Socket();
@@ -55,7 +54,7 @@ public class LoginManager extends Observable {
 			PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
 			BufferedReader br = new BufferedReader(new InputStreamReader(
 					so.getInputStream()));
-			
+
 			RequestMessage rm = new RequestMessage(RequestType.SALT);
 			rm.setSrcUser(username);
 			String send = rm.getClass().getName() + "\r\n";
@@ -63,13 +62,13 @@ public class LoginManager extends Observable {
 			send += gg;
 			// Skicka SALT-request
 			pw.println(send);
-			
+
 			// Läs in salt från server
 			String salt = br.readLine();
-			
+
 			// Använd saltet vi fick för att salta och kryptera lösenordet
 			password = Encryption.encrypt(password, salt);
-			
+
 			// Skapa msg med användarnamn och krypterat lösenord
 			NotificationMessage nm = new NotificationMessage(username,
 					NotificationType.CONNECT, password);
@@ -77,25 +76,28 @@ public class LoginManager extends Observable {
 			gg = new Gson().toJson(nm);
 			send += gg;
 			Log.d("Gson Test", gg.toString());
-			
+
 			// Skicka det saltade och krypterade lösenordet
 			pw.println(send);
 
 			// Läs in ett svar från servern via SAMMA socket
 			String response = br.readLine();
 
-			if (response.equals("OK")) {
-				logIn = LoginResponse.ACCEPTED;
-				s = null;
-			}
-
 			// Stäng ner strömmar och socket
 			pw.close();
 			br.close();
 			so.close();
+
+			if (response.equals("OK")) {
+				logIn = LoginResponse.ACCEPTED;
+				s = null;
+			}
 		} catch (IOException e) {
 			Log.d("NotificationMessage", "Server connection failed");
-			logIn = evaluateLocally(username, password);
+			if (s == null)
+				logIn = evaluateLocally(username, password);
+			else
+				return;
 		}
 		setChanged();
 		notifyObservers(logIn);
@@ -125,8 +127,7 @@ public class LoginManager extends Observable {
 			 * StubbornLoginThread försöker logga in mot servern med jämna
 			 * mellanrum
 			 */
-			if (s == null)
-				s = new StubbornLoginThread(username, password);
+			s = new StubbornLoginThread(username, password);
 			return LoginResponse.ACCEPTED_NO_CONNECTION;
 		}
 		return LoginResponse.NO_CONNECTION;
@@ -157,7 +158,6 @@ public class LoginManager extends Observable {
 		public void run() {
 			while (true) {
 				try {
-					s = null;
 					if (s == null)
 						break;
 					LoginManager.this.evaluate(username, password);
