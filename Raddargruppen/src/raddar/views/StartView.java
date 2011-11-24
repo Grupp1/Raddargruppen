@@ -37,17 +37,18 @@ public class StartView extends Activity implements Observer {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.start);
 		// Lite hårdkodade testanvändare att testa med
-//		LoginManager.cache("Borche", "hej123");
-//		LoginManager.cache("Danne", "raddar");
-//		LoginManager.cache("danan612","raddar");
+	/*	LoginManager.cache("Borche", "hej123");
+		LoginManager.cache("Danne", "raddar");
 		LoginManager.cache("Alice", "longshot");
+		LoginManager.cache("danan612","raddar");*/
+
 
 		user = (EditText) this.findViewById(R.id.userText);
 		password = (EditText) this.findViewById(R.id.passwordText);
 		// Endast för lättare testning
 
-		user.setText("Alice");
-		password.setText("longshot");
+		//user.setText("Alice");
+		//password.setText("longshot");
 
 		final LoginManager lm = new LoginManager();
 		lm.addObserver(this);
@@ -57,7 +58,6 @@ public class StartView extends Activity implements Observer {
 
 		loginButton = (Button) this.findViewById(R.id.okButton);
 		loginButton.setOnClickListener(new OnClickListener() {
-			@Override
 			public void onClick(View v) {
 				v.getContext().deleteDatabase(user.getText().toString());
 				String[] sipDetails = new String[3];

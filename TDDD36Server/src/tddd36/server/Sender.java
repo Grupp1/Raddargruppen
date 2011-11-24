@@ -11,8 +11,6 @@ import raddar.models.Message;
 import raddar.models.RequestMessage;
 import raddar.models.TextMessage;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 /**
  * 
@@ -107,6 +105,7 @@ public class Sender implements Runnable {
 			// Logga ut denna användaren om 
 			LoginManager.logoutUser(((Message) messages.get(0)).getDestUser());
 			for(Object m : messages){
+				if(m instanceof RequestMessage) continue;
 				Database.storeIntoBuffer((Message)m);
 				Database.deleteFromTextMessages((TextMessage)m);
 			}

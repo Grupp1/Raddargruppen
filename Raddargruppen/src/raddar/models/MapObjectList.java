@@ -57,10 +57,10 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 		this.populate();
 	}
 
-	//	public void updateOverlay(int index, MapObject o){
-	//		mOverlays.set(index, o);
-	//		this.populate();
-	//	}
+		public void updateOverlay(int index, MapObject o){
+			mOverlays.set(index, o);
+			this.populate();
+		}
 
 	/**
 	 * Vad som händer när man trycker på en situation

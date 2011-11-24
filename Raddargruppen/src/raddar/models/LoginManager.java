@@ -41,6 +41,7 @@ public class LoginManager extends Observable {
 		NotificationMessage nm = new NotificationMessage(username, 
 				NotificationType.CONNECT, 
 				password);
+
 		if(!debugMode){
 			try {
 				// Skapa socket som används för att skicka NotificationMessage

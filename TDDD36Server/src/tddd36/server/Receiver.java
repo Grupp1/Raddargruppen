@@ -8,8 +8,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import raddar.enums.NotificationType;
-import raddar.models.*;
 
+import raddar.models.*;
 
 import com.google.gson.Gson;
 
@@ -50,11 +50,10 @@ public class Receiver implements Runnable {
 				e.printStackTrace();
 			}
 			String temp = in.readLine();
-
-
+			Object o = new Gson().fromJson(temp, c);
 			// if message
-			if (c.getName().equals(Message.class.getName())){
-				Message m = new Gson().fromJson(temp, c);
+			if (o instanceof Message){
+				Message m = (Message) o;
 				// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
 				// meddelandet som klienten har skickat blir inläst på korrekt sätt
 				switch (m.getType()) {
@@ -78,9 +77,10 @@ public class Receiver implements Runnable {
 				}
 			}
 			// if mapobject
-			else if (c.getName().equals(MapObject.class.getName())){
-				MapObject o = new Gson().fromJson(temp, c);
-				broadcast(o);
+			else if (o instanceof MapObject){
+				System.out.println("HEEEEJ");
+				MapObject mo = new Gson().fromJson(temp, c);
+				broadcast(mo);
 			}
 			//	so.close();
 
