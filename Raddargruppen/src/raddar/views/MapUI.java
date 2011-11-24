@@ -94,6 +94,7 @@ public class MapUI extends MapActivity implements Observer {
 		if(MainView.mapCont.areYouFind){
 			follow = true;
 			controller.animateTo(MainView.mapCont.getYou().getPoint());
+			controller.setZoom(12);
 		}
 		super.onStart();
 	}

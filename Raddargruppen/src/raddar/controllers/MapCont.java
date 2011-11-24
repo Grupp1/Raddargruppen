@@ -48,12 +48,11 @@ public class MapCont implements Observer, Runnable{
 	public MapCont(MainView m){
 		gps  = new GPSModel(m);
 		gps.addObserver(this);
-		olist = DatabaseController.db.getAllRowsAsArrays("map");
-		//timer = new ConnectionTimer(this, updateTime);
 	}
 
 	public void declareMapUI(MapUI mapUI){
 		this.mapUI = mapUI;
+		olist = DatabaseController.db.getAllRowsAsArrays("map");
 		geocoder = new Geocoder(mapUI.getBaseContext(), Locale.getDefault());
 		if (!thread.isAlive()){
 			run();
