@@ -146,7 +146,8 @@ public class MainView extends Activity implements OnClickListener, Observer{
 			startActivity(nextIntent);
 		}
 		else if(v == sosButton){
-
+			Intent nextIntent = new Intent(MainView.this, SendSOSView.class);
+			startActivity(nextIntent);
 		}
 		else if(v == setupButton){
 

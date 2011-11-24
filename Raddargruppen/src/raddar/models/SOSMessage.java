@@ -1,6 +1,7 @@
 package raddar.models;
 
 import raddar.enums.MessageType;
+import raddar.enums.SOSType;
 
 /**
  * Ett SOS-meddelande. SOS-meddelanden som skickas till servern broadcastas
@@ -12,12 +13,14 @@ import raddar.enums.MessageType;
  */
 public class SOSMessage extends Message {
 	
+	private SOSType SOSType;
+	
 	/**
 	 * Skapa ett SOS-meddelande
 	 * @param msg Ett medföljande meddelande
 	 */
-	public SOSMessage(String msg) {
-		this(msg, "");
+	public SOSMessage(String fromUser, SOSType st) {
+		this("", fromUser, st);
 	}
 	
 	/**
@@ -25,12 +28,12 @@ public class SOSMessage extends Message {
 	 * @param msg Medföljande meddelande
 	 * @param fromUser Avsändaren
 	 */
-	public SOSMessage(String msg, String fromUser) {
+	public SOSMessage(String msg, String fromUser, SOSType st) {
+		this.SOSType = st;
 		this.data = msg;
 		this.fromUser = fromUser;
 		this.type = MessageType.SOS;
 	}
-	
 
 	@Override
 	public String getFormattedMessage() {

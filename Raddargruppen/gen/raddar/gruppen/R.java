@@ -74,7 +74,7 @@ public final class R {
         public static final int editContactEditText=0x7f060015;
         public static final int editText1=0x7f06002e;
         public static final int enter_number=0x7f060018;
-        public static final int follow=0x7f06004b;
+        public static final int follow=0x7f06004e;
         public static final int foot=0x7f06000c;
         public static final int icon=0x7f06003d;
         public static final int image=0x7f060013;
@@ -100,12 +100,12 @@ public final class R {
         public static final int mapview=0x7f06002d;
         public static final int messageButton=0x7f06001e;
         public static final int messageData=0x7f060044;
-        public static final int myLocation=0x7f06004c;
+        public static final int myLocation=0x7f06004f;
         public static final int newPictureButton=0x7f060032;
         public static final int newTextButton=0x7f060031;
-        public static final int okButton=0x7f060049;
+        public static final int okButton=0x7f06004c;
         public static final int outboxButton=0x7f060036;
-        public static final int passwordText=0x7f060048;
+        public static final int passwordText=0x7f06004b;
         public static final int presence=0x7f06002c;
         public static final int preview=0x7f060043;
         public static final int readMessage=0x7f06003c;
@@ -116,17 +116,20 @@ public final class R {
         public static final int serviceButton=0x7f060025;
         public static final int setupButton=0x7f060027;
         public static final int sosButton=0x7f060029;
+        public static final int sos_meddelande_edittext=0x7f060046;
+        public static final int sos_meddelande_textview=0x7f060045;
+        public static final int sos_send_message_button=0x7f060047;
         public static final int subject=0x7f060041;
         public static final int text=0x7f060014;
         public static final int textView1=0x7f060001;
         public static final int textView2=0x7f06001c;
         public static final int textView3=0x7f06001f;
-        public static final int toggle=0x7f06004a;
+        public static final int toggle=0x7f06004d;
         public static final int toptext=0x7f06003e;
-        public static final int traffic=0x7f06004d;
-        public static final int trafikverketButton=0x7f060046;
-        public static final int userText=0x7f060047;
-        public static final int yrButton=0x7f060045;
+        public static final int traffic=0x7f060050;
+        public static final int trafikverketButton=0x7f060049;
+        public static final int userText=0x7f06004a;
+        public static final int yrButton=0x7f060048;
     }
     public static final class layout {
         public static final int accept_call=0x7f030000;
@@ -147,26 +150,28 @@ public final class R {
         public static final int row=0x7f03000f;
         public static final int send_image_message=0x7f030010;
         public static final int send_message=0x7f030011;
-        public static final int services=0x7f030012;
-        public static final int start=0x7f030013;
-        public static final int walkietalkie=0x7f030014;
+        public static final int send_sos_message=0x7f030012;
+        public static final int services=0x7f030013;
+        public static final int start=0x7f030014;
+        public static final int walkietalkie=0x7f030015;
     }
     public static final class menu {
         public static final int mapmenu=0x7f050000;
     }
     public static final class string {
-        public static final int accept_call_answer=0x7f040025;
-        public static final int accept_call_deny=0x7f040026;
-        public static final int accept_call_incoming=0x7f040024;
+        public static final int accept_call_answer=0x7f040026;
+        public static final int accept_call_deny=0x7f040027;
+        public static final int accept_call_incoming=0x7f040025;
         public static final int add_contact_add=0x7f040018;
         public static final int add_contact_save=0x7f040019;
         public static final int app_name=0x7f040001;
+        public static final int back=0x7f040028;
         public static final int button1=0x7f040002;
-        public static final int cancel=0x7f04001f;
-        public static final int contactAddress=0x7f040027;
+        public static final int cancel=0x7f040020;
+        public static final int contactAddress=0x7f040029;
         public static final int contact_foot=0x7f04000f;
-        public static final int edit_contact_edit=0x7f04001e;
-        public static final int enter_number=0x7f040029;
+        public static final int edit_contact_edit=0x7f04001f;
+        public static final int enter_number=0x7f04002b;
         public static final int main_call=0x7f040014;
         public static final int main_contact_list=0x7f040012;
         public static final int main_logout=0x7f040010;
@@ -177,25 +182,26 @@ public final class R {
         public static final int main_sos=0x7f040016;
         public static final int map_close=0x7f040007;
         public static final int map_header=0x7f040008;
-        public static final int map_menu_follow=0x7f04001a;
-        public static final int map_menu_myLocation=0x7f04001c;
-        public static final int map_menu_toggle=0x7f04001b;
-        public static final int map_menu_traffic=0x7f04001d;
-        public static final int messagechoice_draft=0x7f040021;
+        public static final int map_menu_follow=0x7f04001b;
+        public static final int map_menu_myLocation=0x7f04001d;
+        public static final int map_menu_toggle=0x7f04001c;
+        public static final int map_menu_traffic=0x7f04001e;
+        public static final int messagechoice_draft=0x7f040022;
         public static final int messagechoice_inbox=0x7f04000a;
-        public static final int messagechoice_new_picture=0x7f040022;
+        public static final int messagechoice_new_picture=0x7f040023;
         public static final int messagechoice_new_text=0x7f040009;
-        public static final int messagechoice_outbox=0x7f040020;
+        public static final int messagechoice_outbox=0x7f040021;
         public static final int send_destUser=0x7f04000b;
-        public static final int send_image_message_choice=0x7f040023;
+        public static final int send_image_message_choice=0x7f040024;
         public static final int send_message=0x7f04000d;
         public static final int send_send=0x7f04000e;
         public static final int send_subject=0x7f04000c;
+        public static final int sos_meddelande=0x7f04001a;
         public static final int start_exit=0x7f040005;
         public static final int start_header=0x7f040000;
         public static final int start_ok=0x7f040006;
         public static final int start_password=0x7f040004;
         public static final int start_user=0x7f040003;
-        public static final int talk=0x7f040028;
+        public static final int talk=0x7f04002a;
     }
 }
