@@ -77,7 +77,8 @@ public class Receiver implements Runnable {
 				}
 			}
 			// if mapobject
-			else if (c.getName().equals(MapObject.class.getName())){
+			else if (o instanceof MapObject){
+				System.out.println("HEEEEJ");
 				MapObject mo = new Gson().fromJson(temp, c);
 				broadcast(mo);
 			}

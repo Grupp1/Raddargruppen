@@ -48,18 +48,21 @@ public class MapCont implements Observer, Runnable{
 	public MapCont(MainView m){
 		gps  = new GPSModel(m);
 		gps.addObserver(this);
-		olist = DatabaseController.db.getAllRowsAsArrays("map");
-		//timer = new ConnectionTimer(this, updateTime);
 	}
 
 	public void declareMapUI(MapUI mapUI){
 		this.mapUI = mapUI;
+		olist = DatabaseController.db.getAllRowsAsArrays("map");
 		geocoder = new Geocoder(mapUI.getBaseContext(), Locale.getDefault());
 		if (!thread.isAlive()){
 			run();
 		}
 	}
 
+	public Thread getThread(){
+		return thread;
+	}
+	
 	public void add(MapObject o){
 		DatabaseController.db.addRow(o);
 		mapModel.add(o);
@@ -71,7 +74,7 @@ public class MapCont implements Observer, Runnable{
 
 	public void run() {
 		for(int i = 0; i < olist.size();i++){
-			olist.get(i).updateData(new Geocoder(mapUI.getBaseContext(), Locale.getDefault()));
+			olist.get(i).updateData(new Geocoder(mapUI.getBaseContext(), Locale.getDefault()));	
 			mapModel = new MapModel(mapUI, MapCont.this);
 			mapModel.add(olist.get(i));
 		}
@@ -108,18 +111,18 @@ public class MapCont implements Observer, Runnable{
 		}
 		if (data instanceof MapObjectList){
 			// Send information to server
-			Gson gson = new Gson();
-			for (int i=0; i<((MapObjectList) data).size(); i++){
-				try {
-					gson.toJson((MapObject) ((MapObjectList) data).getItem(i));
-					new Sender((MapObject) ((MapObjectList) data).getItem(i),
-							InetAddress.getByName(raddar.enums.ServerInfo.SERVER_IP),
-							raddar.enums.ServerInfo.SERVER_PORT);
-				} catch (UnknownHostException e) {
-					//e.printStackTrace();
-					Log.d("Send MapObjects", "UnknownHostException");
-				}
-			}
+//			Gson gson = new Gson();
+//			for (int i=0; i<((MapObjectList) data).size(); i++){
+//				try {
+//					gson.toJson((MapObject) ((MapObjectList) data).getItem(i));
+//					new Sender((MapObject) ((MapObjectList) data).getItem(i),
+//							InetAddress.getByName(raddar.enums.ServerInfo.SERVER_IP),
+//							raddar.enums.ServerInfo.SERVER_PORT);
+//				} catch (UnknownHostException e) {
+//					//e.printStackTrace();
+//					Log.d("Send MapObjects", "UnknownHostException");
+//				}
+//			}
 		}
 		if(mapUI!=null){
 			mapUI.getMapView().postInvalidate();

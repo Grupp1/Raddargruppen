@@ -83,6 +83,10 @@ public class ReciveHandler extends Observable implements Runnable {
 		}
 	}
 	public void newMapObject(MapObject o){
-		MainView.mapCont.add(o);
+		if(MainView.mapCont.getThread().isAlive()){
+			MainView.mapCont.add(o);
+		}else{
+			DatabaseController.db.addRow(o);
+		}
 	}
 }
