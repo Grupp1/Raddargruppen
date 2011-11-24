@@ -2,14 +2,13 @@ package raddar.models;
 
 import java.util.Observable;
 
-import raddar.views.MapUI;
+import raddar.views.MainView;
 import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 
@@ -22,9 +21,9 @@ public class GPSModel extends Observable implements LocationListener {
 	private LocationManager lm;
 	private String towers;
 	
-	public GPSModel(MapUI mapUI){
-		addObserver(mapUI);
-		lm = (LocationManager) mapUI.getSystemService(Context.LOCATION_SERVICE);
+	public GPSModel(MainView m){
+		addObserver(m);
+		lm = (LocationManager) m.getSystemService(Context.LOCATION_SERVICE);
 		Criteria crit = new Criteria();
 	
 		towers = lm.getBestProvider(crit, false);
@@ -38,7 +37,7 @@ public class GPSModel extends Observable implements LocationListener {
 			notifyObservers(myLocation);
 		}
 		else{
-			Toast.makeText(mapUI, "Kan inte hitta leverantör", Toast.LENGTH_SHORT).show();
+			notifyObservers("Kan inte hitta leverantör");
 		}
 	}
 

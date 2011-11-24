@@ -25,6 +25,10 @@ public class LoginManager extends Observable {
 
 	private StubbornLoginThread s = null;
 	private LoginResponse logIn = LoginResponse.NO_SUCH_USER_OR_PASSWORD;
+	/**
+	 * Hårdkoda denna boolean true om klienten inte ska kontakta servern för inloggning
+	 */
+	public boolean debugMode = false;
 
 	/**
 	 * Verifierar att username och password är giltiga. Denna metoden kommer att
@@ -94,6 +98,9 @@ public class LoginManager extends Observable {
 			}
 		} catch (IOException e) {
 			Log.d("NotificationMessage", "Server connection failed");
+			// Om servern inte kan nås, kolla om vi har en försökande tråd redan
+			// ...har vi en försökande tråd innebär det att vi redan är inloggade lokalt
+			// och då returnerar vi här, annars loggar vi in lokalt
 			if (s == null)
 				logIn = evaluateLocally(username, password);
 			else
