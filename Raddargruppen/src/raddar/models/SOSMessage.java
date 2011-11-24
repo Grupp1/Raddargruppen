@@ -41,4 +41,12 @@ public class SOSMessage extends Message {
 		return null;
 	}
 
+	public SOSType getSOSType() {
+		return SOSType;
+	}
+
+	public void setSOSType(SOSType sOSType) {
+		SOSType = sOSType;
+	}
+
 }

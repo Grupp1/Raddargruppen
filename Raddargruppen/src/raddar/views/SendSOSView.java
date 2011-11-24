@@ -12,6 +12,7 @@ import raddar.models.SOSMessage;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -21,6 +22,8 @@ public class SendSOSView extends Activity {
 	
 	private static boolean SOS_ALARM_IS_ACTIVE = false;
 	
+	// statisk variabel som ser till att det man skrivit
+	// inte försvinner bara för att man lämnar vyn tillfälligt
 	private static String txt = "";
 	
 	private Button button;
@@ -74,6 +77,10 @@ public class SendSOSView extends Activity {
 		}
 	}
 	
+	/*
+	 * Knappens text ska skifta mellan Skicka och Avbryt, 
+	 * beroende på om ett larm redan är aktivt
+	 */
 	private void updateLabels() {
 		if (SOS_ALARM_IS_ACTIVE) {
 			button.setText("Avbryt");
@@ -89,8 +96,13 @@ public class SendSOSView extends Activity {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		
-		
 	}
-
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	    if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+	        txt = et.getText().toString();
+	    }
+	    return super.onKeyDown(keyCode, event);
+	}
 }

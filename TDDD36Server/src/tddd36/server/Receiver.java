@@ -9,8 +9,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import raddar.enums.NotificationType;
-
-import raddar.models.*;
+import raddar.models.MapObject;
+import raddar.models.Message;
+import raddar.models.NotificationMessage;
+import raddar.models.RequestMessage;
+import raddar.models.TextMessage;
 
 import com.google.gson.Gson;
 
@@ -119,8 +122,11 @@ public class Receiver implements Runnable {
 	 * Broadcasta ett meddelande m till alla i online-listan
 	 */
 	private void broadcast(Message m) {
-		for (InetAddress adr: Server.onlineUsers.getAllAssociations().values())
+		InetAddress sourceaddr = Server.onlineUsers.getUserAddress(m.getSrcUser());
+		for (InetAddress adr: Server.onlineUsers.getAllAssociations().values()) {
+			if (adr == sourceaddr) continue;
 			new Sender(m, adr, 4043);
+		}
 	}
 	
 	/*
