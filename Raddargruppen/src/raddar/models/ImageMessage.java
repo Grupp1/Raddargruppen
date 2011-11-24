@@ -41,7 +41,7 @@ public class ImageMessage extends Message {
 		this.fromUser = srcUser.trim();
 		this.toUser = destUser.trim();
 		this.bitmap = bitmap;
-		this.filePath = filePath;
+	//	this.filePath = filePath;
 		subject = "DEFAULT";
 	}
 

@@ -3,15 +3,14 @@ package tddd36.server;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 
 import raddar.enums.NotificationType;
-import raddar.models.Message;
-import raddar.models.NotificationMessage;
-import raddar.models.RequestMessage;
-import raddar.models.TextMessage;
+
+import raddar.models.*;
 
 import com.google.gson.Gson;
 
@@ -39,7 +38,6 @@ public class Receiver implements Runnable {
 		clientThread.start();
 	}
 
-
 	@Override
 	public void run() {
 		try {
@@ -51,30 +49,37 @@ public class Receiver implements Runnable {
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
+				
 			String temp = in.readLine();
-			Message m = new Gson().fromJson(temp, c);
-			//		so.close();
-
-			switch (m.getType()) {
-			case SOS:
-				broadcast(m);
-			case NOTIFICATION:
-				handleNotification((NotificationMessage) m);
-				break;
-			case TEXT:
-				Database.storeTextMessage((TextMessage) m);
-				new Sender(m, m.getDestUser());
-				break;
-			case IMAGE:
-				handleImageMessage();
-				break;
-			case REQUEST:
-				handleRequest((RequestMessage) m);
-				break;
-			default:
-				System.out.println("Received message has unknown type. Discarding... ");
+			
+			Object o = new Gson().fromJson(temp, c);
+			// if message
+			if (o instanceof Message){
+				Message m = (Message) o;
+				// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
+				// meddelandet som klienten har skickat blir inläst på korrekt sätt
+				switch (m.getType()) {
+				case SOS:
+					broadcast(m);
+				case NOTIFICATION:
+					handleNotification((NotificationMessage) m);
+					break;
+				case TEXT:
+					Database.storeTextMessage((TextMessage) m);
+					new Sender(m, m.getDestUser());
+					break;
+				case IMAGE:
+					new Sender(m, m.getDestUser());
+					break;
+				case REQUEST:
+					handleRequest((RequestMessage) m);
+					break;
+				default:
+					System.out.println("Received message has unknown type. Discarding... ");
+				}
 			}
-
+//			
+			//	so.close();
 		} catch (IOException ie) {
 			ie.printStackTrace();
 		}
@@ -112,11 +117,13 @@ public class Receiver implements Runnable {
 			new Sender(m, adr, 4043);
 	}
 
+
 	/*
 	 * To be implemented
 	 */
 	private void handleImageMessage() {
-
+		
+		
 	}
 	/**
 	 * Handles the request
@@ -137,8 +144,26 @@ public class Receiver implements Runnable {
 			new Sender(list,rm.getSrcUser());
 			Database.deleteFromBuffer(rm.getSrcUser());
 			break;
+		case SALT:
+			String salt = Database.getSalt(rm.getSrcUser());
+			try {
+				// Skicka saltet till klienten som requestar det
+				new PrintWriter(so.getOutputStream(), true).println(salt);
+				Class c= null ;
+				try {
+					c = Class.forName(in.readLine());
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+				String temp = in.readLine();
+				Message m = new Gson().fromJson(temp, c);
+				handleNotification((NotificationMessage) m);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			break;
 		default:
-			System.out.println("Unknown RequestType");
+			System.out.println("Okänd RequestType");
 		}
 	}
 	/*

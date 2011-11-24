@@ -60,7 +60,7 @@ public class ClientDatabaseManager extends Observable {
 		 */
 
 		// TEST KOD FÖR MAP
-		addRow(new Fire(new GeoPoint(58395730, 15573080), "HAHAHA",
+		addRow(new Fire(new GeoPoint(58395730, 15573080), "Här brinner det!",
 				SituationPriority.HIGH));
 
 		//TEST KOD FÖR SAMTAL
@@ -68,15 +68,11 @@ public class ClientDatabaseManager extends Observable {
 		Contact einar = new Contact("Einar", false, "marcuseinar", "einar");
 		Contact danan = new Contact("danan612", false, "danan612", "raddar");
 		Contact alice = new Contact("Alice",false,null,null);
+		Contact borche = new Contact("Borche", false);
 		addRow(alice);
 		addRow(einar);
 		addRow(danan);
-
-		//TEST KOD ANVÄNDS FÖR ATT TESTA KONTAKTLISTAN
-		addRow(new Contact("Alice",false));
-		addRow(new Contact("Borche",false));
-		addRow(new Contact("Daniel",false));
-
+		addRow(borche);
 	}
 
 	/**********************************************************************

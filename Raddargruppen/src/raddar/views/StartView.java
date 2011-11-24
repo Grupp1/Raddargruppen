@@ -4,6 +4,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import raddar.controllers.SipController;
+import raddar.enums.ConnectionStatus;
 import raddar.enums.LoginResponse;
 import raddar.gruppen.R;
 import raddar.models.LoginManager;
@@ -26,6 +27,7 @@ public class StartView extends Activity implements Observer {
 	 * The progressbar that is shown when the client is attempting to log in
 	 */
 	private ProgressDialog dialog;
+	private boolean local = false;
 
 	/**
 	 * Called when the activity is first created. Starts a new thread to log on
@@ -41,12 +43,13 @@ public class StartView extends Activity implements Observer {
 		LoginManager.cache("Alice", "longshot");
 		LoginManager.cache("danan612","raddar");
 
+
 		user = (EditText) this.findViewById(R.id.userText);
 		password = (EditText) this.findViewById(R.id.passwordText);
 		// Endast för lättare testning
 
-		//user.setText("Alice");
-		//password.setText("longshot");
+		user.setText("Alice");
+		password.setText("longshot");
 
 		final LoginManager lm = new LoginManager();
 		lm.addObserver(this);
@@ -56,7 +59,6 @@ public class StartView extends Activity implements Observer {
 
 		loginButton = (Button) this.findViewById(R.id.okButton);
 		loginButton.setOnClickListener(new OnClickListener() {
-
 			public void onClick(View v) {
 				v.getContext().deleteDatabase(user.getText().toString());
 				String[] sipDetails = new String[3];
@@ -68,7 +70,6 @@ public class StartView extends Activity implements Observer {
 				//nextIntent.putExtra("user", user.getText().toString());
 				//startActivity(nextIntent);
 				loginButton.setEnabled(false);
-
 				dialog.show();
 
 				Thread s = new Thread(new Runnable(){
@@ -86,7 +87,6 @@ public class StartView extends Activity implements Observer {
 	public void onRestart() {
 		super.onRestart();
 		finish();
-
 	}
 
 	/**
@@ -97,11 +97,16 @@ public class StartView extends Activity implements Observer {
 		runOnUiThread(new Runnable() {
 			public void run() {
 				if ((LoginResponse) data == LoginResponse.ACCEPTED) {
-					Intent nextIntent = new Intent(StartView.this,
-							MainView.class);
-					nextIntent.putExtra("user", user.getText().toString());
-					startActivity(nextIntent);
-
+					if (!local) {
+						Intent nextIntent = new Intent(StartView.this,
+								MainView.class);
+						nextIntent.putExtra("user", user.getText().toString());
+						nextIntent.putExtra("connectionStatus", ConnectionStatus.CONNECTED);
+						startActivity(nextIntent);
+					}
+					Toast.makeText(StartView.this,
+							"Ansluten till servern",
+							Toast.LENGTH_LONG).show();
 				} else if ((LoginResponse) data == LoginResponse.NO_SUCH_USER_OR_PASSWORD)
 					Toast.makeText(StartView.this,
 							"Ogiltigt användarnamn eller lösenord",
@@ -110,13 +115,14 @@ public class StartView extends Activity implements Observer {
 					Toast.makeText(StartView.this, "Ingen kontakt med servern",
 							Toast.LENGTH_LONG).show();
 				else if ((LoginResponse) data == LoginResponse.ACCEPTED_NO_CONNECTION) {
+					local = true;
 					Toast.makeText(StartView.this,
 							"Ingen kontakt med servern, du loggas in lokalt",
 							Toast.LENGTH_LONG).show();
 					Intent nextIntent = new Intent(StartView.this,
 							MainView.class);
 					nextIntent.putExtra("user", user.getText().toString());
-
+					nextIntent.putExtra("connectionStatus", ConnectionStatus.DISCONNECTED);
 					startActivity(nextIntent);
 				}
 				loginButton.setEnabled(true);
