@@ -27,6 +27,7 @@ public class SendSOSView extends Activity {
 	private static String txt = "";
 	
 	private Button button;
+	private Button clear;
 	private EditText et;
 	
 	@Override
@@ -36,10 +37,11 @@ public class SendSOSView extends Activity {
 
 		button = (Button) findViewById(R.id.sos_send_message_button);
 		et = (EditText) findViewById(R.id.sos_meddelande_edittext);
+		clear = (Button) findViewById(R.id.sos_rensa_meddelande);
 		
 		updateLabels();
 		
-		button.setOnClickListener(new OnClickListener() {
+		OnClickListener ocl = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (v == button) {
@@ -51,8 +53,13 @@ public class SendSOSView extends Activity {
 						updateLabels();
 					}
 				}
+				if (v == clear) 
+					et.setText(txt = "");
 			}
-		});
+		};
+		
+		button.setOnClickListener(ocl);
+		clear.setOnClickListener(ocl);
 	}
 	
 	private void startAlarm() {
@@ -86,9 +93,11 @@ public class SendSOSView extends Activity {
 			button.setText("Avbryt");
 			et.setText(txt);
 			et.setEnabled(false);
+			clear.setEnabled(false);
 		} else {
 			button.setText("Send");
 			et.setEnabled(true);
+			clear.setEnabled(true);
 			et.setText(txt);
 		}
 	}

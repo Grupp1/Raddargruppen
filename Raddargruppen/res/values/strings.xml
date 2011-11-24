@@ -48,5 +48,5 @@
     <string name="contactAddress">SIP Address to contact</string>
     <string name="talk">Talk</string>
     <string name="enter_number"></string>
-
+	<string name="rensa">Rensa</string>
 </resources>

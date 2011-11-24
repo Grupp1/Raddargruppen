@@ -74,7 +74,7 @@ public final class R {
         public static final int editContactEditText=0x7f060015;
         public static final int editText1=0x7f06002e;
         public static final int enter_number=0x7f060018;
-        public static final int follow=0x7f06004e;
+        public static final int follow=0x7f06004f;
         public static final int foot=0x7f06000c;
         public static final int icon=0x7f06003d;
         public static final int image=0x7f060013;
@@ -100,12 +100,12 @@ public final class R {
         public static final int mapview=0x7f06002d;
         public static final int messageButton=0x7f06001e;
         public static final int messageData=0x7f060044;
-        public static final int myLocation=0x7f06004f;
+        public static final int myLocation=0x7f060050;
         public static final int newPictureButton=0x7f060032;
         public static final int newTextButton=0x7f060031;
-        public static final int okButton=0x7f06004c;
+        public static final int okButton=0x7f06004d;
         public static final int outboxButton=0x7f060036;
-        public static final int passwordText=0x7f06004b;
+        public static final int passwordText=0x7f06004c;
         public static final int presence=0x7f06002c;
         public static final int preview=0x7f060043;
         public static final int readMessage=0x7f06003c;
@@ -118,18 +118,19 @@ public final class R {
         public static final int sosButton=0x7f060029;
         public static final int sos_meddelande_edittext=0x7f060046;
         public static final int sos_meddelande_textview=0x7f060045;
-        public static final int sos_send_message_button=0x7f060047;
+        public static final int sos_rensa_meddelande=0x7f060047;
+        public static final int sos_send_message_button=0x7f060048;
         public static final int subject=0x7f060041;
         public static final int text=0x7f060014;
         public static final int textView1=0x7f060001;
         public static final int textView2=0x7f06001c;
         public static final int textView3=0x7f06001f;
-        public static final int toggle=0x7f06004d;
+        public static final int toggle=0x7f06004e;
         public static final int toptext=0x7f06003e;
-        public static final int traffic=0x7f060050;
-        public static final int trafikverketButton=0x7f060049;
-        public static final int userText=0x7f06004a;
-        public static final int yrButton=0x7f060048;
+        public static final int traffic=0x7f060051;
+        public static final int trafikverketButton=0x7f06004a;
+        public static final int userText=0x7f06004b;
+        public static final int yrButton=0x7f060049;
     }
     public static final class layout {
         public static final int accept_call=0x7f030000;
@@ -191,6 +192,7 @@ public final class R {
         public static final int messagechoice_new_picture=0x7f040023;
         public static final int messagechoice_new_text=0x7f040009;
         public static final int messagechoice_outbox=0x7f040021;
+        public static final int rensa=0x7f04002c;
         public static final int send_destUser=0x7f04000b;
         public static final int send_image_message_choice=0x7f040024;
         public static final int send_message=0x7f04000d;
