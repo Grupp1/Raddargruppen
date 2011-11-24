@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 import raddar.enums.MessageType;
+import raddar.models.ImageMessage;
 import raddar.models.Message;
 import android.content.Context;
 
@@ -49,8 +50,8 @@ public class ReciveHandler implements Runnable {
 		}
 		if(mt == MessageType.IMAGE){
 			//m.getImage(filePath)
-			
-			DatabaseController.db.addImageMessageRow(m);
+			ImageMessage im = (ImageMessage) m;
+			DatabaseController.db.addImageMessageRow(im);
 			
 		}
 	}

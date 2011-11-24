@@ -64,8 +64,7 @@ public abstract class Message {
 	// Meddelandets data
 	//Temporärt en string bara för att testa
 	protected String data;
-
-	protected String filePath;
+	
 
 	public String getSubject() {
 		return subject;
@@ -128,13 +127,7 @@ public abstract class Message {
 		this.data += message;
 	}
 
-	public String getFilePath(){
-		return filePath;
-	}
-	
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
-	}
+
 	
 	public Bitmap getImage(String filePath){
 		Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);

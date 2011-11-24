@@ -129,7 +129,7 @@ public class ClientDatabaseManager extends Observable {
 	 * Messages to be added to the imageMessage database
 	 * @param m The message that is to be added to the database
 	 */
-	public void addImageMessageRow(Message m){
+	public void addImageMessageRow(ImageMessage m){
 		ContentValues values = new ContentValues();
 		values.put("destUser", m.getDestUser());
 		values.put("rDate", m.getDate());

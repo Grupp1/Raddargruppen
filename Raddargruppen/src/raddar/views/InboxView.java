@@ -65,13 +65,13 @@ public class InboxView extends ListActivity implements Observer{
 //		m.setSubject("VIKTIGT");
 //		DatabaseController.db.addRow(m);
 		
-		Message image = new ImageMessage(MessageType.convert("image/jpeg"),"Magnus","Magnus");
-		Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.niklas);
+		//Message image = new ImageMessage(MessageType.convert("image/jpeg"),"Magnus","Magnus");
+		//Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.niklas);
 		//image.setImageBitmap(bitmap);
 		
-		image.setSubject("TESTING TESTING");
+		//image.setSubject("TESTING TESTING");
 		
-		DatabaseController.db.addImageMessageRow(image);
+		//DatabaseController.db.addImageMessageRow(image);
 		
 //		try {
 //			new Sender (m, InetAddress.getByName("127.0.0.1"), 6789);

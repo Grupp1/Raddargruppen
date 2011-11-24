@@ -1,13 +1,14 @@
 package raddar.controllers;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import raddar.models.ImageMessage;
 import raddar.enums.ServerInfo;
+import raddar.models.ImageMessage;
 import raddar.models.Message;
 import android.util.Log;
 
@@ -27,14 +28,14 @@ public class Sender implements Runnable {
 		this.address = address;
 		this.port = port;
 	}
-	
+
 	public Sender(Message message,InetAddress address, int port)  {
 		this(address, port);
 		this.message = message;
 		thread.start();
-//		this.port = port;
-//		this.address = address;
-//		thread.start();
+		//		this.port = port;
+		//		this.address = address;
+		//		thread.start();
 	}
 	public Sender(Message message) throws UnknownHostException {
 		this.message = message;
@@ -42,28 +43,27 @@ public class Sender implements Runnable {
 		this.address = InetAddress.getByName(ServerInfo.SERVER_IP);
 		thread.start();
 	}
-	
-	public Sender(ImageMessage imageMessage, InetAddress address, int port){
-		imageMessage.getImage(imageMessage.getFilePath());
-	}
 
 	public void run() {
 		try {
 			//Thread.sleep(10000);
-				
-				Socket so = new Socket(address, port);
-				so.setSoTimeout(5000);
 
-				Gson gson = new Gson();
-				String send = message.getClass().getName()+"\r\n";
-				send +=	gson.toJson(message);
-				Log.d("Gson test",send);
-				PrintWriter out = new PrintWriter(so.getOutputStream(), true);
-				
-				out.println(send);
-				
-				so.close();
-				out.close();
+			//ByteArrayOutputStream Os = new ByteArrayOutputStream();
+			
+
+			Socket so = new Socket(address, port);
+			so.setSoTimeout(5000);
+
+			Gson gson = new Gson();
+			String send = message.getClass().getName()+"\r\n";
+			send +=	gson.toJson(message);
+			Log.d("Gson test",send);
+			PrintWriter out = new PrintWriter(so.getOutputStream(), true);
+
+			out.println(send);
+
+			so.close();
+			out.close();
 
 
 		} catch (IOException ie) {
@@ -71,6 +71,6 @@ public class Sender implements Runnable {
 		} //catch (InterruptedException e) {
 		//Log.d("Avruten väntan", "Gick inte");
 		//}
-		
+
 	}
 }
