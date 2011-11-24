@@ -2,10 +2,10 @@ package raddar.models;
 
 import java.util.ArrayList;
 
+import raddar.controllers.DatabaseController;
 import raddar.enums.ResourceStatus;
 import raddar.enums.SituationPriority;
 import raddar.views.MainView;
-import raddar.views.MapUI;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,7 +21,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
 	private Context mContext;
 	private EditText input;
-	private String value;
+	//private String value;
 	private MapObject item;
 	private int whichItem;
 
@@ -48,6 +48,10 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 		return mOverlays.size();
 	}
 
+	public ArrayList<OverlayItem> getOverlays(){
+		return mOverlays;
+	}
+	
 	public void addOverlay(OverlayItem overlay) {
 		mOverlays.add(overlay);
 		this.populate();
@@ -72,7 +76,6 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 		AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
 		dialog.setTitle(item.getTitle());
 		dialog.setMessage(item.getDescription());
-		// Lägga till String onTouch i MapObject???
 
 		AlertDialog alert = dialog.create();
 
@@ -85,11 +88,11 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 				input = new EditText(mContext);
 				alertDialog.setView(input);
-
+				input.setText(item.getSnippet());
 				alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
-						value = input.getText().toString();
-						MapUI.mapCont.updateObject(item, value);		
+						item.setSnippet(input.getText().toString());
+						MainView.mapCont.updateObject(item);		
 					}
 				});
 
@@ -119,8 +122,10 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 					alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int whichButton) {
 							mOverlays.remove(item);
-							MapUI.mapCont.removeObject(item);
-							MainView.db.deleteRow(item);
+
+							MainView.mapCont.removeObject(item);
+							DatabaseController.db.deleteRow(item);
+
 						}
 
 					});
@@ -162,15 +167,15 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 									if(whichItem == 0){
 										((Situation) item).setPriority(SituationPriority.HIGH);
-										MapUI.mapCont.updateObject(item);
+										MainView.mapCont.updateObject(item);
 									}
 									if(whichItem == 1){
 										((Situation) item).setPriority(SituationPriority.NORMAL);
-										MapUI.mapCont.updateObject(item);
+										MainView.mapCont.updateObject(item);
 									}
 									if(whichItem == 2){
 										((Situation) item).setPriority(SituationPriority.LOW);
-										MapUI.mapCont.updateObject(item);
+										MainView.mapCont.updateObject(item);
 									}
 
 								}
@@ -217,11 +222,11 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 									if(whichItem == 0){
 										((Resource) item).setStatus(ResourceStatus.BUSY);
-										MapUI.mapCont.updateObject(item);
+										MainView.mapCont.updateObject(item);
 									}
 									if(whichItem == 1){
 										((Resource) item).setStatus(ResourceStatus.FREE);
-										MapUI.mapCont.updateObject(item);
+										MainView.mapCont.updateObject(item);
 									}
 								}
 							});

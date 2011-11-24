@@ -57,4 +57,20 @@ public class Associations {
 		return associations.get(username);
 	}
 	
+	/**
+	 * Kolla hur många användare som är online och associerade
+	 * @return Antalet användare som är online
+	 */
+	public int onlineUsers() {
+		return associations.size();
+	}
+	
+	/**
+	 * Hämta listan av online användare
+	 * @return HashMapen med alla online användare
+	 */
+	public HashMap<String, InetAddress> getAllAssociations() {
+		return associations;
+	}
+	
 }

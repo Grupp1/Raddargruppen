@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Observable;
 
@@ -23,7 +25,7 @@ public class LoginManager extends Observable {
 	/**
 	 * Hårdkoda denna boolean true om klienten inte ska kontakta servern för inloggning
 	 */
-	public boolean debugMode = true;
+	public boolean debugMode = false;
 
 	/**
 	 * Verifierar att username och password är giltiga. Denna metoden kommer att
@@ -39,14 +41,25 @@ public class LoginManager extends Observable {
 		NotificationMessage nm = new NotificationMessage(username, 
 				NotificationType.CONNECT, 
 				password);
-		if (!debugMode){
+
+		if(!debugMode){
 			try {
 				// Skapa socket som används för att skicka NotificationMessage
-				Socket so = new Socket(InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
+				Socket so = new Socket();
+				//Socket so = new Socket(InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
+				InetAddress addr = InetAddress.getByName(ServerInfo.SERVER_IP);
+				int port = ServerInfo.SERVER_PORT;
+				SocketAddress sockAddr = new InetSocketAddress(addr, port);
 
-				Log.d("Efter socketen", "lawl");
+
+				int TIME_OUT = 5000;
+				so.connect(sockAddr, TIME_OUT);
+
+				Log.d("Efter socketen", password.toString());
 				String send = nm.getClass().getName()+"\r\n";
-				send +=	new Gson().toJson(nm);
+				String gg = new Gson().toJson(nm);
+				send +=	gg;
+				Log.d("Gson Test", gg.toString());
 				PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
 				pw.println(send);
 
@@ -56,21 +69,24 @@ public class LoginManager extends Observable {
 				// Läs in ett svar från servern via SAMMA socket
 				String response = br.readLine();
 
+				// Om servern säger att inmatade uppgifter är giltiga, returnera true
+				if (response.equals("OK")) {
+					logIn = LoginResponse.ACCEPTED;
+					String encryptedPassword = br.readLine();
+					String salt = br.readLine();
+					// Cacha det krypterade lösenordet och saltet i SQLite-databasen?
+				}
+
 				// Stäng ner strömmar och socket
 				pw.close();
 				br.close();
 				so.close();
-
-				// Om servern säger att inmatade uppgifter är giltiga, returnera true
-				if (response.equals("OK")) 
-					logIn = LoginResponse.ACCEPTED;
 			} catch (IOException e) {
 				Log.d("NotificationMessage", "Server connection failed");
 				logIn = evaluateLocally(username, password);
 			}
 		}
 		else{
-			//logIn = LoginResponse.ACCEPTED;
 			logIn = LoginResponse.ACCEPTED_NO_CONNECTION;
 		}
 		setChanged();
@@ -87,9 +103,14 @@ public class LoginManager extends Observable {
 	 * @return true om verifieringen går bra, false annars
 	 */
 	private static LoginResponse evaluateLocally(String username, String password){
-		String temp = passwordCache.get(username);
-		if (temp == null) return LoginResponse.NO_CONNECTION;
-		if (password.equals(temp)) return LoginResponse.ACCEPTED_NO_CONNECTION;
+		/*
+		 * Hämta användarens salt så att encrypt() kan hasha korrekt
+		 String salt = ClientDatabaseManager.getSalt(username);
+		 password = Encryption.encrypt(password, salt);
+		 */
+		String cachedPassword = passwordCache.get(username);
+		if (cachedPassword == null) return LoginResponse.NO_CONNECTION;
+		if (password.equals(cachedPassword)) return LoginResponse.ACCEPTED_NO_CONNECTION;
 		return LoginResponse.NO_CONNECTION;
 	}
 

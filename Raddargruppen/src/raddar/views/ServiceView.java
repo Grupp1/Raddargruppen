@@ -2,6 +2,7 @@ package raddar.views;
 
 import raddar.gruppen.R;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,7 +27,8 @@ public class ServiceView extends Activity implements OnClickListener{
 	public void onClick(View v) {
 		
 		if(v == yrButton){
-			finish();
+			Intent intent = new Intent(ServiceView.this, WeatherView.class);
+			startActivity(intent);
 		}
 		
 		if(v == trafikverketButton){

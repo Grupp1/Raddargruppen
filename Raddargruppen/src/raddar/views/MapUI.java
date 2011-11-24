@@ -1,6 +1,5 @@
 package raddar.views;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Observable;
@@ -12,13 +11,10 @@ import raddar.enums.SituationPriority;
 import raddar.gruppen.R;
 import raddar.models.Fire;
 import raddar.models.FireTruck;
-import raddar.models.GPSModel;
 import raddar.models.MapObject;
 import raddar.models.MapObjectList;
 import raddar.models.Resource;
-import raddar.models.SOS;
 import raddar.models.Situation;
-import raddar.models.You;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -46,20 +42,13 @@ public class MapUI extends MapActivity implements Observer {
 	private long start;
 	private long stop;
 	private MyLocationOverlay compass;
-	private MapController controller;
+	public MapController controller;
 	private int touchedX, touchedY;
 	private GeoPoint touchedPoint, liu, myLocation, sthlmLocation;
 	private List<Overlay> mapOverlays;
-	private GPSModel gps;
-
 	private Touchy touchy;
-	private boolean follow, youFind;
-	private You you; 
+	public boolean follow;
 	private Toast toast;
-
-
-	public static MapCont mapCont;
-
 	private Geocoder geocoder;
 
 
@@ -81,6 +70,9 @@ public class MapUI extends MapActivity implements Observer {
 		mapOverlays.add(compass);
 		controller = mapView.getController();
 
+		/**
+		 * Random locations
+		 */
 		myLocation = new GeoPoint(0,0);
 		liu = new GeoPoint(58395730, 15573080);
 		sthlmLocation = new GeoPoint(59357290, 17960050);
@@ -90,23 +82,19 @@ public class MapUI extends MapActivity implements Observer {
 		touchy = new Touchy(mapView.getContext());
 		mapOverlays.add(touchy);
 		
-		ArrayList<MapObject> olist = MainView.db.getAllRowsAsArrays("map");
-		mapCont = new MapCont(MapUI.this, olist);
-		you = new You(myLocation, "Din position", "Här är du", R.drawable.niklas, ResourceStatus.FREE);
-		gps = new GPSModel(this);		
-		olist.add(you);
-		
-		
+		MainView.mapCont.declareMapUI(this);
+
 		controller.animateTo(sthlmLocation);
-		youFind = false;
+		controller.setZoom(8);
 
 	}
 
 	@Override
 	protected void onStart() {
-		follow = false;
-		//youFind = false;
-
+		if(MainView.mapCont.areYouFind){
+			follow = true;
+			controller.animateTo(MainView.mapCont.getYou().getPoint());
+		}
 		super.onStart();
 	}
 
@@ -114,25 +102,23 @@ public class MapUI extends MapActivity implements Observer {
 	protected void onResume() {
 		compass.enableCompass();
 		super.onResume();
-		gps.getLocationManager().requestLocationUpdates(gps.getTowers(), 500, 1, gps);
+		MainView.mapCont.gps.getLocationManager().requestLocationUpdates(MainView.mapCont.gps.getTowers(), 500, 1, MainView.mapCont.gps);
 	}
 
 	@Override
 	protected void onPause() {
 		compass.disableCompass();
 		super.onPause();
-		gps.getLocationManager().removeUpdates(gps);
+		MainView.mapCont.gps.getLocationManager().removeUpdates(MainView.mapCont.gps);
 	}
 
 	@Override
 	protected void onStop() {
-		// TODO Auto-generated method stub
 		super.onStop();
 	}
 
 	@Override
 	protected void onDestroy(){
-		// TODO Auto-generated method stub
 		super.onStop();
 	}
 
@@ -156,17 +142,17 @@ public class MapUI extends MapActivity implements Observer {
 		}
 
 		public boolean onTouchEvent(MotionEvent e, MapView m) {
-
+			int holdTime = 800;
 			if(e.getAction() == MotionEvent.ACTION_DOWN){
 				start = e.getEventTime();
 				touchedX = (int) e.getX();
 				touchedY = (int) e.getY();
-				touchedPoint = mapView.getProjection().fromPixels(touchedX, touchedY);
+				touchedPoint = mapView.getProjection().fromPixels(touchedX, touchedY);				
 			}
 			if(e.getAction() == MotionEvent.ACTION_UP){
 				stop = e.getEventTime();
 			}
-			if(stop - start > 800){
+			if(stop - start > holdTime){
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(context);
 				builder.setTitle("Placera");
@@ -182,25 +168,22 @@ public class MapUI extends MapActivity implements Observer {
 
 						input = new EditText(context);
 						alertDialog.setView(input);
-						
-						// FOR SIMPLICITY
-						input.setText("Bögutskottet");
 
 						alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
 								value = input.getText().toString();
 								MapObject o = null;
 								if(Touchy.this.item == 0){		
-									mapCont.add(o = new Fire(touchedPoint, value, SituationPriority.HIGH));
+									MainView.mapCont.add(o = new Fire(touchedPoint, value, SituationPriority.HIGH));
 								}
 								if(Touchy.this.item == 1){
-									mapCont.add(o = new FireTruck(touchedPoint, value, ResourceStatus.BUSY));
+									MainView.mapCont.add(o = new FireTruck(touchedPoint, value, ResourceStatus.BUSY));
 								}
 								if(Touchy.this.item == 2){
-									mapCont.add(o = new Situation(touchedPoint, "Situation", value, R.drawable.situation, SituationPriority.NORMAL));
+									MainView.mapCont.add(o = new Situation(touchedPoint, "Situation", value, R.drawable.situation, SituationPriority.NORMAL));
 								}
 								if(Touchy.this.item == 3){
-									mapCont.add(o = new Resource(touchedPoint, "Resurs", value, R.drawable.resource, ResourceStatus.BUSY));
+									MainView.mapCont.add(o = new Resource(touchedPoint, "Resurs", value, R.drawable.resource, ResourceStatus.BUSY));
 								}
 								o.updateData(geocoder);;
 								Toast.makeText(getApplicationContext(), items[Touchy.this.item]+" utplacerad", Toast.LENGTH_LONG).show();
@@ -220,7 +203,7 @@ public class MapUI extends MapActivity implements Observer {
 
 				alert.setButton("Hämta adress", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						Toast.makeText(getApplicationContext(), mapCont.calcAdress(touchedPoint), Toast.LENGTH_LONG).show();
+						Toast.makeText(getApplicationContext(), MainView.mapCont.calcAdress(touchedPoint), Toast.LENGTH_LONG).show();
 					}
 				});
 
@@ -245,23 +228,17 @@ public class MapUI extends MapActivity implements Observer {
 		return false;
 	}
 
+	public MapView getMapView(){
+		return mapView;
+	}
+	
+	public void updateMyLocation(GeoPoint geopoint){
+		
+	}
+	
 	public void update(Observable observable, Object data) {
 		if (data instanceof GeoPoint){
-			myLocation = (GeoPoint) data;
 
-			if (!youFind){
-				mapCont.add(you);
-				controller.animateTo(myLocation);
-				controller.setZoom(13);
-				youFind = true;
-				follow = true;		
-			}
-			you.setPoint(myLocation);	
-			you.updateData(geocoder);
-			
-			if (follow){
-				controller.animateTo(myLocation);
-			}
 		}
 		if (data instanceof MapObjectList){
 //			if (!mapOverlays.contains(data)){
@@ -313,7 +290,12 @@ public class MapUI extends MapActivity implements Observer {
 			toast.show();
 			return true;
 		case R.id.myLocation:
-			controller.animateTo(myLocation); 
+			if (MainView.mapCont.areYouFind){
+				controller.animateTo(MainView.mapCont.getYou().getPoint());
+			}else{
+				toast = Toast.makeText(getBaseContext(), "Kan ej hitta position", Toast.LENGTH_LONG);
+				toast.show();
+			}
 			return true;
 		case R.id.traffic:
 			if(mapView.isTraffic()){

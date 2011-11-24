@@ -4,13 +4,13 @@ public enum ConnectionStatus {
 
 	CONNECTED(){
 		public String toString(){
-			return "uppkopplad";
+			return "Ansluten till servern";
 		}
 	},
 	
 	DISCONNECTED(){
 		public String toString(){
-			return "avkopplad :P";
+			return "Ej ansluten till servern";
 		}
 	};
 }

@@ -3,13 +3,13 @@ package tddd36.server;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 
-import raddar.enums.MessageType;
 import raddar.enums.NotificationType;
-import raddar.models.Message;
-import raddar.models.NotificationMessage;
-import raddar.models.TextMessage;
+
+import raddar.models.*;
 
 import com.google.gson.Gson;
 
@@ -41,11 +41,8 @@ public class Receiver implements Runnable {
 	@Override
 	public void run() {
 		try {
-			System.out.println("["+so.getInetAddress().getHostAddress()+"] ** Connection established. ");
-
 			// För att läsa inkommande data från klienten
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
-			Gson gson = new Gson();
 			Class c= null ;
 			try {
 				c = Class.forName(in.readLine());
@@ -53,26 +50,38 @@ public class Receiver implements Runnable {
 				e.printStackTrace();
 			}
 			String temp = in.readLine();
-			Message m = new Gson().fromJson(temp, c);
-			//		so.close();
-		
-			// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
-			// meddelandet som klienten har skickat blir inläst på korrekt sätt
-			switch (m.getType()) {
-			case NOTIFICATION:
-				handleNotification((NotificationMessage) m);
-				break;
-			case TEXT:
-				System.out.println("fått ett meddelande till " + m.getDestUser());
-				//Database.storeTextMessage((TextMessage)m);
-				new Sender(m, m.getDestUser(), 4043);
-				break;
-			case IMAGE:
-				handleImageMessage();
-				break;
-			default:
-				System.out.println("Received message has unknown type. Discarding... ");
+			Object o = new Gson().fromJson(temp, c);
+			// if message
+			if (o instanceof Message){
+				Message m = (Message) o;
+				// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
+				// meddelandet som klienten har skickat blir inläst på korrekt sätt
+				switch (m.getType()) {
+				case SOS:
+					broadcast(m);
+				case NOTIFICATION:
+					handleNotification((NotificationMessage) m);
+					break;
+				case TEXT:
+					Database.storeTextMessage((TextMessage) m);
+					new Sender(m, m.getDestUser());
+					break;
+				case IMAGE:
+					handleImageMessage();
+					break;
+				case REQUEST:
+					handleRequest((RequestMessage) m);
+					break;
+				default:
+					System.out.println("Received message has unknown type. Discarding... ");
+				}
 			}
+			// if mapobject
+			else if (c.getName().equals(MapObject.class.getName())){
+				MapObject mo = new Gson().fromJson(temp, c);
+				broadcast(mo);
+			}
+			//	so.close();
 
 		} catch (IOException ie) {
 			ie.printStackTrace();
@@ -89,18 +98,37 @@ public class Receiver implements Runnable {
 		// Kolla vilken sorts notification vi har att göra med
 		NotificationType nt = nm.getNotification();
 		switch (nt) {
-			case CONNECT:
-				// Behandla loginförsöket
-				LoginManager.evaluateUser(nm.getSrcUser(), nm.getPassword(), so);
-				break;
-			case DISCONNECT:
-				// Behandla logoutförsöket
-				LoginManager.logoutUser(nm.getSrcUser());
-				break;
-			default:
-				// Här hamnar vi om något gått fel i formatteringen eller inläsandet av meddelandet
-				System.out.println("Unknown NotificationType... ");
+		case CONNECT:
+			// Behandla loginförsöket
+			LoginManager.evaluateUser(nm.getSrcUser(), nm.getPassword(), so);
+			break;
+		case DISCONNECT:
+			// Behandla logoutförsöket
+			LoginManager.logoutUser(nm.getSrcUser());
+			break;
+		default:
+			// Här hamnar vi om något gått fel i formatteringen eller inläsandet av meddelandet
+			System.out.println("Unknown NotificationType... ");
 		}
+	}
+
+	/*
+	 * Broadcasta ett meddelande m till alla i online-listan
+	 */
+	private void broadcast(Message m) {
+		for (InetAddress adr: Server.onlineUsers.getAllAssociations().values())
+			new Sender(m, adr, 4043);
+	}
+	
+	/*
+	 * Broadcasta ett mapobject o till alla i online-line
+	 */
+	private void broadcast(MapObject o) {
+		ArrayList<MapObject> mapObjects = new ArrayList<MapObject>();
+		mapObjects.add(o);
+		for (InetAddress adr: Server.onlineUsers.getAllAssociations().values())
+			new Sender(mapObjects, adr);
+			//new Sender(Database.getAllMapObjects(), adr, 4043);
 	}
 
 	/*
@@ -109,10 +137,34 @@ public class Receiver implements Runnable {
 	private void handleImageMessage() {
 
 	}
+	/**
+	 * Handles the request
+	 * @param rm The recived requestMessage
+	 */
+	private void handleRequest(RequestMessage rm){
+		switch(rm.getRequestType()){
+		case MESSAGE:
+			ArrayList<Message> messages = Database.retrieveAllTextMessagesTo(rm.getSrcUser());
+			messages.add(0,rm);
+			new Sender(messages,rm.getSrcUser());
+			break;
+		case BUFFERED_MESSAGE:
+			ArrayList<Message> list = Database.retrieveAllBufferedMessagesTo(rm.getSrcUser());
+			for(Message m: list){
+				Database.storeTextMessage((TextMessage)m);
+			}
+			new Sender(list,rm.getSrcUser());
+			Database.deleteFromBuffer(rm.getSrcUser());
+			break;
+		default:
+			System.out.println("Unknown RequestType");
+		}
+	}
 	/*
 	 * Denna funktionen används för att läsa in en rad och filtrera bort attributtaggen
 	 * 'Content-Type: text/plain' filtreras till exempel till text/plain
 	 */
+
 	private String getAttrValue(String str) {
 		StringBuilder sb = new StringBuilder("");
 		String[] parts = str.split(" ");

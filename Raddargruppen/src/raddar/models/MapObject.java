@@ -1,13 +1,14 @@
 package raddar.models;
 
 import java.io.IOException;
-import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
-import raddar.views.MainView;
+import raddar.controllers.SessionController;
 import android.location.Address;
 import android.location.Geocoder;
+import android.util.Log;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
@@ -38,9 +39,8 @@ public class MapObject extends OverlayItem {
 		this.title = title;
 		this.snippet = snippet;
 		this.icon = icon;
-		this.addedBy = MainView.controller.getUser();
+		this.addedBy = SessionController.getUser();
 		this.date = new SimpleDateFormat("yyyy:MM:dd 'kl' HH:mm:ss").format(new Date());
-		this.adress = "Kunde inte hämta adress";
 		
 		idGen = new ID(addedBy,point.getLatitudeE6(),point.getLongitudeE6(), date);
 		id = idGen.generateID();
@@ -91,6 +91,13 @@ public class MapObject extends OverlayItem {
 	 */
 	public void setSnippet(String snippet) {
 		this.snippet = snippet;
+	}
+	
+	/**
+	 * @return Objektets beskrivning
+	 */
+	public String getSnippet(){
+		return snippet;
 	}
 
 	/**
@@ -159,21 +166,27 @@ public class MapObject extends OverlayItem {
 		updateDescription();
 	}	
 	
+	public GeoPoint getPoint() {
+		return point;
+	}
+
 	/**
 	 * Tar fram objektets geografiska adress från dess koordinater
 	 * @param geocoder Kartans geocoder
 	 */
 	public void updateAdress(Geocoder geocoder){
-		String display ="";
+		String display ="Kunde inte hämta adress";
 		try{
 			List<Address> address = geocoder.getFromLocation(point.getLatitudeE6() / 1E6, point.getLongitudeE6() / 1E6, 1);
+			display = "";
 			if(address.size() > 0){
 				for(int i = 0; i<address.get(0).getMaxAddressLineIndex(); i++){
 					display += address.get(0).getAddressLine(i) + "\n";
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			Log.d("Geocoder", "Service not avalible");
 		}finally{
 			
 		}
@@ -185,7 +198,7 @@ public class MapObject extends OverlayItem {
 	 */
 	public void updateDescription(){
 		setDescription("Beskrivning: "+getSnippet()+"\nAdress: "+getAdress()+
-				  "\nKoordinater: "+getPoint().getLatitudeE6()/1E6+", "+getPoint().getLongitudeE6()/1E6 + "\nSkapad: " + 
+				  "Koordinater: "+getPoint().getLatitudeE6()/1E6+", "+getPoint().getLongitudeE6()/1E6 + "\nSkapad: " + 
 				getDate() + "\nSkapad av: " + getAddedBy() + "\n ID: " + getId());
 	}
 	
