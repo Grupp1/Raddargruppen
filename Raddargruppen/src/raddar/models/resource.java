@@ -21,6 +21,7 @@ public class Resource extends MapObject {
 
 	public void setStatus(ResourceStatus status) {
 		this.status = status;
+		changeLatestUser();
 	}
 	
 	@Override
