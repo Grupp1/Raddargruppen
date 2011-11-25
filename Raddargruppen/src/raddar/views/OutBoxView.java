@@ -10,6 +10,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,7 @@ public class OutBoxView extends ListActivity {
 					int position, long id) {
 				Intent nextIntent = new Intent(OutBoxView.this, SentMessageView.class);
 				nextIntent.putExtra("reciever",outbox.get(position).getDestUser());
+				Log.e("Dest user", outbox.get(position).getDestUser());
 				nextIntent.putExtra("subject",outbox.get(position).getSubject());
 				nextIntent.putExtra("data",outbox.get(position).getData());
 				nextIntent.putExtra("date", outbox.get(position).getDate());

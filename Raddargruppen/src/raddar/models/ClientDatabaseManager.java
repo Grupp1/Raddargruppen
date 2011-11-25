@@ -106,6 +106,7 @@ public class ClientDatabaseManager extends Observable {
 	public void addOutboxRow(Message m){
 		ContentValues values = new ContentValues();
 		values.put("destUser", m.getDestUser());
+		Log.e("destUser", m.getDestUser().toString());
 		values.put("rDate", m.getDate());
 		values.put("subject", m.getSubject());
 		values.put("mData", m.getData());
