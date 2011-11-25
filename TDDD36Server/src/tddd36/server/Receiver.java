@@ -3,13 +3,17 @@ package tddd36.server;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 
 import raddar.enums.NotificationType;
-
-import raddar.models.*;
+import raddar.models.MapObject;
+import raddar.models.Message;
+import raddar.models.NotificationMessage;
+import raddar.models.RequestMessage;
+import raddar.models.TextMessage;
 
 import com.google.gson.Gson;
 
@@ -77,90 +81,109 @@ public class Receiver implements Runnable {
 			default:
 				System.out.println("Received message has unknown type. Discarding... ");
 			}
-		
-		//so.close();
 
-	} catch (IOException ie) {
-		ie.printStackTrace();
-	}
 
-}
-
-/*
- * I denna metoden associerar och avassocierar vi användare med IP-addresser
- * Klienterna bör skicka ett NotificationMessage av typen CONNECT när de loggar
- * online, samt ett NotificationMessage av typen DISCONNECT när de loggar off.
- */
-private void handleNotification(NotificationMessage nm) {
-	// Kolla vilken sorts notification vi har att göra med
-	NotificationType nt = nm.getNotification();
-	switch (nt) {
-	case CONNECT:
-		// Behandla loginförsöket
-		LoginManager.evaluateUser(nm.getSrcUser(), nm.getPassword(), so);
-		break;
-	case DISCONNECT:
-		// Behandla logoutförsöket
-		LoginManager.logoutUser(nm.getSrcUser());
-		break;
-	default:
-		// Här hamnar vi om något gått fel i formatteringen eller inläsandet av meddelandet
-		System.out.println("Unknown NotificationType... ");
-	}
-}
-
-/*
- * Broadcasta ett meddelande m till alla i online-listan
- */
-private void broadcast(Message m) {
-	InetAddress srcAdr = Server.onlineUsers.getUserAddress(m.getSrcUser());
-	for (InetAddress adr: Server.onlineUsers.getAllAssociations().values()){
-		if(adr == srcAdr) continue;
-		new Sender(m, adr, 4043);
-	}
-}
-
-/*
- * To be implemented
- */
-private void handleImageMessage() {
-
-}
-/**
- * Handles the request
- * @param rm The recived requestMessage
- */
-private void handleRequest(RequestMessage rm){
-	switch(rm.getRequestType()){
-	case MESSAGE:
-		ArrayList<Message> messages = Database.retrieveAllTextMessagesTo(rm.getSrcUser());
-		messages.add(0,rm);
-		new Sender(messages,rm.getSrcUser());
-		break;
-	case BUFFERED_MESSAGE:
-		ArrayList<Message> list = Database.retrieveAllBufferedMessagesTo(rm.getSrcUser());
-		for(Message m: list){
-			Database.storeTextMessage((TextMessage)m);
+		} catch (IOException ie) {
+			ie.printStackTrace();
 		}
-		new Sender(list,rm.getSrcUser());
-		Database.deleteFromBuffer(rm.getSrcUser());
-		break;
-	default:
-		System.out.println("Unknown RequestType");
+
 	}
-}
-/*
- * Denna funktionen används för att läsa in en rad och filtrera bort attributtaggen
- * 'Content-Type: text/plain' filtreras till exempel till text/plain
- */
 
-private String getAttrValue(String str) {
-	StringBuilder sb = new StringBuilder("");
-	String[] parts = str.split(" ");
-	for (int i = 1; i < parts.length; i++) 
-		sb.append(parts[i]);
+	/*
+	 * I denna metoden associerar och avassocierar vi användare med IP-addresser
+	 * Klienterna bör skicka ett NotificationMessage av typen CONNECT när de loggar
+	 * online, samt ett NotificationMessage av typen DISCONNECT när de loggar off.
+	 */
+	private void handleNotification(NotificationMessage nm) {
+		// Kolla vilken sorts notification vi har att göra med
+		NotificationType nt = nm.getNotification();
+		switch (nt) {
+		case CONNECT:
+			// Behandla loginförsöket
+			LoginManager.evaluateUser(nm.getSrcUser(), nm.getPassword(), so);
+			break;
+		case DISCONNECT:
+			// Behandla logoutförsöket
+			LoginManager.logoutUser(nm.getSrcUser());
+			break;
+		default:
+			// Här hamnar vi om något gått fel i formatteringen eller inläsandet av meddelandet
+			System.out.println("Unknown NotificationType... ");
+		}
+	}
 
-	return sb.toString();
-}
+	/*
+	 * Broadcasta ett meddelande m till alla i online-listan
+	 */
+	private void broadcast(Message m) {
+		InetAddress srcAdr = Server.onlineUsers.getUserAddress(m.getSrcUser());
+		for (InetAddress adr: Server.onlineUsers.getAllAssociations().values()){
+			if(adr == srcAdr) continue;
+			new Sender(m, adr, 4043);
+		}
+	}
+
+	/*
+	 * To be implemented
+	 */
+	private void handleImageMessage() {
+
+
+	}
+	/**
+	 * Handles the request
+	 * @param rm The recived requestMessage
+	 */
+	private void handleRequest(RequestMessage rm){
+		switch(rm.getRequestType()){
+		case MESSAGE:
+			ArrayList<Message> messages = Database.retrieveAllTextMessagesTo(rm.getSrcUser());
+			messages.add(0,rm);
+			new Sender(messages,rm.getSrcUser());
+			break;
+		case BUFFERED_MESSAGE:
+			ArrayList<Message> list = Database.retrieveAllBufferedMessagesTo(rm.getSrcUser());
+			for(Message m: list){
+				Database.storeTextMessage((TextMessage)m);
+			}
+			new Sender(list,rm.getSrcUser());
+			Database.deleteFromBuffer(rm.getSrcUser());
+			break;
+		case SALT:
+			String salt = Database.getSalt(rm.getSrcUser());
+			try {
+				// Skicka saltet till klienten som requestar det
+				new PrintWriter(so.getOutputStream(), true).println(salt);
+				Class c= null ;
+				try {
+					c = Class.forName(in.readLine());
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+				String temp = in.readLine();
+				Message m = new Gson().fromJson(temp, c);
+				handleNotification((NotificationMessage) m);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			break;
+		default:
+			System.out.println("Okänd RequestType");
+		}
+
+	}
+	/*
+	 * Denna funktionen används för att läsa in en rad och filtrera bort attributtaggen
+	 * 'Content-Type: text/plain' filtreras till exempel till text/plain
+	 */
+
+	private String getAttrValue(String str) {
+		StringBuilder sb = new StringBuilder("");
+		String[] parts = str.split(" ");
+		for (int i = 1; i < parts.length; i++) 
+			sb.append(parts[i]);
+
+		return sb.toString();
+	}
 
 }

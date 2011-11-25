@@ -13,6 +13,7 @@ import java.util.Observable;
 
 import raddar.enums.LoginResponse;
 import raddar.enums.NotificationType;
+import raddar.enums.RequestType;
 import raddar.enums.ServerInfo;
 import android.util.Log;
 
@@ -22,6 +23,8 @@ public class LoginManager extends Observable {
 
 	private static HashMap<String, String> passwordCache = new HashMap<String, String>();
 
+	private StubbornLoginThread s = null;
+	private LoginResponse logIn = LoginResponse.NO_SUCH_USER_OR_PASSWORD;
 	/**
 	 * Hårdkoda denna boolean true om klienten inte ska kontakta servern för inloggning
 	 */
@@ -29,88 +32,111 @@ public class LoginManager extends Observable {
 
 	/**
 	 * Verifierar att username och password är giltiga. Denna metoden kommer att
-	 * försöker verifiera med servern. Om klienten inte får kontakt med servern så 
-	 * kollar den lokalt i cachen om det finns någon entry sparad.
+	 * försöker verifiera med servern. Om klienten inte får kontakt med servern
+	 * så kollar den lokalt i cachen om det finns någon entry sparad.
 	 * 
-	 * @param username Användarnamnet
-	 * @param password Lösenordet
+	 * @param username
+	 *            Användarnamnet
+	 * @param password
+	 *            Lösenordet
 	 * @return true om verifieringen går bra, false annars
 	 */
 	public void evaluate(String username, String password) {
-		LoginResponse logIn = LoginResponse.NO_SUCH_USER_OR_PASSWORD;
-		NotificationMessage nm = new NotificationMessage(username, 
-				NotificationType.CONNECT, 
-				password);
+		try {
+			// Skapa socket som används för att skicka NotificationMessage
+			Socket so = new Socket();
+			// Socket so = new
+			// Socket(InetAddress.getByName(ServerInfo.SERVER_IP),
+			// ServerInfo.SERVER_PORT);
+			InetAddress addr = InetAddress.getByName(ServerInfo.SERVER_IP);
+			int port = ServerInfo.SERVER_PORT;
+			SocketAddress sockAddr = new InetSocketAddress(addr, port);
 
-		if(!debugMode){
-			try {
-				// Skapa socket som används för att skicka NotificationMessage
-				Socket so = new Socket();
-				//Socket so = new Socket(InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
-				InetAddress addr = InetAddress.getByName(ServerInfo.SERVER_IP);
-				int port = ServerInfo.SERVER_PORT;
-				SocketAddress sockAddr = new InetSocketAddress(addr, port);
+			int TIME_OUT = 5000;
+			so.connect(sockAddr, TIME_OUT);
 
+			PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+					so.getInputStream()));
 
-				int TIME_OUT = 5000;
-				so.connect(sockAddr, TIME_OUT);
+			RequestMessage rm = new RequestMessage(RequestType.SALT);
+			rm.setSrcUser(username);
+			String send = rm.getClass().getName() + "\r\n";
+			String gg = new Gson().toJson(rm);
+			send += gg;
+			// Skicka SALT-request
+			pw.println(send);
 
-				Log.d("Efter socketen", password.toString());
-				String send = nm.getClass().getName()+"\r\n";
-				String gg = new Gson().toJson(nm);
-				send +=	gg;
-				Log.d("Gson Test", gg.toString());
-				PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
-				pw.println(send);
+			// Läs in salt från server
+			String salt = br.readLine();
 
-				BufferedReader br = new BufferedReader(
-						new InputStreamReader(so.getInputStream()));
+			// Använd saltet vi fick för att salta och kryptera lösenordet
+			password = Encryption.encrypt(password, salt);
 
-				// Läs in ett svar från servern via SAMMA socket
-				String response = br.readLine();
+			// Skapa msg med användarnamn och krypterat lösenord
+			NotificationMessage nm = new NotificationMessage(username,
+					NotificationType.CONNECT, password);
+			send = nm.getClass().getName() + "\r\n";
+			gg = new Gson().toJson(nm);
+			send += gg;
+			Log.d("Gson Test", gg.toString());
 
-				// Om servern säger att inmatade uppgifter är giltiga, returnera true
-				if (response.equals("OK")) {
-					logIn = LoginResponse.ACCEPTED;
-					String encryptedPassword = br.readLine();
-					String salt = br.readLine();
-					// Cacha det krypterade lösenordet och saltet i SQLite-databasen?
-				}
+			// Skicka det saltade och krypterade lösenordet
+			pw.println(send);
 
-				// Stäng ner strömmar och socket
-				pw.close();
-				br.close();
-				so.close();
-			} catch (IOException e) {
-				Log.d("NotificationMessage", "Server connection failed");
-				logIn = evaluateLocally(username, password);
+			// Läs in ett svar från servern via SAMMA socket
+			String response = br.readLine();
+
+			// Stäng ner strömmar och socket
+			pw.close();
+			br.close();
+			so.close();
+
+			if (response.equals("OK")) {
+				logIn = LoginResponse.ACCEPTED;
+				s = null;
 			}
-		}
-		else{
-			logIn = LoginResponse.ACCEPTED_NO_CONNECTION;
+		} catch (IOException e) {
+			Log.d("NotificationMessage", "Server connection failed");
+			// Om servern inte kan nås, kolla om vi har en försökande tråd redan
+			// ...har vi en försökande tråd innebär det att vi redan är inloggade lokalt
+			// och då returnerar vi här, annars loggar vi in lokalt
+			if (s == null)
+				logIn = evaluateLocally(username, password);
+			else
+				return;
 		}
 		setChanged();
 		notifyObservers(logIn);
 	}
 
 	/**
-	 * Denna metoden kollar lokalt i cachen om användaren finns sparad
-	 * i cachen och försöker i sådana fall verifiera inmatade
-	 * uppgifter emot dessa.
+	 * Denna metoden kollar lokalt i cachen om användaren finns sparad i cachen
+	 * och försöker i sådana fall verifiera inmatade uppgifter emot dessa.
 	 * 
-	 * @param username Användarnamnet
-	 * @param password Lösenordet
+	 * @param username
+	 *            Användarnamnet
+	 * @param password
+	 *            Lösenordet
 	 * @return true om verifieringen går bra, false annars
 	 */
-	private static LoginResponse evaluateLocally(String username, String password){
+	private LoginResponse evaluateLocally(String username, String password) {
 		/*
-		 * Hämta användarens salt så att encrypt() kan hasha korrekt
-		 String salt = ClientDatabaseManager.getSalt(username);
-		 password = Encryption.encrypt(password, salt);
+		 * Hämta användarens salt så att encrypt() kan hasha korrekt String salt
+		 * = ClientDatabaseManager.getSalt(username); password =
+		 * Encryption.encrypt(password, salt);
 		 */
 		String cachedPassword = passwordCache.get(username);
-		if (cachedPassword == null) return LoginResponse.NO_CONNECTION;
-		if (password.equals(cachedPassword)) return LoginResponse.ACCEPTED_NO_CONNECTION;
+		if (cachedPassword == null)
+			return LoginResponse.NO_CONNECTION;
+		if (password.equals(cachedPassword)) {
+			/*
+			 * StubbornLoginThread försöker logga in mot servern med jämna
+			 * mellanrum
+			 */
+			s = new StubbornLoginThread(username, password);
+			return LoginResponse.ACCEPTED_NO_CONNECTION;
+		}
 		return LoginResponse.NO_CONNECTION;
 	}
 
@@ -120,6 +146,40 @@ public class LoginManager extends Observable {
 
 	public static String removeCache(String username) {
 		return passwordCache.remove(username);
+	}
+
+	/*
+	 * Privat klass som försöker att logga in emot servern med jämna mellanrum
+	 */
+	private class StubbornLoginThread implements Runnable {
+
+		private String username, password;
+		private Thread thrd = new Thread(this);
+
+		StubbornLoginThread(String username, String password) {
+			this.username = username;
+			this.password = password;
+			thrd.start();
+		}
+
+		public void run() {
+			while (true) {
+				try {
+					if (s == null)
+						break;
+					LoginManager.this.evaluate(username, password);
+					if (s == null)
+						break;
+					// Vänta två minuter mellan varje försök
+					Thread.sleep(1000 * 10);
+
+				} catch (InterruptedException e) {
+					Log.d("LoginManager.java", "evaluateLocally FAILADE!!");
+					continue;
+				}
+			}
+		}
+
 	}
 
 }

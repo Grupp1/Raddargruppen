@@ -66,17 +66,19 @@ public class ClientDatabaseManager extends Observable {
 		Contact danan = new Contact("danan612", false, "danan612", "raddar");
 		Contact lalle = new Contact("lalle", false, "lalle", "lalle");
 		Contact alice = new Contact("Alice",false,null,null);
+		Contact borche = new Contact("Borche", false);
 		addRow(alice);
 		addRow(einar);
 		addRow(danan);
 		addRow(lalle);
+		addRow(borche);
 	}
 
 	/**********************************************************************
 	 * ADDING A MESSAGE ROW TO THE DATABASE TABLE
 	 * @param m The message that is to be added to the database
 	 */
-	public void addRow(Message m,boolean notify) {
+	public void addRow(Message m, boolean notify) {
 		ContentValues values = new ContentValues();
 		values.put("srcUser", m.getSrcUser());
 		values.put("rDate", m.getDate());
@@ -88,7 +90,7 @@ public class ClientDatabaseManager extends Observable {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
-		if(notify){
+		if(notify) {
 			setChanged();
 			notifyObservers(m);
 		}

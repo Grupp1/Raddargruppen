@@ -70,13 +70,13 @@ public class Sender implements Runnable {
 		try {
 			// Kolla om vi har en address att skicka till innan vi skapar en anslutning
 			if (adr == null) {
-			//	if(messages.get(0) instanceof MapObject)return;
+
 				for(Object m : messages){
 					if(m instanceof RequestMessage) continue;
 					Database.storeIntoBuffer((Message)m);
 					Database.deleteFromTextMessages((TextMessage)m);
 				}
-				System.out.println("Mottagarens IP-adress är inte känd. ");	// Skriv ut att vi inte känner till mottagarens adress
+				System.out.println("Mottagarens IP-adress är inte känd. Buffrar meddelandet... ");	// Skriv ut att vi inte känner till mottagarens adress
 				return;
 			}
 			// Skapa en socket för att kunna skicka meddelandet till mottagaren

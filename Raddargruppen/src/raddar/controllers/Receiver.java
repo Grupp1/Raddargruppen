@@ -6,8 +6,10 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 import raddar.enums.MessageType;
+import raddar.enums.SOSType;
 import raddar.models.MapObject;
 import raddar.models.Message;
+import raddar.models.SOSMessage;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -51,13 +53,12 @@ public class Receiver implements Runnable {
 
 			so.close();
 
-			Intent intent = new Intent(context, NotificationService.class);
-			if (m != null&& notify)
+			if (m != null && notify) {
+				Intent intent = new Intent(context, NotificationService.class);
 				context.startService(intent.putExtra("msg", m.getSubject()));
-
+			}
 		} catch (IOException ie) {
 			ie.printStackTrace();
-
 		} catch (ArrayIndexOutOfBoundsException e) {
 			Log.d("Undersök", "ArrayIndexOutOfBounds i receiver");
 		} catch (ClassNotFoundException e) {
