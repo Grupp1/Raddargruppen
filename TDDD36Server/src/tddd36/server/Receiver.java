@@ -54,41 +54,35 @@ public class Receiver implements Runnable {
 				e.printStackTrace();
 			}
 			String temp = in.readLine();
-
-			Object o = new Gson().fromJson(temp, c);
+			System.out.println(temp+" "+c);
+			Message m = new Gson().fromJson(temp, c);
 			// if message
-			if (o instanceof Message){
-				Message m = (Message) o;
-				// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
-				// meddelandet som klienten har skickat blir inläst på korrekt sätt
-				switch (m.getType()) {
-				case SOS:
-					broadcast(m);
-					break;
-				case NOTIFICATION:
-					handleNotification((NotificationMessage) m);
-					break;
-				case TEXT:
-					Database.storeTextMessage((TextMessage) m);
-					new Sender(m, m.getDestUser());
-					break;
-				case IMAGE:
-					handleImageMessage();
-					break;
-				case REQUEST:
-					handleRequest((RequestMessage) m);
-					break;
-				default:
-					System.out.println("Received message has unknown type. Discarding... ");
-				}
+			// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
+			// meddelandet som klienten har skickat blir inläst på korrekt sätt
+			switch (m.getType()) {
+			case SOS:
+				broadcast(m);
+			case NOTIFICATION:
+				handleNotification((NotificationMessage) m);
+				break;
+			case TEXT:
+				Database.storeTextMessage((TextMessage) m);
+				new Sender(m, m.getDestUser());
+				break;
+			case IMAGE:
+				handleImageMessage();
+				break;
+			case REQUEST:
+				handleRequest((RequestMessage) m);
+				break;
+			case MAPOBJECT:
+				broadcast(m);
+				break;
+			default:
+				System.out.println("Received message has unknown type. Discarding... ");
 			}
-			// if mapobject
-			else if (o instanceof MapObject){
-				System.out.println("HEEEEJ");
-				MapObject mo = new Gson().fromJson(temp, c);
-				broadcast(mo);
-			}
-			//	so.close();
+
+
 		} catch (IOException ie) {
 			ie.printStackTrace();
 		}
@@ -122,28 +116,18 @@ public class Receiver implements Runnable {
 	 * Broadcasta ett meddelande m till alla i online-listan
 	 */
 	private void broadcast(Message m) {
-		InetAddress sourceaddr = Server.onlineUsers.getUserAddress(m.getSrcUser());
-		for (InetAddress adr: Server.onlineUsers.getAllAssociations().values()) {
-			if (adr == sourceaddr) continue;
+		InetAddress srcAdr = Server.onlineUsers.getUserAddress(m.getSrcUser());
+		for (InetAddress adr: Server.onlineUsers.getAllAssociations().values()){
+			if(adr == srcAdr) continue;
 			new Sender(m, adr, 4043);
 		}
-	}
-	
-	/*
-	 * Broadcasta ett mapobject o till alla i online-listan
-	 */
-	private void broadcast(MapObject o) {
-		ArrayList<MapObject> mapObjects = new ArrayList<MapObject>();
-		mapObjects.add(o);
-		for (InetAddress adr: Server.onlineUsers.getAllAssociations().values())
-			new Sender(mapObjects, adr);
-			//new Sender(Database.getAllMapObjects(), adr, 4043);
 	}
 
 	/*
 	 * To be implemented
 	 */
 	private void handleImageMessage() {
+
 
 	}
 	/**
@@ -186,6 +170,7 @@ public class Receiver implements Runnable {
 		default:
 			System.out.println("Okänd RequestType");
 		}
+
 	}
 	/*
 	 * Denna funktionen används för att läsa in en rad och filtrera bort attributtaggen

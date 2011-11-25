@@ -8,8 +8,10 @@ import raddar.enums.ConnectionStatus;
 import raddar.enums.MessageType;
 import raddar.enums.ServerInfo;
 import raddar.models.MapObject;
+import raddar.models.MapObjectMessage;
 import raddar.models.Message;
 import raddar.views.MainView;
+import raddar.views.MapUI;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -80,13 +82,15 @@ public class ReciveHandler extends Observable implements Runnable {
 				}
 
 			});
-		}
-	}
-	public void newMapObject(MapObject o){
-		if(MainView.mapCont.getThread().isAlive()){
-			MainView.mapCont.add(o);
-		}else{
-			DatabaseController.db.addRow(o);
+		}else if (mt == MessageType.MAPOBJECT) {
+			MapObject mo = ((MapObjectMessage)m).toMapObject();
+//			if(MainView.mapCont.getMapUI() != null){
+//				Log.d("Här", "Här");
+				MainView.mapCont.add(mo,false);
+//			}else{
+//				Log.d("Där", "Där");
+//			DatabaseController.db.addRow(mo,false);
+//			}
 		}
 	}
 }

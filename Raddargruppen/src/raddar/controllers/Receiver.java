@@ -42,31 +42,17 @@ public class Receiver implements Runnable {
 			while (test != null) {
 				Class c = Class.forName(test);
 				String temp = in.readLine();
-				Object o = new Gson().fromJson(temp, c);
-				Log.d("RECEIVE",o.toString());
-				// if message
-				if (o instanceof Message){
-					m = (Message) o;
-					MessageType mType = m.getType();
-					if(mType == MessageType.REQUEST)
-						notify = false;
-					if (mType == MessageType.SOS) {
-						SOSMessage sm = (SOSMessage) m;
-						if (sm.getSOSType() == SOSType.CANCEL_ALARM) 
-							notify = false;
-					}
-					rh.newMessage(m.getType(), m,notify);
-					Log.d("test", test + " ");
-				}
-				// if mapobject
-				else if (o instanceof MapObject){
-					MapObject mo = (MapObject) o;
-					rh.newMapObject(mo);
-				}
+				m = new Gson().fromJson(temp, c);
+				Log.d("RECEIVE",m.toString());
+				if(m.getType() == MessageType.REQUEST||(m.getType() == MessageType.MAPOBJECT))
+					notify = false;
+				rh.newMessage(m.getType(), m,notify);
+
 				test = in.readLine();
 			}
+
 			so.close();
-			
+
 			if (m != null && notify) {
 				Intent intent = new Intent(context, NotificationService.class);
 				context.startService(intent.putExtra("msg", m.getSubject()));

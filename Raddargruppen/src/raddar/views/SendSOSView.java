@@ -42,7 +42,6 @@ public class SendSOSView extends Activity {
 		updateLabels();
 		
 		OnClickListener ocl = new OnClickListener() {
-			@Override
 			public void onClick(View v) {
 				if (v == button) {
 					if (SOS_ALARM_IS_ACTIVE) {

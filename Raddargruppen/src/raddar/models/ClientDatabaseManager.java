@@ -58,18 +58,19 @@ public class ClientDatabaseManager extends Observable {
 		 */
 
 		// TEST KOD FÖR MAP
-		addRow(new Fire(new GeoPoint(58395730, 15573080), "Här brinner det!",
-				SituationPriority.HIGH));
+		//addRow(new Fire(new GeoPoint(58395730, 15573080), "Här brinner det!", SituationPriority.HIGH));
 
 		//TEST KOD FÖR SAMTAL
 		//addSipProfile( user, String password);
 		Contact einar = new Contact("Einar", false, "marcuseinar", "einar");
 		Contact danan = new Contact("danan612", false, "danan612", "raddar");
+		Contact lalle = new Contact("lalle", false, "lalle", "lalle");
 		Contact alice = new Contact("Alice",false,null,null);
 		Contact borche = new Contact("Borche", false);
 		addRow(alice);
 		addRow(einar);
 		addRow(danan);
+		addRow(lalle);
 		addRow(borche);
 	}
 
@@ -121,7 +122,7 @@ public class ClientDatabaseManager extends Observable {
 	 * 
 	 * @param mo the MapObject that is to be added to the database
 	 */
-	public void addRow(MapObject mo) {
+	public void addRow(MapObject mo,boolean notify) {
 		ContentValues values = new ContentValues();
 		Gson gson = new Gson();
 		values.put("mapObject", gson.toJson(mo));
@@ -133,27 +134,10 @@ public class ClientDatabaseManager extends Observable {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
-		// setChanged();
-		// notifyObservers(mo);
-	}
-
-	/**********************************************************************
-	 * ADDING A RESOURCE IN THA DATABASE TABLE
-	 * 
-	 * @param r The Resource that is to be added to the database
-	 */
-	public void addRow(Resource r) {
-		ContentValues values = new ContentValues();
-		values.put("title", r.getTitle());
-		values.put("status", r.getStatus().toString());
-		try {
-			db.insert("contact", null, values);
-		} catch (Exception e) {
-			Log.e("DB ERROR", e.toString());
-			e.printStackTrace();
-		}
 		setChanged();
-		notifyObservers(r);
+		if(notify){
+			notifyObservers(mo);
+		}	
 	}
 
 	/**********************************************************************
@@ -201,43 +185,6 @@ public class ClientDatabaseManager extends Observable {
 			Log.e("DB Error", e.toString());
 			e.printStackTrace();
 		}
-	}
-	/**********************************************************************
-	 * ADDS A SIP PROFILE TO A CONTACT
-	 * @param user Sip user name
-	 * @param password Sip password
-	 */
-	public void addSipProfile(String user,String password){
-		ContentValues values = new ContentValues();
-		values.put("userName", user);
-		values.put("password", password);
-		try {
-			db.insert("sip", null, values);
-		} catch (Exception e) {
-			Log.e("DB ERROR", e.toString());
-			e.printStackTrace();
-		}
-	}
-	/**********************************************************************
-	 * DENNA METOD SKA INTE AVRA KVAR I SLUTÄNDAN
-	 * @return
-	 */
-	public String[] getSipProfile() {
-		String[] temp = new String[3];
-		Cursor cursor = null;
-		try {
-			cursor = db.query("sip", SIP_DETAILS, null, null, null, null, null);
-			cursor.moveToFirst();
-			temp[0] = cursor.getString(0);
-			temp[1] = cursor.getString(1);
-			temp[2] = "ekiga.net";
-
-		} catch (SQLException e) {
-			Log.e("DB Error", e.toString());
-			e.printStackTrace();
-		}
-		cursor.close();
-		return temp;
 	}
 	/**
 	 * Closes the database
@@ -307,7 +254,7 @@ public class ClientDatabaseManager extends Observable {
 		cursor.close();
 		return dataArrays;
 	}
-	
+
 
 	public void updateVersion(int version,String rowName){
 		ContentValues values = new ContentValues();
@@ -351,7 +298,7 @@ public class ClientDatabaseManager extends Observable {
 	private class CustomSQLiteOpenHelper extends SQLiteOpenHelper {
 		public CustomSQLiteOpenHelper(Context context) {
 			super(context, DB_NAME, null, DB_VERSION);
-	}
+		}
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {

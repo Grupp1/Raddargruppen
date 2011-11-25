@@ -70,6 +70,7 @@ public class Sender implements Runnable {
 		try {
 			// Kolla om vi har en address att skicka till innan vi skapar en anslutning
 			if (adr == null) {
+
 				for(Object m : messages){
 					if(m instanceof RequestMessage) continue;
 					Database.storeIntoBuffer((Message)m);
@@ -100,7 +101,7 @@ public class Sender implements Runnable {
 			rSocket.close();
 
 		} catch (IOException e) {
-			if(messages.get(0) instanceof MapObject)return;
+		//	if(messages.size() <= 0 || messages.get(0) instanceof MapObject)return;
 			// Logga ut denna användaren om 
 			LoginManager.logoutUser(((Message) messages.get(0)).getDestUser());
 			for(Object m : messages){
