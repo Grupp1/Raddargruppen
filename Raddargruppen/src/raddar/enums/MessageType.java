@@ -23,6 +23,11 @@ public enum MessageType {
 			return "SOS";
 		}
 	},
+	MAPOBJECT("MapObject") {
+		public String toString() {
+			return "MapObject";
+		}
+	},
 	REQUEST("request") {
 		public String toString() {
 			return("request");

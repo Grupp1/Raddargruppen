@@ -11,10 +11,15 @@ import java.util.Observer;
 
 import raddar.enums.ResourceStatus;
 import raddar.gruppen.R;
+import raddar.models.Fire;
+import raddar.models.FireTruck;
 import raddar.models.GPSModel;
 import raddar.models.MapModel;
 import raddar.models.MapObject;
 import raddar.models.MapObjectList;
+import raddar.models.MapObjectMessage;
+import raddar.models.Resource;
+import raddar.models.Situation;
 import raddar.models.You;
 import raddar.views.MainView;
 import raddar.views.MapUI;
@@ -47,25 +52,40 @@ public class MapCont implements Observer, Runnable{
 
 	public MapCont(MainView m){
 		gps  = new GPSModel(m);
-		gps.addObserver(this);
+		
 	}
 
 	public void declareMapUI(MapUI mapUI){
 		this.mapUI = mapUI;
-		olist = DatabaseController.db.getAllRowsAsArrays("map");
+		mapModel = new MapModel(mapUI);
+		DatabaseController.db.addObserver(this);
+		//mapModel.addObserver(this);
+		gps.addObserver(this);
 		geocoder = new Geocoder(mapUI.getBaseContext(), Locale.getDefault());
+
 		if (!thread.isAlive()){
 			run();
 		}
+	//	DatabaseController.db.addObserver(mapUI);
+	}
+	public MapObjectList getList(MapObject mo){
+		return mapModel.getList(mo);
 	}
 
-	public Thread getThread(){
-		return thread;
+	public MapUI getMapUI(){
+		return mapUI;
 	}
-	
-	public void add(MapObject o){
-		DatabaseController.db.addRow(o);
-		mapModel.add(o);
+
+	public void add(MapObject o,boolean notify){
+		
+		if(mapModel != null){
+			mapModel.add(o);
+			if(!notify){
+				mapUI.drawNewMapObject(o);
+			}
+		}
+		DatabaseController.db.addRow(o,notify);
+		
 	}
 
 	public void updateObject(MapObject o){
@@ -73,10 +93,10 @@ public class MapCont implements Observer, Runnable{
 	}
 
 	public void run() {
+		olist = DatabaseController.db.getAllRowsAsArrays("map");
 		for(int i = 0; i < olist.size();i++){
-			olist.get(i).updateData(new Geocoder(mapUI.getBaseContext(), Locale.getDefault()));	
-			mapModel = new MapModel(mapUI, MapCont.this);
-			mapModel.add(olist.get(i));
+			olist.get(i).updateData(new Geocoder(mapUI.getBaseContext(), Locale.getDefault()));
+			add(olist.get(i),false);
 		}
 	}
 
@@ -87,15 +107,17 @@ public class MapCont implements Observer, Runnable{
 	public You getYou(){
 		return you;
 	}
-	
+
 	public void update(Observable o, Object data) {
+		Log.d("MapCont","Update "+o);
+		
 		if (data instanceof GeoPoint){
 			if (!areYouFind){
 				areYouFind = true;
 				you = new You((GeoPoint)data, "Din position", "Här är du", R.drawable.you, ResourceStatus.FREE);
 				you.updateData(geocoder);
 				olist.add(you); // databas
-				add(you);		// karta
+				add(you,true);		// karta
 				mapUI.controller.animateTo(you.getPoint());
 				mapUI.controller.setZoom(13);
 				mapUI.follow = true;
@@ -108,25 +130,25 @@ public class MapCont implements Observer, Runnable{
 			if (mapUI.follow){
 				mapUI.controller.animateTo(you.getPoint());
 			}
+			mapUI.drawNewMapObject(you);
 		}
-		if (data instanceof MapObjectList){
+		else if (data instanceof MapObject){
+			mapUI.drawNewMapObject((MapObject)data);
 			// Send information to server
-//			Gson gson = new Gson();
-//			for (int i=0; i<((MapObjectList) data).size(); i++){
-//				try {
-//					gson.toJson((MapObject) ((MapObjectList) data).getItem(i));
-//					new Sender((MapObject) ((MapObjectList) data).getItem(i),
-//							InetAddress.getByName(raddar.enums.ServerInfo.SERVER_IP),
-//							raddar.enums.ServerInfo.SERVER_PORT);
-//				} catch (UnknownHostException e) {
-//					//e.printStackTrace();
-//					Log.d("Send MapObjects", "UnknownHostException");
-//				}
-//			}
+			Gson gson = new Gson();
+			try{
+				MapObjectMessage mo = new MapObjectMessage(gson.toJson((MapObject)data),
+						((MapObject)data).getClass().getName());
+				new Sender(mo);
+			}
+			catch (UnknownHostException e) {
+
+			}
 		}
-		if(mapUI!=null){
-			mapUI.getMapView().postInvalidate();
-		}
+//
+//		if(mapUI !=null){
+//			mapUI.getMapView().postInvalidate();
+//		}
 	}
 
 	public String calcAdress(GeoPoint point){

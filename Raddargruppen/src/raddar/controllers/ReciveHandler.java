@@ -9,8 +9,10 @@ import raddar.enums.MessageType;
 import raddar.enums.ServerInfo;
 import raddar.models.ImageMessage;
 import raddar.models.MapObject;
+import raddar.models.MapObjectMessage;
 import raddar.models.Message;
 import raddar.views.MainView;
+import raddar.views.MapUI;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -64,19 +66,19 @@ public class ReciveHandler extends Observable implements Runnable {
 
 					alert.setPositiveButton("Gå till kartan",
 							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int whichButton) {
-									// Gå till kartan
-								}
-							});
+						public void onClick(DialogInterface dialog,
+								int whichButton) {
+							// Gå till kartan
+						}
+					});
 
 					alert.setNegativeButton("Gör inget",
 							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int whichButton) {
-									dialog.cancel();
-								}
-							});
+						public void onClick(DialogInterface dialog,
+								int whichButton) {
+							dialog.cancel();
+						}
+					});
 
 					alert.show();
 				}
@@ -86,14 +88,16 @@ public class ReciveHandler extends Observable implements Runnable {
 			ImageMessage im = (ImageMessage) m;
 			DatabaseController.db.addImageMessageRow(im);
 
-		}
-	}
 
-	public void newMapObject(MapObject o) {
-		if (MainView.mapCont.getThread().isAlive()) {
-			MainView.mapCont.add(o);
-		} else {
-			DatabaseController.db.addRow(o);
+		}else if (mt == MessageType.MAPOBJECT) {
+			MapObject mo = ((MapObjectMessage)m).toMapObject();
+			//			if(MainView.mapCont.getMapUI() != null){
+			//				Log.d("Här", "Här");
+			MainView.mapCont.add(mo,false);
+			//			}else{
+			//				Log.d("Där", "Där");
+			//			DatabaseController.db.addRow(mo,false);
+			//			}
 		}
 
 	}

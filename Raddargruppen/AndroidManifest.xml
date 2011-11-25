@@ -14,49 +14,32 @@
 	<uses-permission android:name="android.permission.USE_SIP" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.VIBRATE" />
-
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.RECORD_AUDIO" />
-
-	<uses-feature
-		android:name="android.hardware.sip.voip"
+	<uses-feature android:name="android.hardware.sip.voip"
 		android:required="true" />
-	<uses-feature
-		android:name="android.hardware.wifi"
+	<uses-feature android:name="android.hardware.wifi"
 		android:required="true" />
-	<uses-feature
-		android:name="android.hardware.microphone"
+	<uses-feature android:name="android.hardware.microphone"
 		android:required="true" />
-
-	<application
-		android:icon="@drawable/r"
-		android:label="@string/app_name"
+	<application android:icon="@drawable/r" android:label="@string/app_name"
 		android:debuggable="true">
-
-
 		<uses-library android:name="com.google.android.maps" />
-
-		<service android:name="raddar.controllers.NotificationService" />
-		<activity
-			android:name="raddar.views.StartView"
-			android:label="@string/app_name"
-			android:theme="@android:style/Theme.NoTitleBar"
+		<service android:name="raddar.controllers.NotificationService"></service>
+		<activity android:name="raddar.views.StartView"
+			android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar"
 			android:screenOrientation="portrait">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
-
 		</activity>
 
 		<activity
 			android:screenOrientation="portrait"
 			android:name="raddar.views.MainView"
 			android:label="@string/app_name" />
-
-
-
 
 		<activity
 			android:screenOrientation="portrait"

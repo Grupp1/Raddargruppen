@@ -23,7 +23,6 @@ public class Sender implements Runnable {
 	// Meddelandet som ska skickas
 	private Message message;
 	// MapObject som ska skickas
-	private MapObject mapObject;
 
 	private Sender(InetAddress address, int port){
 		this.address = address;
@@ -37,11 +36,7 @@ public class Sender implements Runnable {
 		thread.start();
 	}
 
-	public Sender(MapObject mapObject, InetAddress address, int port) {
-		this(address, port);
-		this.mapObject = mapObject;
-		thread.start();
-	}
+
 	
 	public Sender(Message message) throws UnknownHostException {
 		this.message = message;
@@ -59,11 +54,8 @@ public class Sender implements Runnable {
 			if(message!=null){
 				send = message.getClass().getName()+"\r\n";
 				send +=	gson.toJson(message);	
-			}else if(mapObject!=null){
-				send = mapObject.getClass().getName()+"\r\n";
-				send +=	gson.toJson(mapObject);
 			}
-			Log.d("Gson test",send);
+			Log.d("Send",send);
 			PrintWriter out = new PrintWriter(so.getOutputStream(), true);
 
 			out.println(send);

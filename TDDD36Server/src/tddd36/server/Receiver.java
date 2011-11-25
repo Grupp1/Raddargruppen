@@ -9,8 +9,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import raddar.enums.NotificationType;
-
-import raddar.models.*;
+import raddar.models.MapObject;
+import raddar.models.Message;
+import raddar.models.NotificationMessage;
+import raddar.models.RequestMessage;
+import raddar.models.TextMessage;
 
 import com.google.gson.Gson;
 
@@ -49,9 +52,9 @@ public class Receiver implements Runnable {
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
-				
+
 			String temp = in.readLine();
-			
+
 			Object o = new Gson().fromJson(temp, c);
 			// if message
 			if (o instanceof Message){
@@ -78,7 +81,7 @@ public class Receiver implements Runnable {
 					System.out.println("Received message has unknown type. Discarding... ");
 				}
 			}
-//			
+			//			
 			//	so.close();
 		} catch (IOException ie) {
 			ie.printStackTrace();
@@ -113,18 +116,14 @@ public class Receiver implements Runnable {
 	 * Broadcasta ett meddelande m till alla i online-listan
 	 */
 	private void broadcast(Message m) {
-		for (InetAddress adr: Server.onlineUsers.getAllAssociations().values())
+		InetAddress srcAdr = Server.onlineUsers.getUserAddress(m.getSrcUser());
+		for (InetAddress adr: Server.onlineUsers.getAllAssociations().values()){
+			if(adr == srcAdr) continue;
 			new Sender(m, adr, 4043);
+		}
+
 	}
 
-
-	/*
-	 * To be implemented
-	 */
-	private void handleImageMessage() {
-		
-		
-	}
 	/**
 	 * Handles the request
 	 * @param rm The recived requestMessage
@@ -165,6 +164,7 @@ public class Receiver implements Runnable {
 		default:
 			System.out.println("Okänd RequestType");
 		}
+
 	}
 	/*
 	 * Denna funktionen används för att läsa in en rad och filtrera bort attributtaggen
