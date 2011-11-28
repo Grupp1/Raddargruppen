@@ -18,6 +18,6 @@ public class DatabaseController {
 	 * @param con The context which starts and owns the database
 	 */
 	public DatabaseController(Context con){
-		db = new ClientDatabaseManager(con, SessionController.getUser());
+		db = new ClientDatabaseManager(con);
 	}
 }

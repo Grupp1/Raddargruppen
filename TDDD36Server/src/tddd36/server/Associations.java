@@ -48,6 +48,26 @@ public class Associations {
 	}
 	
 	/**
+	 * Kolla om en användare är online
+	 * 
+	 * @param username Användaren som ska kollas
+	 * @return True om användaren är online
+	 */
+	public boolean isUserOnline(String username){
+		return associations.containsKey(username);
+	}
+	
+	/**
+	 * Kolla om en ip-adress är online
+	 * 
+	 * @param address Ip-adressen som ska kollas
+	 * @return True om ip-adressen är online
+	 */
+	public boolean isAddressOnline(String address){
+		return associations.containsValue(address);
+	}
+	
+	/**
 	 * Hämta en användares InetAddress
 	 * 
 	 * @param username Användaren vars InetAddress man vill hämta
