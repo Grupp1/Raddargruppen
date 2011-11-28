@@ -7,6 +7,7 @@ import java.util.Observer;
 import raddar.controllers.DatabaseController;
 import raddar.controllers.MapCont;
 import raddar.controllers.ReciveHandler;
+import raddar.controllers.ScreenBrightnessController;
 import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
 import raddar.controllers.SipController;
@@ -29,6 +30,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -47,6 +49,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	private ImageButton connectionButton;
 	private Bundle extras;
 	public static MapCont mapCont;
+	private WindowManager.LayoutParams lp = getWindow().getAttributes();
 	
 	/*
 	 * Lyssnar efter ändringar hos batterinivån
@@ -59,24 +62,35 @@ public class MainView extends Activity implements OnClickListener, Observer {
 				int level = intent.getIntExtra("level", 0);
 				int scale = intent.getIntExtra("scale", 100);
 				int true_level = level * 100 / scale;
-				if (true_level <= 20) {
-					Toast.makeText(MainView.this, "Strömsparläge aktiverat", Toast.LENGTH_LONG);
+				if (true_level <= 94) {
+					Toast.makeText(MainView.this, "Strömsparläge aktiverat", Toast.LENGTH_LONG).show();
+					ScreenBrightnessController.setScreenBrightnessValueToPowerSaving();
+					lp.screenBrightness = ScreenBrightnessController.getScreenBrightnessValue();
+					getWindow().setAttributes(lp);
 					callButton.setEnabled(false);
 					serviceButton.setEnabled(false);
 					// Ändra ljusstyrkan o ljudnivån
+				} else {
+					Toast.makeText(MainView.this, "Vanligt strömläge aktiverat", Toast.LENGTH_LONG).show();
+					ScreenBrightnessController.setScreenBrightnessValueToNormal();
+					lp.screenBrightness = ScreenBrightnessController.getScreenBrightnessValue();
+					getWindow().setAttributes(lp);
+					callButton.setEnabled(true);
+					serviceButton.setEnabled(true);
 				}
 			}
 		}
 	};
+	
 	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		
-		android.provider.Settings.System.putInt(getContentResolver(), 
-                android.provider.Settings.System.SCREEN_BRIGHTNESS, 0);
+		lp.screenBrightness = ScreenBrightnessController.getScreenBrightnessValue();
+		getWindow().setAttributes(lp);
+		 
 		
 		extras = getIntent().getExtras();
 //		controller = new InternalComManager();
