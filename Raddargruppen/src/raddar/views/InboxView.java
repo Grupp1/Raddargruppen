@@ -1,22 +1,16 @@
 package raddar.views;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
 import raddar.controllers.DatabaseController;
-import raddar.controllers.Sender;
 import raddar.enums.MessageType;
 import raddar.gruppen.R;
-import raddar.models.ImageMessage;
 import raddar.models.Message;
-import raddar.models.TextMessage;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -34,15 +28,31 @@ public class InboxView extends ListActivity implements Observer{
 	private InboxAdapter ia;
 	private ArrayList<Message> textInbox;
 	private ArrayList<Message> imageInbox;
+	private ArrayList<Message> temp;
+	
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		DatabaseController.db.addObserver(this);
-		textInbox = DatabaseController.db.getAllRowsAsArrays("message");
-		imageInbox = DatabaseController.db.getAllRowsAsArrays("imageMessage");
+		temp = DatabaseController.db.getAllRowsAsArrays("message");
+		//imageInbox = DatabaseController.db.getAllRowsAsArrays("imageMessage");
 		
+		int size = temp.size();
+		textInbox = new ArrayList<Message>(size);
+		
+		// Vänder arraylisten så att nyaste meddelandet visas överst
+		
+		if(size > 1){	
+			for(int i = 0; i<size; i++ ){
+				textInbox.add(temp.get(size-1-i));
+			}
+		}else{
+			textInbox = (ArrayList<Message>) temp.clone(); 
+		}
+
 		ia = new InboxAdapter(this, R.layout.row,textInbox);
 		setListAdapter(ia);
 		ListView lv = getListView();
+		
 		lv.setTextFilterEnabled(true);
 		
 		lv.setOnItemClickListener(new OnItemClickListener() {
@@ -103,6 +113,7 @@ public class InboxView extends ListActivity implements Observer{
 			if (v == null) {
 				LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				v = vi.inflate(R.layout.row, null);
+				
 			}
 			Message m = items.get(position);
 			if (m != null) {

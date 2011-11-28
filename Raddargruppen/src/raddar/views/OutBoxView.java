@@ -31,6 +31,7 @@ public class OutBoxView extends ListActivity {
 
 	private OutboxAdapter ia;
 	private ArrayList<Message> outbox;
+	private ArrayList<Message> temp;
 
 	/**
 	 * 
@@ -39,8 +40,19 @@ public class OutBoxView extends ListActivity {
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 
-		outbox = DatabaseController.db.getAllRowsAsArrays("outbox");
-
+		temp = DatabaseController.db.getAllRowsAsArrays("outbox");
+		int size = temp.size();
+		outbox = new ArrayList<Message>(size);
+		
+		// Vänder arraylisten så att nyaste meddelandet visas överst
+		
+		if(size > 1){
+			for(int i = 0; i<size; i++ ){
+				outbox.add(temp.get(size-1-i));
+			}
+		}else{
+			outbox = (ArrayList<Message>) temp.clone(); 
+		}
 		ia = new OutboxAdapter(this, R.layout.row,outbox);
 		setListAdapter(ia);
 		ListView lv = getListView();
@@ -83,6 +95,7 @@ public class OutBoxView extends ListActivity {
 				LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				v = vi.inflate(R.layout.row, null);
 			}
+
 			Message m = items.get(position);
 			if (m != null) {
 				TextView tt = (TextView) v.findViewById(R.id.toptext);
