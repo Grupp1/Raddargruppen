@@ -68,7 +68,7 @@ public class ClientDatabaseManager extends Observable {
 		Contact danan = new Contact("danan612", false, "danan612", "raddar");
 		Contact lalle = new Contact("lalle", false, "lalle", "lalle");
 		Contact alice = new Contact("Alice",false,null,null);
-		Contact borche = new Contact("Borche", false);
+		Contact borche = new Contact("Borche", false, "borche", "hej123");
 		addRow(alice);
 		addRow(einar);
 		addRow(danan);
