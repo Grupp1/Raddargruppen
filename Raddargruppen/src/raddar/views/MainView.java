@@ -195,6 +195,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 		try {
 			// Skicka meddelandet
 			new Sender(nm);		
+			deleteDatabase("client_database");
 		} catch (UnknownHostException e) {
 			Log.d("NotificationMessage", "Disconnect failed");
 		}
