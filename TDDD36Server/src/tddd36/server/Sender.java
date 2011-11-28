@@ -6,7 +6,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import raddar.models.MapObject;
 import raddar.models.Message;
 import raddar.models.RequestMessage;
 import raddar.models.TextMessage;
