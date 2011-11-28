@@ -48,8 +48,8 @@ public class StartView extends Activity implements Observer {
 		password = (EditText) this.findViewById(R.id.passwordText);
 		// Endast för lättare testning
 
-		user.setText("Borche");
-		password.setText("hej123");
+		user.setText("danan612");
+		password.setText("raddar");
 
 		final LoginManager lm = new LoginManager();
 		lm.addObserver(this);
@@ -60,7 +60,6 @@ public class StartView extends Activity implements Observer {
 		loginButton = (Button) this.findViewById(R.id.okButton);
 		loginButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				v.getContext().deleteDatabase(user.getText().toString());
 				String[] sipDetails = new String[3];
 				sipDetails[0] = user.getText().toString();
 				sipDetails[1] = password.getText().toString();

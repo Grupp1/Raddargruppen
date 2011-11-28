@@ -46,11 +46,12 @@ public class ClientDatabaseManager extends Observable {
 	 * @param context 
 	 * @param userName The name of the database is equal to the user name
 	 */
-	public ClientDatabaseManager(Context context, String userName) {
+	public ClientDatabaseManager(Context context) {
 		this.context = context;
-		this.DB_NAME = userName;
+		this.DB_NAME = "client_database";
 		CustomSQLiteOpenHelper helper = new CustomSQLiteOpenHelper(context);
 		this.db = helper.getWritableDatabase();
+		clearDatabase();
 		// TEST KOD ANVÄNDS FÖR ATT TESTA KONTAKTLISTAN
 		/*
 		 * addRow(new Contact("Alice",false)); addRow(new
@@ -73,6 +74,7 @@ public class ClientDatabaseManager extends Observable {
 		addRow(lalle);
 		addRow(borche);
 	}
+	
 
 	/**********************************************************************
 	 * ADDING A MESSAGE ROW TO THE DATABASE TABLE
@@ -192,6 +194,12 @@ public class ClientDatabaseManager extends Observable {
 	public void close(){
 		db.close();
 	}
+	public void clearDatabase(){
+		db.delete("message", null, null);
+		db.delete("map", null, null);
+		
+	}
+	
 
 	/**
 	 * RETRIEVE ALL ROWS IN A TABLE AS AN ArrayList
@@ -313,18 +321,13 @@ public class ClientDatabaseManager extends Observable {
 					+ "sipPw text)";
 			String mapTableQueryString = "create table map ("
 					+ "mapObject text," + "class text," + "id text)";
-			String sipTableQueryString = "create table sip ("
-					+ "userName text," + "password text)";
-			String tableVersion = "create table version ("
-					+ "mapId integer not null)";
+
 			/*
 			 * String newTableQueryString = "create table " + TABLE_NAME + " ("
 			 * + TABLE_ROW_ID + " integer primary key autoincrement not null," +
 			 * TABLE_ROW_ONE + " text," + TABLE_ROW_TWO + " text" + ");";
 			 */
 			// execute the query string to the database.
-			db.execSQL(tableVersion);
-			db.execSQL(sipTableQueryString);
 			db.execSQL(mapTableQueryString);
 			db.execSQL(contactTableQueryString);
 			db.execSQL(messageTableQueryString);
