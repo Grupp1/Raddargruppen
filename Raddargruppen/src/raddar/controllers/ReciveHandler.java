@@ -50,7 +50,13 @@ public class ReciveHandler extends Observable implements Runnable {
 		}
 
 	}
-
+	/**
+	 * Method to handle incoming messages to the applicaions and send
+	 * them to another class
+	 * @param mt the message type of the message
+	 * @param m the message
+	 * @param notify true if we should notify the user
+	 */
 	public void newMessage(MessageType mt, final Message m, boolean notify) {
 		if (mt == MessageType.TEXT) {
 			DatabaseController.db.addRow(m, notify);

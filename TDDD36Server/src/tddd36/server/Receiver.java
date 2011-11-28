@@ -60,6 +60,7 @@ public class Receiver implements Runnable {
 			switch (m.getType()) {
 			case SOS:
 				broadcast(m);
+				break;
 			case NOTIFICATION:
 				handleNotification((NotificationMessage) m);
 				break;
