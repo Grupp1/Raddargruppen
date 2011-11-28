@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 /**
  * The view that is shown when the user is in a call
  * @author danan612
@@ -54,12 +55,16 @@ public class CallView extends Activity implements OnClickListener {
 				
 
 				public void onCallEnded(SipAudioCall call) {
+					Toast.makeText(CallView.this, "Samtalet avslutades",
+							Toast.LENGTH_LONG).show();
 					finish();
 				}
 
 				@Override
 				public void onError(SipAudioCall call, int errorCode,
 						String errorMessage) {
+					Toast.makeText(CallView.this, "Samtalet avbröts",
+							Toast.LENGTH_LONG).show();
 					finish();
 				}
 			};
