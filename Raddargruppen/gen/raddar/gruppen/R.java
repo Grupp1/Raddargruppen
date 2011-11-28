@@ -103,7 +103,7 @@ public final class R {
         public static final int myLocation=0x7f060050;
         public static final int newPictureButton=0x7f060032;
         public static final int newTextButton=0x7f060031;
-        public static final int okButton=0x7f06004d;
+        public static final int okbutton=0x7f06004d;
         public static final int outboxButton=0x7f060036;
         public static final int passwordText=0x7f06004c;
         public static final int presence=0x7f06002c;

@@ -57,7 +57,7 @@ public class StartView extends Activity implements Observer {
 		dialog.setCancelable(false);
 		dialog.setTitle("Loggar in...");
 
-		loginButton = (Button) this.findViewById(R.id.okButton);
+		loginButton = (Button) this.findViewById(R.id.okbutton);
 		loginButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				v.getContext().deleteDatabase(user.getText().toString());
@@ -102,7 +102,9 @@ public class StartView extends Activity implements Observer {
 								MainView.class);
 						nextIntent.putExtra("user", user.getText().toString());
 						nextIntent.putExtra("connectionStatus", ConnectionStatus.CONNECTED);
+						
 						startActivity(nextIntent);
+						
 					}
 					Toast.makeText(StartView.this,
 							"Ansluten till servern",

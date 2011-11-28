@@ -7,11 +7,11 @@ import java.util.Observable;
 import raddar.enums.ConnectionStatus;
 import raddar.enums.MessageType;
 import raddar.enums.ServerInfo;
+import raddar.models.ContactMessage;
 import raddar.models.MapObject;
 import raddar.models.MapObjectMessage;
 import raddar.models.Message;
 import raddar.views.MainView;
-import raddar.views.MapUI;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -91,6 +91,9 @@ public class ReciveHandler extends Observable implements Runnable {
 //				Log.d("Där", "Där");
 //			DatabaseController.db.addRow(mo,false);
 //			}
+		}
+		else if(mt == MessageType.CONTACT){
+			DatabaseController.db.addRow(((ContactMessage)m).toContact());
 		}
 	}
 }

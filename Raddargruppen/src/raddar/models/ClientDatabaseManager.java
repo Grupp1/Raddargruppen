@@ -62,7 +62,7 @@ public class ClientDatabaseManager extends Observable {
 
 		//TEST KOD FÖR SAMTAL
 		//addSipProfile( user, String password);
-		Contact einar = new Contact("Einar", false, "marcuseinar", "einar");
+		/*Contact einar = new Contact("Einar", false, "marcuseinar", "einar");
 		Contact danan = new Contact("danan612", false, "danan612", "raddar");
 		Contact lalle = new Contact("lalle", false, "lalle", "lalle");
 		Contact alice = new Contact("Alice",false,null,null);
@@ -72,6 +72,7 @@ public class ClientDatabaseManager extends Observable {
 		addRow(danan);
 		addRow(lalle);
 		addRow(borche);
+		*/
 	}
 
 	/**********************************************************************
@@ -113,8 +114,8 @@ public class ClientDatabaseManager extends Observable {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
-		setChanged();
-		notifyObservers(c);
+//		setChanged();
+//		notifyObservers(c);
 	}
 
 	/**********************************************************************

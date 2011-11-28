@@ -165,6 +165,13 @@ public class Receiver implements Runnable {
 				e.printStackTrace();
 			}
 			break;
+		case CONTACTS:
+			ArrayList<Message> contactMessage = Database.retrieveAllUsers();
+			contactMessage.add(0,rm);
+			new Sender(contactMessage, rm.getSrcUser());
+			break;
+			
+			
 		default:
 			System.out.println("Okänd RequestType");
 		}
