@@ -16,14 +16,26 @@ public class LoginManager {
 	 * Annars associeras ingenting och ett "NOT OK" skickas tillbaka till 
 	 * klienten.
 	 * 
-	 * @param username Användarnamnet 
+	 * @param username Användarnamnet
 	 * @param password Lösenordet
 	 * @param so Socket via kommunikationen sker
 	 */
 	public static void evaluateUser(String username, String password, Socket so) {
 		// Om användaren har loggat in med korrekt lösenord
 		PrintWriter pw;
-		if (Database.evalutateUser(username, password)) {
+		if(Server.onlineUsers.isUserOnline(username)){
+			System.out.println(username+" har försökt logga in, men är redan inloggad på ip-adressen "
+					+ Server.onlineUsers.getUserAddress(username));
+			try {
+				pw = new PrintWriter(so.getOutputStream(), true);
+				pw.println("USER_ALREADY_EXIST");
+				pw.close();
+			} catch (IOException e) {
+				System.out.println("Could not respond with \"USER_ALREADY_EXIST\" to client attempting to Log in. Socket error? ");
+				e.printStackTrace();
+			}
+		}
+		else if (Database.evalutateUser(username, password)) {
 			try {
 				// Skapa utströmmen till klienten
 				pw = new PrintWriter(so.getOutputStream(), true);
