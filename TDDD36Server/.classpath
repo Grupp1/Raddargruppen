@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="Z:/Downloads/google-gson-1.7.1/gson-1.7.1-sources.jar"/>
 	<classpathentry kind="lib" path="Z:/Downloads/mysql-connector-java-3.1.14/mysql-connector-java-3.1.14-bin.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/tddd36"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
