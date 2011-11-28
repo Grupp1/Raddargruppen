@@ -43,7 +43,7 @@ public class Database {
 		} catch (SQLException ex) {
 			System.out.println("Kunde inte ansluta till databasen. Kollat Library efter JDBC Plugin? ");
 		} catch (ClassNotFoundException e) {
-			System.out.println("Fel i i Class.forname()-anropet");
+			System.out.println("Fel i i Class.forname()-anropet, kollat så att GSON grejerna finns i Library?");
 		}
 		return null;
 	}
