@@ -18,6 +18,7 @@ public class Situation extends MapObject {
 	}
 	public void setPriority(SituationPriority priority) {
 		this.priority = priority;
+		changeLatestUser();
 	}
 	
 	@Override

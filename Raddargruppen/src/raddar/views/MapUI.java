@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -56,7 +57,9 @@ public class MapUI extends MapActivity implements Observer {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.maps);
-
+		
+		
+		
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 		mapView.setSatellite(true);
@@ -175,16 +178,16 @@ public class MapUI extends MapActivity implements Observer {
 								value = input.getText().toString();
 								MapObject o = null;
 								if(Touchy.this.item == 0){		
-									MainView.mapCont.add(o = new Fire(touchedPoint, value, SituationPriority.HIGH));
+									MainView.mapCont.add(o = new Fire(touchedPoint, value, SituationPriority.HIGH),true);
 								}
 								if(Touchy.this.item == 1){
-									MainView.mapCont.add(o = new FireTruck(touchedPoint, value, ResourceStatus.BUSY));
+									MainView.mapCont.add(o = new FireTruck(touchedPoint, value, ResourceStatus.BUSY),true);
 								}
 								if(Touchy.this.item == 2){
-									MainView.mapCont.add(o = new Situation(touchedPoint, "Situation", value, R.drawable.situation, SituationPriority.NORMAL));
+									MainView.mapCont.add(o = new Situation(touchedPoint, "Situation", value, R.drawable.situation, SituationPriority.NORMAL),true);
 								}
 								if(Touchy.this.item == 3){
-									MainView.mapCont.add(o = new Resource(touchedPoint, "Resurs", value, R.drawable.resource, ResourceStatus.BUSY));
+									MainView.mapCont.add(o = new Resource(touchedPoint, "Resurs", value, R.drawable.resource, ResourceStatus.BUSY),true);
 								}
 								o.updateData(geocoder);;
 								Toast.makeText(getApplicationContext(), items[Touchy.this.item]+" utplacerad", Toast.LENGTH_LONG).show();
@@ -237,19 +240,49 @@ public class MapUI extends MapActivity implements Observer {
 		
 	}
 	
+	public void drawNewMapObject(MapObject mo){
+		MapObjectList list = MainView.mapCont.getList(mo);
+		if(list == null){
+			Log.d("MapUI", "list är null");
+			return;
+		}
+		if (!mapOverlays.contains(list)){
+			mapOverlays.add((MapObjectList) list);
+		}
+		else{
+			mapOverlays.set(mapOverlays.indexOf(list), list);
+		}
+		mapView.postInvalidate();
+	}
+	
 	public void update(Observable observable, Object data) {
+		Log.d("MAPUI",observable.toString());
 		if (data instanceof GeoPoint){
 
 		}
-		if (data instanceof MapObjectList){
-//			if (!mapOverlays.contains(data)){
-//				mapOverlays.add((MapObjectList) data);
-//			}
-//			else{
-//				mapOverlays.set(mapOverlays.indexOf(data), (MapObjectList)data);
-//			}
-			mapOverlays.add((MapObjectList) data);
+		else if (data instanceof MapObjectList){
+			if (!mapOverlays.contains(data)){
+				mapOverlays.add((MapObjectList) data);
+			}
+			else{
+				mapOverlays.set(mapOverlays.indexOf(data), (MapObjectList)data);
+			}
+		//	mapOverlays.add((MapObjectList) data);
 		}
+		else if(data instanceof MapObject){
+			MapObjectList list = MainView.mapCont.getList((MapObject)data);
+			if(list == null){
+				Log.d("MapUI", "list är null");
+				return;
+			}
+			if (!mapOverlays.contains(list)){
+				mapOverlays.add((MapObjectList) list);
+			}
+			else{
+				mapOverlays.set(mapOverlays.indexOf(list), list);
+			}
+		}
+			
 		mapView.postInvalidate();
 		// RITA OM PÅ NÅGOT SÄTT
 		//använd mapView.invalidate() om du kör i UI tråden
