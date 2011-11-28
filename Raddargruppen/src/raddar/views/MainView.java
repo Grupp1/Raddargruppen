@@ -34,7 +34,7 @@ import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 
-public class MainView extends Activity implements OnClickListener, Observer{
+public class MainView extends Activity implements OnClickListener, Observer {
 
 	private ImageButton callButton;
 	private ImageButton messageButton;
@@ -59,7 +59,12 @@ public class MainView extends Activity implements OnClickListener, Observer{
 				int level = intent.getIntExtra("level", 0);
 				int scale = intent.getIntExtra("scale", 100);
 				int true_level = level * 100 / scale;
-				Toast.makeText(MainView.this, true_level + "% kvar av batteriet", Toast.LENGTH_LONG).show();
+				if (true_level <= 20) {
+					Toast.makeText(MainView.this, "Strömsparläge aktiverat", Toast.LENGTH_LONG);
+					callButton.setEnabled(false);
+					serviceButton.setEnabled(false);
+					// Ändra ljusstyrkan o ljudnivån
+				}
 			}
 		}
 	};
@@ -70,6 +75,8 @@ public class MainView extends Activity implements OnClickListener, Observer{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		
+		android.provider.Settings.System.putInt(getContentResolver(), 
+                android.provider.Settings.System.SCREEN_BRIGHTNESS, 0);
 		
 		extras = getIntent().getExtras();
 //		controller = new InternalComManager();
@@ -81,7 +88,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 
 		new SessionController(extras.get("user").toString());
 		new DatabaseController(this);
-		new SipController(this);
+		//new SipController(this);
 		new ReciveHandler(this).addObserver(this);
 
 		try {
