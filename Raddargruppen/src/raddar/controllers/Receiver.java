@@ -56,7 +56,9 @@ public class Receiver implements Runnable {
 					rh.newMapObject(mo);
 				}
 				test = in.readLine();
+				
 			}
+			Log.d("RECIVE FROM SERVER", test);
 			so.close();
 
 			Intent intent = new Intent(context, NotificationService.class);

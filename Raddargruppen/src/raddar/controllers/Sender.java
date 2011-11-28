@@ -63,7 +63,7 @@ public class Sender implements Runnable {
 				send = mapObject.getClass().getName()+"\r\n";
 				send +=	gson.toJson(mapObject);
 			}
-			Log.d("Gson test",send);
+			Log.d("SEND TO SERVER",send);
 			PrintWriter out = new PrintWriter(so.getOutputStream(), true);
 			out.println(send);
 
