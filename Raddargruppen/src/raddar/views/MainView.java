@@ -20,8 +20,11 @@ import raddar.models.RequestMessage;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -45,6 +48,22 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	private Bundle extras;
 	public static MapCont mapCont;
 	
+	/*
+	 * Lyssnar efter ändringar hos batterinivån
+	 */
+	private BroadcastReceiver mBatteryInfoReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if (Intent.ACTION_BATTERY_CHANGED.equals(action)) {
+				int level = intent.getIntExtra("level", 0);
+				int scale = intent.getIntExtra("scale", 100);
+				int true_level = level * 100 / scale;
+				Toast.makeText(MainView.this, true_level + "% kvar av batteriet", Toast.LENGTH_LONG).show();
+			}
+		}
+	};
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -60,19 +79,15 @@ public class MainView extends Activity implements OnClickListener, Observer{
 //		//TEMPORÄRT MÅSTE FIXAS
 //		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
 
-		
-		
 		new SessionController(extras.get("user").toString());
 		new DatabaseController(this);
-		new SipController(this);
+		//new SipController(this);
 		new ReciveHandler(this).addObserver(this);
-
-
-		
 
 		try {
 			new Sender(new RequestMessage(RequestType.MESSAGE));
 			new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
+			new Sender(new RequestMessage(RequestType.CONTACTS));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
@@ -195,6 +210,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 		try {
 			// Skicka meddelandet
 			new Sender(nm);		
+			deleteDatabase("client_database");
 		} catch (UnknownHostException e) {
 			Log.d("NotificationMessage", "Disconnect failed");
 		}
@@ -232,5 +248,18 @@ public class MainView extends Activity implements OnClickListener, Observer{
 			}
 		});
 
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		registerReceiver(mBatteryInfoReceiver, new IntentFilter(
+				Intent.ACTION_BATTERY_CHANGED));
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		unregisterReceiver(mBatteryInfoReceiver);
 	}
 }
