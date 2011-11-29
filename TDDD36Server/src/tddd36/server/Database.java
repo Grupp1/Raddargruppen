@@ -2,6 +2,7 @@ package tddd36.server;
 
 
 
+import raddar.enums.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -243,8 +244,8 @@ public class Database {
 	}
 
 	/**
-	 * Hämta alla registrerade användare
-	 * 
+	 * Hämta alla registrerade användare i en arraylist<string>
+	 * (Vet inte om den här funktionen behövs egentligen men vet inte om den används så låter den va)
 	 * @return En ArrayList med alla registrerade användare
 	 */
 
@@ -264,7 +265,7 @@ public class Database {
 	}
 
 	/**
-	 * Hämta alla registrerade användare vid första inlogg
+	 * Hämta alla registrerade användare från databasen på servern
 	 * 
 	 * @return En ArrayList med alla registrerade användare som messages
 	 */

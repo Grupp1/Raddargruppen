@@ -3,6 +3,7 @@ package raddar.views;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import raddar.controllers.DatabaseController;
 import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
 import raddar.gruppen.R;
@@ -20,13 +21,16 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 /**
- * This class shows the view which allows users to send 
+ * This class shows the view which allows users to send
  * 
  * @author danan612
- *
+ * 
  */
+
 public class SendMessageView extends Activity implements OnClickListener {
+
 	private EditText destUser;
 	private EditText subject;
 	private EditText messageData;
@@ -34,89 +38,136 @@ public class SendMessageView extends Activity implements OnClickListener {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.send_message);
-		destUser = (EditText) this.findViewById(R.id.destUser);
-		subject = (EditText) this.findViewById(R.id.subject);
-		messageData = (EditText) this.findViewById(R.id.messageData);
-		sendButton = (Button) this.findViewById(R.id.sendButton);
-		sendButton.setOnClickListener(this);
-		destUser.setOnClickListener(this);
+
+		try {
+
+			Bundle extras = getIntent().getExtras();
+			String[] items = (String[]) extras.getCharSequenceArray("message");
+
+			destUser = (EditText) this.findViewById(R.id.destUser);
+			subject = (EditText) this.findViewById(R.id.subject);
+			messageData = (EditText) this.findViewById(R.id.messageData);
+
+			destUser.setText(items[0].toString());
+			subject.setText(items[1].toString());
+			messageData.setText(items[2].toString());
+			sendButton = (Button) this.findViewById(R.id.sendButton);
+			sendButton.setOnClickListener(this);
+			destUser.setOnClickListener(this);
+
+		} catch (Exception e) {
+
+			Log.d("SendMessageView", e.toString());
+			destUser = (EditText) this.findViewById(R.id.destUser);
+			subject = (EditText) this.findViewById(R.id.subject);
+			messageData = (EditText) this.findViewById(R.id.messageData);
+			sendButton = (Button) this.findViewById(R.id.sendButton);
+			sendButton.setOnClickListener(this);
+			destUser.setOnClickListener(this);
+
+		}
 	}
 
 	public void onClick(View v) {
 		if (v.equals(sendButton)) {
-			//Undersöker om alla fält är skrivna i
-			//TODO: gör nogrannare undersökning
+			// Undersöker om alla fält är skrivna i
+			// TODO: gör nogrannare undersökning
 			String[] temp = new String[3];
 			temp[0] = destUser.getText().toString().trim();
 			temp[1] = subject.getText().toString().trim();
 			temp[2] = messageData.getText().toString().trim();
-			if (temp[0].equals("")
-					|| temp[1].equals("")
-					|| temp[2].equals("")) {
+			if (temp[0].equals("") || temp[1].equals("") || temp[2].equals("")) {
 				Toast.makeText(getApplicationContext(), "Fyll i alla fält",
 						Toast.LENGTH_SHORT).show();
 				return;
 			}
 			sendMessages();
-			/*
-			Message m = new TextMessage(MainView.controller.getUser(), ""
-					+ destUser.getText());
-			m.setSubject(subject.getText() + "");
-			m.setData(messageData.getText() + "");
-			try {
-				new Sender(m, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
-			} catch (UnknownHostException e) {
 
-			}
-			 */
-			Toast.makeText(getApplicationContext(), "Meddelande till "+destUser.getText().
-					toString().trim(),
-					Toast.LENGTH_SHORT).show();
+			Intent nextIntent = new Intent(SendMessageView.this,
+					MessageChoiceView.class);
+			startActivity(nextIntent);
 			finish();
-		} else {
+		} else if (v == destUser) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("Vill du mottagare från kontaktlistan?")
-			.setCancelable(false)
-			.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					Intent nextIntent = new Intent(SendMessageView.this, ContactView.class);
-					startActivityForResult(nextIntent,0);
-				}
-			})
-			.setNegativeButton("Nej", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-				}
-			});
+			builder.setMessage(
+					"Vill du lägga till mottagare från kontaktlistan?")
+					.setCancelable(false)
+					.setPositiveButton("Ja",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									Intent nextIntent = new Intent(
+											SendMessageView.this,
+											ContactView.class);
+									startActivityForResult(nextIntent, 0);
+								}
+							})
+					.setNegativeButton("Nej",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									dialog.cancel();
+								}
+							});
 			AlertDialog alert = builder.create();
 			alert.show();
+		} else {
+			onBackPressed();
+			Intent nextIntent = new Intent(SendMessageView.this,
+					ContactView.class);
+			startActivityForResult(nextIntent, 0);
+
+			finish();
 		}
 	}
 
-	private void sendMessages(){
-		String[] destUsers = (destUser.getText().toString()+";").split(";");
-		Log.d("number of messages",destUsers.length+"");
-		for(int i = 0; i < destUsers.length;i++){
+	private void sendMessages() {
+		String[] destUsers = (destUser.getText().toString() + ";").split(";");
+		Log.d("number of messages", destUsers.length + "");
+		for (int i = 0; i < destUsers.length; i++) {
 			Message m = new TextMessage(SessionController.getUser(), ""
 					+ destUsers[i]);
 			m.setSubject(subject.getText() + "");
 			m.setData(messageData.getText() + "");
 			try {
-				new Sender(m, InetAddress.getByName(raddar.enums.ServerInfo.SERVER_IP), raddar.enums.ServerInfo.SERVER_PORT);
+				new Sender(m,
+						InetAddress
+								.getByName(raddar.enums.ServerInfo.SERVER_IP),
+						raddar.enums.ServerInfo.SERVER_PORT);
+				DatabaseController.db.addOutboxRow(m);
+				DatabaseController.db.deleteDraftRow(m);
+
 			} catch (UnknownHostException e) {
+				DatabaseController.db.addDraftRow(m);
 			}
 		}
 	}
+
+	public void onBackPressed() {
+		String[] destUsers = (destUser.getText().toString() + ";").split(";");
+		Log.d("number of messages", destUsers.length + "");
+		for (int i = 0; i < destUsers.length; i++) {
+			Message m = new TextMessage(SessionController.getUser(), ""
+					+ destUsers[i]);
+			m.setSubject(subject.getText() + "");
+			m.setData(messageData.getText() + "");
+			DatabaseController.db.addDraftRow(m);
+		}
+
+		super.onBackPressed();
+	}
+
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if(requestCode == 0){
-			if(resultCode == RESULT_OK){
+		if (requestCode == 0) {
+			if (resultCode == RESULT_OK) {
 				Bundle extras = data.getExtras();
 				String temp = "";
 				String[] destUsers = extras.getStringArray("contacts");
-				for(int i = 0; i < destUsers.length; i++)
-					temp += destUsers[i]+";";
-				destUser.setText(temp);	
+				for (int i = 0; i < destUsers.length; i++)
+					temp += destUsers[i] + ";";
+				destUser.setText(temp);
 			}
 		}
 	}

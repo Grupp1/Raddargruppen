@@ -57,14 +57,16 @@ public class MessageChoiceView extends Activity implements OnClickListener {
 		}
 		
 		if(v == outboxButton){
-			Intent nextIntent = new Intent(MessageChoiceView.this, InboxView.class); //OutboxView
+
+			Intent nextIntent = new Intent(MessageChoiceView.this, OutBoxView.class);
 			startActivity(nextIntent);
 		}
 		
 		if(v == draftButton){
-			Intent nextIntent = new Intent(MessageChoiceView.this, InboxView.class); //DraftView
+			Intent nextIntent = new Intent(MessageChoiceView.this, DraftView.class);
 			startActivity(nextIntent);
 		}
+		
 	}
 	
 	@Override
