@@ -22,7 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class CallContactListView extends ListActivity implements OnClickListener {
+public class CallContactListView extends ListActivity{
 
 	private static final int RESULT_FIRST_USER_EDIT = 5;
 	private ContactAdapter ia;
@@ -44,21 +44,13 @@ public class CallContactListView extends ListActivity implements OnClickListener
 			@Override
 			public void onItemClick(AdapterView<?> a, View v, int position, long id) {
 				Intent nextIntent = new Intent(CallContactListView.this,CallView.class);
-				nextIntent.putExtra("sip","sip:" + contacts.get(position).getUserName()   //info.position kanske bara hör till context menu, hitta plats i arrayen ist
+				nextIntent.putExtra("sip","sip:" + contacts.get(position).getUserName()   
 						+ "@ekiga.net" );
 				startActivityForResult(nextIntent,9);
 			}
 		});
 	}
-	
 
-	public void onClick(View v) {
-		Intent nextIntent = new Intent(this,CallView.class);
-		nextIntent.putExtra("sip","sip:" + contacts.get(info.position).getSipUsr()
-				+ "@ekiga.net" );
-		startActivityForResult(nextIntent,9);
-
-	}
 
 	private class ContactAdapter extends ArrayAdapter<Contact> {
 		private ArrayList<Contact> contacts;
@@ -88,5 +80,9 @@ public class CallContactListView extends ListActivity implements OnClickListener
 	}
 
 
+
 }
+
+
+
 

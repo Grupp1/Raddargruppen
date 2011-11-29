@@ -99,12 +99,13 @@ public class ContactListView extends ListActivity implements OnClickListener {
 			startActivityForResult(nextIntent,9);
 		}else if (item.getTitle() == "Skicka textmeddelande") {
 				Intent nextIntent = new Intent(this,SendMessageView.class);
-				startActivity(nextIntent);
-				//skicka med valt namn tiil destUser
+				nextIntent.putExtra("destUser",contacts.get(info.position).getUserName());
+				startActivityForResult(nextIntent,8);
+				
 		}else if (item.getTitle() == "Skicka bildmeddelande") {
 			Intent nextIntent = new Intent(this,SendImageMessageView.class);
-			startActivity(nextIntent);
-			//skicka med valt namn tiil destUser
+			nextIntent.putExtra("destUser",contacts.get(info.position).getUserName());
+			startActivityForResult(nextIntent,7);
 		} else {
 			return false;
 		}

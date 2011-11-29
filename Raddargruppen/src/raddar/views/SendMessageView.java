@@ -42,6 +42,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 		destUser.setOnClickListener(this);
 		destUser.setFocusable(false);
 		
+
 	}
 
 	public void onClick(View v) {
@@ -60,7 +61,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 				return;
 			}
 			sendMessages();
-		
+
 			Toast.makeText(getApplicationContext(), "Meddelande till "+destUser.getText().
 					toString().trim(),
 					Toast.LENGTH_SHORT).show();
@@ -96,5 +97,16 @@ public class SendMessageView extends Activity implements OnClickListener {
 				destUser.setText(temp);	
 			}
 		}
+		else if (requestCode == 8) {
+			Bundle extras = data.getExtras();
+			String destU = extras.getString("destUser");
+			destUser.setText(destU);
+
+		}
+		else if (requestCode == 7) {
+			
+		}
 	}
+
 }
+
