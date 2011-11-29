@@ -49,7 +49,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	private ImageButton connectionButton;
 	private Bundle extras;
 	public static MapCont mapCont;
-	private WindowManager.LayoutParams lp = getWindow().getAttributes();
+	private WindowManager.LayoutParams lp = this.getWindow().getAttributes();
 	
 	/*
 	 * Lyssnar efter ändringar hos batterinivån
