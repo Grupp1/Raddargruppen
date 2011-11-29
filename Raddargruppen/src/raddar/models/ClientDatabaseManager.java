@@ -46,12 +46,13 @@ public class ClientDatabaseManager extends Observable {
 	 * @param context 
 	 * @param userName The name of the database is equal to the user name
 	 */
-	public ClientDatabaseManager(Context context, String userName) {
+	public ClientDatabaseManager(Context context) {
 		this.context = context;
-		this.DB_NAME = userName;
+		this.DB_NAME = "client_database";
 		CustomSQLiteOpenHelper helper = new CustomSQLiteOpenHelper(context);
 		this.db = helper.getWritableDatabase();
 
+		clearDatabase();
 
 		// TEST KOD ANVÄNDS FÖR ATT TESTA KONTAKTLISTAN
 		/*
@@ -64,7 +65,7 @@ public class ClientDatabaseManager extends Observable {
 
 		//TEST KOD FÖR SAMTAL
 		//addSipProfile( user, String password);
-		Contact einar = new Contact("Einar", false, "marcuseinar", "einar");
+		/*Contact einar = new Contact("Einar", false, "marcuseinar", "einar");
 		Contact danan = new Contact("danan612", false, "danan612", "raddar");
 		Contact lalle = new Contact("lalle", false, "lalle", "lalle");
 		Contact alice = new Contact("Alice",false,null,null);
@@ -76,7 +77,10 @@ public class ClientDatabaseManager extends Observable {
 		addRow(lalle);
 		addRow(borche);
 		addRow(mange);
+		*/
+
 	}
+	
 
 	/**********************************************************************
 	 * ADDING A MESSAGE ROW TO THE DATABASE TABLE
@@ -184,8 +188,8 @@ public class ClientDatabaseManager extends Observable {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
-		setChanged();
-		notifyObservers(c);
+//		setChanged();
+//		notifyObservers(c);
 	}
 
 	/**********************************************************************
@@ -270,6 +274,12 @@ public class ClientDatabaseManager extends Observable {
 	public void close(){
 		db.close();
 	}
+	public void clearDatabase(){
+		db.delete("message", null, null);
+		db.delete("map", null, null);
+		
+	}
+	
 
 	/********************************************************************
 	 * DELETING A ROW IN THE DRAFT TABLE

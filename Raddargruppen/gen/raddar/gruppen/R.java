@@ -108,9 +108,9 @@ public final class R {
         public static final int myLocation=0x7f060059;
         public static final int newPictureButton=0x7f060037;
         public static final int newTextButton=0x7f060036;
-        public static final int okButton=0x7f060056;
+        public static final int okbutton=0x7f060056;
         public static final int outboxButton=0x7f06003b;
-        public static final int passwordText=0x7f060055;
+        public static final int passwordtext=0x7f060055;
         public static final int presence=0x7f060031;
         public static final int preview=0x7f060048;
         public static final int readMessage=0x7f060041;
@@ -138,7 +138,7 @@ public final class R {
         public static final int toptext=0x7f060043;
         public static final int traffic=0x7f06005a;
         public static final int trafikverketButton=0x7f060053;
-        public static final int userText=0x7f060054;
+        public static final int usertext=0x7f060054;
         public static final int yrButton=0x7f060052;
     }
     public static final class layout {

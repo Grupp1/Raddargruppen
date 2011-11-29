@@ -99,6 +99,12 @@ public class InboxView extends ListActivity implements Observer{
 			}
 		});
 	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		DatabaseController.db.deleteObserver(this);
+	}
 
 	private class InboxAdapter extends ArrayAdapter<Message>{
 		private ArrayList<Message> items;

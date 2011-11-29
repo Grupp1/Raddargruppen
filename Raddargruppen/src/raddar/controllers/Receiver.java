@@ -49,7 +49,10 @@ public class Receiver implements Runnable {
 				rh.newMessage(m.getType(), m,notify);
 
 				test = in.readLine();
+				
 			}
+
+			//Log.d("RECIVE FROM SERVER", test);
 
 			so.close();
 

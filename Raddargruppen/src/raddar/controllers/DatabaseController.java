@@ -1,7 +1,7 @@
 package raddar.controllers;
 
-import android.content.Context;
 import raddar.models.ClientDatabaseManager;
+import android.content.Context;
 
 /**
  * Has a static reference to the database
@@ -18,6 +18,6 @@ public class DatabaseController {
 	 * @param con The context which starts and owns the database
 	 */
 	public DatabaseController(Context con){
-		db = new ClientDatabaseManager(con, SessionController.getUser());
+		db = new ClientDatabaseManager(con);
 	}
 }
