@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import raddar.enums.ServerInfo;
+import raddar.models.ClientDatabaseManager;
 import raddar.models.MapObject;
 import raddar.models.Message;
 import android.util.Log;
@@ -68,6 +69,7 @@ public class Sender implements Runnable {
 
 		} catch (IOException ie) {
 			Log.d("Skapandet av socket [2]", ie.toString());
+			DatabaseController.db.addBufferedMessageRow(message);
 		} //catch (InterruptedException e) {
 		//Log.d("Avbruten väntan", "Gick inte");
 		//}

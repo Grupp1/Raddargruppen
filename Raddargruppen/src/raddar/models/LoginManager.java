@@ -8,9 +8,12 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
 
+import raddar.controllers.DatabaseController;
+import raddar.controllers.Sender;
 import raddar.enums.LoginResponse;
 import raddar.enums.NotificationType;
 import raddar.enums.RequestType;
@@ -94,6 +97,21 @@ public class LoginManager extends Observable {
 			
 			if (response.equals("OK")) {
 				logIn = LoginResponse.ACCEPTED;
+
+				//**************************************************************
+				//Skicka alla medelanden som buffrats
+				ArrayList<Message> bufferedMessages = DatabaseController.db.getAllRowsAsArrays("bufferedMessage");
+				for(Message m: bufferedMessages){
+					new Sender(m);
+				}
+				DatabaseController.db.clearTable("bufferesMessage");
+				
+				
+				
+				
+				//SLUT
+				//**************************************************************
+				
 				s = null;
 			}
 			else if(response.equals("USER_ALREADY_EXIST")){

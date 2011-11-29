@@ -126,6 +126,26 @@ public class ClientDatabaseManager extends Observable {
 		setChanged();
 		notifyObservers(m);			
 	}
+	/**********************************************************************
+	 * Adds messages that couldn't be sent at the time to a buffer that is sent when connection with the server is reestablished
+	 * @param m the message that was to be sent.
+	 */
+	public void addBufferedMessageRow(Message m){
+		ContentValues values = new ContentValues();
+		values.put("destUser", m.getDestUser());
+		Log.e("destUser", m.getDestUser().toString());
+		values.put("rDate", m.getDate());
+		values.put("subject", m.getSubject());
+		values.put("mData", m.getData());
+		try {
+			db.insert("bufferedMessage", null, values);
+		} catch (Exception e) {
+			Log.e("DB ERROR", e.toString());
+			e.printStackTrace();
+		}
+		setChanged();
+		notifyObservers(m);	
+	}
 
 	/**********************************************************************
 	 * ADDING A IMAGEMESSAGE ROW TO THE DATABASETABLE
@@ -147,6 +167,26 @@ public class ClientDatabaseManager extends Observable {
 		}
 		setChanged();
 		notifyObservers(m);			
+	}
+	
+	/**********************************************************************
+	 * Adds messages that couldn't be sent at the time to a buffer that is sent when connection with the server is reestablished
+	 * @param m the message that was to be sent.
+	 */
+	public void addBufferedMessageRow(ImageMessage m){
+		ContentValues values = new ContentValues();
+		values.put("destUser", m.getDestUser());
+		values.put("rDate", m.getDate());
+		values.put("subject", m.getSubject());
+		values.put("filePath", m.getFilePath());
+		try {
+			db.insert("bufferedMessage", null, values);
+		} catch (Exception e) {
+			Log.e("DB ERROR", e.toString());
+			e.printStackTrace();
+		}
+		setChanged();
+		notifyObservers(m);	
 	}
 
 	/**********************************************************************
@@ -315,6 +355,13 @@ public class ClientDatabaseManager extends Observable {
 		}
 		setChanged();
 		notifyObservers(mo);
+	}
+	/********************************************************************
+	 * Clears an entire table of all rows
+	 * @param table the table that is to be cleared
+	 */
+	public void	clearTable(String table){
+		db.delete(table, null, null);
 	}
 
 
@@ -488,6 +535,20 @@ public class ClientDatabaseManager extends Observable {
 					"rDate integer," +
 					"subject text," +
 					"mData text)";
+			
+			String bufferedmessagesTableQueryString = "create table bufferedMessage (" 
+					+ "msgId integer primary key autoincrement not null," + 
+					"destUser text," +
+					"rDate integer," +
+					"subject text," +
+					"mData text)";
+			
+			String bufferredImageMessageTableQueryString = "create table bufferedImageMessage (" +
+					"msgId integer primary key autoincrement not null," +
+					"srcUser text, " +
+					"rDate integer, " +
+					"subject text, " +
+					"filePath text)";
 
 
 			/*
@@ -502,7 +563,7 @@ public class ClientDatabaseManager extends Observable {
 			db.execSQL(messageTableQueryString);
 			db.execSQL(imageMessageTableQueryString);
 			db.execSQL(outboxTableQueryString);
-			db.execSQL(draftTableQueryString);
+			db.execSQL(bufferedmessagesTableQueryString);
 		}
 
 		/**
