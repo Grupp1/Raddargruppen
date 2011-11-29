@@ -5,7 +5,9 @@ import raddar.gruppen.R;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
+import android.media.SoundPool;
 import android.net.sip.SipAudioCall;
 import android.net.sip.SipException;
 import android.net.sip.SipProfile;
@@ -26,7 +28,9 @@ public class CallView extends Activity implements OnClickListener {
 	private Button acceptCall;
 	private Button denyCall;
 	private TextView callerText;
-	AudioManager au;
+	AudioManager audioManager;
+	SoundPool soundPool;
+	int soundId;
 	/**
 	 * Initiate all variables to diffrent values depening on if we are making a call
 	 * or recieving a call.
@@ -42,27 +46,38 @@ public class CallView extends Activity implements OnClickListener {
 		acceptCall.setOnClickListener(this);
 		denyCall = (Button) this.findViewById(R.id.denyCall);
 		denyCall.setOnClickListener(this);
-		
-		au = (AudioManager)getSystemService(AUDIO_SERVICE);
+
+		audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+		soundPool = new SoundPool( 5, AudioManager.STREAM_MUSIC, 0);
+		soundId = 0;
+		boolean playedSound = false;
 		// 2=normal
 		// 1=vibrate
 		// 0=silent
-		au.setRingerMode(2);
-		
+		audioManager.setRingerMode(2);
+
 		if (sip.equals("incoming")) {
 			Intent intent = (Intent) extras.get("intent");
 			SipAudioCall.Listener listener = new SipAudioCall.Listener() {
 				@Override
 				public void onRinging(SipAudioCall call, SipProfile caller) {
-					au.playSoundEffect(5);
+					try
+					{
+						AssetFileDescriptor descriptor = getAssets().openFd( "shot.wav" );
+						soundId = soundPool.load( descriptor, 1 );
+					}
+					catch(Exception ex)
+					{
+						Log.d( "Ljuduppspelning", "Fel i inladdningen av ljudfil" );
+						throw new RuntimeException( ex );
+					}
 					try {
 						call.answerCall(30);
 					} catch (Exception e) {
 						Log.d("Andreas ringer", e.toString());
 					}
-					au.setRingerMode(0);
 				}
-				
+
 
 				public void onCallEnded(SipAudioCall call) {
 					Toast.makeText(CallView.this, "Samtalet avslutades",
@@ -145,7 +160,7 @@ public class CallView extends Activity implements OnClickListener {
 						String errorMessage) {
 					Toast.makeText(CallView.this, "Samtalet avbröts",
 							Toast.LENGTH_LONG).show();
-						finish();
+					finish();
 				}
 				@Override
 				public void onCallBusy(SipAudioCall call) {
@@ -154,7 +169,7 @@ public class CallView extends Activity implements OnClickListener {
 					finish();
 				}
 			};
-			
+
 			call = SipController.manager.makeAudioCall(
 					SipController.me.getUriString(), sipAddress,
 					audioListener, 30);
