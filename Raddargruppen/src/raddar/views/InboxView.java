@@ -12,6 +12,7 @@ import raddar.controllers.SessionController;
 import raddar.enums.MessageType;
 import raddar.gruppen.R;
 import raddar.models.Message;
+import raddar.models.QoSManager;
 import raddar.models.TextMessage;
 import android.app.ListActivity;
 import android.content.Context;
@@ -102,5 +103,12 @@ public class InboxView extends ListActivity implements Observer{
 			}			
 			return v;
 		}
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
 	}
 }

@@ -6,6 +6,7 @@ import raddar.controllers.DatabaseController;
 import raddar.controllers.SessionController;
 import raddar.gruppen.R;
 import raddar.models.Contact;
+import raddar.models.QoSManager;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
@@ -187,5 +188,12 @@ public class ContactListView extends ListActivity implements OnClickListener {
 		else if(requestCode == 9){
 			finish();
 		}
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
 	}
 }

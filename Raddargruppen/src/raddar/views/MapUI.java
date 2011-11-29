@@ -13,6 +13,7 @@ import raddar.models.Fire;
 import raddar.models.FireTruck;
 import raddar.models.MapObject;
 import raddar.models.MapObjectList;
+import raddar.models.QoSManager;
 import raddar.models.Resource;
 import raddar.models.Situation;
 import android.app.AlertDialog;
@@ -106,6 +107,8 @@ public class MapUI extends MapActivity implements Observer {
 	protected void onResume() {
 		compass.enableCompass();
 		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
 		MainView.mapCont.gps.getLocationManager().requestLocationUpdates(MainView.mapCont.gps.getTowers(), 500, 1, MainView.mapCont.gps);
 	}
 

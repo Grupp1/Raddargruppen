@@ -7,6 +7,7 @@ import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
 import raddar.gruppen.R;
 import raddar.models.Message;
+import raddar.models.QoSManager;
 import raddar.models.TextMessage;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -118,5 +119,12 @@ public class SendMessageView extends Activity implements OnClickListener {
 				destUser.setText(temp);	
 			}
 		}
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
 	}
 }

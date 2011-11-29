@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import raddar.controllers.DatabaseController;
 import raddar.gruppen.R;
 import raddar.models.Contact;
+import raddar.models.QoSManager;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -97,5 +98,12 @@ public class ContactView extends ListActivity implements OnClickListener{
 			}	
 			return v;
 		}
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
 	}
 }

@@ -1,6 +1,7 @@
 package raddar.views;
 
 import raddar.gruppen.R;
+import raddar.models.QoSManager;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -19,6 +20,13 @@ public class ReadMessageView extends Activity{
 		readMessageDate.setText(extras.get("date").toString());
 		readMessageSubject.setText(extras.get("subject").toString());
 		readMessage.setText("\n"+extras.get("data").toString());
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
 	}
 
 }
