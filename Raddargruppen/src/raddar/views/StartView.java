@@ -48,8 +48,8 @@ public class StartView extends Activity implements Observer {
 		password = (EditText) this.findViewById(R.id.passwordtext);
 		// Endast för lättare testning
 
-		user.setText("Borche");
-		password.setText("hej123");
+		user.setText("lalle");
+		password.setText("lalle");
 
 		final LoginManager lm = new LoginManager();
 		lm.addObserver(this);
