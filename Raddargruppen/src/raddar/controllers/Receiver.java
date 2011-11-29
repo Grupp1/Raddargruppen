@@ -65,7 +65,8 @@ public class Receiver implements Runnable {
 
 
 		} catch (IOException ie) {
-			ie.printStackTrace();
+			Log.d("Receiver", "IOException");
+			//ie.printStackTrace();
 
 		} catch (ArrayIndexOutOfBoundsException e) {
 			Log.d("Undersök", "ArrayIndexOutOfBounds i receiver");
