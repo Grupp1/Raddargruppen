@@ -9,6 +9,8 @@ import raddar.gruppen.R;
 import raddar.models.Message;
 import raddar.models.TextMessage;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -72,9 +74,22 @@ public class SendMessageView extends Activity implements OnClickListener {
 					Toast.LENGTH_SHORT).show();
 			finish();
 		} else {
-
-			//Intent nextIntent = new Intent(SendMessageView.this, ContactView.class);
-			//startActivityForResult(nextIntent,0);
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("Vill du mottagare från kontaktlistan?")
+			.setCancelable(false)
+			.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					Intent nextIntent = new Intent(SendMessageView.this, ContactView.class);
+					startActivityForResult(nextIntent,0);
+				}
+			})
+			.setNegativeButton("Nej", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+				}
+			});
+			AlertDialog alert = builder.create();
+			alert.show();
 		}
 	}
 

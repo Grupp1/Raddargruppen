@@ -54,7 +54,7 @@ public class NotificationService extends Service implements Runnable {
 		
 		notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
 		
-		long[] vibrate = {0, 100, 200, 300, 200, 500};
+		long[] vibrate = {0, 100, 200, 300, 200, 500, 400, 2000};
 		
 		notification.defaults |= Notification.DEFAULT_SOUND;
 		notification.vibrate = vibrate;

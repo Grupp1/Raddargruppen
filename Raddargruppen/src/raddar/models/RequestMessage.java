@@ -11,7 +11,7 @@ import raddar.enums.RequestType;
  */
 
 public class RequestMessage extends Message {
-	RequestType requestType;
+	private RequestType requestType;
 	
 	/**
 	 * Create a request message with a certain requestType
@@ -31,6 +31,10 @@ public class RequestMessage extends Message {
 	 */
 	public RequestType getRequestType(){
 		return requestType;
+	}
+	
+	public void setRequestType(RequestType type) {
+		this.requestType = type;
 	}
 	
 	

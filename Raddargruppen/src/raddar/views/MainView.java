@@ -19,6 +19,7 @@ import raddar.models.NotificationMessage;
 import raddar.models.RequestMessage;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -144,7 +145,8 @@ public class MainView extends Activity implements OnClickListener, Observer{
 			startActivity(nextIntent);
 		}
 		else if(v == sosButton){
-
+			Intent nextIntent = new Intent(MainView.this, SendSOSView.class);
+			startActivity(nextIntent);
 		}
 		else if(v == setupButton){
 
@@ -194,6 +196,11 @@ public class MainView extends Activity implements OnClickListener, Observer{
 		} catch (UnknownHostException e) {
 			Log.d("NotificationMessage", "Disconnect failed");
 		}
+		
+		/* Om applikationen stängs ner tar vi bort notifikationer i 
+		   notifikationsfältet längst upp på telefonens skärm */
+		NotificationManager mNtf = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		mNtf.cancelAll();
 		DatabaseController.db.close();
 	}
 	

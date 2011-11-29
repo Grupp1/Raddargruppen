@@ -57,10 +57,10 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 		this.populate();
 	}
 
-	//	public void updateOverlay(int index, MapObject o){
-	//		mOverlays.set(index, o);
-	//		this.populate();
-	//	}
+		public void updateOverlay(int index, MapObject o){
+			mOverlays.set(index, o);
+			this.populate();
+		}
 
 	/**
 	 * Vad som händer när man trycker på en situation
@@ -68,7 +68,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 	@Override
 	protected boolean onTap(int index) {
-
+		
 		final CharSequence [] situationPriority = {SituationPriority.HIGH.toString(), SituationPriority.NORMAL.toString(), SituationPriority.LOW.toString()};
 		final CharSequence [] resourceStatus = {ResourceStatus.BUSY.toString(), ResourceStatus.FREE.toString()};
 

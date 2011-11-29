@@ -21,7 +21,7 @@ import com.google.android.maps.OverlayItem;
 public class MapObject extends OverlayItem {
 
 	private GeoPoint point;
-	private String title, snippet, id, adress, description, addedBy, date;
+	private String title, snippet, id, adress, description, addedBy, date, changedBy, changedDate;
 	private int icon;
 	private ID idGen;
 	
@@ -42,10 +42,26 @@ public class MapObject extends OverlayItem {
 		this.addedBy = SessionController.getUser();
 		this.date = new SimpleDateFormat("yyyy:MM:dd 'kl' HH:mm:ss").format(new Date());
 		
+		this.changedBy = "Har inte blivit ändrad";
+		this.changedDate = "Har inte blivit ändrad";
+		
 		idGen = new ID(addedBy,point.getLatitudeE6(),point.getLongitudeE6(), date);
 		id = idGen.generateID();
 	}
 	
+	public String getChangedBy() {
+		return changedBy;
+	}
+
+	public String getChangedDate() {
+		return changedDate;
+	}
+
+	protected void changeLatestUser(){
+		changedBy = SessionController.getUser();
+		changedDate = new SimpleDateFormat("yyyy:MM:dd 'kl' HH:mm:ss").format(new Date());
+	}
+
 	/**
 	 * 
 	 * @return Skaparens användarnamn
@@ -91,6 +107,7 @@ public class MapObject extends OverlayItem {
 	 */
 	public void setSnippet(String snippet) {
 		this.snippet = snippet;
+		changeLatestUser();
 	}
 	
 	/**
@@ -199,7 +216,8 @@ public class MapObject extends OverlayItem {
 	public void updateDescription(){
 		setDescription("Beskrivning: "+getSnippet()+"\nAdress: "+getAdress()+
 				  "Koordinater: "+getPoint().getLatitudeE6()/1E6+", "+getPoint().getLongitudeE6()/1E6 + "\nSkapad: " + 
-				getDate() + "\nSkapad av: " + getAddedBy() + "\n ID: " + getId());
+				getDate() + "\nSkapad av: " + getAddedBy() + "\nSenast ändrad: " + getChangedDate() + "\nSenast ändrad av: " +
+				  getChangedBy() + "\n ID: " + getId());
 	}
 	
 }

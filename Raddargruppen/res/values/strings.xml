@@ -30,7 +30,7 @@
 	<string name="main_services">Externa tjänster</string>
     <string name="add_contact_add">Lägg till kontakt:</string>
     <string name="add_contact_save">Spara</string>
-
+	<string name="sos_meddelande">SOS-meddelande:</string>
     <string name="map_menu_follow">Följ mig</string>
     <string name="map_menu_toggle">Satelitvy</string>
     <string name="map_menu_myLocation">Min position</string>
@@ -44,9 +44,9 @@
     <string name="accept_call_incoming">Inkommer samtal från</string>
     <string name="accept_call_answer">Svara</string>
     <string name="accept_call_deny">Avvisa</string>
-
+	<string name="back">Bakåt</string>
     <string name="contactAddress">SIP Address to contact</string>
     <string name="talk">Talk</string>
     <string name="enter_number"></string>
-
+	<string name="rensa">Rensa</string>
 </resources>

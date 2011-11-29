@@ -8,6 +8,7 @@ import raddar.controllers.MapCont;
 import raddar.views.MapUI;
 import android.graphics.drawable.Drawable;
 import android.location.Geocoder;
+import android.util.Log;
 
 import com.google.android.maps.Overlay;
 
@@ -28,10 +29,9 @@ public class MapModel extends Observable {
 	 * I MapModel sker alla uppdateringar av kartan. Här finns MapObjectLists för alla olika typer av situationer och resurser.
 	 */
 
-	public MapModel(MapUI mapUI, MapCont mapCont){
+	public MapModel(MapUI mapUI){
 		this.mapUI = mapUI;
-		this.addObserver(mapUI);
-		this.addObserver(mapCont);
+		//this.addObserver(mapUI);
 	}
 
 
@@ -79,6 +79,24 @@ public class MapModel extends Observable {
 		}		
 	}
 	
+	public MapObjectList getList(MapObject mo){
+		if (mo instanceof Fire){
+			return fireList;
+		}
+		else if(mo instanceof FireTruck){
+			return fireTruckList;
+		}
+		else if(mo instanceof You){
+			return youList;
+		}
+		else if(mo instanceof Situation){
+			return situationList;
+		}
+		else if(mo instanceof Resource){
+			return resourceList;
+		}
+		return null;
+	}
 	/*
 	 * updateObject(MapObject) uppdaterar den MapObjectList MapObject ligger i
 	 */
