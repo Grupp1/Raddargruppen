@@ -8,6 +8,7 @@ import raddar.controllers.SessionController;
 import raddar.enums.SOSType;
 import raddar.enums.ServerInfo;
 import raddar.gruppen.R;
+import raddar.models.QoSManager;
 import raddar.models.SOSMessage;
 import android.app.Activity;
 import android.os.Bundle;
@@ -94,7 +95,7 @@ public class SendSOSView extends Activity {
 			et.setEnabled(false);
 			clear.setEnabled(false);
 		} else {
-			button.setText("Send");
+			button.setText("Skicka");
 			et.setEnabled(true);
 			clear.setEnabled(true);
 			et.setText(txt);
@@ -112,5 +113,12 @@ public class SendSOSView extends Activity {
 	        txt = et.getText().toString();
 	    }
 	    return super.onKeyDown(keyCode, event);
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
 	}
 }

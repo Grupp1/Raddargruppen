@@ -41,8 +41,6 @@ public class DraftMessageView extends Activity {
 				 
 				finish();
 				
-//				Toast.makeText(getApplicationContext(), "Knappen funkar! ",
-//						Toast.LENGTH_LONG).show();	
 			}
 		});
 		

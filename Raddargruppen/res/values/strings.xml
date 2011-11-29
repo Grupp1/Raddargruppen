@@ -53,4 +53,8 @@
     <string name="talk">Talk</string>
     <string name="enter_number"></string>
 	<string name="rensa">Rensa</string>
+	<string name="low_power">Strömsparläge</string>
+	<string name="normal_power">Normalt strömläge</string>
+	<string name="automatic_power">Automatisk</string>
+	<string name="power_programs">Strömprogram</string>
 </resources>
