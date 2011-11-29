@@ -57,7 +57,7 @@ public class StartView extends Activity implements Observer {
 		dialog.setCancelable(false);
 		dialog.setTitle("Loggar in...");
 
-		loginButton = (Button) this.findViewById(R.id.okButton);
+		loginButton = (Button) this.findViewById(R.id.okbutton);
 		loginButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				v.getContext().deleteDatabase(user.getText().toString());

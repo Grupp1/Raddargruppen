@@ -94,7 +94,7 @@ public class SendSOSView extends Activity {
 			et.setEnabled(false);
 			clear.setEnabled(false);
 		} else {
-			button.setText("Send");
+			button.setText("Skicka");
 			et.setEnabled(true);
 			clear.setEnabled(true);
 			et.setText(txt);

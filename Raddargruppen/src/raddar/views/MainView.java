@@ -126,7 +126,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	public void onClick(View v) {
 
 		if(v == callButton){
-			Intent nextIntent = new Intent(this,EnterNumberView.class);
+			Intent nextIntent = new Intent(this, CallContactListView.class);
 			startActivity(nextIntent);
 		}
 		else if(v == messageButton){

@@ -46,6 +46,7 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 		choiceButton.setOnClickListener(this);
 		sendButton.setOnClickListener(this);
 		destUser.setOnClickListener(this);
+		destUser.setFocusable(false);
 	}
 
 	public void onClick(View v) {
@@ -56,7 +57,7 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 			startActivityForResult(Intent.createChooser(intent,
 					"Select Picture"), SELECT_PICTURE);
 			//öppnar galleriet där man kan välja bild att bifoga
-			
+
 		}
 		if (v.equals(sendButton)) {
 			//Undersöker om alla fält är skrivna i
@@ -78,17 +79,7 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 				 */
 			}
 			sendMessages();
-			/*
-			Message m = new TextMessage(MainView.controller.getUser(), ""
-					+ destUser.getText());
-			m.setSubject(subject.getText() + "");
-			m.setData(messageData.getText() + "");
-			try {
-				new Sender(m, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
-			} catch (UnknownHostException e) {
-
-			}
-			 */
+	
 			Toast.makeText(getApplicationContext(), "Meddelande till "+destUser.getText().
 					toString().trim(),
 					Toast.LENGTH_SHORT).show();
@@ -121,38 +112,40 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 	 * @param data Bildens data från galleriet eller
 	 */
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		switch(requestCode) { 
-		case SELECT_PICTURE:
-			if(resultCode == RESULT_OK){  
+		if(resultCode == RESULT_OK){
+			switch(requestCode) { 
+			case SELECT_PICTURE:
+
 				Uri selectedImage = data.getData();
 				Log.d("tag sendimage", "här letar jag");
 				String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
 				Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
 				cursor.moveToFirst();
-				
+
 				int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 				String filePath = cursor.getString(columnIndex);
 				cursor.close();
-				
+
 				Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
 				preview.setImageBitmap(yourSelectedImage);
 				//bilden som ska skickas med meddelandet är yourSelectedImage
 
+
+			case 0:
+				if(requestCode == 0){
+					Bundle extras = data.getExtras();
+					String temp = "";
+					String[] destUsers = extras.getStringArray("contacts");
+					for(int i = 0; i < destUsers.length; i++)
+						temp += destUsers[i]+"; ";
+					destUser.setText(temp);	
+				}
 			}
-		case 0:
-			if(requestCode == 0){
-				Bundle extras = data.getExtras();
-				String temp = "";
-				String[] destUsers = extras.getStringArray("contacts");
-				for(int i = 0; i < destUsers.length; i++)
-					temp += destUsers[i]+";";
-				destUser.setText(temp);	
-			}
+
 		}
 
-	}
-
-} 
+	} 
+}
 
 

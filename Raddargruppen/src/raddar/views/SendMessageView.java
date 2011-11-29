@@ -40,6 +40,8 @@ public class SendMessageView extends Activity implements OnClickListener {
 		sendButton = (Button) this.findViewById(R.id.sendButton);
 		sendButton.setOnClickListener(this);
 		destUser.setOnClickListener(this);
+		destUser.setFocusable(false);
+		
 	}
 
 	public void onClick(View v) {
@@ -58,38 +60,14 @@ public class SendMessageView extends Activity implements OnClickListener {
 				return;
 			}
 			sendMessages();
-			/*
-			Message m = new TextMessage(MainView.controller.getUser(), ""
-					+ destUser.getText());
-			m.setSubject(subject.getText() + "");
-			m.setData(messageData.getText() + "");
-			try {
-				new Sender(m, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
-			} catch (UnknownHostException e) {
-
-			}
-			 */
+		
 			Toast.makeText(getApplicationContext(), "Meddelande till "+destUser.getText().
 					toString().trim(),
 					Toast.LENGTH_SHORT).show();
 			finish();
 		} else {
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("Vill du mottagare från kontaktlistan?")
-			.setCancelable(false)
-			.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					Intent nextIntent = new Intent(SendMessageView.this, ContactView.class);
-					startActivityForResult(nextIntent,0);
-				}
-			})
-			.setNegativeButton("Nej", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-				}
-			});
-			AlertDialog alert = builder.create();
-			alert.show();
+			Intent nextIntent = new Intent(SendMessageView.this, ContactView.class);
+			startActivityForResult(nextIntent,0);
 		}
 	}
 
@@ -114,7 +92,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 				String temp = "";
 				String[] destUsers = extras.getStringArray("contacts");
 				for(int i = 0; i < destUsers.length; i++)
-					temp += destUsers[i]+";";
+					temp += destUsers[i]+"; ";
 				destUser.setText(temp);	
 			}
 		}
