@@ -6,6 +6,7 @@ import raddar.controllers.DatabaseController;
 import raddar.controllers.SessionController;
 import raddar.gruppen.R;
 import raddar.models.Contact;
+import raddar.models.QoSManager;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
@@ -97,16 +98,16 @@ public class ContactListView extends ListActivity implements OnClickListener {
 			nextIntent.putExtra("sip","sip:" + contacts.get(info.position).getSipUsr()
 					+ "@ekiga.net" );
 			startActivityForResult(nextIntent,9);
-			
+
 		}else if (item.getTitle() == "Skicka textmeddelande") {
-				Intent nextIntent = new Intent(this,SendMessageView.class);
-				String[] items = new String[3];
-				items[0] = contacts.get(info.position).getUserName();
-				items[1] = "";
-				items[2] = "";
-				nextIntent.putExtra("message",items);
-				startActivityForResult(nextIntent,9);
-				
+			Intent nextIntent = new Intent(this,SendMessageView.class);
+			String[] items = new String[3];
+			items[0] = contacts.get(info.position).getUserName();
+			items[1] = "";
+			items[2] = "";
+			nextIntent.putExtra("message",items);
+			startActivityForResult(nextIntent,9);
+
 		}else if (item.getTitle() == "Skicka bildmeddelande") {
 			Intent nextIntent = new Intent(this,SendImageMessageView.class);
 			String[] items = new String[2];
@@ -121,6 +122,18 @@ public class ContactListView extends ListActivity implements OnClickListener {
 	}
 
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(requestCode == 9){
+			finish();
+		}
+	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
+	}
 	
 }

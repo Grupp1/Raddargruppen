@@ -1,6 +1,7 @@
 package raddar.views;
 
 import raddar.gruppen.R;
+import raddar.models.QoSManager;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -33,4 +34,12 @@ public class ReadMessageView extends Activity{
 			readMessageImage.setImageBitmap((Bitmap)extras.get("image"));
 		}
 	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
+	}
+
 }

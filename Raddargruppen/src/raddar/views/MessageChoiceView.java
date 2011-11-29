@@ -1,6 +1,7 @@
 package raddar.views;
 
 import raddar.gruppen.R;
+import raddar.models.QoSManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -66,6 +67,13 @@ public class MessageChoiceView extends Activity implements OnClickListener {
 			startActivity(nextIntent);
 		}
 		
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
 	}
 	
 }

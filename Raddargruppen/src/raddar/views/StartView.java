@@ -8,6 +8,7 @@ import raddar.enums.ConnectionStatus;
 import raddar.enums.LoginResponse;
 import raddar.gruppen.R;
 import raddar.models.LoginManager;
+import raddar.models.QoSManager;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -135,5 +136,12 @@ public class StartView extends Activity implements Observer {
 			}
 		});
 
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
 	}
 }

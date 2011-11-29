@@ -3,6 +3,7 @@ package raddar.views;
 import raddar.controllers.SessionController;
 import raddar.controllers.SipController;
 import raddar.gruppen.R;
+import raddar.models.QoSManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.sip.SipAudioCall;
@@ -205,5 +206,12 @@ public class CallView extends Activity implements OnClickListener {
 		} else if (v == denyCall) {
 			finish();
 		}
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
 	}
 }

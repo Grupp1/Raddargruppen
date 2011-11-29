@@ -16,6 +16,7 @@ import raddar.enums.RequestType;
 import raddar.gruppen.R;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
+import raddar.models.QoSManager;
 import raddar.models.RequestMessage;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -25,6 +26,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -34,7 +36,7 @@ import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 
-public class MainView extends Activity implements OnClickListener, Observer{
+public class MainView extends Activity implements OnClickListener, Observer {
 
 	private ImageButton callButton;
 	private ImageButton messageButton;
@@ -57,19 +59,23 @@ public class MainView extends Activity implements OnClickListener, Observer{
 			String action = intent.getAction();
 			if (Intent.ACTION_BATTERY_CHANGED.equals(action)) {
 				int level = intent.getIntExtra("level", 0);
+				Log.d("LEVEL:", ""+level);
 				int scale = intent.getIntExtra("scale", 100);
 				int true_level = level * 100 / scale;
-				Toast.makeText(MainView.this, true_level + "% kvar av batteriet", Toast.LENGTH_LONG).show();
+				QoSManager.setPowerMode(true_level);
 			}
 		}
 	};
+	
 	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		
+
+		String level = BatteryManager.EXTRA_LEVEL;
+		Log.d("EXTRA_LEVEL", level);
 		
 		extras = getIntent().getExtras();
 //		controller = new InternalComManager();
@@ -256,11 +262,13 @@ public class MainView extends Activity implements OnClickListener, Observer{
 		super.onResume();
 		registerReceiver(mBatteryInfoReceiver, new IntentFilter(
 				Intent.ACTION_BATTERY_CHANGED));
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
-		unregisterReceiver(mBatteryInfoReceiver);
+		//unregisterReceiver(mBatteryInfoReceiver);
 	}
 }

@@ -9,7 +9,7 @@ import raddar.controllers.SessionController;
 import raddar.enums.MessageType;
 import raddar.gruppen.R;
 import raddar.models.ImageMessage;
-import raddar.models.Message;
+import raddar.models.QoSManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -47,7 +47,7 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 		sendButton.setOnClickListener(this);
 		destUser.setOnClickListener(this);
 		destUser.setFocusable(false);
-		
+
 		try {
 
 			Bundle extras = getIntent().getExtras();
@@ -71,7 +71,7 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 			sendButton.setOnClickListener(this);
 			destUser.setOnClickListener(this);
 		}
-		
+
 	}
 
 	public void onClick(View v) {
@@ -104,7 +104,7 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 				 */
 			}
 			sendMessages();
-	
+
 			Toast.makeText(getApplicationContext(), "Meddelande till "+destUser.getText().
 					toString().trim(),
 					Toast.LENGTH_SHORT).show();
@@ -128,10 +128,10 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 				new Sender(m, InetAddress.getByName(raddar.enums.ServerInfo.SERVER_IP), raddar.enums.ServerInfo.SERVER_PORT);
 				DatabaseController.db.addImageMessageRow(m);
 				//	DatabaseController.db.addOutboxRow(m);
-			//	DatabaseController.db.deleteDraftRow(m);
+				//	DatabaseController.db.deleteDraftRow(m);
 
 			} catch (UnknownHostException e) {
-			//	DatabaseController.db.addDraftRow(m);
+				//	DatabaseController.db.addDraftRow(m);
 			}
 		}
 	}
@@ -172,9 +172,20 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 				}
 			}
 
+
 		}
 
-	} 
-}
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
+	}
+
+
+} 
+
 
 
