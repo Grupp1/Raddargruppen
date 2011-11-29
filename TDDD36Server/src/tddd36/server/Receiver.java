@@ -167,6 +167,7 @@ public class Receiver implements Runnable {
 			}
 			break;
 		case CONTACTS:
+			//svarar på request om att hämta alla kontakter som arraylist<message> 
 			ArrayList<Message> contactMessage = Database.retrieveAllUsers();
 			contactMessage.add(0,rm);
 			new Sender(contactMessage, rm.getSrcUser());
