@@ -2,6 +2,8 @@ package raddar.views;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import raddar.controllers.DatabaseController;
 import raddar.controllers.Sender;
@@ -58,15 +60,37 @@ public class SendMessageView extends Activity implements OnClickListener {
 
 		} catch (Exception e) {
 
-			Log.d("SendMessageView", e.toString());
-			destUser = (EditText) this.findViewById(R.id.destUser);
-			subject = (EditText) this.findViewById(R.id.subject);
-			messageData = (EditText) this.findViewById(R.id.messageData);
-			sendButton = (Button) this.findViewById(R.id.sendButton);
-			sendButton.setOnClickListener(this);
-			destUser.setOnClickListener(this);
+			Log.d("Ej outbox", e.toString());
 
+			try{
+				Bundle extras = getIntent().getExtras();
+				String destMapUser = extras.getString("map");
+
+				Log.d("Map", e.toString());
+				destUser = (EditText) this.findViewById(R.id.destUser);
+				subject = (EditText) this.findViewById(R.id.subject);
+				messageData = (EditText) this.findViewById(R.id.messageData);
+
+				destUser.setText(destMapUser);
+
+				sendButton = (Button) this.findViewById(R.id.sendButton);
+				sendButton.setOnClickListener(this);
+				destUser.setOnClickListener(this);
+
+
+			} catch (Exception c){
+
+				Log.d("SendMessageView", c.toString());
+				destUser = (EditText) this.findViewById(R.id.destUser);
+				subject = (EditText) this.findViewById(R.id.subject);
+				messageData = (EditText) this.findViewById(R.id.messageData);
+				sendButton = (Button) this.findViewById(R.id.sendButton);
+				sendButton.setOnClickListener(this);
+				destUser.setOnClickListener(this);
+
+			}
 		}
+
 	}
 
 	public void onClick(View v) {
@@ -84,9 +108,6 @@ public class SendMessageView extends Activity implements OnClickListener {
 			}
 			sendMessages();
 
-			Intent nextIntent = new Intent(SendMessageView.this,
-					MessageChoiceView.class);
-			startActivity(nextIntent);
 			finish();
 		} else if (v == destUser) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -95,21 +116,21 @@ public class SendMessageView extends Activity implements OnClickListener {
 					.setCancelable(false)
 					.setPositiveButton("Ja",
 							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-									Intent nextIntent = new Intent(
-											SendMessageView.this,
-											ContactView.class);
-									startActivityForResult(nextIntent, 0);
-								}
-							})
+						public void onClick(DialogInterface dialog,
+								int id) {
+							Intent nextIntent = new Intent(
+									SendMessageView.this,
+									ContactView.class);
+							startActivityForResult(nextIntent, 0);
+						}
+					})
 					.setNegativeButton("Nej",
 							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-									dialog.cancel();
-								}
-							});
+						public void onClick(DialogInterface dialog,
+								int id) {
+							dialog.cancel();
+						}
+					});
 			AlertDialog alert = builder.create();
 			alert.show();
 		} else {
@@ -130,10 +151,11 @@ public class SendMessageView extends Activity implements OnClickListener {
 					+ destUsers[i]);
 			m.setSubject(subject.getText() + "");
 			m.setData(messageData.getText() + "");
+			m.setDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 			try {
 				new Sender(m,
 						InetAddress
-								.getByName(raddar.enums.ServerInfo.SERVER_IP),
+						.getByName(raddar.enums.ServerInfo.SERVER_IP),
 						raddar.enums.ServerInfo.SERVER_PORT);
 				DatabaseController.db.addOutboxRow(m);
 				DatabaseController.db.deleteDraftRow(m);

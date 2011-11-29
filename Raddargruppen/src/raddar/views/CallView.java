@@ -1,6 +1,5 @@
 package raddar.views;
 
-import raddar.controllers.SessionController;
 import raddar.controllers.SipController;
 import raddar.gruppen.R;
 import android.app.Activity;
@@ -8,7 +7,6 @@ import android.content.Intent;
 import android.net.sip.SipAudioCall;
 import android.net.sip.SipException;
 import android.net.sip.SipProfile;
-import android.net.sip.SipSession;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;

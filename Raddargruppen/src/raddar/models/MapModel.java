@@ -138,4 +138,12 @@ public class MapModel extends Observable {
 		this.mapOverlays = mapOverlays;
 	}
 
+	public void sendMessage(String user){
+		mapUI.sendMessage(user);
+	}
+	
+	public void callUser(String user){
+		mapUI.callUser(user);
+	}
+	
 }

@@ -5,11 +5,15 @@ import java.util.ArrayList;
 import raddar.controllers.DatabaseController;
 import raddar.enums.ResourceStatus;
 import raddar.enums.SituationPriority;
+import raddar.views.ContactView;
 import raddar.views.MainView;
+import raddar.views.SendMessageView;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.widget.EditText;
 
 import com.google.android.maps.ItemizedOverlay;
@@ -51,16 +55,16 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 	public ArrayList<OverlayItem> getOverlays(){
 		return mOverlays;
 	}
-	
+
 	public void addOverlay(OverlayItem overlay) {
 		mOverlays.add(overlay);
 		this.populate();
 	}
 
-		public void updateOverlay(int index, MapObject o){
-			mOverlays.set(index, o);
-			this.populate();
-		}
+	public void updateOverlay(int index, MapObject o){
+		mOverlays.set(index, o);
+		this.populate();
+	}
 
 	/**
 	 * Vad som händer när man trycker på en situation
@@ -68,7 +72,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 	@Override
 	protected boolean onTap(int index) {
-		
+
 		final CharSequence [] situationPriority = {SituationPriority.HIGH.toString(), SituationPriority.NORMAL.toString(), SituationPriority.LOW.toString()};
 		final CharSequence [] resourceStatus = {ResourceStatus.BUSY.toString(), ResourceStatus.FREE.toString()};
 
@@ -138,9 +142,34 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 					alertDialog.show();
 				}
 			});
+		}else{
+
+			alert.setButton2("Ring/Skicka meddelande", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+
+					AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+
+					alertDialog.setTitle("Vill du ringa eller skicka meddelande?");
+
+					AlertDialog alert = alertDialog.create();
+
+					alert.setButton("Ring", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+							MainView.mapCont.callUser(item.getAddedBy());
+
+						}
+					});
+					alert.setButton2("Skicka meddelande", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+							MainView.mapCont.sendMessage(item.getAddedBy());
+							
+						}
+					});
+					alert.show();
+				
+				}
+			});
 		}
-
-
 		/*
 		 * Ändra prioritet på situation på kartan
 		 */
