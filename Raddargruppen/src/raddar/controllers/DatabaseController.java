@@ -1,7 +1,7 @@
 package raddar.controllers;
 
-import android.content.Context;
 import raddar.models.ClientDatabaseManager;
+import android.content.Context;
 
 /**
  * Has a static reference to the database

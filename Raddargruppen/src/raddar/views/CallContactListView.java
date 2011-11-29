@@ -10,6 +10,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -18,6 +19,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,14 +37,19 @@ public class CallContactListView extends ListActivity{
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		contacts = DatabaseController.db.getAllRowsAsArrays("contact");
 
+		contacts = DatabaseController.db.getAllRowsAsArrays("contact");
+		
 		ia = new ContactAdapter(this, R.layout.call_contact_list, contacts);
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
 		setListAdapter(ia);
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			@Override
+			/**
+			 * lv är satt som en onItemClickListener
+			 * Snabbt klick på en kontakt, ringer direkt
+			 */
 			public void onItemClick(AdapterView<?> a, View v, int position, long id) {
 				Intent nextIntent = new Intent(CallContactListView.this,CallView.class);
 				nextIntent.putExtra("sip","sip:" + contacts.get(position).getUserName()   

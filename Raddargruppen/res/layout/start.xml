@@ -37,7 +37,7 @@
 			android:layout_marginLeft="30dip"
 			android:layout_marginRight="30dip"
 			android:layout_marginTop="10dip"
-			android:id="@+id/usertext">
+			android:id="@+id/usertext1">
 			<requestFocus></requestFocus>
 		</EditText>
 		<TextView
@@ -59,7 +59,7 @@
 			android:layout_marginLeft="30dip"
 			android:layout_marginRight="30dip"
 			android:layout_marginTop="10dip"
-			android:id="@+id/passwordtext"></EditText>
+			android:id="@+id/passwordtext1"></EditText>
 		<Button
 			android:layout_gravity="right"
 			android:text="@string/start_ok"

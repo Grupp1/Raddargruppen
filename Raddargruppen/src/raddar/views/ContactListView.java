@@ -97,15 +97,23 @@ public class ContactListView extends ListActivity implements OnClickListener {
 			nextIntent.putExtra("sip","sip:" + contacts.get(info.position).getSipUsr()
 					+ "@ekiga.net" );
 			startActivityForResult(nextIntent,9);
+			
 		}else if (item.getTitle() == "Skicka textmeddelande") {
 				Intent nextIntent = new Intent(this,SendMessageView.class);
-				nextIntent.putExtra("destUser",contacts.get(info.position).getUserName());
-				startActivityForResult(nextIntent,8);
+				String[] items = new String[3];
+				items[0] = contacts.get(info.position).getUserName();
+				items[1] = "";
+				items[2] = "";
+				nextIntent.putExtra("message",items);
+				startActivityForResult(nextIntent,9);
 				
 		}else if (item.getTitle() == "Skicka bildmeddelande") {
 			Intent nextIntent = new Intent(this,SendImageMessageView.class);
-			nextIntent.putExtra("destUser",contacts.get(info.position).getUserName());
-			startActivityForResult(nextIntent,7);
+			String[] items = new String[2];
+			items[0] = contacts.get(info.position).getUserName();
+			items[1] = "";
+			nextIntent.putExtra("message",items);
+			startActivityForResult(nextIntent,9);
 		} else {
 			return false;
 		}

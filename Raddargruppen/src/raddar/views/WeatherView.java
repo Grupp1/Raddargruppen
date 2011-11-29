@@ -1,8 +1,5 @@
 package raddar.views;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import raddar.models.XMLFetcher;
 import android.app.ExpandableListActivity;
 import android.os.Bundle;
@@ -132,6 +129,7 @@ public class WeatherView extends ExpandableListActivity {
             return groups[groupPosition];
         }
 
+
         public int getGroupCount() {
             return groups.length;
         }
@@ -154,11 +152,6 @@ public class WeatherView extends ExpandableListActivity {
         public boolean hasStableIds() {
             return true;
         }
-
-	
-
-
-
         
     }
     

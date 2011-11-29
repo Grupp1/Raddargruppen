@@ -1,38 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="match_parent"
 	android:layout_height="match_parent">
 	<LinearLayout android:orientation="vertical"
 		android:layout_width="match_parent" android:layout_height="match_parent">
-
-		<TextView android:layout_height="wrap_content"
-			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:text="TextView" android:layout_width="wrap_content"
-			android:id="@+id/readMessageSrcUser"></TextView>
-
-		<TextView android:layout_height="wrap_content"
-			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:text="TextView" android:layout_width="wrap_content"
-			android:id="@+id/readMessageDate"></TextView>
-
-		<TextView android:layout_height="wrap_content"
-			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:text="TextView" android:layout_width="wrap_content"
-			android:id="@+id/readMessageSubject"></TextView>
-
-		<TextView android:layout_height="wrap_content"
-			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:layout_width="wrap_content"
-			android:id="@+id/readMessage"></TextView>
 		
-		<LinearLayout android:layout_height="wrap_content"
-			android:layout_width="match_parent" android:id="@+id/linearLayout1"
-			android:orientation="vertical">
-			<ImageView android:id="@+id/image"
-				android:layout_gravity="center"
-				android:layout_marginLeft="30dip" android:layout_marginRight="30dip" android:layout_width="match_parent" android:layout_height="match_parent"></ImageView>
-		</LinearLayout>
-	
+		<TextView android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:text="TextView" android:layout_width="wrap_content"
+			android:id="@+id/sentMessageDestUser"></TextView>
+
+		<TextView android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:text="TextView" android:layout_width="wrap_content"
+			android:id="@+id/sentMessageDate"></TextView>
+			
+		<TextView android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:text="TextView" android:layout_width="wrap_content"
+			android:id="@+id/sentMessageSubject"></TextView>
+			
+		<TextView android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:text="TextView" android:layout_width="wrap_content"
+			android:id="@+id/sentMessage"></TextView>
 	</LinearLayout>
 
 </ScrollView>
+  
+  
+  
+  
+  
+  
+
