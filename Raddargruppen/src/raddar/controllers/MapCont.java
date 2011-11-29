@@ -23,6 +23,7 @@ import raddar.models.Situation;
 import raddar.models.You;
 import raddar.views.MainView;
 import raddar.views.MapUI;
+import raddar.views.SendMessageView;
 import android.location.Address;
 import android.location.Geocoder;
 import android.util.Log;
@@ -168,6 +169,14 @@ public class MapCont implements Observer, Runnable{
 
 		}
 		return display;
+	}
+	
+	public void sendMessage(String user){
+		mapModel.sendMessage(user);
+	}
+	
+	public void callUser(String user){
+		mapModel.callUser(user);
 	}
 
 }

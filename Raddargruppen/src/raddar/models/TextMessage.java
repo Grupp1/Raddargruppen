@@ -16,6 +16,7 @@ public class TextMessage extends Message {
 		this.fromUser = srcUser.trim();
 		this.toUser = destUser.trim();		
 		this.data = data;
+		this.date = getDate();
 		subject = "DEFAULT";
 	}
 
