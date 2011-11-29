@@ -1,5 +1,6 @@
 package raddar.models;
 
+import raddar.views.MainView;
 import android.app.Activity;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -50,6 +51,7 @@ public class QoSManager {
 		lp.screenBrightness = 0.4f;
 		current.getWindow().setAttributes(lp);
 		
+		MainView.theOne.enableButtons();
 	}
 
 	/**
@@ -59,6 +61,8 @@ public class QoSManager {
 		WindowManager.LayoutParams lp = current.getWindow().getAttributes();
 		lp.screenBrightness = 0.05f;
 		current.getWindow().setAttributes(lp);
+		
+		MainView.theOne.disableButtons();
 	}
 	
 	private static void displayToastIfChanged(int l) {
