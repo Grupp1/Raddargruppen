@@ -53,7 +53,7 @@ public class ClientDatabaseManager extends Observable {
 		this.db = helper.getWritableDatabase();
 
 		clearDatabase();
-
+	}
 		// TEST KOD ANVÄNDS FÖR ATT TESTA KONTAKTLISTAN
 		/*
 		 * addRow(new Contact("Alice",false)); addRow(new
@@ -76,10 +76,10 @@ public class ClientDatabaseManager extends Observable {
 		addRow(danan);
 		addRow(lalle);
 		addRow(borche);
-		addRow(mange);
-		*/
+		/*addRow(mange);
+		
 
-	}
+	
 	
 
 	/**********************************************************************
@@ -277,6 +277,7 @@ public class ClientDatabaseManager extends Observable {
 	public void clearDatabase(){
 		db.delete("message", null, null);
 		db.delete("map", null, null);
+		db.delete("contact", null, null);
 		
 	}
 	
@@ -382,6 +383,7 @@ public class ClientDatabaseManager extends Observable {
 					}
 					else if (table.equals("contact")) {
 						Contact c = new Contact(cursor.getString(0), false,cursor.getString(2),cursor.getString(3));
+						dataArrays.add(c);
 					}
 					else if(table.equals("outbox")){
 						Message m = new TextMessage(MessageType.TEXT, 
