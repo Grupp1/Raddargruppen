@@ -5,7 +5,6 @@ import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
-import raddar.controllers.MapCont;
 import raddar.enums.ResourceStatus;
 import raddar.enums.SituationPriority;
 import raddar.gruppen.R;
@@ -18,7 +17,11 @@ import raddar.models.Situation;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.AssetFileDescriptor;
 import android.location.Geocoder;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.media.SoundPool.OnLoadCompleteListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -50,16 +53,15 @@ public class MapUI extends MapActivity implements Observer {
 	private Touchy touchy;
 	public boolean follow;
 	private Toast toast;
-	private Geocoder geocoder;
-
+	private Geocoder geocoder;	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.maps);
-		
-		
-		
+
+
+
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 		mapView.setSatellite(true);
@@ -81,16 +83,17 @@ public class MapUI extends MapActivity implements Observer {
 		sthlmLocation = new GeoPoint(59357290, 17960050);
 
 		geocoder = new Geocoder(getBaseContext(), Locale.getDefault());
-		
+
 		touchy = new Touchy(mapView.getContext());
 		mapOverlays.add(touchy);
-		
+
 		MainView.mapCont.declareMapUI(this);
 
 		controller.animateTo(sthlmLocation);
 		controller.setZoom(8);
 
 	}
+	
 
 	@Override
 	protected void onStart() {
@@ -133,7 +136,7 @@ public class MapUI extends MapActivity implements Observer {
 	}
 
 	// Tar hand om inmatning från skärmen, ritar ut knappar och anropar MapCont
-	
+
 	class Touchy extends Overlay{
 		private Context context;
 		private CharSequence [] items = {"Brand", "Brandbil", "Situation", "Resurs"};
@@ -146,7 +149,7 @@ public class MapUI extends MapActivity implements Observer {
 		}
 
 		public boolean onTouchEvent(MotionEvent e, MapView m) {
-			int holdTime = 800;
+			int holdTime = 750;
 			if(e.getAction() == MotionEvent.ACTION_DOWN){
 				start = e.getEventTime();
 				touchedX = (int) e.getX();
@@ -156,6 +159,7 @@ public class MapUI extends MapActivity implements Observer {
 			if(e.getAction() == MotionEvent.ACTION_UP){
 				stop = e.getEventTime();
 			}
+
 			if(stop - start > holdTime){
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -235,11 +239,11 @@ public class MapUI extends MapActivity implements Observer {
 	public MapView getMapView(){
 		return mapView;
 	}
-	
+
 	public void updateMyLocation(GeoPoint geopoint){
-		
+
 	}
-	
+
 	public void drawNewMapObject(MapObject mo){
 		MapObjectList list = MainView.mapCont.getList(mo);
 		if(list == null){
@@ -254,7 +258,7 @@ public class MapUI extends MapActivity implements Observer {
 		}
 		mapView.postInvalidate();
 	}
-	
+
 	public void update(Observable observable, Object data) {
 		Log.d("MAPUI",observable.toString());
 		if (data instanceof GeoPoint){
@@ -267,7 +271,7 @@ public class MapUI extends MapActivity implements Observer {
 			else{
 				mapOverlays.set(mapOverlays.indexOf(data), (MapObjectList)data);
 			}
-		//	mapOverlays.add((MapObjectList) data);
+			//	mapOverlays.add((MapObjectList) data);
 		}
 		else if(data instanceof MapObject){
 			MapObjectList list = MainView.mapCont.getList((MapObject)data);
@@ -282,7 +286,7 @@ public class MapUI extends MapActivity implements Observer {
 				mapOverlays.set(mapOverlays.indexOf(list), list);
 			}
 		}
-			
+
 		mapView.postInvalidate();
 		// RITA OM PÅ NÅGOT SÄTT
 		//använd mapView.invalidate() om du kör i UI tråden
