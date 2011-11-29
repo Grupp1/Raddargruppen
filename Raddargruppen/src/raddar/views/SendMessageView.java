@@ -10,6 +10,7 @@ import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
 import raddar.gruppen.R;
 import raddar.models.Message;
+import raddar.models.QoSManager;
 import raddar.models.TextMessage;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -90,7 +91,6 @@ public class SendMessageView extends Activity implements OnClickListener {
 
 			}
 		}
-
 	}
 
 	public void onClick(View v) {
@@ -108,38 +108,21 @@ public class SendMessageView extends Activity implements OnClickListener {
 			}
 			sendMessages();
 
+			Toast.makeText(getApplicationContext(), "Meddelande till "+destUser.getText().
+					toString().trim(),
+					Toast.LENGTH_SHORT).show();
 			finish();
-		} else if (v == destUser) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage(
-					"Vill du lägga till mottagare från kontaktlistan?")
-					.setCancelable(false)
-					.setPositiveButton("Ja",
-							new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog,
-								int id) {
-							Intent nextIntent = new Intent(
-									SendMessageView.this,
-									ContactView.class);
-							startActivityForResult(nextIntent, 0);
-						}
-					})
-					.setNegativeButton("Nej",
-							new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog,
-								int id) {
-							dialog.cancel();
-						}
-					});
-			AlertDialog alert = builder.create();
-			alert.show();
-		} else {
+		} else if (v == destUser){
+			Intent nextIntent = new Intent(SendMessageView.this, ContactView.class);
+			startActivityForResult(nextIntent,0);
+
+		} else{
 			onBackPressed();
 			Intent nextIntent = new Intent(SendMessageView.this,
 					ContactView.class);
 			startActivityForResult(nextIntent, 0);
-
 			finish();
+
 		}
 	}
 
@@ -186,10 +169,33 @@ public class SendMessageView extends Activity implements OnClickListener {
 				Bundle extras = data.getExtras();
 				String temp = "";
 				String[] destUsers = extras.getStringArray("contacts");
-				for (int i = 0; i < destUsers.length; i++)
-					temp += destUsers[i] + ";";
-				destUser.setText(temp);
+
+				for(int i = 0; i < destUsers.length; i++)
+					temp += destUsers[i]+"; ";
+				destUser.setText(temp);	
+
 			}
 		}
+		else if (requestCode == 8) {
+			Bundle extras = data.getExtras();
+			String destU = extras.getString("destUser");
+			destUser.setText(destU);
+
+		}
+		else if (requestCode == 7) {
+
+		}
 	}
+
+
+
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
+	}
+
 }
+

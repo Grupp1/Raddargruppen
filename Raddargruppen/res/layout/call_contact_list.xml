@@ -9,15 +9,32 @@
 		android:id="@+id/linearLayout1"
 		android:orientation="vertical">
 		<TextView
+			android:textSize="35dip"
 			android:text=""
 			android:layout_width="wrap_content"
 			android:id="@+id/label"
 			android:layout_height="wrap_content"
-			android:layout_gravity="left" 
-			android:textSize="35dip"></TextView>
+			android:layout_gravity="left"></TextView>
 
 	</LinearLayout>
 
+	<LinearLayout
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:id="@+id/linearLayout2"
+		android:orientation="vertical">
+
+		<ImageView
+			android:layout_width="wrap_content"
+			android:id="@+id/phoneImage"
+			android:layout_height="wrap_content"
+			android:layout_gravity="right"
+			android:src="@drawable/phone_small">
+		</ImageView>
+		
+
+	</LinearLayout>
+	
 
 
 </RelativeLayout>

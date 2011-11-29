@@ -53,7 +53,7 @@ public class ClientDatabaseManager extends Observable {
 		this.db = helper.getWritableDatabase();
 
 		clearDatabase();
-
+	}
 		// TEST KOD ANVÄNDS FÖR ATT TESTA KONTAKTLISTAN
 		/*
 		 * addRow(new Contact("Alice",false)); addRow(new
@@ -71,17 +71,14 @@ public class ClientDatabaseManager extends Observable {
 		Contact alice = new Contact("Alice",false,null,null);
 		Contact borche = new Contact("Borche", false, "borche", "hej123");
 		Contact mange = new Contact("Mange", false, "magkj501", "magkj501");
-		addRow(alice);
-		addRow(einar);
-		addRow(danan);
-		addRow(lalle);
-		addRow(borche);
-		addRow(mange);
 		
+//		addRow(einar);
+//		addRow(danan);
+//		addRow(lalle);
+//		addRow(borche);
+//		addRow(mange);
 
-	}
 	
-
 	/**********************************************************************
 	 * ADDING A MESSAGE ROW TO THE DATABASE TABLE
 	 * @param m The message that is to be added to the database
@@ -277,6 +274,7 @@ public class ClientDatabaseManager extends Observable {
 	public void clearDatabase(){
 		db.delete("message", null, null);
 		db.delete("map", null, null);
+		db.delete("contact", null, null);
 		
 	}
 	
@@ -382,6 +380,7 @@ public class ClientDatabaseManager extends Observable {
 					}
 					else if (table.equals("contact")) {
 						Contact c = new Contact(cursor.getString(0), false,cursor.getString(2),cursor.getString(3));
+						dataArrays.add(c);
 					}
 					else if(table.equals("outbox")){
 						Message m = new TextMessage(MessageType.TEXT, 

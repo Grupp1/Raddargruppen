@@ -1,5 +1,6 @@
 package raddar.views;
 
+import raddar.models.QoSManager;
 import raddar.models.XMLFetcher;
 import android.app.ExpandableListActivity;
 import android.os.Bundle;
@@ -152,7 +153,12 @@ public class WeatherView extends ExpandableListActivity {
         public boolean hasStableIds() {
             return true;
         }
-        
     }
     
+    @Override
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
+	}
 }
