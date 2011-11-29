@@ -98,6 +98,7 @@ public class LoginManager extends Observable {
 			}
 			else if(response.equals("USER_ALREADY_EXIST")){
 				logIn = LoginResponse.USER_ALREADY_LOGGED_IN;
+				s = null;
 			}
 		} catch (IOException e) {
 			Log.d("NotificationMessage", "Server connection failed");
@@ -170,7 +171,7 @@ public class LoginManager extends Observable {
 				try {
 					if (s == null)
 						break;
-					LoginManager.this.evaluate(username, password);
+					evaluate(username, password);
 					if (s == null)
 						break;
 					// Vänta två minuter mellan varje försök
