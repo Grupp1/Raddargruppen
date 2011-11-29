@@ -44,11 +44,10 @@ public class StartView extends Activity implements Observer {
 		LoginManager.cache("Alice", "longshot");
 		LoginManager.cache("danan612","raddar");
 
-
 		user = (EditText) this.findViewById(R.id.usertext);
 		password = (EditText) this.findViewById(R.id.passwordtext);
+		
 		// Endast för lättare testning
-
 		user.setText("danan612");
 		password.setText("raddar");
 
@@ -83,7 +82,6 @@ public class StartView extends Activity implements Observer {
 		});
 
 	}
-
 	public void onRestart() {
 		super.onRestart();
 		finish();
@@ -136,12 +134,5 @@ public class StartView extends Activity implements Observer {
 			}
 		});
 
-	}
-	
-	@Override
-	public void onResume() {
-		super.onResume();
-		QoSManager.setCurrentActivity(this);
-		QoSManager.setPowerMode();
 	}
 }

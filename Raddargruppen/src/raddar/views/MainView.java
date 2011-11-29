@@ -49,11 +49,12 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	private ImageButton connectionButton;
 	private Bundle extras;
 	public static MapCont mapCont;
+	public static MainView theOne;
 	
 	/*
 	 * Lyssnar efter ändringar hos batterinivån
 	 */
-	private BroadcastReceiver mBatteryInfoReceiver = new BroadcastReceiver() {
+	public BroadcastReceiver mBatteryInfoReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
@@ -67,13 +68,14 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		}
 	};
 	
-	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
+		theOne = this;
+		
 		String level = BatteryManager.EXTRA_LEVEL;
 		Log.d("EXTRA_LEVEL", level);
 		
@@ -172,7 +174,8 @@ public class MainView extends Activity implements OnClickListener, Observer {
 			startActivity(nextIntent);
 		}
 		else if(v == setupButton){
-
+			Intent nextIntent = new Intent(MainView.this, SettingsView.class);
+			startActivity(nextIntent);
 		}
 		else if(v == logButton){
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -227,6 +230,8 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		NotificationManager mNtf = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		mNtf.cancelAll();
 		DatabaseController.db.close();
+		if (SettingsView.powerIsAutomatic())
+			unregisterReceiver(mBatteryInfoReceiver);
 	}
 	
 	public void update(Observable observable, final Object data) {
@@ -260,8 +265,9 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	@Override
 	public void onResume() {
 		super.onResume();
-		registerReceiver(mBatteryInfoReceiver, new IntentFilter(
-				Intent.ACTION_BATTERY_CHANGED));
+		if (SettingsView.powerIsAutomatic())
+			registerReceiver(mBatteryInfoReceiver, new IntentFilter(
+					Intent.ACTION_BATTERY_CHANGED));
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
 	}
@@ -270,5 +276,15 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	public void onPause() {
 		super.onPause();
 		//unregisterReceiver(mBatteryInfoReceiver);
+	}
+	
+	public void enableButtons() {
+		callButton.setEnabled(true);
+		serviceButton.setEnabled(true);
+	}
+	
+	public void disableButtons() {
+		callButton.setEnabled(false);
+		serviceButton.setEnabled(false);
 	}
 }

@@ -59,6 +59,7 @@ public final class R {
         public static final int addContactButton=0x7f060009;
         public static final int addContactCancel=0x7f060008;
         public static final int addContactEditText=0x7f060007;
+        public static final int automatic_power_radio_button=0x7f060058;
         public static final int bottomtext=0x7f060044;
         public static final int call=0x7f06001e;
         public static final int callButton=0x7f060020;
@@ -79,7 +80,7 @@ public final class R {
         public static final int editDraftButton=0x7f060019;
         public static final int editText1=0x7f060033;
         public static final int enter_number=0x7f06001d;
-        public static final int follow=0x7f060058;
+        public static final int follow=0x7f06005d;
         public static final int foot=0x7f06000c;
         public static final int icon=0x7f060042;
         public static final int image=0x7f060013;
@@ -101,16 +102,20 @@ public final class R {
         public static final int linearLayoutSetup=0x7f06002b;
         public static final int linearLayoutSos=0x7f06002d;
         public static final int logButton=0x7f060030;
+        public static final int low_power_radio_button=0x7f060057;
         public static final int mapButton=0x7f060026;
         public static final int mapview=0x7f060032;
         public static final int messageButton=0x7f060023;
         public static final int messageData=0x7f060049;
-        public static final int myLocation=0x7f060059;
+        public static final int myLocation=0x7f06005e;
         public static final int newPictureButton=0x7f060037;
         public static final int newTextButton=0x7f060036;
-        public static final int okbutton=0x7f060056;
+        public static final int normal_power_radio_button=0x7f060056;
+        public static final int okbutton=0x7f06005b;
         public static final int outboxButton=0x7f06003b;
-        public static final int passwordtext=0x7f060055;
+        public static final int passwordtext=0x7f06005a;
+        public static final int power_program_radio_group=0x7f060055;
+        public static final int power_programs_textview=0x7f060054;
         public static final int presence=0x7f060031;
         public static final int preview=0x7f060048;
         public static final int readMessage=0x7f060041;
@@ -134,11 +139,11 @@ public final class R {
         public static final int textView1=0x7f060001;
         public static final int textView2=0x7f060021;
         public static final int textView3=0x7f060024;
-        public static final int toggle=0x7f060057;
+        public static final int toggle=0x7f06005c;
         public static final int toptext=0x7f060043;
-        public static final int traffic=0x7f06005a;
+        public static final int traffic=0x7f06005f;
         public static final int trafikverketButton=0x7f060053;
-        public static final int usertext=0x7f060054;
+        public static final int usertext=0x7f060059;
         public static final int yrButton=0x7f060052;
     }
     public static final class layout {
@@ -164,8 +169,9 @@ public final class R {
         public static final int send_sos_message=0x7f030013;
         public static final int sent_message=0x7f030014;
         public static final int services=0x7f030015;
-        public static final int start=0x7f030016;
-        public static final int walkietalkie=0x7f030017;
+        public static final int settings=0x7f030016;
+        public static final int start=0x7f030017;
+        public static final int walkietalkie=0x7f030018;
     }
     public static final class menu {
         public static final int mapmenu=0x7f050000;
@@ -177,6 +183,7 @@ public final class R {
         public static final int add_contact_add=0x7f040019;
         public static final int add_contact_save=0x7f04001a;
         public static final int app_name=0x7f040001;
+        public static final int automatic_power=0x7f040030;
         public static final int back=0x7f040029;
         public static final int button1=0x7f040002;
         public static final int cancel=0x7f040021;
@@ -185,6 +192,7 @@ public final class R {
         public static final int draft_draft=0x7f04000b;
         public static final int edit_contact_edit=0x7f040020;
         public static final int enter_number=0x7f04002c;
+        public static final int low_power=0x7f04002e;
         public static final int main_call=0x7f040015;
         public static final int main_contact_list=0x7f040013;
         public static final int main_logout=0x7f040011;
@@ -204,6 +212,8 @@ public final class R {
         public static final int messagechoice_new_picture=0x7f040024;
         public static final int messagechoice_new_text=0x7f040009;
         public static final int messagechoice_outbox=0x7f040022;
+        public static final int normal_power=0x7f04002f;
+        public static final int power_programs=0x7f040031;
         public static final int rensa=0x7f04002d;
         public static final int send_destUser=0x7f04000c;
         public static final int send_image_message_choice=0x7f040025;
