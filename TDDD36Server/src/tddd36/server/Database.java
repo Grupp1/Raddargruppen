@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import raddar.enums.MessageType;
+import raddar.models.ContactMessage;
 import raddar.models.Encryption;
 import raddar.models.Message;
 import raddar.models.TextMessage;
@@ -42,7 +43,7 @@ public class Database {
 		} catch (SQLException ex) {
 			System.out.println("Kunde inte ansluta till databasen. Kollat Library efter JDBC Plugin? ");
 		} catch (ClassNotFoundException e) {
-			System.out.println("Fel i i Class.forname()-anropet");
+			System.out.println("Fel i i Class.forname()-anropet, kollat så att GSON grejerna finns i Library?");
 		}
 		return null;
 	}
@@ -247,7 +248,6 @@ public class Database {
 	 * @return En ArrayList med alla registrerade användare
 	 */
 
-
 	public static ArrayList<String> getAllUsers() {
 		ArrayList<String> list = new ArrayList<String>();
 		try {
@@ -263,6 +263,28 @@ public class Database {
 		return list;
 	}
 
+	/**
+	 * Hämta alla registrerade användare vid första inlogg
+	 * 
+	 * @return En ArrayList med alla registrerade användare som messages
+	 */
+
+	public static ArrayList<Message> retrieveAllUsers() {
+		ArrayList<Message> lista = new ArrayList<Message>();
+		try {
+			Statement st = openConnection();
+			ResultSet rs = st.executeQuery("SELECT * FROM users;");
+
+			while (rs.next()) 
+				lista.add(new ContactMessage(rs.getString(2)));
+
+		} catch (SQLException ex) {
+			System.out.println("Fel syntax i MySQL-queryn i retrieveAllUsers(). ");
+		}
+		return lista;
+	}
+	
+	
 	/**
 	 * Hämta alla användare i en viss grupp
 	 * 

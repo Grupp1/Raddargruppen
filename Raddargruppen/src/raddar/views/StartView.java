@@ -71,7 +71,7 @@ public class StartView extends Activity implements Observer {
 				loginButton.setEnabled(false);
 				dialog.show();
 
-				Thread s = new Thread(new Runnable(){
+				Thread s = new Thread(new Runnable(){ 
 					public void run() {
 						lm.evaluate(user.getText().toString(),
 								password.getText().toString());
@@ -101,7 +101,9 @@ public class StartView extends Activity implements Observer {
 								MainView.class);
 						nextIntent.putExtra("user", user.getText().toString());
 						nextIntent.putExtra("connectionStatus", ConnectionStatus.CONNECTED);
+						
 						startActivity(nextIntent);
+						
 					}
 					Toast.makeText(StartView.this,
 							"Ansluten till servern",

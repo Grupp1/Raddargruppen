@@ -32,6 +32,10 @@ public enum MessageType {
 		public String toString() {
 			return("request");
 		}
+	}, CONTACT("contact"){
+		public String toString() {
+			return("contact");
+		}
 	};
 	
 	
