@@ -160,8 +160,10 @@ public class MapCont implements Observer, Runnable{
 		if (data instanceof GeoPoint){
 			if (!areYouFind){
 				areYouFind = true;
+
 				you = new You((GeoPoint)data, SessionController.getUser()+" position", "Här är "+SessionController.getUser(),
-						R.drawable.you,	ResourceStatus.FREE);
+						R.drawable.circle_green, ResourceStatus.FREE);
+
 				you.updateData(geocoder);
 				olist.add(you); // databas
 				add(you,true);		// karta
