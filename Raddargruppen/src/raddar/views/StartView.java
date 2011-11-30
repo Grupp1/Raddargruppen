@@ -3,6 +3,7 @@ package raddar.views;
 import java.util.Observable;
 import java.util.Observer;
 
+import raddar.controllers.DatabaseController;
 import raddar.controllers.SipController;
 import raddar.enums.ConnectionStatus;
 import raddar.enums.LoginResponse;
@@ -37,15 +38,17 @@ public class StartView extends Activity implements Observer {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.start);
+		this.deleteDatabase("client_database");
+		new DatabaseController(this);
+		setContentView((int) R.layout.start);
 		// Lite hårdkodade testanvändare att testa med
 		LoginManager.cache("Borche", "hej123");
 		LoginManager.cache("Danne", "raddar");
 		LoginManager.cache("Alice", "longshot");
 		LoginManager.cache("danan612","raddar");
 
-		user = (EditText) this.findViewById(R.id.usertext);
-		password = (EditText) this.findViewById(R.id.passwordtext);
+		user = (EditText) this.findViewById(R.id.usertext1);
+		password = (EditText) this.findViewById(R.id.passwordtext1);
 		// Endast för lättare testning
 		user.setText("danan612");
 		password.setText("raddar");
@@ -68,8 +71,9 @@ public class StartView extends Activity implements Observer {
 				//nextIntent.putExtra("user", user.getText().toString());
 				//startActivity(nextIntent);
 				loginButton.setEnabled(false);
-				dialog.show();
+				//dialog.show();
 
+				
 				Thread s = new Thread(new Runnable(){ 
 					public void run() {
 						lm.evaluate(user.getText().toString(),

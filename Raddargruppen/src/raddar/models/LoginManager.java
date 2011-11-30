@@ -98,20 +98,18 @@ public class LoginManager extends Observable {
 			if (response.equals("OK")) {
 				logIn = LoginResponse.ACCEPTED;
 
-				//**************************************************************
-				//Skicka alla medelanden som buffrats
-				ArrayList<Message> bufferedMessages = DatabaseController.db.getAllRowsAsArrays("bufferedMessage");
-				for(Message m: bufferedMessages){
-					new Sender(m);
+				//Skicka alla medelanden som buffrats och töm sedan buffern
+				ArrayList<String> bufferedMessages = new ArrayList<String>();
+				if(DatabaseController.db.getAllRowsAsArrays("buferedMessages") == null)
+					Log.d("shsg","gwergwerhqerhq");	
+				bufferedMessages = DatabaseController.db.getAllRowsAsArrays("bufferedMessage");
+				if(bufferedMessages != null){
+					for(String gsonString: bufferedMessages){
+						new Sender(gsonString);
+					}
+					DatabaseController.db.clearTable("bufferesMessage");
 				}
-				DatabaseController.db.clearTable("bufferesMessage");
-				
-				
-				
-				
-				//SLUT
-				//**************************************************************
-				
+
 				s = null;
 			}
 			else if(response.equals("USER_ALREADY_EXIST")){

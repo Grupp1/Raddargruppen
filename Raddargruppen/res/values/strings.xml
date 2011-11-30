@@ -57,4 +57,5 @@
 	<string name="normal_power">Normalt strömläge</string>
 	<string name="automatic_power">Automatisk</string>
 	<string name="power_programs">Strömprogram</string>
+	<string name="start">0x7f030018</string>
 </resources>

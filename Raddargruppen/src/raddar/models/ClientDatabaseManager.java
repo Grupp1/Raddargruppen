@@ -38,6 +38,7 @@ public class ClientDatabaseManager extends Observable {
 	private final String[] OUTBOX_TABLE_ROWS = new String[] { "msgID", "destUser", "rDate", "subject", "mData"};
 	private final String[] DRAFT_TABLE_ROWS = new String[] { "msgID", "destUser", "rDate", "subject", "mData"};
 	private final String[] IMAGE_MESSAGE_TABLE_ROWS = new String [] {"msgId", "srcUser", "rDate", "subject", "filePath"};
+	private final String[] BUFFERED_MESSAGE_TABLE_ROWS = new String[] {"gsonString"};
 
 
 
@@ -130,13 +131,9 @@ public class ClientDatabaseManager extends Observable {
 	 * Adds messages that couldn't be sent at the time to a buffer that is sent when connection with the server is reestablished
 	 * @param m the message that was to be sent.
 	 */
-	public void addBufferedMessageRow(Message m){
+	public void addBufferedMessageRow(String gsonString){
 		ContentValues values = new ContentValues();
-		values.put("destUser", m.getDestUser());
-		Log.e("destUser", m.getDestUser().toString());
-		values.put("rDate", m.getDate());
-		values.put("subject", m.getSubject());
-		values.put("mData", m.getData());
+		values.put("gsonString", gsonString);
 		try {
 			db.insert("bufferedMessage", null, values);
 		} catch (Exception e) {
@@ -144,7 +141,6 @@ public class ClientDatabaseManager extends Observable {
 			e.printStackTrace();
 		}
 		setChanged();
-		notifyObservers(m);	
 	}
 
 	/**********************************************************************
@@ -169,26 +165,6 @@ public class ClientDatabaseManager extends Observable {
 		notifyObservers(m);			
 	}
 	
-	/**********************************************************************
-	 * Adds messages that couldn't be sent at the time to a buffer that is sent when connection with the server is reestablished
-	 * @param m the message that was to be sent.
-	 */
-	public void addBufferedMessageRow(ImageMessage m){
-		ContentValues values = new ContentValues();
-		values.put("destUser", m.getDestUser());
-		values.put("rDate", m.getDate());
-		values.put("subject", m.getSubject());
-		values.put("filePath", m.getFilePath());
-		try {
-			db.insert("bufferedMessage", null, values);
-		} catch (Exception e) {
-			Log.e("DB ERROR", e.toString());
-			e.printStackTrace();
-		}
-		setChanged();
-		notifyObservers(m);	
-	}
-
 	/**********************************************************************
 	 * ADDING A CONTACT ROW IN THE DATABASE TABLE
 	 *
@@ -317,8 +293,6 @@ public class ClientDatabaseManager extends Observable {
 	public void clearDatabase(){
 		db.delete("message", null, null);
 		db.delete("map", null, null);
-		db.delete("contact", null, null);
-		
 	}
 	
 
@@ -408,6 +382,12 @@ public class ClientDatabaseManager extends Observable {
 				cursor = db.query(
 						"map",
 						MAP_TABLE_ROWS,
+						null, null, null, null, null);
+			}
+			else if(table.equals("bufferedMessage")){
+				cursor = db.query(
+						"bufferedMessage",
+						BUFFERED_MESSAGE_TABLE_ROWS,
 						null, null, null, null, null);
 			}
 			cursor.moveToFirst();
@@ -538,18 +518,7 @@ public class ClientDatabaseManager extends Observable {
 			
 			String bufferedmessagesTableQueryString = "create table bufferedMessage (" 
 					+ "msgId integer primary key autoincrement not null," + 
-					"destUser text," +
-					"rDate integer," +
-					"subject text," +
-					"mData text)";
-			
-			String bufferredImageMessageTableQueryString = "create table bufferedImageMessage (" +
-					"msgId integer primary key autoincrement not null," +
-					"srcUser text, " +
-					"rDate integer, " +
-					"subject text, " +
-					"filePath text)";
-
+					"gsonString text)";
 
 			/*
 			 * String newTableQueryString = "create table " + TABLE_NAME + " ("
