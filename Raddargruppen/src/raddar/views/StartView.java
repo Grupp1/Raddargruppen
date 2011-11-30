@@ -44,9 +44,11 @@ public class StartView extends Activity implements Observer {
 		LoginManager.cache("Alice", "longshot");
 		LoginManager.cache("danan612","raddar");
 
-		user = (EditText) this.findViewById(R.id.usertext1);
-		password = (EditText) this.findViewById(R.id.passwordtext1);
+
+		user = (EditText) this.findViewById(R.id.usertext);
+		password = (EditText) this.findViewById(R.id.passwordtext);
 		// Endast för lättare testning
+
 		user.setText("danan612");
 		password.setText("raddar");
 

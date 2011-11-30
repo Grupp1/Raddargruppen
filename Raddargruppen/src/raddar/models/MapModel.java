@@ -5,6 +5,8 @@ import java.util.Locale;
 import java.util.Observable;
 
 import raddar.controllers.MapCont;
+import raddar.controllers.SessionController;
+import raddar.gruppen.R;
 import raddar.views.MapUI;
 import android.graphics.drawable.Drawable;
 import android.location.Geocoder;
@@ -12,7 +14,7 @@ import android.util.Log;
 
 import com.google.android.maps.Overlay;
 
-public class MapModel extends Observable {
+public class MapModel {
 
 	private List<Overlay> mapOverlays;
 	private Drawable d;
@@ -22,9 +24,10 @@ public class MapModel extends Observable {
 	private MapObjectList situationList;
 	private MapObjectList resourceList;
 	private MapObjectList youList;
+	private MapObjectList otherList;
 
 	private MapUI mapUI;
-	
+
 	/*
 	 * I MapModel sker alla uppdateringar av kartan. Här finns MapObjectLists för alla olika typer av situationer och resurser.
 	 */
@@ -38,47 +41,54 @@ public class MapModel extends Observable {
 	/*
 	 * add lägger till ett MapObject i rätt MapObjectList 
 	 */
-	
+
 	public void add(MapObject o){
+		if(!o.getId().equals(SessionController.getUser()) && o instanceof You){
+			o.setIcon(R.drawable.lifebouy);
+			Log.d("IF SATS", "IF SATS");
+		}
 		d = mapUI.getResources().getDrawable(o.getIcon());
-		setChanged();
 		if (o instanceof Fire){
 			if (fireList == null){
 				fireList = new MapObjectList(d, mapUI);
 			}
 			fireList.addOverlay(o);
-			notifyObservers(fireList);
 		}
 		else if(o instanceof FireTruck){
 			if(fireTruckList == null){
 				fireTruckList = new MapObjectList(d, mapUI);
 			}
 			fireTruckList.addOverlay(o);
-			notifyObservers(fireTruckList);
 		}
 		else if(o instanceof You){
-			if(youList == null){
-				youList = new MapObjectList(d, mapUI);
+			if(!o.getId().equals(SessionController.getUser())){
+				Log.d("otherlist", o.getAddedBy());
+				if(otherList == null){
+					otherList = new MapObjectList(d, mapUI);
+				}
+				otherList.addOverlay(o);
+			}else{
+				Log.d("youlist", o.getAddedBy());
+				if(youList == null){
+					youList = new MapObjectList(d, mapUI);
+				}
+				youList.addOverlay(o);
 			}
-			youList.addOverlay(o);
-			notifyObservers(youList);
 		}
 		else if(o instanceof Situation){
 			if(situationList == null){
 				situationList = new MapObjectList(d, mapUI);
 			}
 			situationList.addOverlay(o);
-			notifyObservers(situationList);
 		}
 		else if(o instanceof Resource){
 			if(resourceList == null){
 				resourceList = new MapObjectList(d, mapUI);
 			}
 			resourceList.addOverlay(o);
-			notifyObservers(resourceList);
-		}		
+		}
 	}
-	
+
 	public MapObjectList getList(MapObject mo){
 		if (mo instanceof Fire){
 			return fireList;
@@ -87,7 +97,11 @@ public class MapModel extends Observable {
 			return fireTruckList;
 		}
 		else if(mo instanceof You){
-			return youList;
+			if(mo.getId().equals(SessionController.getUser())){
+				return youList;
+			}else{
+				return otherList;
+			}
 		}
 		else if(mo instanceof Situation){
 			return situationList;
@@ -100,33 +114,41 @@ public class MapModel extends Observable {
 	/*
 	 * updateObject(MapObject) uppdaterar den MapObjectList MapObject ligger i
 	 */
-	
+
 	public void updateObject(MapObject o){
-		setChanged();
-		o.updateData(new Geocoder(mapUI.getBaseContext(), Locale.getDefault()));
-		updateUI(o);
+		//	o.updateData(new Geocoder(mapUI.getBaseContext(), Locale.getDefault()));
+		if (o instanceof Fire){
+			fireList.addUpdateMapObject(o);
+		}
+		else if(o instanceof FireTruck){
+			fireTruckList.addUpdateMapObject(o);
+		}
+		else if(o instanceof You){
+			youList.addUpdateMapObject(o);
+		}
+		else if(o instanceof Situation){
+			situationList.addUpdateMapObject(o);
+		}
+		else if(o instanceof Resource){
+			resourceList.addUpdateMapObject(o);
+		}
 	}
 
 	public void removeObject(MapObject o){
-		setChanged();
-		updateUI(o);
-	}
-	
-	public void updateUI(MapObject o){
 		if (o instanceof Fire){
-			notifyObservers(fireList);
+			fireList.removeMapObject(o);
 		}
 		else if(o instanceof FireTruck){
-			notifyObservers(fireTruckList);
+			fireTruckList.removeMapObject(o);
 		}
 		else if(o instanceof You){
-			notifyObservers(youList);
+			youList.removeMapObject(o);
 		}
 		else if(o instanceof Situation){
-			notifyObservers(situationList);
+			situationList.removeMapObject(o);
 		}
 		else if(o instanceof Resource){
-			notifyObservers(resourceList);
+			resourceList.removeMapObject(o);
 		}
 	}
 

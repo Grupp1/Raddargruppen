@@ -5,6 +5,10 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import raddar.enums.MapOperation;
+import raddar.models.MapObjectMessage;
+import raddar.models.Message;
+
 public class LoginManager {
 	
 	/**
@@ -72,11 +76,21 @@ public class LoginManager {
 	 */
 	public static void logoutUser(String username) {
 		InetAddress a = Server.onlineUsers.removeUser(username);
+		Database.removeMapObject(username);
+	//	broadcast(new MapObjectMessage(null, null, username, MapOperation.REMOVE));
 		// Kolla om användaren redan är utloggad
 		if (a == null)
 			System.out.println(username + " har loggat ut ");
 		// ...annars loggar vi ut denne.
 		else			
 			System.out.println(username + " har loggat ut (" + a.getHostAddress() + ") ");
+	}
+	private static void broadcast(Message m) {
+		InetAddress srcAdr = Server.onlineUsers.getUserAddress(m.getSrcUser());
+		for (InetAddress adr: Server.onlineUsers.getAllAssociations().values()){
+			if(adr == srcAdr) continue;
+			new Sender(m, adr, 4043);
+		}
+
 	}
 }

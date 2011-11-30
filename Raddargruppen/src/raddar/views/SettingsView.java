@@ -33,7 +33,7 @@ public class SettingsView extends Activity {
 		rg.check(index);
 
 		OnClickListener ocl = new OnClickListener() {
-			@Override
+			
 			public void onClick(View v) {
 				if (v == normal) {
 					unregisterBatteryReceiver();

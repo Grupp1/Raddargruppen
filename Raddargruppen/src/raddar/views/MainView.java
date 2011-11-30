@@ -97,6 +97,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 			new Sender(new RequestMessage(RequestType.MESSAGE));
 			new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
 			new Sender(new RequestMessage(RequestType.CONTACTS));
+			new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
