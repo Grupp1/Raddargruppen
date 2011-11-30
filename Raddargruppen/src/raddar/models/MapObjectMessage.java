@@ -21,6 +21,14 @@ public class MapObjectMessage extends Message{
 		type = MessageType.MAPOBJECT;
 		setSrcUser(SessionController.getUser());
 	}
+	
+	public MapObjectMessage(String jsonMapObject,String classString,String id,MapOperation mo,boolean noSrcUser){
+		this.jsonMapObject = jsonMapObject;
+		this.classString = classString;
+		this.mo = mo;
+		this.id = id;
+		type = MessageType.MAPOBJECT;
+	}
 	public MapObject toMapObject(){
 		Class c= null ;
 		try {

@@ -129,7 +129,8 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 							mOverlays.remove(item);
 
 							MainView.mapCont.removeObject(item,true);
-
+							setLastFocusedIndex(-1);
+							populate();
 						}
 
 					});
@@ -251,8 +252,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 			alert.show();
 
 		}
-		setLastFocusedIndex(-1);
-		populate();
+		
 		return true;
 	}
 

@@ -33,7 +33,6 @@ public class ClientDatabaseManager extends Observable {
 
 	private final String[] TEXT_MESSAGE_TABLE_ROWS = new String[] { "msgId", "srcUser", "rDate", "subject", "mData" };
 	private final String[] CONTACT_TABLE_ROWS = new String[] { "userName","isGroup", "sipUsr", "sipPw" };
-	private final String[] SITUATION_TABLE_ROWS = new String[] { "title","description", "priority" };
 	private final String[] MAP_TABLE_ROWS = new String[] { "mapObject","class", "id" };
 	private final String[] OUTBOX_TABLE_ROWS = new String[] { "msgID", "destUser", "rDate", "subject", "mData"};
 	private final String[] DRAFT_TABLE_ROWS = new String[] { "msgID", "destUser", "rDate", "subject", "mData"};
