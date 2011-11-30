@@ -96,7 +96,7 @@ public class LoginManager extends Observable {
 				logIn = LoginResponse.ACCEPTED;
 				s = null;
 			}
-			else if(response.equals("USER_ALREADY_EXIST")){
+			else if(response.equals("OK_FORCE_LOGOUT")){
 				logIn = LoginResponse.USER_ALREADY_LOGGED_IN;
 				s = null;
 			}

@@ -50,7 +50,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	private Bundle extras;
 	public static MapCont mapCont;
 	public static MainView theOne;
-	
+
 	/*
 	 * Lyssnar efter ändringar hos batterinivån
 	 */
@@ -67,7 +67,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 			}
 		}
 	};
-	
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -75,21 +75,21 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		setContentView(R.layout.main);
 
 		theOne = this;
-		
+
 		String level = BatteryManager.EXTRA_LEVEL;
 		Log.d("EXTRA_LEVEL", level);
-		
+
 		extras = getIntent().getExtras();
-//		controller = new InternalComManager();
-//		controller.setUser(extras.get("user").toString());
-//		db = new ClientDatabaseManager(this,controller.getUser());
-		
-//		//TEMPORÄRT MÅSTE FIXAS
-//		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
+		//		controller = new InternalComManager();
+		//		controller.setUser(extras.get("user").toString());
+		//		db = new ClientDatabaseManager(this,controller.getUser());
+
+		//		//TEMPORÄRT MÅSTE FIXAS
+		//		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
 
 		new SessionController(extras.get("user").toString());
 		new DatabaseController(this);
-	//	new SipController(this);
+		//	new SipController(this);
 		//new SipController(this);
 		new ReciveHandler(this).addObserver(this);
 
@@ -127,7 +127,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 
 		logButton = (ImageButton)this.findViewById(R.id.logButton);
 		logButton.setOnClickListener(this);
-		
+
 		connectionButton = (ImageButton) findViewById(R.id.presence);
 		connectionButton.setOnClickListener(this);
 		if (extras.get("connectionStatus").equals(ConnectionStatus.CONNECTED)){
@@ -136,7 +136,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		else if (extras.get("connectionStatus").equals(ConnectionStatus.DISCONNECTED)){
 			connectionButton.setImageResource(R.drawable.disconnected);
 		}
-		
+
 		/**
 		 * Initierar kartans controller för att kunna få gps koordinaterna för sin position
 		 */
@@ -145,7 +145,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 				mapCont = new MapCont(MainView.this);
 			}
 		}).start();
-		
+
 	}
 
 	public void onClick(View v) {
@@ -206,11 +206,12 @@ public class MainView extends Activity implements OnClickListener, Observer {
 			AlertDialog alert = builder.create();
 			alert.show();
 		}
-		if (v == connectionButton){
-			Toast.makeText(getBaseContext(), extras.get("connectionStatus").toString(), Toast.LENGTH_LONG).show();
+		else if (v == connectionButton){
+			Toast.makeText(getBaseContext(), extras.get("connectionStatus").toString()+", inloggad som: "
+					+SessionController.getUser(), Toast.LENGTH_LONG).show();
 		}
 	}
-	
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -225,7 +226,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		} catch (UnknownHostException e) {
 			Log.d("NotificationMessage", "Disconnect failed");
 		}
-		
+
 		/* Om applikationen stängs ner tar vi bort notifikationer i 
 		   notifikationsfältet längst upp på telefonens skärm */
 		NotificationManager mNtf = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -234,7 +235,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		if (SettingsView.powerIsAutomatic())
 			unregisterReceiver(mBatteryInfoReceiver);
 	}
-	
+
 	public void update(Observable observable, final Object data) {
 		runOnUiThread(new Runnable(){
 			public void run(){
@@ -242,27 +243,28 @@ public class MainView extends Activity implements OnClickListener, Observer {
 					Toast.makeText(getApplicationContext(), "Meddelande från "+
 							((Message)data).getSrcUser()
 							,Toast.LENGTH_LONG).show();
-				
+
 				if(data == ConnectionStatus.CONNECTED){
 					connectionButton.setImageResource(R.drawable.connected);
-					Toast.makeText(getApplicationContext(), "Ansluten till servern",Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), "Ansluten till servern, inloggad som: "+SessionController.getUser()
+							, Toast.LENGTH_LONG).show();
 				}else if (data == ConnectionStatus.DISCONNECTED){
 					connectionButton.setImageResource(R.drawable.disconnected);
 					Toast.makeText(getApplicationContext(), "Tappad anslutning mot servern",Toast.LENGTH_LONG).show();
 				}
-				
-				if (data instanceof GeoPoint){
+				else if (data instanceof String){
+					if(data.equals("LOGOUT")){
+						finish();
+					}else{
+						Toast.makeText(getBaseContext(), (String)data, Toast.LENGTH_SHORT).show();
+					}
+				}
 
-				}
-				
-				if (data instanceof String){
-					Toast.makeText(getBaseContext(), (String)data, Toast.LENGTH_SHORT).show();
-				}
 			}
 		});
 
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -278,12 +280,12 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		super.onPause();
 		//unregisterReceiver(mBatteryInfoReceiver);
 	}
-	
+
 	public void enableButtons() {
 		callButton.setEnabled(true);
 		serviceButton.setEnabled(true);
 	}
-	
+
 	public void disableButtons() {
 		callButton.setEnabled(false);
 		serviceButton.setEnabled(false);

@@ -530,7 +530,7 @@ public class Database {
 
 			while (rs.next()) { 
 				MapObjectMessage tm = new MapObjectMessage(rs.getString(3), rs.getString(2), rs.getString(4),
-						MapOperation.ADD,true);
+						MapOperation.ADD,"");
 				list.add(tm);
 			}
 		} catch (SQLException ex) {

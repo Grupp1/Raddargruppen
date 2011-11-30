@@ -44,7 +44,7 @@ public class Receiver implements Runnable {
 				Class c = Class.forName(test);
 				String temp = in.readLine();
 				m = gson.fromJson(temp, c);
-				if(m.getType() == MessageType.REQUEST||(m.getType() == MessageType.MAPOBJECT))
+				if(!(m.getType() == MessageType.TEXT))
 					notify = false;
 				rh.newMessage(m.getType(), m,notify);
 

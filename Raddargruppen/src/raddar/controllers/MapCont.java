@@ -121,8 +121,10 @@ public class MapCont implements Observer, Runnable{
 	public void run() {
 		olist = DatabaseController.db.getAllRowsAsArrays("map");
 		for(int i = 0; i < olist.size();i++){
-			olist.get(i).updateData(new Geocoder(mapUI.getBaseContext(), Locale.getDefault()));
-			add(olist.get(i),false);
+			MapObject o = olist.get(i);
+			mapModel.add(o);
+			o.updateData(geocoder);
+			mapUI.drawNewMapObject(o);
 		}
 	}
 

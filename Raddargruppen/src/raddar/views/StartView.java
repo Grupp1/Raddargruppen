@@ -101,7 +101,6 @@ public class StartView extends Activity implements Observer {
 								MainView.class);
 						nextIntent.putExtra("user", user.getText().toString());
 						nextIntent.putExtra("connectionStatus", ConnectionStatus.CONNECTED);
-						
 						startActivity(nextIntent);
 						
 					}
@@ -127,8 +126,13 @@ public class StartView extends Activity implements Observer {
 					startActivity(nextIntent);
 				}
 				else if((LoginResponse) data == LoginResponse.USER_ALREADY_LOGGED_IN){
-					Toast.makeText(StartView.this, "Användaren är redan inloggad på servern",
+					Toast.makeText(StartView.this, "Användaren är redan inloggad på servern, loggar ut hen",
 							Toast.LENGTH_LONG).show();
+					Intent nextIntent = new Intent(StartView.this,
+							MainView.class);
+					nextIntent.putExtra("user", user.getText().toString());
+					nextIntent.putExtra("connectionStatus", ConnectionStatus.CONNECTED);
+					startActivity(nextIntent);
 				}
 				loginButton.setEnabled(true);
 				dialog.cancel();

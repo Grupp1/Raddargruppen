@@ -22,12 +22,13 @@ public class MapObjectMessage extends Message{
 		setSrcUser(SessionController.getUser());
 	}
 	
-	public MapObjectMessage(String jsonMapObject,String classString,String id,MapOperation mo,boolean noSrcUser){
+	public MapObjectMessage(String jsonMapObject,String classString,String id,MapOperation mo,String userName){
 		this.jsonMapObject = jsonMapObject;
 		this.classString = classString;
 		this.mo = mo;
 		this.id = id;
 		type = MessageType.MAPOBJECT;
+		setSrcUser(userName);
 	}
 	public MapObject toMapObject(){
 		Class c= null ;
