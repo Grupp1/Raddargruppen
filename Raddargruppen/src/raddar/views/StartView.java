@@ -8,6 +8,7 @@ import raddar.enums.ConnectionStatus;
 import raddar.enums.LoginResponse;
 import raddar.gruppen.R;
 import raddar.models.LoginManager;
+import raddar.models.QoSManager;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -48,8 +49,8 @@ public class StartView extends Activity implements Observer {
 		password = (EditText) this.findViewById(R.id.passwordtext);
 		// Endast för lättare testning
 
-		user.setText("lalle");
-		password.setText("lalle");
+		user.setText("danan612");
+		password.setText("raddar");
 
 		final LoginManager lm = new LoginManager();
 		lm.addObserver(this);
@@ -60,7 +61,6 @@ public class StartView extends Activity implements Observer {
 		loginButton = (Button) this.findViewById(R.id.okbutton);
 		loginButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				v.getContext().deleteDatabase(user.getText().toString());
 				String[] sipDetails = new String[3];
 				sipDetails[0] = user.getText().toString();
 				sipDetails[1] = password.getText().toString();
@@ -72,7 +72,7 @@ public class StartView extends Activity implements Observer {
 				loginButton.setEnabled(false);
 				dialog.show();
 
-				Thread s = new Thread(new Runnable(){
+				Thread s = new Thread(new Runnable(){ 
 					public void run() {
 						lm.evaluate(user.getText().toString(),
 								password.getText().toString());
@@ -83,7 +83,6 @@ public class StartView extends Activity implements Observer {
 		});
 
 	}
-
 	public void onRestart() {
 		super.onRestart();
 		finish();
@@ -103,6 +102,7 @@ public class StartView extends Activity implements Observer {
 						nextIntent.putExtra("user", user.getText().toString());
 						nextIntent.putExtra("connectionStatus", ConnectionStatus.CONNECTED);
 						startActivity(nextIntent);
+						
 					}
 					Toast.makeText(StartView.this,
 							"Ansluten till servern",
@@ -126,8 +126,13 @@ public class StartView extends Activity implements Observer {
 					startActivity(nextIntent);
 				}
 				else if((LoginResponse) data == LoginResponse.USER_ALREADY_LOGGED_IN){
-					Toast.makeText(StartView.this, "Användaren är redan inloggad på servern",
+					Toast.makeText(StartView.this, "Användaren är redan inloggad på servern, loggar ut hen",
 							Toast.LENGTH_LONG).show();
+					Intent nextIntent = new Intent(StartView.this,
+							MainView.class);
+					nextIntent.putExtra("user", user.getText().toString());
+					nextIntent.putExtra("connectionStatus", ConnectionStatus.CONNECTED);
+					startActivity(nextIntent);
 				}
 				loginButton.setEnabled(true);
 				dialog.cancel();

@@ -1,12 +1,11 @@
 package raddar.views;
 
 import raddar.controllers.SipController;
+import raddar.models.QoSManager;
 import raddar.gruppen.R;
-import raddar.models.Message;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
@@ -34,13 +33,13 @@ public class CallView extends Activity implements OnClickListener {
 	SoundPool soundPool;
 	int soundId, savedVolume;
 	/**
-	 * Initiate all variables to diffrent values depening on if we are making a call
-	 * or recieving a call.
+	 * Initiate all variables to different values depending on if we are making a call
+	 * or receiving a call.
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.walkietalkie);
+		setContentView(R.layout.accept_call);
 		Bundle extras = getIntent().getExtras();
 		final String sip = (String) extras.get("sip");
 		callerText = (TextView) this.findViewById(R.id.callerText);
@@ -170,7 +169,7 @@ public class CallView extends Activity implements OnClickListener {
 
 	}
 	/**
-	 * Updates the texview. Used to notify the user on the status of the call
+	 * Updates the textview. Used to notify the user on the status of the call
 	 * @param caller the string you want to set
 	 */
 	private void updateText(final String caller) {
@@ -343,5 +342,12 @@ public class CallView extends Activity implements OnClickListener {
 		*/
 		soundPool.autoPause();
 		soundPool.release();
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
 	}
 }

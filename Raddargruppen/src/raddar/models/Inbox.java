@@ -3,7 +3,6 @@ package raddar.models;
 import java.util.ArrayList;
 import java.util.Observable;
 
-import raddar.enums.MessageType;
 import android.util.Log;
 
 public class Inbox extends Observable {
@@ -12,13 +11,7 @@ public class Inbox extends Observable {
 
 	public Inbox(){
 		inbox = new ArrayList<Message>();
-		String lol = "mikaela";
-		TextMessage t1 = new TextMessage(MessageType.TEXT, lol, lol);
-		t1.setData("Hej, Detta är ett testmeddelande!");
-		inbox.add(t1);
-		TextMessage t2 = new TextMessage(MessageType.TEXT, "Börje", "Börje");
-		t2.setData("Tjena, du kan inte fixa admin rättigheter? mvh Böare");
-		inbox.add(t2);
+
 	}
 	
 	public void newMessage(Message m){

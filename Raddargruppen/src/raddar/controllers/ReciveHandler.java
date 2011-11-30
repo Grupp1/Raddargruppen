@@ -7,15 +7,17 @@ import java.util.Observable;
 import raddar.enums.ConnectionStatus;
 import raddar.enums.MessageType;
 import raddar.enums.ServerInfo;
+import raddar.models.ContactMessage;
+import raddar.models.ImageMessage;
 import raddar.models.MapObject;
 import raddar.models.MapObjectMessage;
 import raddar.models.Message;
 import raddar.views.MainView;
-import raddar.views.MapUI;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.util.Log;
 
 public class ReciveHandler extends Observable implements Runnable {
@@ -37,7 +39,7 @@ public class ReciveHandler extends Observable implements Runnable {
 			// Skapa en ServerSocket för att lyssna på inkommande meddelanden
 			ServerSocket so = new ServerSocket(ServerInfo.SERVER_PORT);
 
-			while (true){
+			while (true) {
 				// När ett inkommande meddelande tas emot skapa en ny Receiver
 				// som körs i en egen tråd
 				new Receiver(so.accept(), this, context);
@@ -45,8 +47,9 @@ public class ReciveHandler extends Observable implements Runnable {
 			}
 		} catch (IOException ie) {
 			notifyObservers(ConnectionStatus.DISCONNECTED);
-			Log.d("ReciveHandler", "Kunde inte ta emot meddelande, disconnected");
-			//ie.printStackTrace();
+			Log.d("ReciveHandler",
+					"Kunde inte ta emot meddelande, disconnected");
+			// ie.printStackTrace();
 		}
 
 	}
@@ -70,33 +73,76 @@ public class ReciveHandler extends Observable implements Runnable {
 
 					alert.setPositiveButton("Gå till kartan",
 							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int whichButton) {
-									// Gå till kartan
-								}
-							});
+						public void onClick(DialogInterface dialog,
+								int whichButton) {
+							// Gå till kartan
+						}
+					});
 
 					alert.setNegativeButton("Gör inget",
 							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int whichButton) {
-									dialog.cancel();
-								}
-							});
+						public void onClick(DialogInterface dialog,
+								int whichButton) {
+							dialog.cancel();
+						}
+					});
 
 					alert.show();
 				}
 
 			});
+		} else if (mt == MessageType.IMAGE) {
+			ImageMessage im = (ImageMessage) m;
+			DatabaseController.db.addImageMessageRow(im);
+
+
 		}else if (mt == MessageType.MAPOBJECT) {
 			MapObject mo = ((MapObjectMessage)m).toMapObject();
-//			if(MainView.mapCont.getMapUI() != null){
-//				Log.d("Här", "Här");
+			
+			switch(((MapObjectMessage)m).getMapOperation()){
+			case ADD:
 				MainView.mapCont.add(mo,false);
-//			}else{
-//				Log.d("Där", "Där");
-//			DatabaseController.db.addRow(mo,false);
-//			}
+				break;
+			case REMOVE:
+				MainView.mapCont.removeObject(mo, false);
+				break;
+			case UPDATE:
+				MainView.mapCont.updateObject(mo,false);
+				break;
+			default:
+				
+			}	
+
 		}
+		else if(mt == MessageType.CONTACT){
+			DatabaseController.db.addRow(((ContactMessage)m).toContact());
+		}
+		else if(mt == MessageType.NOTIFICATION){
+			((Activity) context).runOnUiThread(new Runnable() {
+				public void run() {
+					AlertDialog.Builder alert = new AlertDialog.Builder(context);
+
+					alert.setTitle("Forcerad utloggning");
+					alert.setMessage("En annan klient har loggat in på denna användare. Du kommer nu att loggas ut.");
+//					alert.setNegativeButton("Gör inget",
+//							new DialogInterface.OnClickListener() {
+//						public void onClick(DialogInterface dialog,
+//								int whichButton) {
+//							dialog.cancel();
+//						}
+//					});
+					alert.setOnCancelListener(new OnCancelListener(){
+						public void onCancel(DialogInterface dialog) {
+							setChanged();
+							notifyObservers("LOGOUT");
+						}
+					});
+
+					alert.show();
+				}
+
+			});
+		}
+
 	}
 }

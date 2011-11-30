@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import raddar.enums.NotificationType;
+import raddar.models.MapObjectMessage;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
 import raddar.models.RequestMessage;
@@ -40,7 +41,6 @@ public class Receiver implements Runnable {
 		clientThread.start();
 	}
 
-
 	@Override
 	public void run() {
 		try {
@@ -52,7 +52,10 @@ public class Receiver implements Runnable {
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
+
 			String temp = in.readLine();
+			System.out.println(temp);
+			
 			Message m = new Gson().fromJson(temp, c);
 			// if message
 			// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
@@ -69,19 +72,21 @@ public class Receiver implements Runnable {
 				new Sender(m, m.getDestUser());
 				break;
 			case IMAGE:
-				handleImageMessage();
+				new Sender(m, m.getDestUser());
 				break;
 			case REQUEST:
 				handleRequest((RequestMessage) m);
 				break;
 			case MAPOBJECT:
+				handleMapObjectMessage((MapObjectMessage) m);
 				broadcast(m);
 				break;
 			default:
 				System.out.println("Received message has unknown type. Discarding... ");
+
 			}
-
-
+			//			
+			//	so.close();
 		} catch (IOException ie) {
 			ie.printStackTrace();
 		}
@@ -120,15 +125,33 @@ public class Receiver implements Runnable {
 			if(adr == srcAdr) continue;
 			new Sender(m, adr, 4043);
 		}
-	}
-
-	/*
-	 * To be implemented
-	 */
-	private void handleImageMessage() {
-
 
 	}
+	
+	private void handleMapObjectMessage(MapObjectMessage mo){
+		switch(mo.getMapOperation()){
+		case ADD:
+			System.out.println("handleMapObjectMessage ADD");
+			
+			if(Database.addMapObject(mo))
+				broadcast(mo);
+			break;
+		case REMOVE:
+			System.out.println("handleMapObjectMessage REMOVE");
+			broadcast(mo);
+			Database.removeMapObject(mo.getId());
+			break;
+		case UPDATE:
+			System.out.println("handleMapObjectMessage UPDATE");
+			broadcast(mo);
+			Database.updateMapObject(mo);
+			break;
+		default:
+			System.out.println("Okänd MapOperation");
+		}	
+
+	}
+
 	/**
 	 * Handles the request
 	 * @param rm The recived requestMessage
@@ -166,23 +189,19 @@ public class Receiver implements Runnable {
 				e.printStackTrace();
 			}
 			break;
+		case CONTACTS:
+			//svarar på request om att hämta alla kontakter som arraylist<message> 
+			ArrayList<Message> contactMessage = Database.retrieveAllUsers();
+			contactMessage.add(0,rm);
+			new Sender(contactMessage, rm.getSrcUser());
+			break;
+		case MAP_OBJECTS:
+			ArrayList<Message> mapObjectMessages = Database.retrieveAllMapObjects();
+			new Sender(mapObjectMessages, rm.getSrcUser());
+			break;
 		default:
 			System.out.println("Okänd RequestType");
 		}
 
 	}
-	/*
-	 * Denna funktionen används för att läsa in en rad och filtrera bort attributtaggen
-	 * 'Content-Type: text/plain' filtreras till exempel till text/plain
-	 */
-
-	private String getAttrValue(String str) {
-		StringBuilder sb = new StringBuilder("");
-		String[] parts = str.split(" ");
-		for (int i = 1; i < parts.length; i++) 
-			sb.append(parts[i]);
-
-		return sb.toString();
-	}
-
 }

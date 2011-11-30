@@ -21,7 +21,8 @@ import com.google.android.maps.OverlayItem;
 public class MapObject extends OverlayItem {
 
 	private GeoPoint point;
-	private String title, snippet, id, adress, description, addedBy, date, changedBy, changedDate;
+	private String title, snippet, adress, description, addedBy, date, changedBy, changedDate;
+	protected String id;
 	private int icon;
 	private ID idGen;
 	

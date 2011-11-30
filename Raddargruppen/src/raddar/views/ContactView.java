@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import raddar.controllers.DatabaseController;
 import raddar.gruppen.R;
 import raddar.models.Contact;
+import raddar.models.QoSManager;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -33,7 +34,6 @@ public class ContactView extends ListActivity implements OnClickListener{
 	//	for(int i = 0;i <10;i++)
 	//		contacts.add(new Contact("Peter"+i, false));
 		ia = new ContactAdapter(this, R.layout.contact,contacts,selected);
-
 
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
@@ -97,5 +97,12 @@ public class ContactView extends ListActivity implements OnClickListener{
 			}	
 			return v;
 		}
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
 	}
 }

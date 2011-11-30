@@ -1,7 +1,6 @@
 package raddar.controllers;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,17 +8,14 @@ import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
+import raddar.enums.MapOperation;
 import raddar.enums.ResourceStatus;
 import raddar.gruppen.R;
-import raddar.models.Fire;
-import raddar.models.FireTruck;
 import raddar.models.GPSModel;
 import raddar.models.MapModel;
 import raddar.models.MapObject;
 import raddar.models.MapObjectList;
 import raddar.models.MapObjectMessage;
-import raddar.models.Resource;
-import raddar.models.Situation;
 import raddar.models.You;
 import raddar.views.MainView;
 import raddar.views.MapUI;
@@ -52,21 +48,21 @@ public class MapCont implements Observer, Runnable{
 
 	public MapCont(MainView m){
 		gps  = new GPSModel(m);
-		
+		//DatabaseController.db.addObserver(this);
+		gps.addObserver(MapCont.this);
 	}
 
 	public void declareMapUI(MapUI mapUI){
 		this.mapUI = mapUI;
 		mapModel = new MapModel(mapUI);
-		DatabaseController.db.addObserver(this);
+		
 		//mapModel.addObserver(this);
-		gps.addObserver(this);
 		geocoder = new Geocoder(mapUI.getBaseContext(), Locale.getDefault());
 
 		if (!thread.isAlive()){
 			run();
 		}
-	//	DatabaseController.db.addObserver(mapUI);
+		//	DatabaseController.db.addObserver(mapUI);
 	}
 	public MapObjectList getList(MapObject mo){
 		return mapModel.getList(mo);
@@ -76,32 +72,82 @@ public class MapCont implements Observer, Runnable{
 		return mapUI;
 	}
 
-	public void add(MapObject o,boolean notify){
-		
+	public void add(MapObject o, boolean notify){
+
 		if(mapModel != null){
 			mapModel.add(o);
 			if(!notify){
+				o.updateData(geocoder);
 				mapUI.drawNewMapObject(o);
+			}else{
+				Gson gson = new Gson();
+				mapUI.drawNewMapObject(o);
+				try{
+					MapObjectMessage mom = new MapObjectMessage(gson.toJson(o),
+							(o).getClass().getName(),o.getId(),MapOperation.ADD);
+					new Sender(mom);
+				}
+				catch (UnknownHostException e) {
+
+				}
 			}
 		}
 		DatabaseController.db.addRow(o,notify);
-		
 	}
 
-	public void updateObject(MapObject o){
-		mapModel.updateObject(o);
+	public void updateObject(MapObject o,boolean notify){
+		Log.d("UpdateObject","MapCont"+o.getTitle());
+		if(mapModel != null){
+			Log.d("UpdateObject","MapCont"+o.getTitle()+" i if-satsen");
+			o.updateData(geocoder);
+			if(!notify){
+				mapUI.drawNewMapObject(o);
+				mapModel.updateObject(o);
+			}else{
+				mapUI.drawNewMapObject(o);
+				Gson gson = new Gson();
+				try{
+					MapObjectMessage mom = new MapObjectMessage(gson.toJson(o),
+							(o).getClass().getName(),o.getId(),MapOperation.UPDATE);
+					new Sender(mom);
+				}
+				catch (UnknownHostException e) {
+				}
+			}
+		}
+		DatabaseController.db.updateRow(o);
 	}
 
 	public void run() {
 		olist = DatabaseController.db.getAllRowsAsArrays("map");
 		for(int i = 0; i < olist.size();i++){
-			olist.get(i).updateData(new Geocoder(mapUI.getBaseContext(), Locale.getDefault()));
-			add(olist.get(i),false);
+			MapObject o = olist.get(i);
+			mapModel.add(o);
+			o.updateData(geocoder);
+			mapUI.drawNewMapObject(o);
 		}
 	}
 
-	public void removeObject(MapObject mo){
-		mapModel.removeObject(mo);
+	public void removeObject(MapObject o,boolean notify){
+
+		if(mapModel != null){
+			mapModel.removeObject(o);
+			if(!notify){
+				mapUI.drawNewMapObject(o);
+			}else{
+				mapUI.drawNewMapObject(o);
+				Gson gson = new Gson();
+				try{
+					MapObjectMessage mom = new MapObjectMessage(gson.toJson(o),
+							(o).getClass().getName(),o.getId(),MapOperation.REMOVE);
+					new Sender(mom);
+				}
+				catch (UnknownHostException e) {
+				}
+
+			}
+		}
+		DatabaseController.db.deleteRow(o);
 	}
 
 	public You getYou(){
@@ -110,11 +156,14 @@ public class MapCont implements Observer, Runnable{
 
 	public void update(Observable o, Object data) {
 		Log.d("MapCont","Update "+o);
-		
+
 		if (data instanceof GeoPoint){
 			if (!areYouFind){
 				areYouFind = true;
-				you = new You((GeoPoint)data, "Din position", "Här är du", R.drawable.you, ResourceStatus.FREE);
+
+				you = new You((GeoPoint)data, SessionController.getUser()+" position", "Här är "+SessionController.getUser(),
+						R.drawable.circle_green, ResourceStatus.FREE);
+
 				you.updateData(geocoder);
 				olist.add(you); // databas
 				add(you,true);		// karta
@@ -123,7 +172,7 @@ public class MapCont implements Observer, Runnable{
 				mapUI.follow = true;
 			}
 			else{
-				you.updateData(geocoder);
+				updateObject(you,true);
 			}
 			you.setPoint((GeoPoint)data);	
 
@@ -132,23 +181,6 @@ public class MapCont implements Observer, Runnable{
 			}
 			mapUI.drawNewMapObject(you);
 		}
-		else if (data instanceof MapObject){
-			mapUI.drawNewMapObject((MapObject)data);
-			// Send information to server
-			Gson gson = new Gson();
-			try{
-				MapObjectMessage mo = new MapObjectMessage(gson.toJson((MapObject)data),
-						((MapObject)data).getClass().getName());
-				new Sender(mo);
-			}
-			catch (UnknownHostException e) {
-
-			}
-		}
-//
-//		if(mapUI !=null){
-//			mapUI.getMapView().postInvalidate();
-//		}
 	}
 
 	public String calcAdress(GeoPoint point){

@@ -1,15 +1,15 @@
 package raddar.views;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import raddar.controllers.DatabaseController;
 import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
+import raddar.enums.MessageType;
 import raddar.gruppen.R;
-import raddar.models.Message;
-import raddar.models.TextMessage;
+import raddar.models.ImageMessage;
+import raddar.models.QoSManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -18,7 +18,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.provider.MediaStore.Images.Media;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,6 +33,7 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 	private Button sendButton;
 	private Button choiceButton;
 	private ImageView preview;
+	private String filePath;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -46,6 +46,32 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 		choiceButton.setOnClickListener(this);
 		sendButton.setOnClickListener(this);
 		destUser.setOnClickListener(this);
+		destUser.setFocusable(false);
+
+		try {
+
+			Bundle extras = getIntent().getExtras();
+			String[] items = (String[]) extras.getCharSequenceArray("message");
+
+			destUser = (EditText) this.findViewById(R.id.destUser);
+			subject = (EditText) this.findViewById(R.id.subject);
+
+			destUser.setText(items[0].toString());
+			subject.setText(items[1].toString());
+			sendButton = (Button) this.findViewById(R.id.sendButton);
+			sendButton.setOnClickListener(this);
+			destUser.setOnClickListener(this);
+
+		} catch (Exception e) {
+
+			Log.d("SendMessageView", e.toString());
+			destUser = (EditText) this.findViewById(R.id.destUser);
+			subject = (EditText) this.findViewById(R.id.subject);
+			sendButton = (Button) this.findViewById(R.id.sendButton);
+			sendButton.setOnClickListener(this);
+			destUser.setOnClickListener(this);
+		}
+
 	}
 
 	public void onClick(View v) {
@@ -56,7 +82,7 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 			startActivityForResult(Intent.createChooser(intent,
 					"Select Picture"), SELECT_PICTURE);
 			//öppnar galleriet där man kan välja bild att bifoga
-			
+
 		}
 		if (v.equals(sendButton)) {
 			//Undersöker om alla fält är skrivna i
@@ -78,17 +104,7 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 				 */
 			}
 			sendMessages();
-			/*
-			Message m = new TextMessage(MainView.controller.getUser(), ""
-					+ destUser.getText());
-			m.setSubject(subject.getText() + "");
-			m.setData(messageData.getText() + "");
-			try {
-				new Sender(m, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
-			} catch (UnknownHostException e) {
 
-			}
-			 */
 			Toast.makeText(getApplicationContext(), "Meddelande till "+destUser.getText().
 					toString().trim(),
 					Toast.LENGTH_SHORT).show();
@@ -104,13 +120,18 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 		Log.d("number of messages",destUsers.length+"");
 		for(int i = 0; i < destUsers.length;i++){
 
-
-			Message m = new TextMessage(SessionController.getUser(), ""
-					+ destUsers[i]);
+			ImageMessage m = new ImageMessage(MessageType.IMAGE, SessionController.getUser(), ""
+					+ destUsers[i], filePath);
 			m.setSubject(subject.getText() + "");
+			m.setFilePath(filePath);
 			try {
-				new Sender(m, InetAddress.getByName("127.0.0.1"), 6789);
+				new Sender(m, InetAddress.getByName(raddar.enums.ServerInfo.SERVER_IP), raddar.enums.ServerInfo.SERVER_PORT);
+				DatabaseController.db.addImageMessageRow(m);
+				//	DatabaseController.db.addOutboxRow(m);
+				//	DatabaseController.db.deleteDraftRow(m);
+
 			} catch (UnknownHostException e) {
+				//	DatabaseController.db.addDraftRow(m);
 			}
 		}
 	}
@@ -121,38 +142,50 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 	 * @param data Bildens data från galleriet eller
 	 */
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		switch(requestCode) { 
-		case SELECT_PICTURE:
-			if(resultCode == RESULT_OK){  
+		if(resultCode == RESULT_OK){
+			switch(requestCode) { 
+			case SELECT_PICTURE:
+
 				Uri selectedImage = data.getData();
-				Log.d("tag sendimage", "här letar jag");
 				String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
 				Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
 				cursor.moveToFirst();
-				
+
 				int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-				String filePath = cursor.getString(columnIndex);
+				filePath = cursor.getString(columnIndex);
 				cursor.close();
-				
+
 				Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
 				preview.setImageBitmap(yourSelectedImage);
 				//bilden som ska skickas med meddelandet är yourSelectedImage
 
+
+			case 0:
+				if(requestCode == 0){
+					Bundle extras = data.getExtras();
+					String temp = "";
+					String[] destUsers = extras.getStringArray("contacts");
+					for(int i = 0; i < destUsers.length; i++)
+						temp += destUsers[i]+"; ";
+					destUser.setText(temp);	
+				}
 			}
-		case 0:
-			if(requestCode == 0){
-				Bundle extras = data.getExtras();
-				String temp = "";
-				String[] destUsers = extras.getStringArray("contacts");
-				for(int i = 0; i < destUsers.length; i++)
-					temp += destUsers[i]+";";
-				destUser.setText(temp);	
-			}
+
+
 		}
 
 	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
+	}
+
+
 } 
+
 
 

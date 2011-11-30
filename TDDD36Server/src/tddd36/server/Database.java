@@ -2,6 +2,7 @@ package tddd36.server;
 
 
 
+import raddar.enums.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -10,7 +11,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import raddar.enums.MessageType;
+import raddar.models.ContactMessage;
 import raddar.models.Encryption;
+import raddar.models.MapObjectMessage;
 import raddar.models.Message;
 import raddar.models.TextMessage;
 
@@ -42,7 +45,7 @@ public class Database {
 		} catch (SQLException ex) {
 			System.out.println("Kunde inte ansluta till databasen. Kollat Library efter JDBC Plugin? ");
 		} catch (ClassNotFoundException e) {
-			System.out.println("Fel i i Class.forname()-anropet");
+			System.out.println("Fel i i Class.forname()-anropet, kollat så att GSON grejerna finns i Library?");
 		}
 		return null;
 	}
@@ -97,6 +100,38 @@ public class Database {
 					username + "\', \'" + password + "\', \'" + level + "\', \'" + group + "\', \'" + salt + "\');");
 		} catch (SQLException ex) {
 			System.out.println("Fel syntax i MySQL-queryn i addUser(). "+ex);
+		}
+	}
+
+	public static boolean addMapObject(MapObjectMessage mo){
+		try{
+			Statement st = openConnection();
+			st.executeUpdate("INSERT INTO map_objects VALUES (idmap_objects, \'"+
+					mo.getClassName()+ "\', \'"+mo.getJson()+"\', \'"+mo.getId()+"\');");
+			return true;
+
+		}catch(SQLException ex){
+			return false;
+		}
+	}
+	public static void removeMapObject(String id){
+		try{
+			Statement st = openConnection();
+			st.executeUpdate("DELETE FROM map_objects WHERE map_id = \'"+id+ "\';");
+
+		}catch(SQLException ex){
+			System.out.println("Fel syntax i MySQL-queryn i removeMapObject. "+ex);
+		}
+	}
+	public static void updateMapObject(MapObjectMessage mo){
+
+		try{
+			Statement st = openConnection();
+			st.executeUpdate("UPDATE map_objects SET class_name = \'"+mo.getClassName()+"\', "+
+					"json_string = \'"+mo.getJson()+"\' WHERE map_id = \'"+mo.getId()+"\';");	
+
+		}catch(SQLException ex){
+			System.out.println("Fel syntax i MySQL-queryn i updateMapObject. "+ex);
 		}
 	}
 
@@ -220,7 +255,7 @@ public class Database {
 		try{
 			Statement st = openConnection();
 			st.executeUpdate("DELETE FROM bufferedmessages WHERE toUser = \'" 
-			+ toUser + "\';");
+					+ toUser + "\';");
 		} catch(SQLException ex){
 			System.out.println("Fel i deleteFromBuffer"+ ex);
 		}
@@ -233,20 +268,19 @@ public class Database {
 		try{
 			Statement st = openConnection();
 			st.executeUpdate("DELETE FROM messages WHERE toUser = \'" 
-			+ tm.getDestUser() + "\' and fromUser = \'"+tm.getSrcUser()+"\' and date = \'"
-			+tm.getDate()+"\';");
-			
+					+ tm.getDestUser() + "\' and fromUser = \'"+tm.getSrcUser()+"\' and date = \'"
+					+tm.getDate()+"\';");
+
 		} catch(SQLException ex){
 			System.out.println("Fel i deleteFromTextMessages "+ex);
 		}
 	}
 
 	/**
-	 * Hämta alla registrerade användare
-	 * 
+	 * Hämta alla registrerade användare i en arraylist<string>
+	 * (Vet inte om den här funktionen behövs egentligen men vet inte om den används så låter den va)
 	 * @return En ArrayList med alla registrerade användare
 	 */
-
 
 	public static ArrayList<String> getAllUsers() {
 		ArrayList<String> list = new ArrayList<String>();
@@ -262,6 +296,28 @@ public class Database {
 		}
 		return list;
 	}
+
+	/**
+	 * Hämta alla registrerade användare från databasen på servern
+	 * 
+	 * @return En ArrayList med alla registrerade användare som messages
+	 */
+
+	public static ArrayList<Message> retrieveAllUsers() {
+		ArrayList<Message> lista = new ArrayList<Message>();
+		try {
+			Statement st = openConnection();
+			ResultSet rs = st.executeQuery("SELECT * FROM users;");
+
+			while (rs.next()) 
+				lista.add(new ContactMessage(rs.getString(2)));
+
+		} catch (SQLException ex) {
+			System.out.println("Fel syntax i MySQL-queryn i retrieveAllUsers(). ");
+		}
+		return lista;
+	}
+
 
 	/**
 	 * Hämta alla användare i en viss grupp
@@ -462,6 +518,23 @@ public class Database {
 			}
 		} catch (SQLException ex) {
 			System.out.println("Fel syntax i MySQL-queryn i getAllTextMessagesOnDay(). ");
+		}
+		return list;
+	}
+
+	public static ArrayList<Message> retrieveAllMapObjects() {
+		ArrayList<Message> list = new ArrayList<Message>();
+		try {
+			Statement st = openConnection();
+			ResultSet rs = st.executeQuery("SELECT * FROM map_objects;");
+
+			while (rs.next()) { 
+				MapObjectMessage tm = new MapObjectMessage(rs.getString(3), rs.getString(2), rs.getString(4),
+						MapOperation.ADD,"");
+				list.add(tm);
+			}
+		} catch (SQLException ex) {
+			System.out.println("Fel syntax i MySQL-queryn i retrieveAllMapObjects(). ");
 		}
 		return list;
 	}

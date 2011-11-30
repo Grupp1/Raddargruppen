@@ -13,8 +13,12 @@
 
 	<string name="map_close">Stäng programmet!</string>
 	<string name="map_header">Karta</string>
+
 	<string name="messagechoice_new_text">Nytt textmedd.</string>
 	<string name="messagechoice_inbox">Inkorg</string>
+
+	<string name="draft_draft">Redigera utkast</string>
+
 	<string name="send_destUser">Mottagare:</string>
 	<string name="send_subject">Ämne:</string>
 	<string name="send_message">Meddelande:</string>
@@ -49,4 +53,8 @@
     <string name="talk">Talk</string>
     <string name="enter_number"></string>
 	<string name="rensa">Rensa</string>
+	<string name="low_power">Strömsparläge</string>
+	<string name="normal_power">Normalt strömläge</string>
+	<string name="automatic_power">Automatisk</string>
+	<string name="power_programs">Strömprogram</string>
 </resources>
