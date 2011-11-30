@@ -103,7 +103,7 @@ public class OutBoxView extends ListActivity {
 				TextView bt = (TextView) v.findViewById(R.id.bottomtext);
 				ImageView iv = (ImageView) v.findViewById(R.id.icon);
 				if(m.getType() == MessageType.TEXT)
-					iv.setImageResource(R.drawable.magnus);
+					iv.setImageResource(R.drawable.icon);
 				if (tt != null) 
 					tt.setText("Mottagare: "+m.getDestUser());                            
 				if(bt != null)
