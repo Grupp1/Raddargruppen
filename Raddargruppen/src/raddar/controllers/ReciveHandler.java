@@ -90,13 +90,20 @@ public class ReciveHandler extends Observable implements Runnable {
 			});
 		}else if (mt == MessageType.MAPOBJECT) {
 			MapObject mo = ((MapObjectMessage)m).toMapObject();
-//			if(MainView.mapCont.getMapUI() != null){
-//				Log.d("Här", "Här");
+			switch(((MapObjectMessage)m).getMapOperation()){
+			case ADD:
 				MainView.mapCont.add(mo,false);
-//			}else{
-//				Log.d("Där", "Där");
-//			DatabaseController.db.addRow(mo,false);
-//			}
+				break;
+			case REMOVE:
+				MainView.mapCont.removeObject(mo, false);
+				break;
+			case UPDATE:
+				MainView.mapCont.updateObject(mo,false);
+				break;
+			default:
+				
+			}	
+				
 		}
 	}
 }

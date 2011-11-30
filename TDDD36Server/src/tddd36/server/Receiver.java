@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import raddar.enums.NotificationType;
+import raddar.models.MapObjectMessage;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
 import raddar.models.RequestMessage;
@@ -53,6 +54,7 @@ public class Receiver implements Runnable {
 				e.printStackTrace();
 			}
 			String temp = in.readLine();
+			System.out.println(temp);
 			Message m = new Gson().fromJson(temp, c);
 			// if message
 			// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
@@ -75,6 +77,7 @@ public class Receiver implements Runnable {
 				handleRequest((RequestMessage) m);
 				break;
 			case MAPOBJECT:
+				handleMapObjectMessage((MapObjectMessage) m);
 				broadcast(m);
 				break;
 			default:
@@ -129,6 +132,29 @@ public class Receiver implements Runnable {
 
 
 	}
+	private void handleMapObjectMessage(MapObjectMessage mo){
+		switch(mo.getMapOperation()){
+		case ADD:
+			System.out.println("handleMapObjectMessage ADD");
+			
+			if(Database.addMapObject(mo))
+				broadcast(mo);
+			break;
+		case REMOVE:
+			System.out.println("handleMapObjectMessage REMOVE");
+			broadcast(mo);
+			Database.removeMapObject(mo.getId());
+			break;
+		case UPDATE:
+			System.out.println("handleMapObjectMessage UPDATE");
+			broadcast(mo);
+			Database.updateMapObject(mo);
+			break;
+		default:
+			System.out.println("Okänd MapOperation");
+		}	
+
+	}
 	/**
 	 * Handles the request
 	 * @param rm The recived requestMessage
@@ -171,18 +197,4 @@ public class Receiver implements Runnable {
 		}
 
 	}
-	/*
-	 * Denna funktionen används för att läsa in en rad och filtrera bort attributtaggen
-	 * 'Content-Type: text/plain' filtreras till exempel till text/plain
-	 */
-
-	private String getAttrValue(String str) {
-		StringBuilder sb = new StringBuilder("");
-		String[] parts = str.split(" ");
-		for (int i = 1; i < parts.length; i++) 
-			sb.append(parts[i]);
-
-		return sb.toString();
-	}
-
 }

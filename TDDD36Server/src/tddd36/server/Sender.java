@@ -103,6 +103,7 @@ public class Sender implements Runnable {
 		} catch (IOException e) {
 		//	if(messages.size() <= 0 || messages.get(0) instanceof MapObject)return;
 			// Logga ut denna användaren om 
+			//if(messages.size() <= 0) return;
 			LoginManager.logoutUser(((Message) messages.get(0)).getDestUser());
 			for(Message m : messages){
 				if(m instanceof TextMessage){
@@ -112,7 +113,6 @@ public class Sender implements Runnable {
 			}
 			// Mottagaren är inte online
 			// Buffra meddelandet
-			e.printStackTrace();
 		}
 	}
 }

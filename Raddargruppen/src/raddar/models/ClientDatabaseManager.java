@@ -34,12 +34,9 @@ public class ClientDatabaseManager extends Observable {
 			"srcUser", "rDate", "subject", "mData" };
 	private final String[] CONTACT_TABLE_ROWS = new String[] { "userName",
 			"isGroup", "sipUsr", "sipPw" };
-	private final String[] SITUATION_TABLE_ROWS = new String[] { "title",
-			"description", "priority" };
 	private final String[] MAP_TABLE_ROWS = new String[] { "mapObject",
 			"class", "id" };
 	private final String[] SIP_DETAILS = new String[] { "userName", "password" };
-	private final String[]	TABEL_VERSION = new String[] { "message"};
 
 	/**********************************************************************
 	 * CREATE OR OPEN A DATABASE SPECIFIC TO THE USER
@@ -188,6 +185,20 @@ public class ClientDatabaseManager extends Observable {
 			e.printStackTrace();
 		}
 	}
+	
+	public void updateRow(MapObject o) {
+		ContentValues values = new ContentValues();
+		values.put("mapObject", new Gson().toJson(o));
+		values.put("class", o.getClass().getName());
+		try {
+			db.update("map", values,
+					"id = '" + o.getId() + "'", null);
+		} catch (Exception e) {
+			Log.e("DB Error", e.toString());
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * Closes the database
 	 */

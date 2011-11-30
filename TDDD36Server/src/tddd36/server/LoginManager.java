@@ -60,6 +60,7 @@ public class LoginManager {
 	 */
 	public static void logoutUser(String username) {
 		InetAddress a = Server.onlineUsers.removeUser(username);
+		Database.removeMapObject(username);
 		// Kolla om användaren redan är utloggad
 		if (a == null)
 			System.out.println(username + " har loggat ut ");
