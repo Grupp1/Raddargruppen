@@ -9,6 +9,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.maps.GeoPoint;
 
@@ -42,6 +43,7 @@ public class GPSModel extends Observable implements LocationListener {
 	}
 
 	public void onLocationChanged(Location l) {
+		Log.d("GPS", "onLocationChanged");
 		lat = (int) (l.getLatitude() * 1E6);
 		lon = (int) (l.getLongitude() * 1E6);
 		myLocation = new GeoPoint(lat, lon);

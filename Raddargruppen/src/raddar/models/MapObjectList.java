@@ -2,18 +2,14 @@ package raddar.models;
 
 import java.util.ArrayList;
 
-import raddar.controllers.DatabaseController;
 import raddar.enums.ResourceStatus;
 import raddar.enums.SituationPriority;
-import raddar.views.ContactView;
 import raddar.views.MainView;
-import raddar.views.SendMessageView;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.widget.EditText;
 
 import com.google.android.maps.ItemizedOverlay;
@@ -70,8 +66,8 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 	 * Vad som händer när man trycker på en situation
 	 */
 
-	@Override
-	protected boolean onTap(int index) {
+
+	protected boolean onTap(final int index) {
 
 		final CharSequence [] situationPriority = {SituationPriority.HIGH.toString(), SituationPriority.NORMAL.toString(), SituationPriority.LOW.toString()};
 		final CharSequence [] resourceStatus = {ResourceStatus.BUSY.toString(), ResourceStatus.FREE.toString()};
@@ -82,6 +78,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 		dialog.setMessage(item.getDescription());
 
 		AlertDialog alert = dialog.create();
+
 
 		alert.setButton("Ändra beskrivning", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
@@ -96,7 +93,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 				alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
 						item.setSnippet(input.getText().toString());
-						MainView.mapCont.updateObject(item);		
+						MainView.mapCont.updateObject(item,true);		
 					}
 				});
 
@@ -127,9 +124,9 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 						public void onClick(DialogInterface dialog, int whichButton) {
 							mOverlays.remove(item);
 
-							MainView.mapCont.removeObject(item);
-							DatabaseController.db.deleteRow(item);
-
+							MainView.mapCont.removeObject(item,true);
+							setLastFocusedIndex(-1);
+							populate();
 						}
 
 					});
@@ -196,15 +193,15 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 									if(whichItem == 0){
 										((Situation) item).setPriority(SituationPriority.HIGH);
-										MainView.mapCont.updateObject(item);
+										MainView.mapCont.updateObject(item,true);
 									}
 									if(whichItem == 1){
 										((Situation) item).setPriority(SituationPriority.NORMAL);
-										MainView.mapCont.updateObject(item);
+										MainView.mapCont.updateObject(item,true);
 									}
 									if(whichItem == 2){
 										((Situation) item).setPriority(SituationPriority.LOW);
-										MainView.mapCont.updateObject(item);
+										MainView.mapCont.updateObject(item,true);
 									}
 
 								}
@@ -251,11 +248,11 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 									if(whichItem == 0){
 										((Resource) item).setStatus(ResourceStatus.BUSY);
-										MainView.mapCont.updateObject(item);
+										MainView.mapCont.updateObject(item,true);
 									}
 									if(whichItem == 1){
 										((Resource) item).setStatus(ResourceStatus.FREE);
-										MainView.mapCont.updateObject(item);
+										MainView.mapCont.updateObject(item,true);
 									}
 								}
 							});
@@ -276,6 +273,41 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 			alert.show();
 
 		}
+		
 		return true;
+	}
+
+	public void removeMapObject(final MapObject o) {
+		((Activity)mContext).runOnUiThread(new Runnable(){
+			public void run() {
+				String oId = o.getId();
+				for(OverlayItem mo:mOverlays){
+					if(((MapObject)mo).getId().equals(oId)){
+						mOverlays.remove(mo);
+						setLastFocusedIndex(-1);
+						populate();
+						return;
+					}
+				}
+			}
+		});
+	}
+
+	public void addUpdateMapObject(final MapObject o) {
+		((Activity)mContext).runOnUiThread(new Runnable(){
+			public void run() {
+				String oId = o.getId();
+				for(OverlayItem mo:mOverlays){
+					if(((MapObject)mo).getId().equals(oId)){
+						mOverlays.remove(mo);
+						mOverlays.add(o);
+						setLastFocusedIndex(-1);
+						populate();
+						return;
+					}
+				}
+			}
+
+		});
 	}
 }
