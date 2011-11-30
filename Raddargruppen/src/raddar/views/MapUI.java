@@ -154,7 +154,7 @@ public class MapUI extends MapActivity implements Observer {
 
 	class Touchy extends Overlay{
 		private Context context;
-		private CharSequence [] items = {"Brand", "Brandbil", "Situation", "Resurs"};
+		private CharSequence [] items = {"Brand", "Brandbil", "Händelse", "Resurs"};
 		private String value;
 		private EditText input;
 		private int item;

@@ -37,12 +37,12 @@ public class ClientDatabaseManager extends Observable {
 	private final String[] IMAGE_MESSAGE_TABLE_ROWS = new String [] {"msgId", "srcUser", "rDate", "subject", "filePath"};
 
 
-
 	/**********************************************************************
 	 * CREATE OR OPEN A DATABASE SPECIFIC TO THE USER
 	 * @param context 
 	 * @param userName The name of the database is equal to the user name
 	 */
+
 	public ClientDatabaseManager(Context context) {
 		this.context = context;
 		this.DB_NAME = "client_database";
@@ -100,7 +100,6 @@ public class ClientDatabaseManager extends Observable {
 
 	/**********************************************************************
 	 * 
-	 *
 	 * Messages to be addad to the outbox
 	 * @param m The message that is to be added to the database
 	 */
