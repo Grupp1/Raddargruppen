@@ -1,5 +1,8 @@
 package raddar.models;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import raddar.enums.MessageType;
 
 public class TextMessage extends Message {
@@ -16,7 +19,6 @@ public class TextMessage extends Message {
 		this.fromUser = srcUser.trim();
 		this.toUser = destUser.trim();		
 		this.data = data;
-		this.date = getDate();
 		subject = "DEFAULT";
 	}
 

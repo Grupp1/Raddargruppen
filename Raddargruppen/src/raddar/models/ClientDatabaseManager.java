@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Observable;
 
 import raddar.enums.MessageType;
-import raddar.enums.SituationPriority;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -14,7 +13,6 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.google.android.maps.GeoPoint;
 import com.google.gson.Gson;
 
 public class ClientDatabaseManager extends Observable {

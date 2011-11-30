@@ -31,8 +31,6 @@ public class DraftView extends ListActivity {
 	private DraftAdapter ia;
 	private ArrayList<Message> drafts;
 	
-	
-	
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 
@@ -60,7 +58,6 @@ public class DraftView extends ListActivity {
 				}
 				nextIntent.putExtra("message", items);
 				startActivity(nextIntent);
-
 			}
 		});
 	}

@@ -53,6 +53,7 @@ public class OutBoxView extends ListActivity {
 		}else{
 			outbox = (ArrayList<Message>) temp.clone(); 
 		}
+		
 		ia = new OutboxAdapter(this, R.layout.row,outbox);
 		setListAdapter(ia);
 		ListView lv = getListView();

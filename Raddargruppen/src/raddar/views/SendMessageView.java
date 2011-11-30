@@ -134,7 +134,8 @@ public class SendMessageView extends Activity implements OnClickListener {
 					+ destUsers[i]);
 			m.setSubject(subject.getText() + "");
 			m.setData(messageData.getText() + "");
-			m.setDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+//			m.setDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+//			Log.d("Datum", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()).toString());
 			try {
 				new Sender(m,
 						InetAddress
