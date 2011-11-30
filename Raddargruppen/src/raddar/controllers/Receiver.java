@@ -50,7 +50,6 @@ public class Receiver implements Runnable {
 
 				test = in.readLine();
 			}
-
 			so.close();
 
 			if (m != null && notify) {

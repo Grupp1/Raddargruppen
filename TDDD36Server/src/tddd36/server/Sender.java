@@ -7,7 +7,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import raddar.models.Message;
-import raddar.models.RequestMessage;
 import raddar.models.TextMessage;
 
 import com.google.gson.Gson;
@@ -31,7 +30,7 @@ public class Sender implements Runnable {
 		this.port = port;
 		thread.start();	// Starta denna tråden
 	}
-	
+
 	public Sender(Message m, String toUser, int port) {
 		// Hämta mottagarens IP-adress och låt annan konstruktor göra resten av jobbet
 		this(m, Server.onlineUsers.getUserAddress(toUser), port);
@@ -56,6 +55,7 @@ public class Sender implements Runnable {
 		port = 4043;
 		thread.start();
 	}
+
 	
 	public Sender(ArrayList<Message> list, InetAddress toUser){
 		this.messages = list;
@@ -82,7 +82,7 @@ public class Sender implements Runnable {
 			// Skapa en socket för att kunna skicka meddelandet till mottagaren
 			Socket rSocket = new Socket(adr, port);
 			PrintWriter out = null;
-			
+
 			if(messages!=null){
 				for(Object o : messages){	
 					Gson gson = new Gson();
@@ -92,7 +92,7 @@ public class Sender implements Runnable {
 					out.println(send);
 				}
 			}
-		
+
 			// Skriv ut vilken sorts meddelande som har skickats
 			//System.out.println("["+rSocket.getInetAddress().getHostAddress()+"] << " + messages.get(0).getType().toString() + " har vidarebefordats till " 
 			//+ messages.get(0).getDestUser());
@@ -101,7 +101,7 @@ public class Sender implements Runnable {
 			rSocket.close();
 
 		} catch (IOException e) {
-		//	if(messages.size() <= 0 || messages.get(0) instanceof MapObject)return;
+
 			// Logga ut denna användaren om 
 			//if(messages.size() <= 0) return;
 			LoginManager.logoutUser(((Message) messages.get(0)).getDestUser());

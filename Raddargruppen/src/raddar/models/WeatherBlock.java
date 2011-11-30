@@ -44,5 +44,6 @@ public class WeatherBlock {
 		speed = new String(w.speed);
 		direction = new String(w.direction);
 		temp = new String(w.temp);
+		weather = new String(w.weather);
 	}
 }

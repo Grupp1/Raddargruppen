@@ -16,12 +16,17 @@ import raddar.enums.RequestType;
 import raddar.gruppen.R;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
+import raddar.models.QoSManager;
 import raddar.models.RequestMessage;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -31,7 +36,7 @@ import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 
-public class MainView extends Activity implements OnClickListener, Observer{
+public class MainView extends Activity implements OnClickListener, Observer {
 
 	private ImageButton callButton;
 	private ImageButton messageButton;
@@ -44,13 +49,35 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	private ImageButton connectionButton;
 	private Bundle extras;
 	public static MapCont mapCont;
+	public static MainView theOne;
+	
+	/*
+	 * Lyssnar efter ändringar hos batterinivån
+	 */
+	public BroadcastReceiver mBatteryInfoReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if (Intent.ACTION_BATTERY_CHANGED.equals(action)) {
+				int level = intent.getIntExtra("level", 0);
+				Log.d("LEVEL:", ""+level);
+				int scale = intent.getIntExtra("scale", 100);
+				int true_level = level * 100 / scale;
+				QoSManager.setPowerMode(true_level);
+			}
+		}
+	};
 	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+
+		theOne = this;
 		
+		String level = BatteryManager.EXTRA_LEVEL;
+		Log.d("EXTRA_LEVEL", level);
 		
 		extras = getIntent().getExtras();
 //		controller = new InternalComManager();
@@ -60,19 +87,16 @@ public class MainView extends Activity implements OnClickListener, Observer{
 //		//TEMPORÄRT MÅSTE FIXAS
 //		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
 
-		
-		
 		new SessionController(extras.get("user").toString());
 		new DatabaseController(this);
-		new SipController(this);
+	//	new SipController(this);
+		//new SipController(this);
 		new ReciveHandler(this).addObserver(this);
-
-
-		
 
 		try {
 			new Sender(new RequestMessage(RequestType.MESSAGE));
 			new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
+			new Sender(new RequestMessage(RequestType.CONTACTS));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
@@ -126,7 +150,7 @@ public class MainView extends Activity implements OnClickListener, Observer{
 	public void onClick(View v) {
 
 		if(v == callButton){
-			Intent nextIntent = new Intent(this,EnterNumberView.class);
+			Intent nextIntent = new Intent(MainView.this, CallContactListView.class);
 			startActivity(nextIntent);
 		}
 		else if(v == messageButton){
@@ -150,7 +174,8 @@ public class MainView extends Activity implements OnClickListener, Observer{
 			startActivity(nextIntent);
 		}
 		else if(v == setupButton){
-
+			Intent nextIntent = new Intent(MainView.this, SettingsView.class);
+			startActivity(nextIntent);
 		}
 		else if(v == logButton){
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -205,6 +230,8 @@ public class MainView extends Activity implements OnClickListener, Observer{
 		NotificationManager mNtf = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		mNtf.cancelAll();
 		DatabaseController.db.close();
+		if (SettingsView.powerIsAutomatic())
+			unregisterReceiver(mBatteryInfoReceiver);
 	}
 	
 	public void update(Observable observable, final Object data) {
@@ -233,5 +260,31 @@ public class MainView extends Activity implements OnClickListener, Observer{
 			}
 		});
 
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		if (SettingsView.powerIsAutomatic())
+			registerReceiver(mBatteryInfoReceiver, new IntentFilter(
+					Intent.ACTION_BATTERY_CHANGED));
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		//unregisterReceiver(mBatteryInfoReceiver);
+	}
+	
+	public void enableButtons() {
+		callButton.setEnabled(true);
+		serviceButton.setEnabled(true);
+	}
+	
+	public void disableButtons() {
+		callButton.setEnabled(false);
+		serviceButton.setEnabled(false);
 	}
 }

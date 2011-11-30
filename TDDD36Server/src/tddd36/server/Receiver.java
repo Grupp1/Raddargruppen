@@ -41,7 +41,6 @@ public class Receiver implements Runnable {
 		clientThread.start();
 	}
 
-
 	@Override
 	public void run() {
 		try {
@@ -53,8 +52,10 @@ public class Receiver implements Runnable {
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
+
 			String temp = in.readLine();
 			System.out.println(temp);
+			
 			Message m = new Gson().fromJson(temp, c);
 			// if message
 			// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
@@ -71,7 +72,7 @@ public class Receiver implements Runnable {
 				new Sender(m, m.getDestUser());
 				break;
 			case IMAGE:
-				handleImageMessage();
+				new Sender(m, m.getDestUser());
 				break;
 			case REQUEST:
 				handleRequest((RequestMessage) m);
@@ -82,9 +83,10 @@ public class Receiver implements Runnable {
 				break;
 			default:
 				System.out.println("Received message has unknown type. Discarding... ");
+
 			}
-
-
+			//			
+			//	so.close();
 		} catch (IOException ie) {
 			ie.printStackTrace();
 		}
@@ -123,15 +125,9 @@ public class Receiver implements Runnable {
 			if(adr == srcAdr) continue;
 			new Sender(m, adr, 4043);
 		}
-	}
-
-	/*
-	 * To be implemented
-	 */
-	private void handleImageMessage() {
-
 
 	}
+	
 	private void handleMapObjectMessage(MapObjectMessage mo){
 		switch(mo.getMapOperation()){
 		case ADD:
@@ -155,6 +151,7 @@ public class Receiver implements Runnable {
 		}	
 
 	}
+
 	/**
 	 * Handles the request
 	 * @param rm The recived requestMessage
@@ -192,6 +189,14 @@ public class Receiver implements Runnable {
 				e.printStackTrace();
 			}
 			break;
+		case CONTACTS:
+			//svarar på request om att hämta alla kontakter som arraylist<message> 
+			ArrayList<Message> contactMessage = Database.retrieveAllUsers();
+			contactMessage.add(0,rm);
+			new Sender(contactMessage, rm.getSrcUser());
+			break;
+			
+			
 		default:
 			System.out.println("Okänd RequestType");
 		}

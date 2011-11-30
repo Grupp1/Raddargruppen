@@ -91,9 +91,13 @@ public class LoginManager extends Observable {
 			pw.close();
 			br.close();
 			so.close();
-
+			
 			if (response.equals("OK")) {
 				logIn = LoginResponse.ACCEPTED;
+				s = null;
+			}
+			else if(response.equals("USER_ALREADY_EXIST")){
+				logIn = LoginResponse.USER_ALREADY_LOGGED_IN;
 				s = null;
 			}
 		} catch (IOException e) {
@@ -167,7 +171,7 @@ public class LoginManager extends Observable {
 				try {
 					if (s == null)
 						break;
-					LoginManager.this.evaluate(username, password);
+					evaluate(username, password);
 					if (s == null)
 						break;
 					// Vänta två minuter mellan varje försök

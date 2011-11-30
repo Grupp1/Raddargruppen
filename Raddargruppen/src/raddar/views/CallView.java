@@ -3,6 +3,7 @@ package raddar.views;
 import raddar.controllers.SessionController;
 import raddar.controllers.SipController;
 import raddar.gruppen.R;
+import raddar.models.QoSManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.sip.SipAudioCall;
@@ -26,8 +27,8 @@ public class CallView extends Activity implements OnClickListener {
 	private Button denyCall;
 	private TextView callerText;
 	/**
-	 * Initiate all variables to diffrent values depening on if we are making a call
-	 * or recieving a call.
+	 * Initiate all variables to different values depending on if we are making a call
+	 * or receiving a call.
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -81,7 +82,7 @@ public class CallView extends Activity implements OnClickListener {
 
 	}
 	/**
-	 * Updates the texview. Used to notify the user on the status of the call
+	 * Updates the textview. Used to notify the user on the status of the call
 	 * @param caller the string you want to set
 	 */
 	private void updateText(final String caller) {
@@ -205,5 +206,12 @@ public class CallView extends Activity implements OnClickListener {
 		} else if (v == denyCall) {
 			finish();
 		}
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
 	}
 }
