@@ -2,6 +2,7 @@ package raddar.views;
 
 import raddar.controllers.SipController;
 import raddar.gruppen.R;
+import raddar.models.Message;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -31,7 +32,7 @@ public class CallView extends Activity implements OnClickListener {
 	private TextView callerText;
 	AudioManager audioManager;
 	SoundPool soundPool;
-	int soundId;
+	int soundId, savedVolume;
 	/**
 	 * Initiate all variables to diffrent values depening on if we are making a call
 	 * or recieving a call.
@@ -51,9 +52,8 @@ public class CallView extends Activity implements OnClickListener {
 		// LJUD
 
 		audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-		soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+		soundPool = new SoundPool(2, AudioManager.STREAM_RING, 0);
 		soundId = 0;
-		//boolean playedSound = false;
 
 		//audioManager.setRingerMode(2);
 		// 2=normal
@@ -63,7 +63,7 @@ public class CallView extends Activity implements OnClickListener {
 		try {
 			//AssetFileDescriptor descriptor = getAssets().openFd("burp.wav");
 			//soundId = soundPool.load(descriptor, 1);
-			int a =soundPool.load(this, R.raw.sound, 1);
+			soundPool.load(this, R.raw.ringing, 1);
 			Log.d( "Ljuduppspelning", "Ljud inladdat");
 			soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener(){
 				@Override
@@ -71,9 +71,13 @@ public class CallView extends Activity implements OnClickListener {
 					if(status == 0){
 						Log.d("onLoadComplete", "Ready");
 						if (sip.equals("incoming")) {
-							int volume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+							float volume = audioManager.getStreamVolume(AudioManager.STREAM_RING);
+							float maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_RING);
+							Log.d("Inkommande, volume", Float.toString(volume));
+							Log.d("Inkommande, maxVolume", Float.toString(maxVolume));
+							volume = volume / maxVolume;
+							Log.d("Inkommande, VOLYM:", Float.toString(volume));
 							soundPool.play(soundId, volume, volume, 1, -1, 1);
-							//soundPool.play(soundId, 1, 1, 1, -1, 1);
 						}
 					}
 					else{
@@ -85,7 +89,6 @@ public class CallView extends Activity implements OnClickListener {
 				}
 
 			});
-			Log.d( "Ljuduppspelning sounPool:", Integer.toString(a));
 		}
 		catch(Exception ex){
 			Log.d( "Ljuduppspelning", "Fel i inladdningen av ljudfil" );
@@ -108,16 +111,14 @@ public class CallView extends Activity implements OnClickListener {
 
 				@Override
 				public void onCallEnded(SipAudioCall call) {
-					Toast.makeText(CallView.this, "Samtalet avslutades",
-							Toast.LENGTH_LONG).show();
+					viewToast("Samtalet avslutades");
 					finish();
 				}
 
 				@Override
 				public void onError(SipAudioCall call, int errorCode,
 						String errorMessage) {
-					Toast.makeText(CallView.this, "Samtalet avbröts",
-							Toast.LENGTH_LONG).show();
+					viewToast("Samtalet avbröts");
 					finish();
 				}
 			};
@@ -130,6 +131,37 @@ public class CallView extends Activity implements OnClickListener {
 
 		} else {
 			updateText("Ringer " + sip + "...");
+			/*
+			try {
+				soundPool.load(this, R.raw.calling, 1);
+				Log.d( "Ljuduppspelning", "Ljud inladdat");
+				soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener(){
+					@Override
+					public void onLoadComplete(SoundPool soundPool, int soundId, int status) {
+						if(status == 0){
+							Log.d("onLoadComplete", "Ready");
+//								float volume = audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
+//								float maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL);
+//								Log.d("Ringer, volume", Float.toString(volume));
+//								Log.d("Ringer, maxVolume", Float.toString(maxVolume));
+//								volume = volume / maxVolume;
+//								Log.d("Ringer, VOLYM", Float.toString(volume));
+//								soundPool.play(soundId, volume, volume, 1, -1, 1);
+							savedVolume = audioManager.getStreamVolume(AudioManager.STREAM_RING);
+							soundPool.setVolume(soundId, (float)0.1, (float)0.1);
+							soundPool.play(soundId, (float)0.1, (float)0.1, 1, -1, (float)1);
+						}
+						else{
+							Log.d("onLoadComplete", "Error");
+						}
+					}
+				});
+			}
+			catch(Exception ex){
+				Log.d( "Ljuduppspelning", "Fel i inladdningen av ljudfil" );
+				throw new RuntimeException(ex);
+			}
+			*/
 			SipController.hasCall = true;
 			acceptCall.setClickable(false);
 			acceptCall.setVisibility(View.INVISIBLE);
@@ -168,6 +200,7 @@ public class CallView extends Activity implements OnClickListener {
 			SipAudioCall.Listener audioListener = new SipAudioCall.Listener() {
 				@Override
 				public void onCallEstablished(SipAudioCall call) {
+					stopSounds();
 					updateText("Pratar med " + sipAddress);
 					updateButton("Lägg på");
 					call.startAudio();
@@ -178,21 +211,40 @@ public class CallView extends Activity implements OnClickListener {
 				}
 				@Override
 				public void onCallEnded(SipAudioCall session) {
+					viewToast("Samtalet avslutades");
 					finish();
-					Toast.makeText(CallView.this, "Samtalet avslutades",
-							Toast.LENGTH_LONG).show();
 				}
 				@Override
-				public void onError(SipAudioCall call, int errorCode,
-						String errorMessage) {
-					Toast.makeText(CallView.this, "Samtalet avbröts",
-							Toast.LENGTH_LONG).show();
+				public void onError(SipAudioCall call, int errorCode, String errorMessage) {
+					viewToast("Samtalet bröts");
 					finish();
 				}
 				@Override
 				public void onCallBusy(SipAudioCall call) {
-					Toast.makeText(CallView.this, "Mottagaren är upptagen",
-							Toast.LENGTH_LONG).show();
+					/*soundPool.load(CallView.this, R.raw.busy, 1);
+					Log.d( "Ljuduppspelning, upptaget", "Ljud inladdat");
+					soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener(){
+						@Override
+						public void onLoadComplete(SoundPool soundPool, int soundId, int status) {
+							if(status == 0){
+								Log.d("onLoadComplete", "Ready");
+//									float volume = audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
+//									float maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL);
+//									Log.d("Ringer, volume", Float.toString(volume));
+//									Log.d("Ringer, maxVolume", Float.toString(maxVolume));
+//									volume = volume / maxVolume;
+//									Log.d("Ringer, VOLYM", Float.toString(volume));
+//									soundPool.play(soundId, volume, volume, 1, -1, 1);
+								savedVolume = audioManager.getStreamVolume(AudioManager.STREAM_RING);
+								soundPool.setVolume(soundId, (float)0.1, (float)0.1);
+								soundPool.play(soundId, (float)0.1, (float)0.1, 1, 3, (float)1);
+							}
+							else{
+								Log.d("onLoadComplete", "Error");
+							}
+						}
+					});*/
+					viewToast("Mottagaren är upptagen");
 					finish();
 				}
 			};
@@ -260,9 +312,7 @@ public class CallView extends Activity implements OnClickListener {
 	 * It is also used to hang up the current call.
 	 */
 	public void onClick(View v) {
-		//soundPool.stop(soundId);
-		//soundPool.pause(soundId);
-		soundPool.autoPause();
+		stopSounds();
 		if (v == acceptCall) {
 			acceptCall();
 			acceptCall.setClickable(false);
@@ -272,10 +322,26 @@ public class CallView extends Activity implements OnClickListener {
 			finish();
 		}
 	}
-	
+
 	@Override
 	public void onDestroy(){
-		soundPool.stop(soundId);
+		stopSounds();
 		super.onDestroy();
+	}
+
+	private void viewToast(final String msg){
+		runOnUiThread(new Runnable(){
+			public void run(){
+				Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+			}
+		});
+	}
+	
+	private void stopSounds(){
+		/*
+		audioManager.setStreamVolume(soundId, savedVolume, 0);
+		*/
+		soundPool.autoPause();
+		soundPool.release();
 	}
 }

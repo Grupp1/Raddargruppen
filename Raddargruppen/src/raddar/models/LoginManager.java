@@ -109,6 +109,9 @@ public class LoginManager extends Observable {
 			else
 				return;
 		}
+		if(debugMode){
+			logIn = LoginResponse.ACCEPTED_NO_CONNECTION;
+		}
 		setChanged();
 		notifyObservers(logIn);
 	}
