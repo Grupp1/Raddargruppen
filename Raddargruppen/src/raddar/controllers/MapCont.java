@@ -114,7 +114,7 @@ public class MapCont implements Observer, Runnable{
 		if (data instanceof GeoPoint){
 			if (!areYouFind){
 				areYouFind = true;
-				you = new You((GeoPoint)data, "Din position", "Här är du", R.drawable.you, ResourceStatus.FREE);
+				you = new You((GeoPoint)data, "Din position", "Här är du", R.drawable.circle_green, ResourceStatus.FREE);
 				you.updateData(geocoder);
 				olist.add(you); // databas
 				add(you,true);		// karta

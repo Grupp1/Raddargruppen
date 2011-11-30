@@ -13,7 +13,7 @@ public final class R {
     public static final class drawable {
         public static final int anteckna=0x7f020000;
         public static final int circle_green=0x7f020001;
-        public static final int circle_red=0x7f020002;
+        public static final int circle_yellow=0x7f020002;
         public static final int connected=0x7f020003;
         public static final int contact=0x7f020004;
         public static final int disconnected=0x7f020005;
@@ -32,24 +32,26 @@ public final class R {
         public static final int message=0x7f020012;
         public static final int niklas=0x7f020013;
         public static final int notification_icon=0x7f020014;
-        public static final int outbox=0x7f020015;
-        public static final int phone=0x7f020016;
-        public static final int phone_small=0x7f020017;
-        public static final int picturewriter=0x7f020018;
-        public static final int r=0x7f020019;
-        public static final int report=0x7f02001a;
-        public static final int resource=0x7f02001b;
-        public static final int ringa=0x7f02001c;
-        public static final int services=0x7f02001d;
-        public static final int setup=0x7f02001e;
-        public static final int situation=0x7f02001f;
-        public static final int smhi=0x7f020020;
-        public static final int sos=0x7f020021;
-        public static final int sosicon=0x7f020022;
-        public static final int trafikverket=0x7f020023;
-        public static final int wordwriter=0x7f020024;
-        public static final int you=0x7f020025;
-        public static final int yr=0x7f020026;
+        public static final int online_circle_green=0x7f020015;
+        public static final int online_circle_red=0x7f020016;
+        public static final int outbox=0x7f020017;
+        public static final int phone=0x7f020018;
+        public static final int phone_small=0x7f020019;
+        public static final int picturewriter=0x7f02001a;
+        public static final int r=0x7f02001b;
+        public static final int report=0x7f02001c;
+        public static final int resource=0x7f02001d;
+        public static final int ringa=0x7f02001e;
+        public static final int services=0x7f02001f;
+        public static final int setup=0x7f020020;
+        public static final int situation=0x7f020021;
+        public static final int smhi=0x7f020022;
+        public static final int sos=0x7f020023;
+        public static final int sosicon=0x7f020024;
+        public static final int trafikverket=0x7f020025;
+        public static final int wordwriter=0x7f020026;
+        public static final int you=0x7f020027;
+        public static final int yr=0x7f020028;
     }
     public static final class id {
         public static final int Button01=0x7f06000b;
