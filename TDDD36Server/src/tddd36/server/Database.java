@@ -107,9 +107,9 @@ public class Database {
 		try{
 			Statement st = openConnection();
 			st.executeUpdate("INSERT INTO map_objects VALUES (idmap_objects, \'"+
-			mo.getClassName()+ "\', \'"+mo.getJson()+"\', \'"+mo.getId()+"\');");
+					mo.getClassName()+ "\', \'"+mo.getJson()+"\', \'"+mo.getId()+"\');");
 			return true;
-			
+
 		}catch(SQLException ex){
 			return false;
 		}
@@ -118,23 +118,23 @@ public class Database {
 		try{
 			Statement st = openConnection();
 			st.executeUpdate("DELETE FROM map_objects WHERE map_id = \'"+id+ "\';");
-			
+
 		}catch(SQLException ex){
 			System.out.println("Fel syntax i MySQL-queryn i removeMapObject. "+ex);
 		}
 	}
 	public static void updateMapObject(MapObjectMessage mo){
-		
+
 		try{
 			Statement st = openConnection();
 			st.executeUpdate("UPDATE map_objects SET class_name = \'"+mo.getClassName()+"\', "+
 					"json_string = \'"+mo.getJson()+"\' WHERE map_id = \'"+mo.getId()+"\';");	
-			
+
 		}catch(SQLException ex){
 			System.out.println("Fel syntax i MySQL-queryn i updateMapObject. "+ex);
 		}
 	}
-	
+
 	/**
 	 * Hämta en användares salt
 	 * @param username Användaren
@@ -255,7 +255,7 @@ public class Database {
 		try{
 			Statement st = openConnection();
 			st.executeUpdate("DELETE FROM bufferedmessages WHERE toUser = \'" 
-			+ toUser + "\';");
+					+ toUser + "\';");
 		} catch(SQLException ex){
 			System.out.println("Fel i deleteFromBuffer"+ ex);
 		}
@@ -268,9 +268,9 @@ public class Database {
 		try{
 			Statement st = openConnection();
 			st.executeUpdate("DELETE FROM messages WHERE toUser = \'" 
-			+ tm.getDestUser() + "\' and fromUser = \'"+tm.getSrcUser()+"\' and date = \'"
-			+tm.getDate()+"\';");
-			
+					+ tm.getDestUser() + "\' and fromUser = \'"+tm.getSrcUser()+"\' and date = \'"
+					+tm.getDate()+"\';");
+
 		} catch(SQLException ex){
 			System.out.println("Fel i deleteFromTextMessages "+ex);
 		}
@@ -317,8 +317,8 @@ public class Database {
 		}
 		return lista;
 	}
-	
-	
+
+
 	/**
 	 * Hämta alla användare i en viss grupp
 	 * 
@@ -518,6 +518,23 @@ public class Database {
 			}
 		} catch (SQLException ex) {
 			System.out.println("Fel syntax i MySQL-queryn i getAllTextMessagesOnDay(). ");
+		}
+		return list;
+	}
+
+	public static ArrayList<Message> retrieveAllMapObjects() {
+		ArrayList<Message> list = new ArrayList<Message>();
+		try {
+			Statement st = openConnection();
+			ResultSet rs = st.executeQuery("SELECT * FROM map_objects;");
+
+			while (rs.next()) { 
+				MapObjectMessage tm = new MapObjectMessage(rs.getString(2), rs.getString(1), rs.getString(3),
+						MapOperation.ADD);
+				list.add(tm);
+			}
+		} catch (SQLException ex) {
+			System.out.println("Fel syntax i MySQL-queryn i retrieveAllMapObjects(). ");
 		}
 		return list;
 	}

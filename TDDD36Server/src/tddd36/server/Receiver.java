@@ -195,8 +195,10 @@ public class Receiver implements Runnable {
 			contactMessage.add(0,rm);
 			new Sender(contactMessage, rm.getSrcUser());
 			break;
-			
-			
+		case MAP_OBJECTS:
+			ArrayList<Message> mapObjectMessages = Database.retrieveAllMapObjects();
+			new Sender(mapObjectMessages, rm.getSrcUser());
+			break;
 		default:
 			System.out.println("Okänd RequestType");
 		}
