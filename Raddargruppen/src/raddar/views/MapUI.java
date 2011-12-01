@@ -9,8 +9,6 @@ import raddar.controllers.SessionController;
 import raddar.enums.ResourceStatus;
 import raddar.enums.SituationPriority;
 import raddar.gruppen.R;
-import raddar.models.Fire;
-import raddar.models.FireTruck;
 import raddar.models.MapObject;
 import raddar.models.MapObjectList;
 import raddar.models.QoSManager;
@@ -37,7 +35,6 @@ import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 
 
-
 public class MapUI extends MapActivity implements Observer {
 
 	private MapView mapView;
@@ -51,8 +48,7 @@ public class MapUI extends MapActivity implements Observer {
 	private Touchy touchy;
 	public boolean follow;
 	private Toast toast;
-	private Geocoder geocoder;
-
+	private Geocoder geocoder;	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -92,6 +88,7 @@ public class MapUI extends MapActivity implements Observer {
 		//		Drawable d = getResources().getIdentifier(null, null, null);
 
 	}
+	
 
 	@Override
 	protected void onStart() {
@@ -170,7 +167,7 @@ public class MapUI extends MapActivity implements Observer {
 		}
 
 		public boolean onTouchEvent(MotionEvent e, MapView m) {
-			int holdTime = 800;
+			int holdTime = 750;
 			if(e.getAction() == MotionEvent.ACTION_DOWN){
 				start = e.getEventTime();
 				touchedX = (int) e.getX();
@@ -180,6 +177,7 @@ public class MapUI extends MapActivity implements Observer {
 			if(e.getAction() == MotionEvent.ACTION_UP){
 				stop = e.getEventTime();
 			}
+
 			if(stop - start > holdTime){
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -362,7 +360,6 @@ public class MapUI extends MapActivity implements Observer {
 	public void updateMyLocation(GeoPoint geopoint){
 
 	}
-
 
 	public void drawNewMapObject(final MapObject mo){
 		MapObjectList list = MainView.mapCont.getList(mo);

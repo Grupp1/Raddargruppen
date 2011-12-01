@@ -57,7 +57,8 @@ public class Receiver implements Runnable {
 				context.startService(intent.putExtra("msg", m.getSubject()));
 			}
 		} catch (IOException ie) {
-			ie.printStackTrace();
+			Log.d("Receiver", "IOException");
+			//ie.printStackTrace();
 		} catch (ArrayIndexOutOfBoundsException e) {
 			Log.d("Undersök", "ArrayIndexOutOfBounds i receiver");
 		} catch (ClassNotFoundException e) {

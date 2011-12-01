@@ -1,10 +1,14 @@
 package raddar.views;
 
 import raddar.controllers.SipController;
-import raddar.gruppen.R;
 import raddar.models.QoSManager;
+import raddar.gruppen.R;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.media.SoundPool.OnLoadCompleteListener;
 import android.net.sip.SipAudioCall;
 import android.net.sip.SipException;
 import android.net.sip.SipProfile;
@@ -14,6 +18,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 /**
  * The view that is shown when the user is in a call
  * @author danan612
@@ -24,6 +29,9 @@ public class CallView extends Activity implements OnClickListener {
 	private Button acceptCall;
 	private Button denyCall;
 	private TextView callerText;
+	AudioManager audioManager;
+	SoundPool soundPool;
+	int soundId, savedVolume;
 	/**
 	 * Initiate all variables to different values depending on if we are making a call
 	 * or receiving a call.
@@ -33,12 +41,60 @@ public class CallView extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.accept_call);
 		Bundle extras = getIntent().getExtras();
-		String sip = (String) extras.get("sip");
+		final String sip = (String) extras.get("sip");
 		callerText = (TextView) this.findViewById(R.id.callerText);
 		acceptCall = (Button) this.findViewById(R.id.acceptCall);
 		acceptCall.setOnClickListener(this);
 		denyCall = (Button) this.findViewById(R.id.denyCall);
 		denyCall.setOnClickListener(this);
+
+		// LJUD
+
+		audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+		soundPool = new SoundPool(2, AudioManager.STREAM_RING, 0);
+		soundId = 0;
+
+		//audioManager.setRingerMode(2);
+		// 2=normal
+		// 1=vibrate
+		// 0=silent
+
+		try {
+			//AssetFileDescriptor descriptor = getAssets().openFd("burp.wav");
+			//soundId = soundPool.load(descriptor, 1);
+			soundPool.load(this, R.raw.ringing, 1);
+			Log.d( "Ljuduppspelning", "Ljud inladdat");
+			soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener(){
+				public void onLoadComplete(SoundPool soundPool, int soundId, int status) {
+					if(status == 0){
+						Log.d("onLoadComplete", "Ready");
+						if (sip.equals("incoming")) {
+							float volume = audioManager.getStreamVolume(AudioManager.STREAM_RING);
+							float maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_RING);
+							Log.d("Inkommande, volume", Float.toString(volume));
+							Log.d("Inkommande, maxVolume", Float.toString(maxVolume));
+							volume = volume / maxVolume;
+							Log.d("Inkommande, VOLYM:", Float.toString(volume));
+							soundPool.play(soundId, volume, volume, 1, -1, 1);
+						}
+					}
+					else{
+						Log.d("onLoadComplete", "Error");
+						//MapUI.this.logg("Loadproblem, status=", Integer.toString(status));
+					}
+					//MapUI.this.logg("onLoadComplete", Integer.toString(soundId));
+					//playedSound = true;
+				}
+
+			});
+		}
+		catch(Exception ex){
+			Log.d( "Ljuduppspelning", "Fel i inladdningen av ljudfil" );
+			throw new RuntimeException(ex);
+		}
+
+		// LJUD
+
 		if (sip.equals("incoming")) {
 			Intent intent = (Intent) extras.get("intent");
 			SipAudioCall.Listener listener = new SipAudioCall.Listener() {
@@ -50,21 +106,22 @@ public class CallView extends Activity implements OnClickListener {
 						Log.d("Andreas ringer", e.toString());
 					}
 				}
-				
 
+				@Override
 				public void onCallEnded(SipAudioCall call) {
+					viewToast("Samtalet avslutades");
 					finish();
 				}
 
 				@Override
 				public void onError(SipAudioCall call, int errorCode,
 						String errorMessage) {
+					viewToast("Samtalet avbröts");
 					finish();
 				}
 			};
 			try {
-				call = SipController.manager
-						.takeAudioCall(intent, listener);
+				call = SipController.manager.takeAudioCall(intent, listener);
 				updateText("sip:"+call.getPeerProfile().getUserName() + "@ekiga.net ringer...");
 			} catch (SipException e) {
 				e.printStackTrace();
@@ -72,6 +129,37 @@ public class CallView extends Activity implements OnClickListener {
 
 		} else {
 			updateText("Ringer " + sip + "...");
+			/*
+			try {
+				soundPool.load(this, R.raw.calling, 1);
+				Log.d( "Ljuduppspelning", "Ljud inladdat");
+				soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener(){
+					@Override
+					public void onLoadComplete(SoundPool soundPool, int soundId, int status) {
+						if(status == 0){
+							Log.d("onLoadComplete", "Ready");
+//								float volume = audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
+//								float maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL);
+//								Log.d("Ringer, volume", Float.toString(volume));
+//								Log.d("Ringer, maxVolume", Float.toString(maxVolume));
+//								volume = volume / maxVolume;
+//								Log.d("Ringer, VOLYM", Float.toString(volume));
+//								soundPool.play(soundId, volume, volume, 1, -1, 1);
+							savedVolume = audioManager.getStreamVolume(AudioManager.STREAM_RING);
+							soundPool.setVolume(soundId, (float)0.1, (float)0.1);
+							soundPool.play(soundId, (float)0.1, (float)0.1, 1, -1, (float)1);
+						}
+						else{
+							Log.d("onLoadComplete", "Error");
+						}
+					}
+				});
+			}
+			catch(Exception ex){
+				Log.d( "Ljuduppspelning", "Fel i inladdningen av ljudfil" );
+				throw new RuntimeException(ex);
+			}
+			*/
 			SipController.hasCall = true;
 			acceptCall.setClickable(false);
 			acceptCall.setVisibility(View.INVISIBLE);
@@ -110,6 +198,7 @@ public class CallView extends Activity implements OnClickListener {
 			SipAudioCall.Listener audioListener = new SipAudioCall.Listener() {
 				@Override
 				public void onCallEstablished(SipAudioCall call) {
+					stopSounds();
 					updateText("Pratar med " + sipAddress);
 					updateButton("Lägg på");
 					call.startAudio();
@@ -120,19 +209,44 @@ public class CallView extends Activity implements OnClickListener {
 				}
 				@Override
 				public void onCallEnded(SipAudioCall session) {
+					viewToast("Samtalet avslutades");
 					finish();
 				}
 				@Override
-				public void onError(SipAudioCall call, int errorCode,
-						String errorMessage) {
-						finish();
+				public void onError(SipAudioCall call, int errorCode, String errorMessage) {
+					viewToast("Samtalet bröts");
+					finish();
 				}
 				@Override
 				public void onCallBusy(SipAudioCall call) {
+					/*soundPool.load(CallView.this, R.raw.busy, 1);
+					Log.d( "Ljuduppspelning, upptaget", "Ljud inladdat");
+					soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener(){
+						@Override
+						public void onLoadComplete(SoundPool soundPool, int soundId, int status) {
+							if(status == 0){
+								Log.d("onLoadComplete", "Ready");
+//									float volume = audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
+//									float maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL);
+//									Log.d("Ringer, volume", Float.toString(volume));
+//									Log.d("Ringer, maxVolume", Float.toString(maxVolume));
+//									volume = volume / maxVolume;
+//									Log.d("Ringer, VOLYM", Float.toString(volume));
+//									soundPool.play(soundId, volume, volume, 1, -1, 1);
+								savedVolume = audioManager.getStreamVolume(AudioManager.STREAM_RING);
+								soundPool.setVolume(soundId, (float)0.1, (float)0.1);
+								soundPool.play(soundId, (float)0.1, (float)0.1, 1, 3, (float)1);
+							}
+							else{
+								Log.d("onLoadComplete", "Error");
+							}
+						}
+					});*/
+					viewToast("Mottagaren är upptagen");
 					finish();
 				}
 			};
-			
+
 			call = SipController.manager.makeAudioCall(
 					SipController.me.getUriString(), sipAddress,
 					audioListener, 30);
@@ -196,6 +310,7 @@ public class CallView extends Activity implements OnClickListener {
 	 * It is also used to hang up the current call.
 	 */
 	public void onClick(View v) {
+		stopSounds();
 		if (v == acceptCall) {
 			acceptCall();
 			acceptCall.setClickable(false);
@@ -204,6 +319,28 @@ public class CallView extends Activity implements OnClickListener {
 		} else if (v == denyCall) {
 			finish();
 		}
+	}
+
+	@Override
+	public void onDestroy(){
+		stopSounds();
+		super.onDestroy();
+	}
+
+	private void viewToast(final String msg){
+		runOnUiThread(new Runnable(){
+			public void run(){
+				Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+			}
+		});
+	}
+	
+	private void stopSounds(){
+		/*
+		audioManager.setStreamVolume(soundId, savedVolume, 0);
+		*/
+		soundPool.autoPause();
+		soundPool.release();
 	}
 	
 	@Override
