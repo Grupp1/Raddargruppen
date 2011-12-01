@@ -1,15 +1,11 @@
 package raddar.models;
 
 import java.util.List;
-import java.util.Locale;
-import java.util.Observable;
 
-import raddar.controllers.MapCont;
 import raddar.controllers.SessionController;
 import raddar.gruppen.R;
 import raddar.views.MapUI;
 import android.graphics.drawable.Drawable;
-import android.location.Geocoder;
 import android.util.Log;
 
 import com.google.android.maps.Overlay;

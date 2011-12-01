@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.widget.EditText;
 
 import com.google.android.maps.ItemizedOverlay;
@@ -278,12 +279,14 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 	public void removeMapObject(final MapObject o) {
 		((Activity)mContext).runOnUiThread(new Runnable(){
 			public void run() {
+				Log.d("MAPOBJECTLIST", "REMOVE");
 				String oId = o.getId();
 				for(OverlayItem mo:mOverlays){
 					if(((MapObject)mo).getId().equals(oId)){
-						mOverlays.remove(mo);
+						Log.d("MAPOBJECTLIST","REMOVE  "+mOverlays.remove(mo));
 						setLastFocusedIndex(-1);
 						populate();
+						Log.d("MAPOBJECTLIST", "REMOVE "+mo.getTitle());
 						return;
 					}
 				}

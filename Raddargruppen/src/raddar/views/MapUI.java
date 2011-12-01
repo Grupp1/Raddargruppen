@@ -20,6 +20,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -95,7 +96,7 @@ public class MapUI extends MapActivity implements Observer {
 		if(MainView.mapCont.areYouFind){
 			follow = true;
 			controller.animateTo(MainView.mapCont.getYou().getPoint());
-			controller.setZoom(12);
+			controller.setZoom(15);
 		}
 		super.onStart();
 	}
@@ -376,13 +377,29 @@ public class MapUI extends MapActivity implements Observer {
 		}
 		runOnUiThread(new Runnable(){
 			public void run() {
+				MapObjectList list = MainView.mapCont.getList(mo);
+				Log.d("MAPUI", " "+list);
+				if(list == null){
+					Log.d("MAPUI", "fyufdyfdjyuyudrtufr");
+					return;
+				}
+				
+				if (!mapOverlays.contains(list)){
+					Log.d("MAPUI", "if");
+					mapOverlays.add((MapObjectList) list);
+				}
+				else{
+					Log.d("MAPUI", "else");
+					mapOverlays.set(mapOverlays.indexOf(list), list);
+				}
+
 				if(!mo.getId().equals(SessionController.getUser())){
 					toast = Toast.makeText(getBaseContext(), "Objekt tillagt: "+mo.getTitle()
 							+"Skapad av: "+mo.getAddedBy(), Toast.LENGTH_LONG);
 					toast.show();
 				}
+				mapView.invalidate();
 			}});
-		mapView.postInvalidate();
 	}
 
 	public void update(Observable observable, Object data) {

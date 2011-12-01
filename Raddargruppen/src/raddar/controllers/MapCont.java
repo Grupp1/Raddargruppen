@@ -19,7 +19,6 @@ import raddar.models.MapObjectMessage;
 import raddar.models.You;
 import raddar.views.MainView;
 import raddar.views.MapUI;
-import raddar.views.SendMessageView;
 import android.location.Address;
 import android.location.Geocoder;
 import android.util.Log;

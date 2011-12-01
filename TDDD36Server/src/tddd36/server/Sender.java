@@ -103,7 +103,7 @@ public class Sender implements Runnable {
 		} catch (IOException e) {
 
 			// Logga ut denna användaren om 
-			//if(messages.size() <= 0) return;
+			if(messages.size() <= 0) return;
 			LoginManager.logoutUser(((Message) messages.get(0)).getDestUser());
 			for(Message m : messages){
 				if(m instanceof TextMessage){

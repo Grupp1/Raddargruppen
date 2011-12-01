@@ -72,8 +72,13 @@ public class LoginManager {
 	 */
 	public static void logoutUser(String username) {
 		if(username==null) return;
-		Database.removeMapObject(username);
-		broadcast(new MapObjectMessage(null, null, username, MapOperation.REMOVE,username));
+		MapObjectMessage mom = Database.getMapObject(username);
+		if(mom != null){
+			System.out.println(mom.getId());
+			Database.removeMapObject(username);
+			broadcast(mom);
+		}
+		System.out.println(username+" logout");
 		InetAddress a = Server.onlineUsers.removeUser(username);
 		// Kolla om användaren redan är utloggad
 		if (a == null)

@@ -1,27 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Lalle/.android/mysql-connector-java-5.1.18/mysql-connector-java-5.1.18-bin.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Lalle/.android/gson/gson-1.7.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Lalle/.android/gson/gson-1.7.1-javadoc.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Lalle/.android/gson/gson-1.7.1-sources.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Raddargruppen"/>
-<<<<<<< HEAD
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="Z:/Downloads/mysql-connector-java-5.1.18/mysql-connector-java-5.1.18-bin.jar"/>
 	<classpathentry kind="lib" path="Z:/Downloads/google-gson-1.7.1/gson-1.7.1.jar"/>
 	<classpathentry kind="lib" path="Z:/Downloads/google-gson-1.7.1/gson-1.7.1-javadoc.jar"/>
 	<classpathentry kind="lib" path="Z:/Downloads/google-gson-1.7.1/gson-1.7.1-sources.jar"/>
-	<classpathentry kind="lib" path="Z:/Downloads/mysql-connector-java-5.1.18/mysql-connector-java-5.1.18-bin.jar"/>
-=======
-<<<<<<< HEAD
-=======
-	<classpathentry kind="lib" path="//neptunus.helix.ida.liu.se/mikbe953/Downloads/mysql-connector-java-5.1.18/mysql-connector-java-5.1.18-bin.jar"/>
-	<classpathentry kind="lib" path="//neptunus.helix.ida.liu.se/mikbe953/Downloads/google-gson-1.7.1/gson-1.7.1.jar"/>
-	<classpathentry kind="lib" path="//neptunus.helix.ida.liu.se/mikbe953/Downloads/google-gson-1.7.1/gson-1.7.1-javadoc.jar"/>
-	<classpathentry kind="lib" path="//neptunus.helix.ida.liu.se/mikbe953/Downloads/google-gson-1.7.1/gson-1.7.1-sources.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
->>>>>>> b03c935e0d314314ac44647a47aec6621471e33c
->>>>>>> 01d08caa9e729403807f3110a510433a50a3df8f
 	<classpathentry kind="output" path="bin"/>
 </classpath>
