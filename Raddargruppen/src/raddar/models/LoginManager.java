@@ -114,6 +114,7 @@ public class LoginManager extends Observable {
 				
 				logIn = LoginResponse.ACCEPTED;
 				Gson gsonObject = new Gson();
+				
 				//Skicka alla medelanden som buffrats och töm sedan buffern
 				ArrayList<String> bufferedMessages = new ArrayList<String>();
 				bufferedMessages = DatabaseController.db.getAllRowsAsArrays("bufferedMessage");
@@ -143,6 +144,9 @@ public class LoginManager extends Observable {
 				logIn = evaluateLocally(username, password);
 			else
 				return;
+		}
+		if(debugMode){
+			logIn = LoginResponse.ACCEPTED_NO_CONNECTION;
 		}
 		setChanged();
 		notifyObservers(logIn);

@@ -129,18 +129,18 @@ public class MapCont implements Observer, Runnable{
 		}
 	}
 
-	public void removeObject(MapObject o,boolean notify){
+	public void removeObject(MapObject mo,boolean notify){
 
 		if(mapModel != null){
-			mapModel.removeObject(o);
+			mapModel.removeObject(mo);
 			if(!notify){
-				mapUI.drawNewMapObject(o);
+				mapUI.drawNewMapObject(mo);
 			}else{
-				mapUI.drawNewMapObject(o);
+				mapUI.drawNewMapObject(mo);
 				Gson gson = new Gson();
 				try{
-					MapObjectMessage mom = new MapObjectMessage(gson.toJson(o),
-							(o).getClass().getName(),o.getId(),MapOperation.REMOVE);
+					MapObjectMessage mom = new MapObjectMessage(gson.toJson(mo),
+							(mo).getClass().getName(),mo.getId(),MapOperation.REMOVE);
 					new Sender(mom);
 				}
 				catch (UnknownHostException e) {
@@ -148,7 +148,7 @@ public class MapCont implements Observer, Runnable{
 
 			}
 		}
-		DatabaseController.db.deleteRow(o);
+		DatabaseController.db.deleteRow(mo);
 	}
 
 	public You getYou(){
@@ -174,6 +174,7 @@ public class MapCont implements Observer, Runnable{
 			}
 			else{
 				updateObject(you,true);
+				//removeObject(you, false);
 			}
 			you.setPoint((GeoPoint)data);	
 

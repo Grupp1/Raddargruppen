@@ -141,7 +141,11 @@ public class MapModel {
 			fireTruckList.removeMapObject(o);
 		}
 		else if(o instanceof You){
-			youList.removeMapObject(o);
+			if(o.getId().equals(SessionController.getUser())){
+				youList.removeMapObject(o);
+			}else{
+				otherList.removeMapObject(o);
+			}
 		}
 		else if(o instanceof Situation){
 			situationList.removeMapObject(o);

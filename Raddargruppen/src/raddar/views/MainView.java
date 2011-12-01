@@ -11,14 +11,18 @@ import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
 import raddar.controllers.SipController;
 import raddar.enums.ConnectionStatus;
+import raddar.enums.MapOperation;
 import raddar.enums.NotificationType;
 import raddar.enums.RequestType;
+import raddar.enums.ResourceStatus;
 import raddar.gruppen.R;
 import raddar.models.ClientDatabaseManager;
+import raddar.models.MapObjectMessage;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
 import raddar.models.QoSManager;
 import raddar.models.RequestMessage;
+import raddar.models.You;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -36,6 +40,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
+import com.google.gson.Gson;
 
 public class MainView extends Activity implements OnClickListener, Observer {
 
@@ -91,6 +96,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		new SessionController(extras.get("user").toString());
 		DatabaseController.db.addObserver(this);
 		//new SipController(this);
+		new DatabaseController(this);
 		new ReciveHandler(this).addObserver(this);
 
 		try {
@@ -149,7 +155,6 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	}
 
 	public void onClick(View v) {
-
 		if(v == callButton){
 			Intent nextIntent = new Intent(MainView.this, CallContactListView.class);
 			startActivity(nextIntent);
@@ -186,15 +191,14 @@ public class MainView extends Activity implements OnClickListener, Observer {
 
 				public void onClick(DialogInterface dialog, int id) {
 					// Notifiera servern att vi går offline
-					/*NotificationMessage nm = new NotificationMessage(SessionController.getUser(), 
+					NotificationMessage nm = new NotificationMessage(SessionController.getUser(), 
 							NotificationType.DISCONNECT);
 					try {
 						// Skicka meddelandet
 						new Sender(nm);		
 					} catch (UnknownHostException e) {
 						Log.d("NotificationMessage", "Disconnect failed");
-					}*/
-
+					}
 					MainView.this.finish();
 				}
 			})
