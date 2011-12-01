@@ -72,6 +72,7 @@ public class MapUI extends MapActivity implements Observer {
 		/**
 		 * Random locations
 		 */
+		
 		myLocation = new GeoPoint(0,0);
 		liu = new GeoPoint(58395730, 15573080);
 		sthlmLocation = new GeoPoint(59357290, 17960050);
@@ -240,7 +241,6 @@ public class MapUI extends MapActivity implements Observer {
 												MainView.mapCont.updateObject(o,true);
 											}
 
-											//Toast.makeText(getApplicationContext(), prio[item], Toast.LENGTH_SHORT).show();
 
 										}
 									});
@@ -287,7 +287,6 @@ public class MapUI extends MapActivity implements Observer {
 												MainView.mapCont.updateObject(o,true);
 											}
 
-											//Toast.makeText(getApplicationContext(), prio[item], Toast.LENGTH_SHORT).show();
 
 										}
 									});

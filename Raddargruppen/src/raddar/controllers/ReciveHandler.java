@@ -12,13 +12,12 @@ import raddar.models.ImageMessage;
 import raddar.models.MapObject;
 import raddar.models.MapObjectMessage;
 import raddar.models.Message;
-import raddar.models.You;
+import raddar.models.SOSMessage;
 import raddar.views.MainView;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.util.Log;
 
 public class ReciveHandler extends Observable implements Runnable {
@@ -65,6 +64,7 @@ public class ReciveHandler extends Observable implements Runnable {
 		if (mt == MessageType.TEXT) {
 			DatabaseController.db.addRow(m, notify);
 		} else if (mt == MessageType.SOS) {
+			
 			((Activity) context).runOnUiThread(new Runnable() {
 				public void run() {
 					AlertDialog.Builder alert = new AlertDialog.Builder(context);
@@ -76,6 +76,7 @@ public class ReciveHandler extends Observable implements Runnable {
 							new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,
 								int whichButton) {
+							
 							// Gå till kartan
 						}
 					});

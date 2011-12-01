@@ -2,6 +2,11 @@ package raddar.models;
 
 import raddar.enums.MessageType;
 import raddar.enums.SOSType;
+import raddar.views.MainView;
+
+import com.google.android.maps.GeoPoint;
+
+
 
 /**
  * Ett SOS-meddelande. SOS-meddelanden som skickas till servern broadcastas

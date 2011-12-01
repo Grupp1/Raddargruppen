@@ -15,8 +15,6 @@ public class MapModel {
 	private List<Overlay> mapOverlays;
 	private Drawable d;
 
-	private MapObjectList fireList;
-	private MapObjectList fireTruckList;
 	private MapObjectList situationList;
 	private MapObjectList resourceList;
 	private MapObjectList youList;
@@ -82,6 +80,9 @@ public class MapModel {
 			}
 			resourceList.addOverlay(o);
 		}
+		//else if()
+		
+		
 	}
 
 	public MapObjectList getList(MapObject mo){
