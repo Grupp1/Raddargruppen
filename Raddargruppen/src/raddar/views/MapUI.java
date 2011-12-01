@@ -200,19 +200,10 @@ public class MapUI extends MapActivity implements Observer {
 						alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
 								value = input.getText().toString();
-								//	MapObject o = null;
-								//								if(Touchy.this.item == 0){		
-								//									MainView.mapCont.add(o = new Fire(touchedPoint, value, SituationPriority.HIGH),true);
-								//								}
-								//								if(Touchy.this.item == 1){
-								//									MainView.mapCont.add(o = new FireTruck(touchedPoint, value, ResourceStatus.BUSY),true);
-								//								}
-								
 								
 								/*
 								 * Om situation sätt prioritet
 								 */
-								
 								
 								if(Touchy.this.item == 0){
 									MainView.mapCont.add(o = new Situation(touchedPoint, "Situation", value, R.drawable.situation, SituationPriority.NORMAL),true);
