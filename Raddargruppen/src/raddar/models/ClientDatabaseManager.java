@@ -262,6 +262,12 @@ public class ClientDatabaseManager extends Observable {
 		}
 	}
 	
+	/**********************************************************************
+	 * UPDATING A ROW IN THE MAPOBJECT TABLE
+	 * 
+	 * @param c 
+	 * @param 
+	 */
 	public void updateRow(MapObject o) {
 		ContentValues values = new ContentValues();
 		values.put("mapObject", new Gson().toJson(o));
@@ -287,7 +293,6 @@ public class ClientDatabaseManager extends Observable {
 		db.delete("contact", null, null);
 		
 	}
-	
 
 	/********************************************************************
 	 * DELETING A ROW IN THE DRAFT TABLE

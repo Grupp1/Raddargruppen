@@ -17,7 +17,6 @@ import com.google.android.maps.OverlayItem;
 
 public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
-
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
 	private Context mContext;
 	private EditText input;
@@ -65,7 +64,6 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 	/**
 	 * Vad som händer när man trycker på en situation
 	 */
-
 
 	protected boolean onTap(final int index) {
 

@@ -88,8 +88,8 @@ public class MapUI extends MapActivity implements Observer {
 
 		controller.animateTo(sthlmLocation);
 		controller.setZoom(8);
-		
-//		Drawable d = getResources().getIdentifier(null, null, null);
+
+		//		Drawable d = getResources().getIdentifier(null, null, null);
 
 	}
 
@@ -142,7 +142,7 @@ public class MapUI extends MapActivity implements Observer {
 		nextIntent.putExtra("map", user);
 		startActivity(nextIntent);
 	}
-	
+
 	public void callUser(String user){
 		Intent nextIntent = new Intent(MapUI.this,
 				CallView.class);
@@ -154,10 +154,16 @@ public class MapUI extends MapActivity implements Observer {
 
 	class Touchy extends Overlay{
 		private Context context;
-		private CharSequence [] items = {"Brand", "Brandbil", "Händelse", "Resurs"};
+		//		private CharSequence [] items = {"Brand", "Brandbil", "Händelse", "Resurs"};
+		private CharSequence [] items = {"Händelse", "Resurs"};
+		private CharSequence [] prio = {"Hög", "Mellan", "Låg"};
+		private CharSequence [] stat = {"Ledig", "Upptagen"};
 		private String value;
 		private EditText input;
 		private int item;
+		private int prioritet;
+		private int status;
+		private MapObject o = null;
 
 		public Touchy(Context context){
 			this.context = context;
@@ -178,9 +184,9 @@ public class MapUI extends MapActivity implements Observer {
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(context);
 				builder.setTitle("Placera");
+
+
 				builder.setItems(items, new DialogInterface.OnClickListener() {
-
-
 					public void onClick(DialogInterface dialog, int item) {
 						Touchy.this.item = item;
 						AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
@@ -191,24 +197,123 @@ public class MapUI extends MapActivity implements Observer {
 						input = new EditText(context);
 						alertDialog.setView(input);
 
+
 						alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
 								value = input.getText().toString();
-								MapObject o = null;
-								if(Touchy.this.item == 0){		
-									MainView.mapCont.add(o = new Fire(touchedPoint, value, SituationPriority.HIGH),true);
-								}
-								if(Touchy.this.item == 1){
-									MainView.mapCont.add(o = new FireTruck(touchedPoint, value, ResourceStatus.BUSY),true);
-								}
-								if(Touchy.this.item == 2){
+								//	MapObject o = null;
+								//								if(Touchy.this.item == 0){		
+								//									MainView.mapCont.add(o = new Fire(touchedPoint, value, SituationPriority.HIGH),true);
+								//								}
+								//								if(Touchy.this.item == 1){
+								//									MainView.mapCont.add(o = new FireTruck(touchedPoint, value, ResourceStatus.BUSY),true);
+								//								}
+								
+								/*
+								 * Om situation sätt prioritet
+								 */
+								
+								
+								if(Touchy.this.item == 0){
 									MainView.mapCont.add(o = new Situation(touchedPoint, "Situation", value, R.drawable.situation, SituationPriority.NORMAL),true);
+
+									AlertDialog.Builder builder = new AlertDialog.Builder(context);
+									builder.setTitle("Välj prioritet");
+
+									builder.setSingleChoiceItems(prio, -1, new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int item) {
+											
+											prioritet = item;
+											
+										}
+									});
+
+									builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int whichButton) {
+
+											
+											if(Touchy.this.prioritet == 0){
+												
+												((Situation) o).setPriority(SituationPriority.HIGH);
+												MainView.mapCont.updateObject(o,true);
+											}
+											if(Touchy.this.prioritet == 1){
+												
+												
+												((Situation) o).setPriority(SituationPriority.NORMAL);
+												MainView.mapCont.updateObject(o,true);
+											}
+											if(Touchy.this.prioritet == 2){
+												
+												((Situation) o).setPriority(SituationPriority.LOW);
+												MainView.mapCont.updateObject(o,true);
+											}
+
+											//Toast.makeText(getApplicationContext(), prio[item], Toast.LENGTH_SHORT).show();
+
+										}
+									});
+									
+									builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int whichButton) {
+
+										}
+									});
+
+									builder.show();
+
 								}
-								if(Touchy.this.item == 3){
+
+								/*
+								 * Om resurs, sätt prioritet
+								 */
+								
+								if(Touchy.this.item == 1){
 									MainView.mapCont.add(o = new Resource(touchedPoint, "Resurs", value, R.drawable.resource, ResourceStatus.BUSY),true);
+
+									AlertDialog.Builder builder = new AlertDialog.Builder(context);
+									builder.setTitle("Välj status");
+
+									builder.setSingleChoiceItems(stat, -1, new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int item) {
+
+											status = item;
+											
+										}
+									});
+
+									builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int whichButton) {
+
+											status = whichButton;
+											
+											if(Touchy.this.status == 0){
+												((Resource) o).setStatus(ResourceStatus.FREE);
+												MainView.mapCont.updateObject(o,true);
+											}
+											if(Touchy.this.status == 1){
+												((Resource) o).setStatus(ResourceStatus.BUSY);
+												MainView.mapCont.updateObject(o,true);
+											}
+
+											//Toast.makeText(getApplicationContext(), prio[item], Toast.LENGTH_SHORT).show();
+
+										}
+									});
+
+									builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int whichButton) {
+
+										}
+									});
+
+									builder.show();
+
 								}
 								o.updateData(geocoder);;
 								Toast.makeText(getApplicationContext(), items[Touchy.this.item]+" utplacerad", Toast.LENGTH_LONG).show();
+
+
 							}
 						});
 						alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -258,13 +363,13 @@ public class MapUI extends MapActivity implements Observer {
 
 	}
 
-	
+
 	public void drawNewMapObject(final MapObject mo){
 		MapObjectList list = MainView.mapCont.getList(mo);
 		if(list == null){
 			return;
 		}
-		
+
 		if (!mapOverlays.contains(list)){
 			mapOverlays.add((MapObjectList) list);
 		}

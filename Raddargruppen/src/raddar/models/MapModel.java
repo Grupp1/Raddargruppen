@@ -47,19 +47,19 @@ public class MapModel {
 			o.setIcon(R.drawable.circle_yellow);
 		}
 		d = mapUI.getResources().getDrawable(o.getIcon());
-		if (o instanceof Fire){
-			if (fireList == null){
-				fireList = new MapObjectList(d, mapUI);
-			}
-			fireList.addOverlay(o);
-		}
-		else if(o instanceof FireTruck){
-			if(fireTruckList == null){
-				fireTruckList = new MapObjectList(d, mapUI);
-			}
-			fireTruckList.addOverlay(o);
-		}
-		else if(o instanceof You){
+//		if (o instanceof Fire){									// Endast situationer och resurser ska kunna placeras ut. 
+//			if (fireList == null){	
+//				fireList = new MapObjectList(d, mapUI); 
+//			}
+//			fireList.addOverlay(o);
+//		}
+//		else if(o instanceof FireTruck){
+//			if(fireTruckList == null){
+//				fireTruckList = new MapObjectList(d, mapUI);
+//			}
+//			fireTruckList.addOverlay(o);
+//		}
+		if(o instanceof You){
 			if(!o.getId().equals(SessionController.getUser())){
 				Log.d("otherlist", o.getAddedBy());
 				if(otherList == null){
@@ -89,13 +89,13 @@ public class MapModel {
 	}
 
 	public MapObjectList getList(MapObject mo){
-		if (mo instanceof Fire){
-			return fireList;
-		}
-		else if(mo instanceof FireTruck){
-			return fireTruckList;
-		}
-		else if(mo instanceof You){
+//		if (mo instanceof Fire){
+//			return fireList;
+//		}
+//		else if(mo instanceof FireTruck){
+//			return fireTruckList;
+//		}
+		if(mo instanceof You){
 			if(mo.getId().equals(SessionController.getUser())){
 				return youList;
 			}else{
@@ -116,13 +116,13 @@ public class MapModel {
 
 	public void updateObject(MapObject o){
 		//	o.updateData(new Geocoder(mapUI.getBaseContext(), Locale.getDefault()));
-		if (o instanceof Fire){
-			fireList.addUpdateMapObject(o);
-		}
-		else if(o instanceof FireTruck){
-			fireTruckList.addUpdateMapObject(o);
-		}
-		else if(o instanceof You){
+//		if (o instanceof Fire){
+//			fireList.addUpdateMapObject(o);
+//		}
+//		else if(o instanceof FireTruck){
+//			fireTruckList.addUpdateMapObject(o);
+//		}
+		if(o instanceof You){
 			youList.addUpdateMapObject(o);
 		}
 		else if(o instanceof Situation){
@@ -134,13 +134,13 @@ public class MapModel {
 	}
 
 	public void removeObject(MapObject o){
-		if (o instanceof Fire){
-			fireList.removeMapObject(o);
-		}
-		else if(o instanceof FireTruck){
-			fireTruckList.removeMapObject(o);
-		}
-		else if(o instanceof You){
+//		if (o instanceof Fire){
+//			fireList.removeMapObject(o);
+//		}
+//		else if(o instanceof FireTruck){
+//			fireTruckList.removeMapObject(o);
+//		}
+		if(o instanceof You){
 			youList.removeMapObject(o);
 		}
 		else if(o instanceof Situation){
