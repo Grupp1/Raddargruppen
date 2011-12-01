@@ -94,7 +94,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 
 		new SessionController(extras.get("user").toString());
 		new DatabaseController(this);
-		//new SipController(this);
+		new SipController(this);
 		new ReciveHandler(this).addObserver(this);
 
 		try {
@@ -153,7 +153,6 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	}
 
 	public void onClick(View v) {
-
 		if(v == callButton){
 			Intent nextIntent = new Intent(MainView.this, CallContactListView.class);
 			startActivity(nextIntent);
@@ -190,15 +189,14 @@ public class MainView extends Activity implements OnClickListener, Observer {
 
 				public void onClick(DialogInterface dialog, int id) {
 					// Notifiera servern att vi går offline
-					/*NotificationMessage nm = new NotificationMessage(SessionController.getUser(), 
+					NotificationMessage nm = new NotificationMessage(SessionController.getUser(), 
 							NotificationType.DISCONNECT);
 					try {
 						// Skicka meddelandet
 						new Sender(nm);		
 					} catch (UnknownHostException e) {
 						Log.d("NotificationMessage", "Disconnect failed");
-					}*/
-
+					}
 					MainView.this.finish();
 				}
 			})

@@ -20,7 +20,11 @@ import raddar.models.Situation;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.AssetFileDescriptor;
 import android.location.Geocoder;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.media.SoundPool.OnLoadCompleteListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -38,7 +42,6 @@ import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 
 
-
 public class MapUI extends MapActivity implements Observer {
 
 	private MapView mapView;
@@ -52,8 +55,7 @@ public class MapUI extends MapActivity implements Observer {
 	private Touchy touchy;
 	public boolean follow;
 	private Toast toast;
-	private Geocoder geocoder;
-
+	private Geocoder geocoder;	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -95,6 +97,7 @@ public class MapUI extends MapActivity implements Observer {
 		//		Drawable d = getResources().getIdentifier(null, null, null);
 
 	}
+	
 
 	@Override
 	protected void onStart() {
@@ -152,7 +155,7 @@ public class MapUI extends MapActivity implements Observer {
 		}
 
 		public boolean onTouchEvent(MotionEvent e, MapView m) {
-			int holdTime = 800;
+			int holdTime = 750;
 			if(e.getAction() == MotionEvent.ACTION_DOWN){
 				start = e.getEventTime();
 				touchedX = (int) e.getX();
@@ -162,6 +165,7 @@ public class MapUI extends MapActivity implements Observer {
 			if(e.getAction() == MotionEvent.ACTION_UP){
 				stop = e.getEventTime();
 			}
+
 			if(stop - start > holdTime){
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(context);
