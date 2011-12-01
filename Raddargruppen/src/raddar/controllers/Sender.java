@@ -54,7 +54,6 @@ public class Sender implements Runnable {
 
 	public void run() {
 		Gson gson = new Gson();
-		String send = null;
 		if(message!=null){
 			send = message.getClass().getName()+"\r\n";
 			send +=	gson.toJson(message);	
@@ -67,6 +66,7 @@ public class Sender implements Runnable {
 			out.println(send);
 			so.close();
 			out.close();
+			Log.e("Sendzordz",send);
 		} catch (IOException ie) {
 			Log.d("Skapandet av socket [2]", ie.toString());
 			DatabaseController.db.addBufferedMessageRow(send);

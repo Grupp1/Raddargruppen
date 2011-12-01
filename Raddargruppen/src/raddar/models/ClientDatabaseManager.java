@@ -306,7 +306,7 @@ public class ClientDatabaseManager extends Observable {
 	public void clearDatabase(){
 		db.delete("message", null, null);
 		db.delete("map", null, null);
-		db.delete("contact", null, null);
+		//db.delete("contact", null, null);
 
 	}
 
@@ -327,6 +327,16 @@ public class ClientDatabaseManager extends Observable {
 		}
 		//		setChanged();
 		//		notifyObservers(m);
+	}
+	
+	public void deleteBufferedMesageRow(String gsonString){
+		try{
+			db.delete("bufferedMessage", "gsonString = \'" + gsonString + "\'", null);
+		}catch (Exception e) {
+			Log.e("DB ERROR", e.toString());
+			e.printStackTrace();
+		}
+		
 	}
 
 	/********************************************************************
@@ -456,6 +466,7 @@ public class ClientDatabaseManager extends Observable {
 						dataArrays.add(mo);
 					}
 					else if (table.equals("bufferedMessage")){
+						Log.e("cursor burzor",cursor.getString(0));
 						String gsonString = cursor.getString(0);
 						dataArrays.add(gsonString);
 					}

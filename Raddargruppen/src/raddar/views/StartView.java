@@ -72,7 +72,7 @@ public class StartView extends Activity implements Observer {
 				//nextIntent.putExtra("user", user.getText().toString());
 				//startActivity(nextIntent);
 				loginButton.setEnabled(false);
-				//dialog.show();
+				dialog.show();
 
 				
 				Thread s = new Thread(new Runnable(){ 

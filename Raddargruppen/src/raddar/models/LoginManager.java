@@ -8,6 +8,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
@@ -46,11 +47,7 @@ public class LoginManager extends Observable {
 	 * @return true om verifieringen går bra, false annars
 	 */
 	public void evaluate(String username, String password) {
-		Log.d("TEST(icles)","1");
 		try {
-			
-			Log.d("TEST(icles)","2");
-			
 			// Skapa socket som används för att skicka NotificationMessage
 			Socket so = new Socket();
 			// Socket so = new
@@ -59,9 +56,6 @@ public class LoginManager extends Observable {
 			InetAddress addr = InetAddress.getByName(ServerInfo.SERVER_IP);
 			int port = ServerInfo.SERVER_PORT;
 			SocketAddress sockAddr = new InetSocketAddress(addr, port);
-			
-			Log.d("TEST(icles)","3");
-		
 			int TIME_OUT = 5000;
 			so.connect(sockAddr, TIME_OUT);
 
@@ -69,8 +63,6 @@ public class LoginManager extends Observable {
 			BufferedReader br = new BufferedReader(new InputStreamReader(
 					so.getInputStream()));
 
-			Log.d("TEST(icles)","4");
-			
 			RequestMessage rm = new RequestMessage(RequestType.SALT);
 			rm.setSrcUser(username);
 			String send = rm.getClass().getName() + "\r\n";
@@ -79,8 +71,6 @@ public class LoginManager extends Observable {
 			// Skicka SALT-request
 			pw.println(send);
 
-			Log.d("TEST(icles)","5");
-			
 			// Läs in salt från server
 			String salt = br.readLine();
 
@@ -94,7 +84,6 @@ public class LoginManager extends Observable {
 			gg = new Gson().toJson(nm);
 			send += gg;
 			
-			Log.d("TEST(icles)","6");
 			// Skicka det saltade och krypterade lösenordet
 			pw.println(send);
 
@@ -106,29 +95,10 @@ public class LoginManager extends Observable {
 			br.close();
 			so.close();
 			
-			Log.d("TEST(icles)","7");
-			
 			if (response.equals("OK")) {
 				
-				Log.d("TEST(icles)","8");
-				
 				logIn = LoginResponse.ACCEPTED;
-				Gson gsonObject = new Gson();
-				
-				//Skicka alla medelanden som buffrats och töm sedan buffern
-				ArrayList<String> bufferedMessages = new ArrayList<String>();
-				bufferedMessages = DatabaseController.db.getAllRowsAsArrays("bufferedMessage");
-				Log.d("TEST(icles)","9");
-				if(bufferedMessages != null){
-
-					Log.d("TEST(icles)","10");
-					
-					for(String gsonString: bufferedMessages){
-						new Sender(gsonString);
-
-					}
-					DatabaseController.db.clearTable("bufferedMessage");
-				}
+				sendBufferedMessages();
 				s = null;
 			}
 			else if(response.equals("OK_FORCE_LOGOUT")){
@@ -189,7 +159,21 @@ public class LoginManager extends Observable {
 	public static String removeCache(String username) {
 		return passwordCache.remove(username);
 	}
+	private void sendBufferedMessages() throws UnknownHostException{
+		//Skicka alla medelanden som buffrats och töm sedan buffern
+		ArrayList<String> bufferedMessages = new ArrayList<String>();
+		bufferedMessages = DatabaseController.db.getAllRowsAsArrays("bufferedMessage");
+		if(bufferedMessages != null){
 
+			
+			for(String gsonString: bufferedMessages){
+				new Sender(gsonString);
+				Log.d("GSONSTRING",gsonString);
+				DatabaseController.db.deleteBufferedMesageRow(gsonString);
+			}
+		}
+	}
+	
 	/*
 	 * Privat klass som försöker att logga in emot servern med jämna mellanrum
 	 */
