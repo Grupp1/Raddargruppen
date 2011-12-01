@@ -38,7 +38,6 @@ public class StartView extends Activity implements Observer {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.deleteDatabase("client_database");
 		new DatabaseController(this);
 		setContentView((int) R.layout.start);
 		// Lite hårdkodade testanvändare att testa med
@@ -47,9 +46,11 @@ public class StartView extends Activity implements Observer {
 		LoginManager.cache("Alice", "longshot");
 		LoginManager.cache("danan612","raddar");
 
-		user = (EditText) this.findViewById(R.id.usertext1);
-		password = (EditText) this.findViewById(R.id.passwordtext1);
+
+		user = (EditText) this.findViewById(R.id.usertext);
+		password = (EditText) this.findViewById(R.id.passwordtext);
 		// Endast för lättare testning
+
 		user.setText("danan612");
 		password.setText("raddar");
 
@@ -103,7 +104,6 @@ public class StartView extends Activity implements Observer {
 								MainView.class);
 						nextIntent.putExtra("user", user.getText().toString());
 						nextIntent.putExtra("connectionStatus", ConnectionStatus.CONNECTED);
-						
 						startActivity(nextIntent);
 						
 					}
@@ -129,8 +129,13 @@ public class StartView extends Activity implements Observer {
 					startActivity(nextIntent);
 				}
 				else if((LoginResponse) data == LoginResponse.USER_ALREADY_LOGGED_IN){
-					Toast.makeText(StartView.this, "Användaren är redan inloggad på servern",
+					Toast.makeText(StartView.this, "Användaren är redan inloggad på servern, loggar ut hen",
 							Toast.LENGTH_LONG).show();
+					Intent nextIntent = new Intent(StartView.this,
+							MainView.class);
+					nextIntent.putExtra("user", user.getText().toString());
+					nextIntent.putExtra("connectionStatus", ConnectionStatus.CONNECTED);
+					startActivity(nextIntent);
 				}
 				loginButton.setEnabled(true);
 				dialog.cancel();

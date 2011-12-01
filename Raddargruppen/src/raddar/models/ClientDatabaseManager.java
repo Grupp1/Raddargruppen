@@ -96,7 +96,6 @@ public class ClientDatabaseManager extends Observable {
 		try {
 			db.insert("message", null, values);
 		} catch (Exception e) {
-			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
 		if(notify) {
@@ -284,6 +283,19 @@ public class ClientDatabaseManager extends Observable {
 			e.printStackTrace();
 		}
 	}
+	
+	public void updateRow(MapObject o) {
+		ContentValues values = new ContentValues();
+		values.put("mapObject", new Gson().toJson(o));
+		values.put("class", o.getClass().getName());
+		try {
+			db.update("map", values,
+					"id = '" + o.getId() + "'", null);
+		} catch (Exception e) {
+			Log.e("DB Error", e.toString());
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * Closes the database
 	 */
@@ -351,6 +363,7 @@ public class ClientDatabaseManager extends Observable {
 		// generella fallet.
 		ArrayList dataArrays = new ArrayList();
 		Cursor cursor = null;
+		Log.e("TABLE",table);
 		try {
 			// ask the database object to create the cursor.
 			if(table.equals("message")){
@@ -385,9 +398,7 @@ public class ClientDatabaseManager extends Observable {
 						null, null, null, null, null);
 			}
 			else if(table.equals("bufferedMessage")){
-				cursor = db.query(
-						"bufferedMessage",
-						BUFFERED_MESSAGE_TABLE_ROWS,
+				cursor = db.query("bufferedMessage", BUFFERED_MESSAGE_TABLE_ROWS,
 						null, null, null, null, null);
 			}
 			cursor.moveToFirst();
@@ -438,6 +449,10 @@ public class ClientDatabaseManager extends Observable {
 						}
 						MapObject mo = gson.fromJson(cursor.getString(0), c);
 						dataArrays.add(mo);
+					}
+					else if (table.equals("bufferedMessage")){
+						String gsonString = cursor.getString(0);
+						dataArrays.add(gsonString);
 					}
 				}
 				// move the cursor's pointer up one position.
@@ -515,10 +530,11 @@ public class ClientDatabaseManager extends Observable {
 					"rDate integer," +
 					"subject text," +
 					"mData text)";
-			
-			String bufferedmessagesTableQueryString = "create table bufferedMessage (" 
+			Log.d("CustomSQLiteOpenHelper","Creating table \'bufferedMessage\'");
+			String bufferedmessageTableQueryString = "create table bufferedMessage (" 
 					+ "msgId integer primary key autoincrement not null," + 
 					"gsonString text)";
+			
 
 			/*
 			 * String newTableQueryString = "create table " + TABLE_NAME + " ("
@@ -532,7 +548,7 @@ public class ClientDatabaseManager extends Observable {
 			db.execSQL(messageTableQueryString);
 			db.execSQL(imageMessageTableQueryString);
 			db.execSQL(outboxTableQueryString);
-			db.execSQL(bufferedmessagesTableQueryString);
+			db.execSQL(bufferedmessageTableQueryString);
 		}
 
 		/**

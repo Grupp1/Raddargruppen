@@ -59,21 +59,14 @@ public class Sender implements Runnable {
 			send = message.getClass().getName()+"\r\n";
 			send +=	gson.toJson(message);	
 		}
-
+		Log.d("Sending", "Sending: "+send);
 		try {
 			Socket so = new Socket(address, port);
 			so.setSoTimeout(5000);
-
-			Log.d("Send",send);
-
 			PrintWriter out = new PrintWriter(so.getOutputStream(), true);
-
 			out.println(send);
-
 			so.close();
 			out.close();
-
-
 		} catch (IOException ie) {
 			Log.d("Skapandet av socket [2]", ie.toString());
 			DatabaseController.db.addBufferedMessageRow(send);

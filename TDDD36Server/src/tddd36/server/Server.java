@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 
 public class Server {
 	
+	
 	// Default-value: 6789
 	private int port;
 	
@@ -26,7 +27,10 @@ public class Server {
 	
 	private void startServer() {
 		try {
+			
 			ServerSocket so = new ServerSocket(port);
+			
+			
 			
 			System.out.println("Listening on port: " + port + "... ");
 			
@@ -42,6 +46,9 @@ public class Server {
 	
 	public static void main(String[] args) {
 		//System.out.println(Database.getSalt("Alice"));
+		
 		new Server();
+		
+		//Database.addUser("magkj501", "magkj501", 'u', "users");
 	}	
 }

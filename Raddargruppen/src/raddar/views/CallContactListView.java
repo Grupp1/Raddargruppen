@@ -45,7 +45,7 @@ public class CallContactListView extends ListActivity{
 		lv.setTextFilterEnabled(true);
 		setListAdapter(ia);
 		lv.setOnItemClickListener(new OnItemClickListener() {
-			@Override
+			
 			/**
 			 * lv är satt som en onItemClickListener
 			 * Snabbt klick på en kontakt, ringer direkt

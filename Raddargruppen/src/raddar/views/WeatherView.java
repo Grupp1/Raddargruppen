@@ -31,11 +31,7 @@ public class WeatherView extends ExpandableListActivity {
         registerForContextMenu(getExpandableListView());
     }
     
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-        menu.setHeaderTitle("Sample menu");
-        menu.add(0, 0, 0, "HEJ HEJ");
-    }
+    
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
@@ -70,18 +66,18 @@ public class WeatherView extends ExpandableListActivity {
     			children[0][i] = "";
     		
     		for (int i=0; i<n; i++)
-    			children[0][i] = xml.list.get(0).blocks.get(i).from + "-" + xml.list.get(0).blocks.get(i).to + "\n" + xml.list.get(0).blocks.get(i).temp + "  " + xml.list.get(0).blocks.get(i).speed + " " + xml.list.get(0).blocks.get(i).direction;
+    			children[0][i] = xml.list.get(0).blocks.get(i).from + "-" + xml.list.get(0).blocks.get(i).to + "\n" + xml.list.get(0).blocks.get(i).temp + "  " + xml.list.get(0).blocks.get(i).speed + " " + xml.list.get(0).blocks.get(i).direction + ", " + xml.list.get(0).blocks.get(i).weather;
     		
     		for (int j=1; j < 9; j++) {
     			for (int i=0; i < 4; i++) {
-    				children[j][i] = xml.list.get(j).blocks.get(i).from + "-" + xml.list.get(j).blocks.get(i).to + "\n" + xml.list.get(j).blocks.get(i).temp + "  " + xml.list.get(j).blocks.get(i).speed + " " + xml.list.get(j).blocks.get(i).direction;
+    				children[j][i] = xml.list.get(j).blocks.get(i).from + "-" + xml.list.get(j).blocks.get(i).to + "\n" + xml.list.get(j).blocks.get(i).temp + "  " + xml.list.get(j).blocks.get(i).speed + " " + xml.list.get(j).blocks.get(i).direction+ ", " + xml.list.get(j).blocks.get(i).weather;
     			}
     		}
     	}
     	
         private String[] groups = { 
         		"    Today - sunrise " + xml.sunrise + ", sunset " + xml.sunset, 
-        		"    Tomorrow", 
+        		"    "+xml.list.get(1).date, 
         		"    "+xml.list.get(2).date, 
         		"    "+xml.list.get(3).date,
         		"    "+xml.list.get(4).date,

@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import raddar.enums.NotificationType;
+import raddar.models.MapObjectMessage;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
 import raddar.models.RequestMessage;
@@ -47,38 +48,44 @@ public class Receiver implements Runnable {
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
 			Class c= null ;
 			try {
-				c = Class.forName(in.readLine());
+				String inmatning = in.readLine();
+				System.out.println(inmatning);
+				c = Class.forName(inmatning);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
 
 			String temp = in.readLine();
 			System.out.println(temp);
-			Object o = new Gson().fromJson(temp, c);
+			
+			Message m = new Gson().fromJson(temp, c);
 			// if message
-			if (o instanceof Message){
-				Message m = (Message) o;
-				// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
-				// meddelandet som klienten har skickat blir inläst på korrekt sätt
-				switch (m.getType()) {
-				case SOS:
-					broadcast(m);
-				case NOTIFICATION:
-					handleNotification((NotificationMessage) m);
-					break;
-				case TEXT:
-					Database.storeTextMessage((TextMessage) m);
-					new Sender(m, m.getDestUser());
-					break;
-				case IMAGE:
-					new Sender(m, m.getDestUser());
-					break;
-				case REQUEST:
-					handleRequest((RequestMessage) m);
-					break;
-				default:
-					System.out.println("Received message has unknown type. Discarding... ");
-				}
+			// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
+			// meddelandet som klienten har skickat blir inläst på korrekt sätt
+			switch (m.getType()) {
+			case SOS:
+				broadcast(m);
+				break;
+			case NOTIFICATION:
+				handleNotification((NotificationMessage) m);
+				break;
+			case TEXT:
+				Database.storeTextMessage((TextMessage) m);
+				new Sender(m, m.getDestUser());
+				break;
+			case IMAGE:
+				new Sender(m, m.getDestUser());
+				break;
+			case REQUEST:
+				handleRequest((RequestMessage) m);
+				break;
+			case MAPOBJECT:
+				handleMapObjectMessage((MapObjectMessage) m);
+				broadcast(m);
+				break;
+			default:
+				System.out.println("Received message has unknown type. Discarding... ");
+
 			}
 			//			
 			//	so.close();
@@ -120,6 +127,30 @@ public class Receiver implements Runnable {
 			if(adr == srcAdr) continue;
 			new Sender(m, adr, 4043);
 		}
+
+	}
+	
+	private void handleMapObjectMessage(MapObjectMessage mo){
+		switch(mo.getMapOperation()){
+		case ADD:
+			System.out.println("handleMapObjectMessage ADD");
+			
+			if(Database.addMapObject(mo))
+				broadcast(mo);
+			break;
+		case REMOVE:
+			System.out.println("handleMapObjectMessage REMOVE");
+			broadcast(mo);
+			Database.removeMapObject(mo.getId());
+			break;
+		case UPDATE:
+			System.out.println("handleMapObjectMessage UPDATE");
+			broadcast(mo);
+			Database.updateMapObject(mo);
+			break;
+		default:
+			System.out.println("Okänd MapOperation");
+		}	
 
 	}
 
@@ -166,25 +197,13 @@ public class Receiver implements Runnable {
 			contactMessage.add(0,rm);
 			new Sender(contactMessage, rm.getSrcUser());
 			break;
-			
-			
+		case MAP_OBJECTS:
+			ArrayList<Message> mapObjectMessages = Database.retrieveAllMapObjects();
+			new Sender(mapObjectMessages, rm.getSrcUser());
+			break;
 		default:
 			System.out.println("Okänd RequestType");
 		}
 
 	}
-	/*
-	 * Denna funktionen används för att läsa in en rad och filtrera bort attributtaggen
-	 * 'Content-Type: text/plain' filtreras till exempel till text/plain
-	 */
-
-	private String getAttrValue(String str) {
-		StringBuilder sb = new StringBuilder("");
-		String[] parts = str.split(" ");
-		for (int i = 1; i < parts.length; i++) 
-			sb.append(parts[i]);
-
-		return sb.toString();
-	}
-
 }

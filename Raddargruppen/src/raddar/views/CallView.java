@@ -33,7 +33,7 @@ public class CallView extends Activity implements OnClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.walkietalkie);
+		setContentView(R.layout.accept_call);
 		Bundle extras = getIntent().getExtras();
 		String sip = (String) extras.get("sip");
 		callerText = (TextView) this.findViewById(R.id.callerText);

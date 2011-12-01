@@ -95,7 +95,7 @@ public class ContactListView extends ListActivity implements OnClickListener {
 	public boolean onContextItemSelected(MenuItem item) {
 		if (item.getTitle() == "Ring") {
 			Intent nextIntent = new Intent(this,CallView.class);
-			nextIntent.putExtra("sip","sip:" + contacts.get(info.position).getSipUsr()
+			nextIntent.putExtra("sip","sip:" + contacts.get(info.position).getUserName()
 					+ "@ekiga.net" );
 			startActivityForResult(nextIntent,9);
 
