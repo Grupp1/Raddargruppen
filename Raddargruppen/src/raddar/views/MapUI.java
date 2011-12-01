@@ -59,9 +59,9 @@ public class MapUI extends MapActivity implements Observer {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.maps);
-		
-		
-		
+
+
+
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 		mapView.setSatellite(true);
@@ -83,16 +83,16 @@ public class MapUI extends MapActivity implements Observer {
 		sthlmLocation = new GeoPoint(59357290, 17960050);
 
 		geocoder = new Geocoder(getBaseContext(), Locale.getDefault());
-		
+
 		touchy = new Touchy(mapView.getContext());
 		mapOverlays.add(touchy);
-		
+
 		MainView.mapCont.declareMapUI(this);
 
 		controller.animateTo(sthlmLocation);
-		controller.setZoom(8);
-		
-//		Drawable d = getResources().getIdentifier(null, null, null);
+		controller.setZoom(10);
+
+		//		Drawable d = getResources().getIdentifier(null, null, null);
 
 	}
 
@@ -101,7 +101,7 @@ public class MapUI extends MapActivity implements Observer {
 		if(MainView.mapCont.areYouFind){
 			follow = true;
 			controller.animateTo(MainView.mapCont.getYou().getPoint());
-			controller.setZoom(12);
+			controller.setZoom(15);
 		}
 		super.onStart();
 	}
@@ -139,7 +139,7 @@ public class MapUI extends MapActivity implements Observer {
 	}
 
 	// Tar hand om inmatning från skärmen, ritar ut knappar och anropar MapCont
-	
+
 	class Touchy extends Overlay{
 		private Context context;
 		private CharSequence [] items = {"Brand", "Brandbil", "Situation", "Resurs"};
@@ -241,34 +241,39 @@ public class MapUI extends MapActivity implements Observer {
 	public MapView getMapView(){
 		return mapView;
 	}
-	
+
 	public void updateMyLocation(GeoPoint geopoint){
-		
+
 	}
-	
+
 	public void drawNewMapObject(final MapObject mo){
-		MapObjectList list = MainView.mapCont.getList(mo);
-		if(list == null){
-			return;
-		}
-		
-		if (!mapOverlays.contains(list)){
-			mapOverlays.add((MapObjectList) list);
-		}
-		else{
-			mapOverlays.set(mapOverlays.indexOf(list), list);
-		}
 		runOnUiThread(new Runnable(){
 			public void run() {
+				MapObjectList list = MainView.mapCont.getList(mo);
+				Log.d("MAPUI", " "+list);
+				if(list == null){
+					Log.d("MAPUI", "fyufdyfdjyuyudrtufr");
+					return;
+				}
+				
+				if (!mapOverlays.contains(list)){
+					Log.d("MAPUI", "if");
+					mapOverlays.add((MapObjectList) list);
+				}
+				else{
+					Log.d("MAPUI", "else");
+					mapOverlays.set(mapOverlays.indexOf(list), list);
+				}
+
 				if(!mo.getId().equals(SessionController.getUser())){
 					toast = Toast.makeText(getBaseContext(), "Objekt tillagt: "+mo.getTitle()
 							+"Skapad av: "+mo.getAddedBy(), Toast.LENGTH_LONG);
 					toast.show();
 				}
+				mapView.invalidate();
 			}});
-		mapView.postInvalidate();
 	}
-	
+
 	public void update(Observable observable, Object data) {
 		if (data instanceof GeoPoint){
 
@@ -280,7 +285,7 @@ public class MapUI extends MapActivity implements Observer {
 			else{
 				mapOverlays.set(mapOverlays.indexOf(data), (MapObjectList)data);
 			}
-		//	mapOverlays.add((MapObjectList) data);
+			//	mapOverlays.add((MapObjectList) data);
 		}
 		else if(data instanceof MapObject){
 			MapObjectList list = MainView.mapCont.getList((MapObject)data);
@@ -294,7 +299,7 @@ public class MapUI extends MapActivity implements Observer {
 				mapOverlays.set(mapOverlays.indexOf(list), list);
 			}
 		}
-			
+
 		mapView.postInvalidate();
 		// RITA OM PÅ NÅGOT SÄTT
 		//använd mapView.invalidate() om du kör i UI tråden

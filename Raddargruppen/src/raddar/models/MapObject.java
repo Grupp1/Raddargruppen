@@ -45,9 +45,10 @@ public class MapObject extends OverlayItem {
 		
 		this.changedBy = "Har inte blivit ändrad";
 		this.changedDate = "Har inte blivit ändrad";
-		
-		idGen = new ID(addedBy,point.getLatitudeE6(),point.getLongitudeE6(), date);
-		id = idGen.generateID();
+		if(point!= null && addedBy!= null&& date != null){
+			idGen = new ID(addedBy,point.getLatitudeE6(),point.getLongitudeE6(), date);
+			id = idGen.generateID();
+		}
 	}
 	
 	public String getChangedBy() {
