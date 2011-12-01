@@ -207,6 +207,7 @@ public class MapUI extends MapActivity implements Observer {
 								//									MainView.mapCont.add(o = new FireTruck(touchedPoint, value, ResourceStatus.BUSY),true);
 								//								}
 								
+								
 								/*
 								 * Om situation sätt prioritet
 								 */
