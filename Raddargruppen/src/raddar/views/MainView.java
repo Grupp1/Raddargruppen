@@ -16,6 +16,7 @@ import raddar.enums.NotificationType;
 import raddar.enums.RequestType;
 import raddar.enums.ResourceStatus;
 import raddar.gruppen.R;
+import raddar.models.ClientDatabaseManager;
 import raddar.models.MapObjectMessage;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
@@ -93,20 +94,21 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		//		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
 
 		new SessionController(extras.get("user").toString());
+		DatabaseController.db.addObserver(this);
+		//new SipController(this);
 		new DatabaseController(this);
-		new SipController(this);
 		new ReciveHandler(this).addObserver(this);
 
 		try {
 			new Sender(new RequestMessage(RequestType.MESSAGE));
 			new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
+			DatabaseController.db.clearTable("contact");
 			new Sender(new RequestMessage(RequestType.CONTACTS));
 			new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
 
-		DatabaseController.db.addObserver(this);
 
 		callButton = (ImageButton)this.findViewById(R.id.callButton);
 		callButton.setOnClickListener(this);
@@ -224,7 +226,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		try {
 			// Skicka meddelandet
 			new Sender(nm);		
-			deleteDatabase("client_database");
+			DatabaseController.db.clearDatabase();
 		} catch (UnknownHostException e) {
 			Log.d("NotificationMessage", "Disconnect failed");
 		}

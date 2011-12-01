@@ -3,6 +3,7 @@ package raddar.views;
 import java.util.Observable;
 import java.util.Observer;
 
+import raddar.controllers.DatabaseController;
 import raddar.controllers.SipController;
 import raddar.enums.ConnectionStatus;
 import raddar.enums.LoginResponse;
@@ -37,7 +38,8 @@ public class StartView extends Activity implements Observer {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.start);
+		new DatabaseController(this);
+		setContentView((int) R.layout.start);
 		// Lite hårdkodade testanvändare att testa med
 		LoginManager.cache("Borche", "hej123");
 		LoginManager.cache("Danne", "raddar");
@@ -72,6 +74,7 @@ public class StartView extends Activity implements Observer {
 				loginButton.setEnabled(false);
 				dialog.show();
 
+				
 				Thread s = new Thread(new Runnable(){ 
 					public void run() {
 						lm.evaluate(user.getText().toString(),

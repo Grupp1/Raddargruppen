@@ -118,6 +118,7 @@ public class MapCont implements Observer, Runnable{
 		DatabaseController.db.updateRow(o);
 	}
 
+	
 	public void run() {
 		olist = DatabaseController.db.getAllRowsAsArrays("map");
 		for(int i = 0; i < olist.size();i++){

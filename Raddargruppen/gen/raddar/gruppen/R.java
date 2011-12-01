@@ -232,6 +232,7 @@ public final class R {
         public static final int send_send=0x7f05000f;
         public static final int send_subject=0x7f05000d;
         public static final int sos_meddelande=0x7f05001b;
+        public static final int start=0x7f050032;
         public static final int start_exit=0x7f050005;
         public static final int start_header=0x7f050000;
         public static final int start_ok=0x7f050006;
