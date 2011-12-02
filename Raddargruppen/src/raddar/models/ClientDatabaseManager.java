@@ -540,7 +540,7 @@ public class ClientDatabaseManager extends Observable {
 					"subject text," +
 					"mData text)";
 
-			String draftTableQueryString = "create table drafts (" 
+			String draftsTableQueryString = "create table drafts (" 
 					+ "msgId integer primary key autoincrement not null," + 
 					"destUser text," +
 					"rDate integer," +
@@ -565,6 +565,7 @@ public class ClientDatabaseManager extends Observable {
 			db.execSQL(imageMessageTableQueryString);
 			db.execSQL(outboxTableQueryString);
 			db.execSQL(bufferedmessageTableQueryString);
+			db.execSQL(draftsTableQueryString);
 		}
 
 		/**
