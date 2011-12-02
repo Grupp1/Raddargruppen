@@ -68,6 +68,7 @@ public class Sender implements Runnable {
 
 		} catch (IOException ie) {
 			Log.d("Skapandet av socket [2]", ie.toString());
+			// Uppdatera MainVire om att servern är nere... 
 		} //catch (InterruptedException e) {
 		//Log.d("Avbruten väntan", "Gick inte");
 		//}

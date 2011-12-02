@@ -47,15 +47,14 @@ public class MapCont implements Observer, Runnable{
 	 */
 
 	public MapCont(MainView m){
-		gps  = new GPSModel(m);
+		gps  = new GPSModel(m, this);
 		//DatabaseController.db.addObserver(this);
-		gps.addObserver(MapCont.this);
 	}
 
 	public void declareMapUI(MapUI mapUI){
 		this.mapUI = mapUI;
 		mapModel = new MapModel(mapUI);
-		
+
 		//mapModel.addObserver(this);
 		geocoder = new Geocoder(mapUI.getBaseContext(), Locale.getDefault());
 
@@ -72,49 +71,45 @@ public class MapCont implements Observer, Runnable{
 		return mapUI;
 	}
 
-	public void add(MapObject o, boolean notify){
-
-		if(mapModel != null){
+	public void add(MapObject o, boolean sendToServer){
+		Log.d("AddObject", "MapCont:"+o.getTitle());
+		if(mapUI != null){
 			mapModel.add(o);
-			if(!notify){
-				o.updateData(geocoder);
-				mapUI.drawNewMapObject(o);
-			}else{
-				Gson gson = new Gson();
-				mapUI.drawNewMapObject(o);
-				try{
-					MapObjectMessage mom = new MapObjectMessage(gson.toJson(o),
-							(o).getClass().getName(),o.getId(),MapOperation.ADD);
-					new Sender(mom);
-				}
-				catch (UnknownHostException e) {
+			mapUI.drawNewMapObject(o);
+			o.updateData(geocoder);
+		}
+		if(sendToServer){
+			Gson gson = new Gson();
+			try{
+				MapObjectMessage mom = new MapObjectMessage(gson.toJson(o),
+						(o).getClass().getName(),o.getId(),MapOperation.ADD);
+				new Sender(mom);
+			}
+			catch (UnknownHostException e) {
 
-				}
 			}
 		}
-		DatabaseController.db.addRow(o,notify);
+		DatabaseController.db.addRow(o,sendToServer);
 	}
 
-	public void updateObject(MapObject o,boolean notify){
+	public void updateObject(MapObject o,boolean sendToServer){
 		Log.d("UpdateObject","MapCont"+o.getTitle());
-		if(mapModel != null){
-			Log.d("UpdateObject","MapCont"+o.getTitle()+" i if-satsen");
+		if(mapUI!=null){
+			mapUI.drawNewMapObject(o);
+			mapModel.updateObject(o);
 			o.updateData(geocoder);
-			if(!notify){
-				mapUI.drawNewMapObject(o);
-				mapModel.updateObject(o);
-			}else{
-				mapUI.drawNewMapObject(o);
-				Gson gson = new Gson();
-				try{
-					MapObjectMessage mom = new MapObjectMessage(gson.toJson(o),
-							(o).getClass().getName(),o.getId(),MapOperation.UPDATE);
-					new Sender(mom);
-				}
-				catch (UnknownHostException e) {
-				}
+		}
+		if(sendToServer){
+			Gson gson = new Gson();
+			try{
+				MapObjectMessage mom = new MapObjectMessage(gson.toJson(o),
+						(o).getClass().getName(),o.getId(),MapOperation.UPDATE);
+				new Sender(mom);
+			}
+			catch (UnknownHostException e) {
 			}
 		}
+
 		DatabaseController.db.updateRow(o);
 	}
 
@@ -125,6 +120,11 @@ public class MapCont implements Observer, Runnable{
 			mapModel.add(o);
 			o.updateData(geocoder);
 			mapUI.drawNewMapObject(o);
+		}
+		if(areYouFind){
+			mapUI.controller.animateTo(you.getPoint());
+			mapUI.controller.setZoom(13);
+			mapUI.follow = true;
 		}
 	}
 
@@ -163,23 +163,21 @@ public class MapCont implements Observer, Runnable{
 
 				you = new You((GeoPoint)data, SessionController.getUser()+" position", "Här är "+SessionController.getUser(),
 						R.drawable.circle_green, ResourceStatus.FREE);
-
-				you.updateData(geocoder);
-				olist.add(you); // databas
+				//olist.add(you); // databas, bortkommenterad fel?
 				add(you,true);		// karta
-				mapUI.controller.animateTo(you.getPoint());
-				mapUI.controller.setZoom(13);
-				mapUI.follow = true;
 			}
 			else{
 				updateObject(you,true);
 			}
 			you.setPoint((GeoPoint)data);	
 
-			if (mapUI.follow){
-				mapUI.controller.animateTo(you.getPoint());
+			if (mapUI != null){
+				mapUI.drawNewMapObject(you);
+				if(mapUI.follow){
+					mapUI.controller.animateTo(you.getPoint());
+				}
 			}
-			mapUI.drawNewMapObject(you);
+
 		}
 	}
 

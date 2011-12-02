@@ -60,7 +60,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 			String action = intent.getAction();
 			if (Intent.ACTION_BATTERY_CHANGED.equals(action)) {
 				int level = intent.getIntExtra("level", 0);
-				Log.d("LEVEL:", ""+level);
+				Log.d("BATTERY LEVEL:", ""+level);
 				int scale = intent.getIntExtra("scale", 100);
 				int true_level = level * 100 / scale;
 				QoSManager.setPowerMode(true_level);
@@ -75,22 +75,32 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		setContentView(R.layout.main);
 
 		theOne = this;
-
+		
+		new DatabaseController(this);
+		DatabaseController.db.addObserver(this);
+		/**
+		 * Initierar kartans controller för att kunna få gps koordinaterna för sin position
+		 */
+		new Thread(new Runnable() {
+			public void run(){
+				mapCont = new MapCont(MainView.this);
+			}
+		}).start();
+		
+		extras = getIntent().getExtras();
+		new SessionController(extras.get("user").toString());
+		new SipController(this);
+		new ReciveHandler(this).addObserver(this);
+		
 		String level = BatteryManager.EXTRA_LEVEL;
 		Log.d("EXTRA_LEVEL", level);
 
-		extras = getIntent().getExtras();
 		//		controller = new InternalComManager();
 		//		controller.setUser(extras.get("user").toString());
 		//		db = new ClientDatabaseManager(this,controller.getUser());
 
 		//		//TEMPORÄRT MÅSTE FIXAS
 		//		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
-
-		new SessionController(extras.get("user").toString());
-		new DatabaseController(this);
-		new SipController(this);
-		new ReciveHandler(this).addObserver(this);
 
 		try {
 			new Sender(new RequestMessage(RequestType.MESSAGE));
@@ -100,9 +110,6 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-
-		DatabaseController.db.addObserver(this);
-
 		callButton = (ImageButton)this.findViewById(R.id.callButton);
 		callButton.setOnClickListener(this);
 
@@ -135,16 +142,6 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		else if (extras.get("connectionStatus").equals(ConnectionStatus.DISCONNECTED)){
 			connectionButton.setImageResource(R.drawable.disconnected);
 		}
-
-		/**
-		 * Initierar kartans controller för att kunna få gps koordinaterna för sin position
-		 */
-		new Thread(new Runnable() {
-			public void run(){
-				mapCont = new MapCont(MainView.this);
-			}
-		}).start();
-
 	}
 
 	public void onClick(View v) {
