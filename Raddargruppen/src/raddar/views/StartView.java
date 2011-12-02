@@ -4,12 +4,12 @@ import java.util.Observable;
 import java.util.Observer;
 
 import raddar.controllers.DatabaseController;
+import raddar.controllers.SessionController;
 import raddar.controllers.SipController;
 import raddar.enums.ConnectionStatus;
 import raddar.enums.LoginResponse;
 import raddar.gruppen.R;
 import raddar.models.LoginManager;
-import raddar.models.QoSManager;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -39,7 +39,11 @@ public class StartView extends Activity implements Observer {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.start);
+		SessionController.titleBar(this, " - Logga in");
+		new DatabaseController(this);
+
 		// Lite hårdkodade testanvändare att testa med
 		LoginManager.cache("Borche", "hej123");
 		LoginManager.cache("Danne", "raddar");
@@ -73,6 +77,7 @@ public class StartView extends Activity implements Observer {
 				loginButton.setEnabled(false);
 				dialog.show();
 
+				
 				Thread s = new Thread(new Runnable(){ 
 					public void run() {
 						lm.evaluate(user.getText().toString(),
@@ -127,7 +132,7 @@ public class StartView extends Activity implements Observer {
 					startActivity(nextIntent);
 				}
 				else if((LoginResponse) data == LoginResponse.USER_ALREADY_LOGGED_IN){
-					Toast.makeText(StartView.this, "Användaren är redan inloggad på servern, loggar ut hen",
+					Toast.makeText(StartView.this, "Användaren är redan inloggad på servern, loggar ut denne",
 							Toast.LENGTH_LONG).show();
 					Intent nextIntent = new Intent(StartView.this,
 							MainView.class);

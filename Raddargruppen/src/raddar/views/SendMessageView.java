@@ -11,8 +11,6 @@ import raddar.models.Message;
 import raddar.models.QoSManager;
 import raddar.models.TextMessage;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,6 +38,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.send_message);
+		SessionController.titleBar(this, " - Nytt textmeddelande");
 		destUser = (EditText) this.findViewById(R.id.destUser);
 		subject = (EditText) this.findViewById(R.id.subject);
 		messageData = (EditText) this.findViewById(R.id.messageData);
@@ -49,33 +48,33 @@ public class SendMessageView extends Activity implements OnClickListener {
 		destUser.setFocusable(false);
 
 
-				try {
+		try {
 
-					Bundle extras = getIntent().getExtras();
-					String[] items = (String[]) extras.getCharSequenceArray("message");
+			Bundle extras = getIntent().getExtras();
+			String[] items = (String[]) extras.getCharSequenceArray("message");
 
-					destUser = (EditText) this.findViewById(R.id.destUser);
-					subject = (EditText) this.findViewById(R.id.subject);
-					messageData = (EditText) this.findViewById(R.id.messageData);
+			destUser = (EditText) this.findViewById(R.id.destUser);
+			subject = (EditText) this.findViewById(R.id.subject);
+			messageData = (EditText) this.findViewById(R.id.messageData);
 
-					destUser.setText(items[0].toString());
-					subject.setText(items[1].toString());
-					messageData.setText(items[2].toString());
-					sendButton = (Button) this.findViewById(R.id.sendButton);
-					sendButton.setOnClickListener(this);
-					destUser.setOnClickListener(this);
+			destUser.setText(items[0].toString());
+			subject.setText(items[1].toString());
+			messageData.setText(items[2].toString());
+			sendButton = (Button) this.findViewById(R.id.sendButton);
+			sendButton.setOnClickListener(this);
+			destUser.setOnClickListener(this);
 
-				} catch (Exception e) {
+		} catch (Exception e) {
 
-					Log.d("SendMessageView", e.toString());
-					destUser = (EditText) this.findViewById(R.id.destUser);
-					subject = (EditText) this.findViewById(R.id.subject);
-					messageData = (EditText) this.findViewById(R.id.messageData);
-					sendButton = (Button) this.findViewById(R.id.sendButton);
-					sendButton.setOnClickListener(this);
-					destUser.setOnClickListener(this);
+			Log.d("SendMessageView", e.toString());
+			destUser = (EditText) this.findViewById(R.id.destUser);
+			subject = (EditText) this.findViewById(R.id.subject);
+			messageData = (EditText) this.findViewById(R.id.messageData);
+			sendButton = (Button) this.findViewById(R.id.sendButton);
+			sendButton.setOnClickListener(this);
+			destUser.setOnClickListener(this);
 
-				}
+		}
 	}
 
 	public void onClick(View v) {
@@ -100,7 +99,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 			Intent nextIntent = new Intent(SendMessageView.this, ContactView.class);
 			startActivityForResult(nextIntent,0);
 
-		} else{
+		}else{
 			onBackPressed();
 			Intent nextIntent = new Intent(SendMessageView.this,
 					ContactView.class);
@@ -172,7 +171,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 
 
 
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();

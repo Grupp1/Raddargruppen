@@ -5,7 +5,6 @@ import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
-import raddar.controllers.MapCont;
 import raddar.controllers.SessionController;
 import raddar.enums.ResourceStatus;
 import raddar.enums.SituationPriority;
@@ -20,11 +19,7 @@ import raddar.models.Situation;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.AssetFileDescriptor;
 import android.location.Geocoder;
-import android.media.AudioManager;
-import android.media.SoundPool;
-import android.media.SoundPool.OnLoadCompleteListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -62,8 +57,7 @@ public class MapUI extends MapActivity implements Observer {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.maps);
 
-
-
+		SessionController.titleBar(this, " - Karta");
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 		mapView.setSatellite(true);
@@ -184,6 +178,7 @@ public class MapUI extends MapActivity implements Observer {
 						alertDialog.setView(input);
 
 						alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+							
 							public void onClick(DialogInterface dialog, int whichButton) {
 								value = input.getText().toString();
 								MapObject o = null;

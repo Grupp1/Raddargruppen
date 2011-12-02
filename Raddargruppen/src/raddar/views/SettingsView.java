@@ -1,5 +1,6 @@
 package raddar.views;
 
+import raddar.controllers.SessionController;
 import raddar.gruppen.R;
 import raddar.models.QoSManager;
 import android.app.Activity;
@@ -24,7 +25,7 @@ public class SettingsView extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings);
-
+		SessionController.titleBar(this, " - Inställningar");
 		normal = (RadioButton) findViewById(R.id.normal_power_radio_button);
 		low = (RadioButton) findViewById(R.id.low_power_radio_button);
 		automatic = (RadioButton) findViewById(R.id.automatic_power_radio_button);

@@ -6,10 +6,7 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 import raddar.enums.MessageType;
-import raddar.enums.SOSType;
-import raddar.models.MapObject;
 import raddar.models.Message;
-import raddar.models.SOSMessage;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
