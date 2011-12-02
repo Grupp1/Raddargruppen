@@ -48,7 +48,9 @@ public class Receiver implements Runnable {
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
 			Class c= null ;
 			try {
-				c = Class.forName(in.readLine());
+				String inmatning = in.readLine();
+				System.out.println(inmatning);
+				c = Class.forName(inmatning);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}

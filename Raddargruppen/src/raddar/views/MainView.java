@@ -34,8 +34,6 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.google.android.maps.GeoPoint;
-
 public class MainView extends Activity implements OnClickListener, Observer {
 
 	private ImageButton callButton;
@@ -73,6 +71,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		SessionController.titleBar(this, " ");
 
 		theOne = this;
 		
@@ -105,11 +104,13 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		try {
 			new Sender(new RequestMessage(RequestType.MESSAGE));
 			new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
+			DatabaseController.db.clearTable("contact");
 			new Sender(new RequestMessage(RequestType.CONTACTS));
 			new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
+
 		callButton = (ImageButton)this.findViewById(R.id.callButton);
 		callButton.setOnClickListener(this);
 
@@ -146,6 +147,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 
 	public void onClick(View v) {
 		if(v == callButton){
+			
 			Intent nextIntent = new Intent(MainView.this, CallContactListView.class);
 			startActivity(nextIntent);
 		}
@@ -216,7 +218,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		try {
 			// Skicka meddelandet
 			new Sender(nm);		
-			deleteDatabase("client_database");
+			DatabaseController.db.clearDatabase();
 		} catch (UnknownHostException e) {
 			Log.d("NotificationMessage", "Disconnect failed");
 		}

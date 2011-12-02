@@ -3,7 +3,6 @@ package raddar.models;
 import raddar.controllers.SessionController;
 import raddar.enums.MapOperation;
 import raddar.enums.MessageType;
-import raddar.gruppen.R;
 
 import com.google.gson.Gson;
 
@@ -36,7 +35,10 @@ public class MapObjectMessage extends Message{
 			c = Class.forName(classString);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+		}catch (NullPointerException e){
+			return null;
 		}
+		
 		MapObject mo = new Gson().fromJson(jsonMapObject, c);
 		return mo;
 	}
@@ -48,6 +50,9 @@ public class MapObjectMessage extends Message{
 	}
 	public MapOperation getMapOperation() {
 		return mo;
+	}
+	public void setMapOperation(MapOperation m){
+		this.mo = m;
 	}
 	public String getClassName() {
 		return classString;

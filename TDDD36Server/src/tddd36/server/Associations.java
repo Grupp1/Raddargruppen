@@ -8,7 +8,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import raddar.enums.MessageType;
-import raddar.models.Message;
 import raddar.models.NotificationMessage;
 
 public class Associations {

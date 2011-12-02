@@ -1,15 +1,11 @@
 package raddar.models;
 
 import java.util.List;
-import java.util.Locale;
-import java.util.Observable;
 
-import raddar.controllers.MapCont;
 import raddar.controllers.SessionController;
 import raddar.gruppen.R;
 import raddar.views.MapUI;
 import android.graphics.drawable.Drawable;
-import android.location.Geocoder;
 import android.util.Log;
 
 import com.google.android.maps.Overlay;
@@ -45,6 +41,7 @@ public class MapModel {
 	public void add(MapObject o){
 		if(!o.getId().equals(SessionController.getUser()) && o instanceof You){
 			o.setIcon(R.drawable.circle_yellow);
+
 		}
 		d = mapUI.getResources().getDrawable(o.getIcon());
 		if (o instanceof Fire){
@@ -141,7 +138,11 @@ public class MapModel {
 			fireTruckList.removeMapObject(o);
 		}
 		else if(o instanceof You){
-			youList.removeMapObject(o);
+			if(o.getId().equals(SessionController.getUser())){
+				youList.removeMapObject(o);
+			}else{
+				otherList.removeMapObject(o);
+			}
 		}
 		else if(o instanceof Situation){
 			situationList.removeMapObject(o);

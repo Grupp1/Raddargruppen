@@ -9,7 +9,7 @@
 		android:id="@+id/linearLayout1"
 		android:orientation="vertical">
 		<TextView
-			android:textSize="35dip"
+			android:textSize="25dip"
 			android:text=""
 			android:layout_width="wrap_content"
 			android:id="@+id/label"

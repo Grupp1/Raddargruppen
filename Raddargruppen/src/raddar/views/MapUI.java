@@ -5,7 +5,6 @@ import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
-import raddar.controllers.MapCont;
 import raddar.controllers.SessionController;
 import raddar.enums.ResourceStatus;
 import raddar.enums.SituationPriority;
@@ -20,11 +19,7 @@ import raddar.models.Situation;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.AssetFileDescriptor;
 import android.location.Geocoder;
-import android.media.AudioManager;
-import android.media.SoundPool;
-import android.media.SoundPool.OnLoadCompleteListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -62,8 +57,7 @@ public class MapUI extends MapActivity implements Observer {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.maps);
 
-
-
+		SessionController.titleBar(this, " - Karta");
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 		mapView.setSatellite(true);
@@ -92,9 +86,9 @@ public class MapUI extends MapActivity implements Observer {
 		MainView.mapCont.declareMapUI(this);
 
 		controller.animateTo(sthlmLocation);
-		controller.setZoom(8);
-		
-//		Drawable d = getResources().getIdentifier(null, null, null);
+		controller.setZoom(10);
+
+		//		Drawable d = getResources().getIdentifier(null, null, null);
 
 	}
 	
@@ -104,7 +98,7 @@ public class MapUI extends MapActivity implements Observer {
 		if(MainView.mapCont.areYouFind){
 			follow = true;
 			controller.animateTo(MainView.mapCont.getYou().getPoint());
-			controller.setZoom(12);
+			controller.setZoom(15);
 		}
 		super.onStart();
 	}
@@ -184,6 +178,7 @@ public class MapUI extends MapActivity implements Observer {
 						alertDialog.setView(input);
 
 						alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+							
 							public void onClick(DialogInterface dialog, int whichButton) {
 								value = input.getText().toString();
 								MapObject o = null;
@@ -251,26 +246,31 @@ public class MapUI extends MapActivity implements Observer {
 	}
 
 	public void drawNewMapObject(final MapObject mo){
-		MapObjectList list = MainView.mapCont.getList(mo);
-		if(list == null){
-			return;
-		}
-		
-		if (!mapOverlays.contains(list)){
-			mapOverlays.add((MapObjectList) list);
-		}
-		else{
-			mapOverlays.set(mapOverlays.indexOf(list), list);
-		}
 		runOnUiThread(new Runnable(){
 			public void run() {
+				MapObjectList list = MainView.mapCont.getList(mo);
+				Log.d("MAPUI", " "+list);
+				if(list == null){
+					Log.d("MAPUI", "fyufdyfdjyuyudrtufr");
+					return;
+				}
+				
+				if (!mapOverlays.contains(list)){
+					Log.d("MAPUI", "if");
+					mapOverlays.add((MapObjectList) list);
+				}
+				else{
+					Log.d("MAPUI", "else");
+					mapOverlays.set(mapOverlays.indexOf(list), list);
+				}
+
 				if(!mo.getId().equals(SessionController.getUser())){
 					toast = Toast.makeText(getBaseContext(), "Objekt tillagt: "+mo.getTitle()
 							+"Skapad av: "+mo.getAddedBy(), Toast.LENGTH_LONG);
 					toast.show();
 				}
+				mapView.invalidate();
 			}});
-		mapView.postInvalidate();
 	}
 
 	public void update(Observable observable, Object data) {
