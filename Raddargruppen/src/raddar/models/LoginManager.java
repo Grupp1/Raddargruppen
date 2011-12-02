@@ -11,6 +11,8 @@ import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Observable;
 
+import raddar.controllers.SessionController;
+import raddar.enums.ConnectionStatus;
 import raddar.enums.LoginResponse;
 import raddar.enums.NotificationType;
 import raddar.enums.RequestType;
@@ -93,10 +95,18 @@ public class LoginManager extends Observable {
 			so.close();
 			
 			if (response.equals("OK")) {
+				SessionController.setPassword(password);
+				SessionController.setUserName(username);
+				if(SessionController.getSessionController()!=null)
+					SessionController.getSessionController().changeConnectionStatus(ConnectionStatus.CONNECTED);
 				logIn = LoginResponse.ACCEPTED;
 				s = null;
 			}
 			else if(response.equals("OK_FORCE_LOGOUT")){
+				SessionController.setPassword(password);
+				SessionController.setUserName(username);
+				if(SessionController.getSessionController()!=null)
+					SessionController.getSessionController().changeConnectionStatus(ConnectionStatus.CONNECTED);
 				logIn = LoginResponse.USER_ALREADY_LOGGED_IN;
 				s = null;
 			}
@@ -105,7 +115,11 @@ public class LoginManager extends Observable {
 			// Om servern inte kan nås, kolla om vi har en försökande tråd redan
 			// ...har vi en försökande tråd innebär det att vi redan är inloggade lokalt
 			// och då returnerar vi här, annars loggar vi in lokalt
-			if (s == null)
+			if(SessionController.getConnectionStatus()==ConnectionStatus.DISCONNECTED && s==null){
+				s = new StubbornLoginThread(username, password);
+				return;
+			}
+			else if (s == null)
 				logIn = evaluateLocally(username, password);
 			else
 				return;
@@ -154,7 +168,7 @@ public class LoginManager extends Observable {
 	public static String removeCache(String username) {
 		return passwordCache.remove(username);
 	}
-
+	
 	/*
 	 * Privat klass som försöker att logga in emot servern med jämna mellanrum
 	 */

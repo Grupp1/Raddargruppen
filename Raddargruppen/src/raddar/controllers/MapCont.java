@@ -55,7 +55,7 @@ public class MapCont implements Observer, Runnable{
 	public void declareMapUI(MapUI mapUI){
 		this.mapUI = mapUI;
 		mapModel = new MapModel(mapUI);
-		
+
 		//mapModel.addObserver(this);
 		geocoder = new Geocoder(mapUI.getBaseContext(), Locale.getDefault());
 
@@ -203,4 +203,18 @@ public class MapCont implements Observer, Runnable{
 		return display;
 	}
 
+	public void renewYou() {
+		if (areYouFind){
+
+			you = new You((GeoPoint)you.getPoint(), SessionController.getUser()+" position", "Här är "+SessionController.getUser(),
+					R.drawable.circle_green, ResourceStatus.FREE);
+
+			you.updateData(geocoder);
+			olist.add(you); // databas
+			add(you,true);		// karta
+			mapUI.controller.animateTo(you.getPoint());
+			mapUI.controller.setZoom(13);
+			mapUI.follow = true;
+		}
+	}
 }

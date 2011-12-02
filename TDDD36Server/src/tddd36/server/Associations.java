@@ -49,12 +49,17 @@ public class Associations {
 	
 	/**
 	 * Kolla om en användare är online
+,,
+,
+,
+,
+,
 	 * 
 	 * @param username Användaren som ska kollas
 	 * @return True om användaren är online
 	 */
 	public boolean isUserOnline(String username){
-		return associations.containsKey(username);
+		return (getUserAddress(username) != null);
 	}
 	
 	/**
@@ -74,7 +79,9 @@ public class Associations {
 	 * @return InetAddressen som är associerad med username
 	 */
 	public InetAddress getUserAddress(String username) {
-		return associations.get(username);
+		if(associations.containsKey(username))
+			return associations.get(username);
+		return null;
 	}
 	
 	/**

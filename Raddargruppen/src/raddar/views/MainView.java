@@ -92,19 +92,19 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		//		//TEMPORÄRT MÅSTE FIXAS
 		//		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
 
-		new SessionController(extras.get("user").toString());
-		new DatabaseController(this);
+		new SessionController(extras.get("user").toString()).addObserver(this);
+//		new DatabaseController(this);
 		new SipController(this);
 		new ReciveHandler(this).addObserver(this);
-
-		try {
-			new Sender(new RequestMessage(RequestType.MESSAGE));
-			new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
-			new Sender(new RequestMessage(RequestType.CONTACTS));
-			new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
+		
+//		try {
+//			new Sender(new RequestMessage(RequestType.MESSAGE));
+//			new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
+//			new Sender(new RequestMessage(RequestType.CONTACTS));
+//			new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
+//		} catch (UnknownHostException e) {
+//			e.printStackTrace();
+//		}
 
 		DatabaseController.db.addObserver(this);
 
@@ -149,7 +149,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 				mapCont = new MapCont(MainView.this);
 			}
 		}).start();
-
+		this.update(SessionController.getSessionController(), ConnectionStatus.CONNECTED);
 	}
 
 	public void onClick(View v) {
@@ -250,6 +250,16 @@ public class MainView extends Activity implements OnClickListener, Observer {
 					connectionButton.setImageResource(R.drawable.connected);
 					Toast.makeText(getApplicationContext(), "Ansluten till servern, inloggad som: "+SessionController.getUser()
 							, Toast.LENGTH_LONG).show();
+//					DatabaseController.db.clearDatabase();
+//					mapCont.renewYou();
+					try {
+						new Sender(new RequestMessage(RequestType.MESSAGE));
+						new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
+						new Sender(new RequestMessage(RequestType.CONTACTS));
+						new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
+					} catch (UnknownHostException e) {
+						e.printStackTrace();
+					}
 				}else if (data == ConnectionStatus.DISCONNECTED){
 					connectionButton.setImageResource(R.drawable.disconnected);
 					Toast.makeText(getApplicationContext(), "Tappad anslutning mot servern",Toast.LENGTH_LONG).show();

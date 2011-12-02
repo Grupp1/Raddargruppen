@@ -6,19 +6,26 @@ import java.util.Observable;
 
 import raddar.enums.ConnectionStatus;
 import raddar.enums.MessageType;
+import raddar.enums.ResourceStatus;
 import raddar.enums.ServerInfo;
+import raddar.gruppen.R;
 import raddar.models.ContactMessage;
 import raddar.models.ImageMessage;
 import raddar.models.MapObject;
 import raddar.models.MapObjectMessage;
 import raddar.models.Message;
+import raddar.models.QoSManager;
+import raddar.models.SOSMessage;
 import raddar.models.You;
 import raddar.views.MainView;
+import raddar.views.MapUI;
+import raddar.views.StartView;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.Intent;
 import android.util.Log;
 
 public class ReciveHandler extends Observable implements Runnable {
@@ -65,9 +72,14 @@ public class ReciveHandler extends Observable implements Runnable {
 		if (mt == MessageType.TEXT) {
 			DatabaseController.db.addRow(m, notify);
 		} else if (mt == MessageType.SOS) {
-			((Activity) context).runOnUiThread(new Runnable() {
+			QoSManager.getCurrentActivity().runOnUiThread(new Runnable() {
 				public void run() {
-					AlertDialog.Builder alert = new AlertDialog.Builder(context);
+					You you = new You(((SOSMessage)m).getPoint(), m.getSrcUser()+" positition",m.getData(),R.drawable.circle_red,
+							ResourceStatus.BUSY);
+					Log.e("NEW SOS",((SOSMessage)m).getPoint()+"");
+					Log.e("NEW SOS",you.getPoint()+"");
+					MainView.mapCont.updateObject(you, false);
+					AlertDialog.Builder alert = new AlertDialog.Builder(QoSManager.getCurrentActivity());
 
 					alert.setTitle("SOS");
 					alert.setMessage(m.getData());
@@ -76,7 +88,11 @@ public class ReciveHandler extends Observable implements Runnable {
 							new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,
 								int whichButton) {
-							// Gå till kartan
+							// Gå till kartan¨
+						Intent intent = new Intent(QoSManager.getCurrentActivity(),MapUI.class);
+						intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+						QoSManager.getCurrentActivity().startActivity(intent);
+						((SOSMessage)m).getPoint();
 						}
 					});
 
@@ -118,30 +134,24 @@ public class ReciveHandler extends Observable implements Runnable {
 			DatabaseController.db.addRow(((ContactMessage)m).toContact());
 		}
 		else if(mt == MessageType.NOTIFICATION){
-//			((Activity) context).runOnUiThread(new Runnable() {
-//				public void run() {
-//					AlertDialog.Builder alert = new AlertDialog.Builder(context);
-//
-//					alert.setTitle("Forcerad utloggning");
-//					alert.setMessage("En annan klient har loggat in på denna användare. Du kommer nu att loggas ut.");
-//					//					alert.setNegativeButton("Gör inget",
-//					//							new DialogInterface.OnClickListener() {
-//					//						public void onClick(DialogInterface dialog,
-//					//								int whichButton) {
-//					//							dialog.cancel();
-//					//						}
-//					//					});
-//					alert.setOnCancelListener(new OnCancelListener(){
-//						public void onCancel(DialogInterface dialog) {
-//							setChanged();
-//							notifyObservers("LOGOUT");
-//						}
-//					});
-//
-//					alert.show();
-//				}
-//
-//			});
+			Log.e("LOGOUT","OTHER USER HAS LOGGED IN ON ANOTHER DEVICE");
+			QoSManager.getCurrentActivity().runOnUiThread(new Runnable() {
+				public void run() {
+					AlertDialog.Builder alert = new AlertDialog.Builder(QoSManager.getCurrentActivity());
+
+					alert.setTitle("Forcerad utloggning");
+					alert.setMessage("En annan klient har loggat in på denna användare. Du kommer nu att loggas ut.");
+					alert.setOnCancelListener(new OnCancelListener(){
+						public void onCancel(DialogInterface dialog) {
+							Intent intent = new Intent(QoSManager.getCurrentActivity(),StartView.class);
+							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+							QoSManager.getCurrentActivity().startActivity(intent);
+						}
+					});
+
+					alert.show();
+				}
+			});
 		}
 
 	}

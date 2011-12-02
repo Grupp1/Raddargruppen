@@ -6,7 +6,9 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import raddar.enums.ConnectionStatus;
 import raddar.enums.ServerInfo;
+import raddar.models.LoginManager;
 import raddar.models.MapObject;
 import raddar.models.Message;
 import android.util.Log;
@@ -29,7 +31,7 @@ public class Sender implements Runnable {
 		this.port = port;
 	}
 
-	
+
 	public Sender(Message message, InetAddress address, int port) {
 		this(address, port);
 		this.message = message;
@@ -37,7 +39,7 @@ public class Sender implements Runnable {
 	}
 
 
-	
+
 	public Sender(Message message) throws UnknownHostException {
 		this.message = message;
 		this.port = ServerInfo.SERVER_PORT;
@@ -68,9 +70,14 @@ public class Sender implements Runnable {
 
 		} catch (IOException ie) {
 			Log.d("Skapandet av socket [2]", ie.toString());
+			SessionController.getSessionController().changeConnectionStatus(ConnectionStatus.DISCONNECTED);
+//			startStubbornLogin(SessionController.getPassword(), SessionController.getUserName());
+			LoginManager lm = new LoginManager();
+			lm.evaluate(SessionController.getUserName(), SessionController.getPassword());
 		} //catch (InterruptedException e) {
 		//Log.d("Avbruten väntan", "Gick inte");
 		//}
-
 	}
+
 }
+

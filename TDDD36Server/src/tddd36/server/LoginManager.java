@@ -5,14 +5,13 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
-import raddar.enums.MapOperation;
+import raddar.enums.NotificationType;
 import raddar.models.MapObjectMessage;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
-import raddar.enums.NotificationType;
 
 public class LoginManager {
-	
+
 	/**
 	 * Verifiera att en användare som försöker logga in har skrivit in rätt
 	 * användarnamn och rätt lösenord. Om inloggningsuppgifterna är giltiga
@@ -34,19 +33,27 @@ public class LoginManager {
 			try {
 				// Skapa utströmmen till klienten
 				pw = new PrintWriter(so.getOutputStream(), true);
-				if(Server.onlineUsers.isUserOnline(username)){
+				if(Server.onlineUsers.getUserAddress(username)!=null){
 					System.out.println(username+" har försökt logga in, men är redan inloggad på ip-adressen "
 							+ Server.onlineUsers.getUserAddress(username));
-						pw.println("OK_FORCE_LOGOUT");
+					if(Server.onlineUsers.getUserAddress(username).equals(so.getInetAddress())){
+						pw.println("OK");
+						pw.close();
+						return;
+					}else{
 						new Sender(new NotificationMessage("Server", NotificationType.DISCONNECT), username);
+						pw.println("OK_FORCE_LOGOUT");
+						Server.onlineUsers.removeUser(username);
+					}
 				}else{
 					// Svara med att det är OK
 					pw.println("OK");
 				}
 				pw.close();
 				System.out.println(username + " har loggat in (" + so.getInetAddress().getHostAddress() + ") ");
-				
+
 				// Lägg till användaren i listan över inloggade användare
+
 				Server.onlineUsers.addUser(username, so.getInetAddress());
 			} catch (IOException e) {
 				System.out.println("Could not respond with \"OK\" to client attempting to Log in. Socket error? ");
@@ -64,7 +71,7 @@ public class LoginManager {
 			}
 		}
 	}
-	
+
 	/**
 	 * Logga ut en användare och avassociera dennes IP-adress
 	 * 
@@ -74,7 +81,6 @@ public class LoginManager {
 		if(username==null) return;
 		MapObjectMessage mom = Database.getMapObject(username);
 		if(mom != null){
-			System.out.println(mom.getId());
 			Database.removeMapObject(username);
 			broadcast(mom);
 		}

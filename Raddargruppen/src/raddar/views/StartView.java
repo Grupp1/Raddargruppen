@@ -3,6 +3,7 @@ package raddar.views;
 import java.util.Observable;
 import java.util.Observer;
 
+import raddar.controllers.DatabaseController;
 import raddar.controllers.SipController;
 import raddar.enums.ConnectionStatus;
 import raddar.enums.LoginResponse;
@@ -24,6 +25,7 @@ public class StartView extends Activity implements Observer {
 	private Button loginButton;
 	private EditText user;
 	private EditText password;
+	
 	/**
 	 * The progressbar that is shown when the client is attempting to log in
 	 */
@@ -44,13 +46,12 @@ public class StartView extends Activity implements Observer {
 		LoginManager.cache("Alice", "longshot");
 		LoginManager.cache("danan612","raddar");
 
-
 		user = (EditText) this.findViewById(R.id.usertext);
 		password = (EditText) this.findViewById(R.id.passwordtext);
 		// Endast för lättare testning
 
-		user.setText("lalle");
-		password.setText("lalle");
+		user.setText("danan612");
+		password.setText("raddar");
 
 		final LoginManager lm = new LoginManager();
 		lm.addObserver(this);

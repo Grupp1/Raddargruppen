@@ -19,6 +19,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.android.maps.GeoPoint;
+
 public class SendSOSView extends Activity {
 	
 	private static boolean SOS_ALARM_IS_ACTIVE = false;
@@ -64,7 +66,9 @@ public class SendSOSView extends Activity {
 	
 	private void startAlarm() {
 		txt = et.getText().toString();
-		SOSMessage sm = new SOSMessage(txt, SessionController.getUser(), SOSType.ALARM);
+		GeoPoint point = MainView.mapCont.getYou().getPoint();
+		SOSMessage sm = new SOSMessage(txt, SessionController.getUser(), SOSType.ALARM,
+				point.getLatitudeE6(),point.getLongitudeE6());
 		try {
 			new Sender(sm, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
 			SOS_ALARM_IS_ACTIVE = true;
@@ -75,7 +79,9 @@ public class SendSOSView extends Activity {
 	
 	private void cancelAlarm() {
 		txt = "";
-		SOSMessage sm = new SOSMessage(SessionController.getUser(), SOSType.CANCEL_ALARM);
+		GeoPoint point = MainView.mapCont.getYou().getPoint();
+		SOSMessage sm = new SOSMessage(SessionController.getUser(),"", SOSType.CANCEL_ALARM,
+				point.getLatitudeE6(),point.getLongitudeE6());
 		try {
 			new Sender(sm, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
 			SOS_ALARM_IS_ACTIVE = false;

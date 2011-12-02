@@ -25,6 +25,7 @@ public class MapModel {
 	private MapObjectList resourceList;
 	private MapObjectList youList;
 	private MapObjectList otherList;
+	private MapObjectList sosList;
 
 	private MapUI mapUI;
 
@@ -43,6 +44,9 @@ public class MapModel {
 	 */
 
 	public void add(MapObject o){
+//		if(o instanceof You&&((You) o).isSOS()){
+//			o.setIcon(R.drawable.circle_red);
+//		}
 		if(!o.getId().equals(SessionController.getUser()) && o instanceof You){
 			o.setIcon(R.drawable.circle_yellow);
 		}
@@ -60,6 +64,13 @@ public class MapModel {
 			fireTruckList.addOverlay(o);
 		}
 		else if(o instanceof You){
+//			if(((You) o).isSOS()){
+//				Log.d("soslist", o.getAddedBy());
+//				if(sosList == null){
+//					sosList = new MapObjectList(d, mapUI);
+//				}
+//				sosList.addOverlay(o);
+//			}
 			if(!o.getId().equals(SessionController.getUser())){
 				Log.d("otherlist", o.getAddedBy());
 				if(otherList == null){
