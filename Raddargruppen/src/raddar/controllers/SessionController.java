@@ -1,8 +1,6 @@
 package raddar.controllers;
 
-import raddar.gruppen.R;
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
 

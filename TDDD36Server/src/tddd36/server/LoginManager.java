@@ -5,11 +5,10 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
-import raddar.enums.MapOperation;
+import raddar.enums.NotificationType;
 import raddar.models.MapObjectMessage;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
-import raddar.enums.NotificationType;
 
 public class LoginManager {
 	

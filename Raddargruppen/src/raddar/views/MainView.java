@@ -11,18 +11,13 @@ import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
 import raddar.controllers.SipController;
 import raddar.enums.ConnectionStatus;
-import raddar.enums.MapOperation;
 import raddar.enums.NotificationType;
 import raddar.enums.RequestType;
-import raddar.enums.ResourceStatus;
 import raddar.gruppen.R;
-import raddar.models.ClientDatabaseManager;
-import raddar.models.MapObjectMessage;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
 import raddar.models.QoSManager;
 import raddar.models.RequestMessage;
-import raddar.models.You;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -31,7 +26,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,9 +33,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
-import com.google.android.maps.GeoPoint;
-import com.google.gson.Gson;
 
 public class MainView extends Activity implements OnClickListener, Observer {
 
@@ -67,7 +58,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 			String action = intent.getAction();
 			if (Intent.ACTION_BATTERY_CHANGED.equals(action)) {
 				int level = intent.getIntExtra("level", 0);
-				Log.d("LEVEL:", ""+level);
+				Log.d("BATTERY LEVEL:", ""+level);
 				int scale = intent.getIntExtra("scale", 100);
 				int true_level = level * 100 / scale;
 				QoSManager.setPowerMode(true_level);
@@ -83,23 +74,32 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		SessionController.titleBar(this, " ");
 
 		theOne = this;
-
+		
+		new DatabaseController(this);
+		DatabaseController.db.addObserver(this);
+		/**
+		 * Initierar kartans controller för att kunna få gps koordinaterna för sin position
+		 */
+		new Thread(new Runnable() {
+			public void run(){
+				mapCont = new MapCont(MainView.this);
+			}
+		}).start();
+		
+		extras = getIntent().getExtras();
+		new SessionController(extras.get("user").toString());
+		new SipController(this);
+		new ReciveHandler(this).addObserver(this);
+		
 		String level = BatteryManager.EXTRA_LEVEL;
 		Log.d("EXTRA_LEVEL", level);
 
-		extras = getIntent().getExtras();
 		//		controller = new InternalComManager();
 		//		controller.setUser(extras.get("user").toString());
 		//		db = new ClientDatabaseManager(this,controller.getUser());
 
 		//		//TEMPORÄRT MÅSTE FIXAS
 		//		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
-
-		new SessionController(extras.get("user").toString());
-		new SipController(this);
-		new DatabaseController(this);
-		DatabaseController.db.addObserver(this);
-		new ReciveHandler(this).addObserver(this);
 
 		try {
 			new Sender(new RequestMessage(RequestType.MESSAGE));
@@ -110,7 +110,6 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-
 
 		callButton = (ImageButton)this.findViewById(R.id.callButton);
 		callButton.setOnClickListener(this);
@@ -144,16 +143,6 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		else if (extras.get("connectionStatus").equals(ConnectionStatus.DISCONNECTED)){
 			connectionButton.setImageResource(R.drawable.disconnected);
 		}
-
-		/**
-		 * Initierar kartans controller för att kunna få gps koordinaterna för sin position
-		 */
-		new Thread(new Runnable() {
-			public void run(){
-				mapCont = new MapCont(MainView.this);
-			}
-		}).start();
-
 	}
 
 	public void onClick(View v) {

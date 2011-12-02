@@ -2,6 +2,7 @@ package raddar.controllers;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.UnknownHostException;
 import java.util.Observable;
 
 import raddar.enums.ConnectionStatus;
@@ -12,13 +13,12 @@ import raddar.models.ImageMessage;
 import raddar.models.MapObject;
 import raddar.models.MapObjectMessage;
 import raddar.models.Message;
-import raddar.models.You;
+import raddar.models.NotificationMessage;
 import raddar.views.MainView;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.util.Log;
 
 public class ReciveHandler extends Observable implements Runnable {
@@ -62,9 +62,21 @@ public class ReciveHandler extends Observable implements Runnable {
 	 * @param notify true if we should notify the user
 	 */
 	public void newMessage(MessageType mt, final Message m, boolean notify) {
-		if (mt == MessageType.TEXT) {
+		if (mt == MessageType.PROBE){
+			Log.d("PROBE", "POBE");
+			NotificationMessage mess = new NotificationMessage(SessionController.getUser(), null);
+			mess.setType(MessageType.PROBE);
+			try {
+				new Sender(mess);
+			} catch (UnknownHostException e) {
+				Log.d("Probe Sender", "Kunde inte svara servern");
+			}
+			// Hur ska klienten tolka att vi inte har kontakt med servern?
+			// notify(ConnectionStatus.DISSCONNECT);
+		}
+		else if (mt == MessageType.TEXT) {
 			DatabaseController.db.addRow(m, notify);
-		} else if (mt == MessageType.SOS) {
+		}else if (mt == MessageType.SOS) {
 			((Activity) context).runOnUiThread(new Runnable() {
 				public void run() {
 					AlertDialog.Builder alert = new AlertDialog.Builder(context);
@@ -104,15 +116,21 @@ public class ReciveHandler extends Observable implements Runnable {
 				MainView.mapCont.add(mo,false);
 				break;
 			case REMOVE:
-				MainView.mapCont.removeObject(mo, false);
+				Log.d("REMOVE", "SWITCH");
+				// MapObject är inte med i meddelandet.. endast id skickas idag....
+				if(mo==null){
+					Log.d("REMOVE", "IF");
+				}else{
+					Log.d("REMOVE", "ELSE");
+					MainView.mapCont.removeObject(mo, false);
+				}
 				break;
 			case UPDATE:
 				MainView.mapCont.updateObject(mo,false);
 				break;
 			default:
 
-			}	
-
+			}
 		}
 		else if(mt == MessageType.CONTACT){
 			DatabaseController.db.addRow(((ContactMessage)m).toContact());

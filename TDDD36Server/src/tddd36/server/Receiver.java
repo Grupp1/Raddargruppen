@@ -63,6 +63,9 @@ public class Receiver implements Runnable {
 			// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
 			// meddelandet som klienten har skickat blir inläst på korrekt sätt
 			switch (m.getType()) {
+			case PROBE:
+				Server.onlineUsers.confirmedProbeMessage(m.getSrcUser(), so.getInetAddress());
+				break;
 			case SOS:
 				broadcast(m);
 				break;

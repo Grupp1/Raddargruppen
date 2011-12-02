@@ -2,13 +2,9 @@ package raddar.models;
 
 import java.util.ArrayList;
 
-import raddar.controllers.DatabaseController;
-import raddar.controllers.SessionController;
 import raddar.enums.ResourceStatus;
 import raddar.enums.SituationPriority;
-import raddar.gruppen.R;
 import raddar.views.MainView;
-import raddar.views.MapUI;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;

@@ -7,8 +7,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import raddar.enums.ServerInfo;
-import raddar.models.ClientDatabaseManager;
-import raddar.models.MapObject;
 import raddar.models.Message;
 import android.util.Log;
 
@@ -69,6 +67,8 @@ public class Sender implements Runnable {
 			Log.e("Sendzordz",send);
 		} catch (IOException ie) {
 			Log.d("Skapandet av socket [2]", ie.toString());
+
+			// Uppdatera MainVire om att servern är nere... 
 			DatabaseController.db.addBufferedMessageRow(send);
 		} //catch (InterruptedException e) {
 		//Log.d("Avbruten väntan", "Gick inte");

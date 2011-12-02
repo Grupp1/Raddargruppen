@@ -2,8 +2,8 @@ package raddar.views;
 
 import raddar.controllers.SessionController;
 import raddar.controllers.SipController;
-import raddar.models.QoSManager;
 import raddar.gruppen.R;
+import raddar.models.QoSManager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +17,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;

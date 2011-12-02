@@ -3,7 +3,6 @@ package raddar.models;
 import raddar.controllers.SessionController;
 import raddar.enums.MapOperation;
 import raddar.enums.MessageType;
-import raddar.gruppen.R;
 
 import com.google.gson.Gson;
 

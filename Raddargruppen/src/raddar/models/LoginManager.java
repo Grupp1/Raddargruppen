@@ -16,7 +16,6 @@ import java.util.Observable;
 import raddar.controllers.DatabaseController;
 import raddar.controllers.Sender;
 import raddar.enums.LoginResponse;
-import raddar.enums.MessageType;
 import raddar.enums.NotificationType;
 import raddar.enums.RequestType;
 import raddar.enums.ServerInfo;
