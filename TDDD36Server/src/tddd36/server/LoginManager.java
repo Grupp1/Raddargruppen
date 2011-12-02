@@ -8,6 +8,8 @@ import java.net.Socket;
 import raddar.enums.MapOperation;
 import raddar.models.MapObjectMessage;
 import raddar.models.Message;
+import raddar.models.NotificationMessage;
+import raddar.enums.NotificationType;
 
 public class LoginManager {
 	
@@ -27,27 +29,21 @@ public class LoginManager {
 	public static void evaluateUser(String username, String password, Socket so) {
 		// Om användaren har loggat in med korrekt lösenord
 		PrintWriter pw;
-		if(Server.onlineUsers.isUserOnline(username)){
-			System.out.println(username+" har försökt logga in, men är redan inloggad på ip-adressen "
-					+ Server.onlineUsers.getUserAddress(username));
-			try {
-				pw = new PrintWriter(so.getOutputStream(), true);
-				pw.println("USER_ALREADY_EXIST");
-				pw.close();
-			} catch (IOException e) {
-				System.out.println("Could not respond with \"USER_ALREADY_EXIST\" to client attempting to Log in. Socket error? ");
-				e.printStackTrace();
-			}
-		}
-		else if (Database.evalutateUser(username, password)) {
+
+		if (Database.evalutateUser(username, password)) {
 			try {
 				// Skapa utströmmen till klienten
 				pw = new PrintWriter(so.getOutputStream(), true);
-				
-				// Svara med att det är OK
-				pw.println("OK");
+				if(Server.onlineUsers.isUserOnline(username)){
+					System.out.println(username+" har försökt logga in, men är redan inloggad på ip-adressen "
+							+ Server.onlineUsers.getUserAddress(username));
+						pw.println("OK_FORCE_LOGOUT");
+						new Sender(new NotificationMessage("Server", NotificationType.DISCONNECT), username);
+				}else{
+					// Svara med att det är OK
+					pw.println("OK");
+				}
 				pw.close();
-				
 				System.out.println(username + " har loggat in (" + so.getInetAddress().getHostAddress() + ") ");
 				
 				// Lägg till användaren i listan över inloggade användare
@@ -75,9 +71,15 @@ public class LoginManager {
 	 * @param username Användaren som ska loggas ut
 	 */
 	public static void logoutUser(String username) {
+		if(username==null) return;
+		MapObjectMessage mom = Database.getMapObject(username);
+		if(mom != null){
+			System.out.println(mom.getId());
+			Database.removeMapObject(username);
+			broadcast(mom);
+		}
+		System.out.println(username+" logout");
 		InetAddress a = Server.onlineUsers.removeUser(username);
-		Database.removeMapObject(username);
-	//	broadcast(new MapObjectMessage(null, null, username, MapOperation.REMOVE));
 		// Kolla om användaren redan är utloggad
 		if (a == null)
 			System.out.println(username + " har loggat ut ");

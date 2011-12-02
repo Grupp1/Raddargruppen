@@ -11,4 +11,7 @@ public class You extends Resource {
 		super(point, title, snippet, icon, status);
 		id = SessionController.getUser();
 	}
+	public void setId(String id){
+		this.id = id;
+	}
 }

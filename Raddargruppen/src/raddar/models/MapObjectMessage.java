@@ -22,12 +22,13 @@ public class MapObjectMessage extends Message{
 		setSrcUser(SessionController.getUser());
 	}
 	
-	public MapObjectMessage(String jsonMapObject,String classString,String id,MapOperation mo,boolean noSrcUser){
+	public MapObjectMessage(String jsonMapObject,String classString,String id,MapOperation mo,String userName){
 		this.jsonMapObject = jsonMapObject;
 		this.classString = classString;
 		this.mo = mo;
 		this.id = id;
 		type = MessageType.MAPOBJECT;
+		setSrcUser(userName);
 	}
 	public MapObject toMapObject(){
 		Class c= null ;
@@ -35,7 +36,10 @@ public class MapObjectMessage extends Message{
 			c = Class.forName(classString);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+		}catch (NullPointerException e){
+			return null;
 		}
+		
 		MapObject mo = new Gson().fromJson(jsonMapObject, c);
 		return mo;
 	}
@@ -47,6 +51,9 @@ public class MapObjectMessage extends Message{
 	}
 	public MapOperation getMapOperation() {
 		return mo;
+	}
+	public void setMapOperation(MapOperation m){
+		this.mo = m;
 	}
 	public String getClassName() {
 		return classString;

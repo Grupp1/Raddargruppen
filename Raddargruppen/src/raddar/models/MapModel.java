@@ -45,7 +45,7 @@ public class MapModel {
 	public void add(MapObject o){
 		if(!o.getId().equals(SessionController.getUser()) && o instanceof You){
 			o.setIcon(R.drawable.circle_yellow);
-			Log.d("IF SATS", "IF SATS");
+
 		}
 		d = mapUI.getResources().getDrawable(o.getIcon());
 		if (o instanceof Fire){
@@ -142,7 +142,11 @@ public class MapModel {
 			fireTruckList.removeMapObject(o);
 		}
 		else if(o instanceof You){
-			youList.removeMapObject(o);
+			if(o.getId().equals(SessionController.getUser())){
+				youList.removeMapObject(o);
+			}else{
+				otherList.removeMapObject(o);
+			}
 		}
 		else if(o instanceof Situation){
 			situationList.removeMapObject(o);

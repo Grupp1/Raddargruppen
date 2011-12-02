@@ -34,9 +34,9 @@
 	<string name="main_services">Externa tjänster</string>
     <string name="add_contact_add">Lägg till kontakt:</string>
     <string name="add_contact_save">Spara</string>
-	<string name="sos_meddelande">SOS-meddelande:</string>
-    <string name="map_menu_follow">Följ mig</string>
-    <string name="map_menu_toggle">Satelitvy</string>
+	<string name="map_menu_follow">Följ mig</string><string name="sos_meddelande">SOS-meddelande:</string>
+    
+    <string name="map_menu_toggle">Satellitvy</string>
     <string name="map_menu_myLocation">Min position</string>
     <string name="map_menu_traffic">Trafik</string>
     <string name="edit_contact_edit">Redigera kontakt:</string>
@@ -56,6 +56,9 @@
 	<string name="low_power">Strömsparläge</string>
 	<string name="normal_power">Normalt strömläge</string>
 	<string name="automatic_power">Automatisk</string>
+
 	<string name="power_programs">Strömlägen</string>
 	<string name="application_name">Räddargruppen</string>
+
+	<string name="start">0x7f030018</string>
 </resources>

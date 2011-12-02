@@ -12,11 +12,13 @@ import raddar.models.ImageMessage;
 import raddar.models.MapObject;
 import raddar.models.MapObjectMessage;
 import raddar.models.Message;
+import raddar.models.You;
 import raddar.views.MainView;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.util.Log;
 
 public class ReciveHandler extends Observable implements Runnable {
@@ -97,7 +99,6 @@ public class ReciveHandler extends Observable implements Runnable {
 
 		}else if (mt == MessageType.MAPOBJECT) {
 			MapObject mo = ((MapObjectMessage)m).toMapObject();
-			
 			switch(((MapObjectMessage)m).getMapOperation()){
 			case ADD:
 				MainView.mapCont.add(mo,false);
@@ -109,12 +110,38 @@ public class ReciveHandler extends Observable implements Runnable {
 				MainView.mapCont.updateObject(mo,false);
 				break;
 			default:
-				
+
 			}	
 
 		}
 		else if(mt == MessageType.CONTACT){
 			DatabaseController.db.addRow(((ContactMessage)m).toContact());
+		}
+		else if(mt == MessageType.NOTIFICATION){
+//			((Activity) context).runOnUiThread(new Runnable() {
+//				public void run() {
+//					AlertDialog.Builder alert = new AlertDialog.Builder(context);
+//
+//					alert.setTitle("Forcerad utloggning");
+//					alert.setMessage("En annan klient har loggat in på denna användare. Du kommer nu att loggas ut.");
+//					//					alert.setNegativeButton("Gör inget",
+//					//							new DialogInterface.OnClickListener() {
+//					//						public void onClick(DialogInterface dialog,
+//					//								int whichButton) {
+//					//							dialog.cancel();
+//					//						}
+//					//					});
+//					alert.setOnCancelListener(new OnCancelListener(){
+//						public void onCancel(DialogInterface dialog) {
+//							setChanged();
+//							notifyObservers("LOGOUT");
+//						}
+//					});
+//
+//					alert.show();
+//				}
+//
+//			});
 		}
 
 	}

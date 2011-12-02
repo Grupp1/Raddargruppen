@@ -134,6 +134,18 @@ public class Database {
 			System.out.println("Fel syntax i MySQL-queryn i updateMapObject. "+ex);
 		}
 	}
+	public static MapObjectMessage getMapObject(String id) {
+		try {
+			Statement st = openConnection();
+			ResultSet rs = st.executeQuery("SELECT * FROM map_objects WHERE map_id = \'"+id+ "\';");
+			if(rs.next())
+				return new MapObjectMessage(rs.getString(3), rs.getString(2), rs.getString(4),
+					MapOperation.REMOVE,"");
+		} catch (SQLException ex) {
+			System.out.println("Fel syntax i MySQL-queryn i getMapObject(). "+ex);
+		}
+		return null;
+	}
 
 	/**
 	 * Hämta en användares salt
@@ -530,7 +542,7 @@ public class Database {
 
 			while (rs.next()) { 
 				MapObjectMessage tm = new MapObjectMessage(rs.getString(3), rs.getString(2), rs.getString(4),
-						MapOperation.ADD,true);
+						MapOperation.ADD,"");
 				list.add(tm);
 			}
 		} catch (SQLException ex) {
