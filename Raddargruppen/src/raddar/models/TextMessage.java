@@ -1,8 +1,5 @@
 package raddar.models;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import raddar.enums.MessageType;
 
 public class TextMessage extends Message {

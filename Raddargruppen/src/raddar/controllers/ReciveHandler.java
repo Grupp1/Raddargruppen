@@ -12,7 +12,6 @@ import raddar.models.ImageMessage;
 import raddar.models.MapObject;
 import raddar.models.MapObjectMessage;
 import raddar.models.Message;
-import raddar.models.SOSMessage;
 import raddar.views.MainView;
 import android.app.Activity;
 import android.app.AlertDialog;

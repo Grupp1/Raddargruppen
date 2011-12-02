@@ -7,7 +7,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import raddar.enums.ServerInfo;
-import raddar.models.MapObject;
 import raddar.models.Message;
 import android.util.Log;
 

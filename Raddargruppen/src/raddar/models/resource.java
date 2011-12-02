@@ -1,8 +1,8 @@
 package raddar.models;
 
-import com.google.android.maps.GeoPoint;
-
 import raddar.enums.ResourceStatus;
+
+import com.google.android.maps.GeoPoint;
 
 
 

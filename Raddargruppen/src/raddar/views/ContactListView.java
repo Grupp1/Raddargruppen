@@ -3,14 +3,11 @@ package raddar.views;
 import java.util.ArrayList;
 
 import raddar.controllers.DatabaseController;
-import raddar.controllers.SessionController;
 import raddar.gruppen.R;
 import raddar.models.Contact;
 import raddar.models.QoSManager;
-import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -25,7 +22,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class ContactListView extends ListActivity implements OnClickListener {
 	private static final int RESULT_FIRST_USER_EDIT = 5;

@@ -11,17 +11,13 @@ import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
 import raddar.controllers.SipController;
 import raddar.enums.ConnectionStatus;
-import raddar.enums.MapOperation;
 import raddar.enums.NotificationType;
 import raddar.enums.RequestType;
-import raddar.enums.ResourceStatus;
 import raddar.gruppen.R;
-import raddar.models.MapObjectMessage;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
 import raddar.models.QoSManager;
 import raddar.models.RequestMessage;
-import raddar.models.You;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -37,9 +33,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
-import com.google.android.maps.GeoPoint;
-import com.google.gson.Gson;
 
 public class MainView extends Activity implements OnClickListener, Observer {
 

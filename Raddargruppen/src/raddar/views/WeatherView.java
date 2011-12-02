@@ -4,8 +4,6 @@ import raddar.models.QoSManager;
 import raddar.models.XMLFetcher;
 import android.app.ExpandableListActivity;
 import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;

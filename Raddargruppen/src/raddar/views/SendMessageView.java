@@ -2,8 +2,6 @@ package raddar.views;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import raddar.controllers.DatabaseController;
 import raddar.controllers.Sender;
@@ -13,8 +11,6 @@ import raddar.models.Message;
 import raddar.models.QoSManager;
 import raddar.models.TextMessage;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
