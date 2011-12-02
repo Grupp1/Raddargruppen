@@ -2,11 +2,12 @@ package tddd36.server;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Associations {
 
-	private HashMap<String, InetAddress> associations = new HashMap<String, InetAddress>();
+	private static HashMap<String, InetAddress> associations = new HashMap<String, InetAddress>();
 	
 	/**
 	 * Lägg till en användare och tillsammans med dennes InetAddress
@@ -91,6 +92,12 @@ public class Associations {
 	 */
 	public HashMap<String, InetAddress> getAllAssociations() {
 		return associations;
+	}
+	
+	public static ArrayList<String> getOnlineUserNames(){
+		ArrayList<String> onlineUserNames = new ArrayList<String>();
+		onlineUserNames.addAll(associations.keySet());
+		return onlineUserNames;
 	}
 	
 }

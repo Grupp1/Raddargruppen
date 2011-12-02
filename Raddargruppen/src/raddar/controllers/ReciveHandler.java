@@ -12,6 +12,7 @@ import raddar.models.ImageMessage;
 import raddar.models.MapObject;
 import raddar.models.MapObjectMessage;
 import raddar.models.Message;
+import raddar.models.OnlineUsersMessage;
 import raddar.models.You;
 import raddar.views.MainView;
 import android.app.Activity;
@@ -116,6 +117,18 @@ public class ReciveHandler extends Observable implements Runnable {
 		}
 		else if(mt == MessageType.CONTACT){
 			DatabaseController.db.addRow(((ContactMessage)m).toContact());
+		}
+		else if(mt == MessageType.ONLINE_USERS){
+			switch(((OnlineUsersMessage) m).getOnlineOperation()){
+			case ADD:
+				SessionController.addOnlineUser(((OnlineUsersMessage)m).getUserName());
+				break;
+			case REMOVE:
+				SessionController.removeOnlineUser(((OnlineUsersMessage)m).getUserName());
+				break;
+			default:
+				break;
+			}
 		}
 		else if(mt == MessageType.NOTIFICATION){
 //			((Activity) context).runOnUiThread(new Runnable() {

@@ -36,6 +36,10 @@ public enum MessageType {
 		public String toString() {
 			return("contact");
 		}
+	}, ONLINE_USERS("onlineUsers"){
+		public String toString() {
+			return("onlineUsers");
+		}
 	};
 	
 	

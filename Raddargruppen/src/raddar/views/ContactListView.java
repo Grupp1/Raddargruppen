@@ -4,9 +4,11 @@ import java.util.ArrayList;
 
 import raddar.controllers.DatabaseController;
 import raddar.controllers.SessionController;
+import raddar.enums.RequestType;
 import raddar.gruppen.R;
 import raddar.models.Contact;
 import raddar.models.QoSManager;
+import raddar.models.RequestMessage;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
@@ -79,7 +81,7 @@ public class ContactListView extends ListActivity implements OnClickListener {
 
 
 	}
-
+	
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);

@@ -105,6 +105,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 			DatabaseController.db.clearTable("contact");
 			new Sender(new RequestMessage(RequestType.CONTACTS));
 			new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
+			new Sender(new RequestMessage(RequestType.ONLINE_CONTACTS));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
