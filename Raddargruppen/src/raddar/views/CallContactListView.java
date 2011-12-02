@@ -3,12 +3,15 @@ package raddar.views;
 import java.util.ArrayList;
 
 import raddar.controllers.DatabaseController;
+import raddar.controllers.SessionController;
 import raddar.gruppen.R;
 import raddar.models.Contact;
+import raddar.models.QoSManager;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,15 +40,16 @@ public class CallContactListView extends ListActivity{
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		SessionController.titleBar(this, " - Samtal");
 
 		contacts = DatabaseController.db.getAllRowsAsArrays("contact");
-		
+
 		ia = new ContactAdapter(this, R.layout.call_contact_list, contacts);
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
 		setListAdapter(ia);
 		lv.setOnItemClickListener(new OnItemClickListener() {
-			
+
 			/**
 			 * lv är satt som en onItemClickListener
 			 * Snabbt klick på en kontakt, ringer direkt
@@ -54,6 +58,7 @@ public class CallContactListView extends ListActivity{
 				Intent nextIntent = new Intent(CallContactListView.this,CallView.class);
 				nextIntent.putExtra("sip","sip:" + contacts.get(position).getUserName()   
 						+ "@ekiga.net" );
+				nextIntent.putExtra("dstUser", contacts.get(position).getUserName());
 				startActivityForResult(nextIntent,9);
 			}
 		});
@@ -85,6 +90,13 @@ public class CallContactListView extends ListActivity{
 		}
 
 
+		
+	}
+	@Override
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
 	}
 
 

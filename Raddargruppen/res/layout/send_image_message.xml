@@ -13,14 +13,14 @@
 		android:layout_marginLeft="30dip"
 		android:layout_marginTop="20dip"></TextView>
 	<EditText
-		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
 		android:inputType="textPersonName"
 		android:id="@+id/destUser"
 		android:layout_marginLeft="30dip"
 		android:layout_marginRight="30dip"
 		android:singleLine="true"
-		android:editable="false">
+		android:editable="false"
+		android:background="@drawable/rounded_edittext" android:layout_height="30dip">
 		<requestFocus></requestFocus>
 	</EditText>
 	<TextView
@@ -32,14 +32,14 @@
 		android:layout_marginTop="10dip"
 		android:text="@string/send_subject"></TextView>
 	<EditText
-		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
 		android:inputType="textPersonName"
 		android:id="@+id/subject"
 		android:layout_marginLeft="30dip"
 		android:layout_marginRight="30dip"
 		android:maxLength="30"
-		android:singleLine="true"></EditText>
+		android:singleLine="true"
+		android:background="@drawable/rounded_edittext" android:layout_height="30dip"></EditText>
 
 	<RelativeLayout
 		android:orientation="vertical"
@@ -47,20 +47,17 @@
 		android:layout_height="wrap_content">
 
 		<LinearLayout
-			android:layout_height="wrap_content"
-			android:layout_width="match_parent"
 			android:id="@+id/linearLayout1"
 			android:orientation="vertical"
 			android:layout_marginLeft="30dip"
 			android:layout_marginRight="170dip"
-			android:layout_marginTop="10dip">
+			android:layout_marginTop="10dip" android:layout_width="120dip" android:layout_height="50dip">
 			<Button
 				android:layout_marginBottom="20dip"
 				android:text="@string/send_image_message_choice"
-				android:layout_width="wrap_content"
 				android:id="@+id/choiceButton"
-				android:layout_height="wrap_content"
-				android:layout_gravity="left"></Button>
+				android:textColor="#FFFFFF"
+				android:layout_gravity="left" android:background="@drawable/rounded_button" android:layout_width="match_parent" android:layout_height="30dip"></Button>
 
 		</LinearLayout>
 
@@ -76,10 +73,9 @@
 			<Button
 				android:layout_marginBottom="20dip"
 				android:text="@string/send_send"
-				android:layout_width="wrap_content"
 				android:id="@+id/sendButton"
-				android:layout_height="wrap_content"
-				android:layout_gravity="right"></Button>
+				android:textColor="#FFFFFF"
+				android:layout_gravity="right" android:background="@drawable/rounded_button2" android:layout_height="30dip" android:layout_width="120dip"></Button>
 
 
 		</LinearLayout>

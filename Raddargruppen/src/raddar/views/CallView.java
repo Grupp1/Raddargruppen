@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 /**
  * The view that is shown when the user is in a call
@@ -23,9 +24,10 @@ import android.widget.TextView;
  */
 public class CallView extends Activity implements OnClickListener {
 	private SipAudioCall call = null;
-	private Button acceptCall;
-	private Button denyCall;
+	private ImageButton acceptCall;
+	private ImageButton denyCall;
 	private TextView callerText;
+	private TextView infoText;
 	/**
 	 * Initiate all variables to different values depending on if we are making a call
 	 * or receiving a call.
@@ -33,13 +35,16 @@ public class CallView extends Activity implements OnClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.accept_call);
+		setContentView(R.layout.walkietalkie);
+		SessionController.titleBar(this, " - Samtal");
 		Bundle extras = getIntent().getExtras();
 		String sip = (String) extras.get("sip");
+		String dstUser = (String) extras.get("dstUser");
+		infoText = (TextView) this.findViewById(R.id.infotext1);
 		callerText = (TextView) this.findViewById(R.id.callerText);
-		acceptCall = (Button) this.findViewById(R.id.acceptCall);
+		acceptCall = (ImageButton) this.findViewById(R.id.acceptCall);
 		acceptCall.setOnClickListener(this);
-		denyCall = (Button) this.findViewById(R.id.denyCall);
+		denyCall = (ImageButton) this.findViewById(R.id.denyCall);
 		denyCall.setOnClickListener(this);
 		if (sip.equals("incoming")) {
 			Intent intent = (Intent) extras.get("intent");
@@ -49,7 +54,7 @@ public class CallView extends Activity implements OnClickListener {
 					try {
 						call.answerCall(30);
 					} catch (Exception e) {
-						Log.d("Andreas ringer", e.toString());
+						
 					}
 				}
 				
@@ -67,17 +72,17 @@ public class CallView extends Activity implements OnClickListener {
 			try {
 				call = SipController.manager
 						.takeAudioCall(intent, listener);
-				updateText("sip:"+call.getPeerProfile().getUserName() + "@ekiga.net ringer...");
+				updateText("Samtal från",  call.getPeerProfile().getUserName());
 			} catch (SipException e) {
 				e.printStackTrace();
 			}
 
 		} else {
-			updateText("Ringer " + sip + "...");
+			updateText("Ringer ", dstUser);
 			SipController.hasCall = true;
 			acceptCall.setClickable(false);
 			acceptCall.setVisibility(View.INVISIBLE);
-			initiateCall(sip);
+			initiateCall(sip, dstUser);
 		}
 
 	}
@@ -85,35 +90,30 @@ public class CallView extends Activity implements OnClickListener {
 	 * Updates the textview. Used to notify the user on the status of the call
 	 * @param caller the string you want to set
 	 */
-	private void updateText(final String caller) {
+	private void updateText(final String info, final String caller) {
 		runOnUiThread(new Runnable() {
 			public void run() {
+				Log.d("info", info);
+				Log.d("caller", caller);
+				
+																		
+				infoText.setText(info);
 				callerText.setText(caller);
 			}
 		});
 	}
-	/**
-	 * Updates the text on the deny button
-	 * @param caller The string you want to have on the denybutton
-	 */
-	private void updateButton(final String caller) {
-		runOnUiThread(new Runnable() {
-			public void run() {
-				denyCall.setText(caller);
-			}
-		});
-	}
+	
+	
 	/**
 	 * Used to initiate a call with the specified sipAddress
 	 * @param sipAddress the sipaddress you want to call
 	 */
-	private void initiateCall(final String sipAddress) {
+	private void initiateCall(final String sipAddress, final String dst) {
 		try {
 			SipAudioCall.Listener audioListener = new SipAudioCall.Listener() {
 				@Override
 				public void onCallEstablished(SipAudioCall call) {
-					updateText("Pratar med " + sipAddress);
-					updateButton("Lägg på");
+					updateText("Pratar med ", dst);
 					call.startAudio();
 					call.setSpeakerMode(true);
 					if (call.isMuted()) {
@@ -178,8 +178,7 @@ public class CallView extends Activity implements OnClickListener {
 	 */
 	private void acceptCall() {
 		try {
-			updateText("Pratar med " + "sip:"+call.getPeerProfile().getUserName() + "@ekiga.net");
-			updateButton("Lägg på");
+			updateText("Pratar med ", call.getPeerProfile().getUserName());
 			call.answerCall(30);
 			call.startAudio();
 			call.setSpeakerMode(true);

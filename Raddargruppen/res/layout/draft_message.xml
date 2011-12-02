@@ -29,9 +29,10 @@
 
 		<Button android:layout_marginTop="10dip"
 			android:layout_marginBottom="20dip" android:text="@string/draft_draft"
-			android:layout_height="wrap_content" android:layout_width="wrap_content"
 			android:id="@+id/editDraftButton" android:layout_marginRight="30dip"
-			android:layout_gravity="right"></Button>
+			android:layout_gravity="right"
+			android:textColor="#FFFFFF"
+			android:background="@drawable/rounded_button2" android:layout_height="30dip" android:layout_width="120dip"></Button>
 
 	</LinearLayout>
 

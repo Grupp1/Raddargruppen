@@ -59,6 +59,7 @@ public class MapUI extends MapActivity implements Observer {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.maps);
+		SessionController.titleBar(this, " - Karta");
 		
 		
 		
@@ -180,6 +181,7 @@ public class MapUI extends MapActivity implements Observer {
 						alertDialog.setView(input);
 
 						alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+							
 							public void onClick(DialogInterface dialog, int whichButton) {
 								value = input.getText().toString();
 								MapObject o = null;

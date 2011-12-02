@@ -35,6 +35,7 @@ public class SendSOSView extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.send_sos_message);
+		SessionController.titleBar(this, " - Skicka SOS-meddelande");
 
 		button = (Button) findViewById(R.id.sos_send_message_button);
 		et = (EditText) findViewById(R.id.sos_meddelande_edittext);

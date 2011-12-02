@@ -43,8 +43,8 @@ public class MapObject extends OverlayItem {
 		this.addedBy = SessionController.getUser();
 		this.date = new SimpleDateFormat("yyyy:MM:dd 'kl' HH:mm:ss").format(new Date());
 		
-		this.changedBy = "Har inte blivit ändrad";
-		this.changedDate = "Har inte blivit ändrad";
+		this.changedBy = "Ej ändrad";
+		this.changedDate = "Ej ändrad";
 		
 		idGen = new ID(addedBy,point.getLatitudeE6(),point.getLongitudeE6(), date);
 		id = idGen.generateID();
@@ -215,10 +215,10 @@ public class MapObject extends OverlayItem {
 	 * Uppdaterar strängen description med objektets variabler
 	 */
 	public void updateDescription(){
-		setDescription("Beskrivning: "+getSnippet()+"\nAdress: "+getAdress()+
-				  "Koordinater: "+getPoint().getLatitudeE6()/1E6+", "+getPoint().getLongitudeE6()/1E6 + "\nSkapad: " + 
+		setDescription("Beskrivning: " + "\n" +getSnippet()+"\n\nAdress: "+getAdress()+
+				  "Koordinater:" + "\n" +getPoint().getLatitudeE6()/1E6+", "+getPoint().getLongitudeE6()/1E6 + "\n\nSkapad: " + 
 				getDate() + "\nSkapad av: " + getAddedBy() + "\nSenast ändrad: " + getChangedDate() + "\nSenast ändrad av: " +
-				  getChangedBy() + "\n ID: " + getId());
+				  getChangedBy() + "\n" + "ID: " + getId()+ "\n");
 	}
 	
 }

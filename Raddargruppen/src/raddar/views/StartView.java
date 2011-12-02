@@ -3,6 +3,7 @@ package raddar.views;
 import java.util.Observable;
 import java.util.Observer;
 
+import raddar.controllers.SessionController;
 import raddar.controllers.SipController;
 import raddar.enums.ConnectionStatus;
 import raddar.enums.LoginResponse;
@@ -38,6 +39,7 @@ public class StartView extends Activity implements Observer {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.start);
+		SessionController.titleBar(this, " - Logga in");
 		// Lite hårdkodade testanvändare att testa med
 		LoginManager.cache("Borche", "hej123");
 		LoginManager.cache("Danne", "raddar");

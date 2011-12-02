@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -73,6 +74,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		SessionController.titleBar(this, " ");
 
 		theOne = this;
 		
@@ -89,7 +91,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 
 		new SessionController(extras.get("user").toString());
 		new DatabaseController(this);
-	//	new SipController(this);
+		new SipController(this);
 		//new SipController(this);
 		new ReciveHandler(this).addObserver(this);
 
@@ -151,6 +153,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	public void onClick(View v) {
 
 		if(v == callButton){
+			
 			Intent nextIntent = new Intent(MainView.this, CallContactListView.class);
 			startActivity(nextIntent);
 		}

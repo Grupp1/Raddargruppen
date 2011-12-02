@@ -38,6 +38,7 @@ public class ContactListView extends ListActivity implements OnClickListener {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		SessionController.titleBar(this, " - Kontaktlista");
 		contacts = DatabaseController.db.getAllRowsAsArrays("contact");
 		// for(int i = 0;i <10;i++)
 		// contacts.add(new Contact("Peter"+i, false));

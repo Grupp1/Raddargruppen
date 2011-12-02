@@ -44,7 +44,7 @@ public class MapModel {
 
 	public void add(MapObject o){
 		if(!o.getId().equals(SessionController.getUser()) && o instanceof You){
-			o.setIcon(R.drawable.circle_green);
+			o.setIcon(R.drawable.circle_yellow);
 			Log.d("IF SATS", "IF SATS");
 		}
 		d = mapUI.getResources().getDrawable(o.getIcon());

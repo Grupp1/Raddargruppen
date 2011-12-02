@@ -78,7 +78,7 @@ public class ReciveHandler extends Observable implements Runnable {
 						}
 					});
 
-					alert.setNegativeButton("Gör inget",
+					alert.setNegativeButton("OK",
 							new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,
 								int whichButton) {

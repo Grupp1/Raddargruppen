@@ -6,6 +6,7 @@ import raddar.controllers.DatabaseController;
 import raddar.controllers.SessionController;
 import raddar.enums.ResourceStatus;
 import raddar.enums.SituationPriority;
+import raddar.gruppen.R;
 import raddar.views.MainView;
 import raddar.views.MapUI;
 import android.app.Activity;
@@ -85,11 +86,15 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 
 		alert.setButton("Ändra beskrivning", new DialogInterface.OnClickListener() {
+
+			//alert.setBackground(R.drawable.rounded_button);
+			//setBackgroundResource(R.drawable.rounded_button);
 			public void onClick(DialogInterface dialog, int whichButton) {
 				AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
 				alertDialog.setTitle("Ändra beskrivning");
 				alertDialog.setMessage("Beskrivning");
+				
 
 				input = new EditText(mContext);
 				alertDialog.setView(input);

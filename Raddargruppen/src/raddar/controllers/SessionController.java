@@ -1,5 +1,11 @@
 package raddar.controllers;
 
+import raddar.gruppen.R;
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.Color;
+import android.view.View;
+
 /**
  * Controller for a user log in session
  * @author danan612
@@ -23,5 +29,16 @@ public class SessionController {
 	public static String getUser() {
 		return user;
 	}
-
+/**
+ * Sätter utseendet på titleBar
+ * @param a activity som den anropas från
+ * @param s app_name + / var man är
+ */
+	public static void titleBar(Activity a, String s){
+		a.setTitle("Räddargruppen" + s);
+		View title = a.getWindow().findViewById(android.R.id.title);
+		View titleBar = (View) title.getParent();
+		titleBar.setBackgroundColor(Color.rgb(48,128,20));
+		
+	}
 }
