@@ -10,7 +10,6 @@ import java.util.Observer;
 
 import raddar.enums.MapOperation;
 import raddar.enums.ResourceStatus;
-import raddar.gruppen.R;
 import raddar.models.GPSModel;
 import raddar.models.MapModel;
 import raddar.models.MapObject;
@@ -19,6 +18,7 @@ import raddar.models.MapObjectMessage;
 import raddar.models.You;
 import raddar.views.MainView;
 import raddar.views.MapUI;
+import raddar.gruppen.R;
 import android.location.Address;
 import android.location.Geocoder;
 import android.util.Log;
@@ -118,6 +118,7 @@ public class MapCont implements Observer, Runnable{
 		DatabaseController.db.updateRow(o);
 	}
 
+	
 	public void run() {
 		olist = DatabaseController.db.getAllRowsAsArrays("map");
 		for(int i = 0; i < olist.size();i++){

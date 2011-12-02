@@ -1,7 +1,7 @@
 package raddar.views;
 
-import raddar.gruppen.R;
 import raddar.models.QoSManager;
+import raddar.gruppen.R;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;

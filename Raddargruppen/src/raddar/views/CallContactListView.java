@@ -3,8 +3,8 @@ package raddar.views;
 import java.util.ArrayList;
 
 import raddar.controllers.DatabaseController;
-import raddar.gruppen.R;
 import raddar.models.Contact;
+import raddar.gruppen.R;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;

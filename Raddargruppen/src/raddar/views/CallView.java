@@ -1,8 +1,8 @@
 package raddar.views;
 
 import raddar.controllers.SipController;
-import raddar.gruppen.R;
 import raddar.models.QoSManager;
+import raddar.gruppen.R;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;

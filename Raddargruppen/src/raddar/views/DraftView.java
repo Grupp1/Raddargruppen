@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import raddar.controllers.DatabaseController;
 import raddar.enums.MessageType;
-import raddar.gruppen.R;
 import raddar.models.Message;
+import raddar.gruppen.R;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;

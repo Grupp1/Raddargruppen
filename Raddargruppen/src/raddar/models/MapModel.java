@@ -3,8 +3,8 @@ package raddar.models;
 import java.util.List;
 
 import raddar.controllers.SessionController;
-import raddar.gruppen.R;
 import raddar.views.MapUI;
+import raddar.gruppen.R;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 

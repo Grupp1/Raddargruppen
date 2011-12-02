@@ -28,13 +28,15 @@ public class ClientDatabaseManager extends Observable {
 	private static final String DB_PATH = "/data/data/YOUR_PACKAGE/databases/";
 
 	// Table row constants
-
 	private final String[] TEXT_MESSAGE_TABLE_ROWS = new String[] { "msgId", "srcUser", "rDate", "subject", "mData" };
 	private final String[] CONTACT_TABLE_ROWS = new String[] { "userName","isGroup", "sipUsr", "sipPw" };
+	private final String[] SITUATION_TABLE_ROWS = new String[] { "title","description", "priority" };
 	private final String[] MAP_TABLE_ROWS = new String[] { "mapObject","class", "id" };
+	private final String[] SIP_DETAILS = new String[] { "userName", "password" };
 	private final String[] OUTBOX_TABLE_ROWS = new String[] { "msgID", "destUser", "rDate", "subject", "mData"};
 	private final String[] DRAFT_TABLE_ROWS = new String[] { "msgID", "destUser", "rDate", "subject", "mData"};
 	private final String[] IMAGE_MESSAGE_TABLE_ROWS = new String [] {"msgId", "srcUser", "rDate", "subject", "filePath"};
+	private final String[] BUFFERED_MESSAGE_TABLE_ROWS = new String[] {"gsonString"};
 
 
 	/**********************************************************************
@@ -91,7 +93,6 @@ public class ClientDatabaseManager extends Observable {
 		try {
 			db.insert("message", null, values);
 		} catch (Exception e) {
-			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
 		if(notify) {
@@ -121,6 +122,21 @@ public class ClientDatabaseManager extends Observable {
 		setChanged();
 		notifyObservers(m);			
 	}
+	/**********************************************************************
+	 * Adds messages that couldn't be sent at the time to a buffer that is sent when connection with the server is reestablished
+	 * @param m the message that was to be sent.
+	 */
+	public void addBufferedMessageRow(String gsonString){
+		ContentValues values = new ContentValues();
+		values.put("gsonString", gsonString);
+		try {
+			db.insert("bufferedMessage", null, values);
+		} catch (Exception e) {
+			Log.e("DB ERROR", e.toString());
+			e.printStackTrace();
+		}
+		setChanged();
+	}
 
 	/**********************************************************************
 	 * ADDING A IMAGEMESSAGE ROW TO THE DATABASETABLE
@@ -143,7 +159,7 @@ public class ClientDatabaseManager extends Observable {
 		setChanged();
 		notifyObservers(m);			
 	}
-
+	
 	/**********************************************************************
 	 * ADDING A CONTACT ROW IN THE DATABASE TABLE
 	 *
@@ -292,7 +308,7 @@ public class ClientDatabaseManager extends Observable {
 	public void clearDatabase(){
 		db.delete("message", null, null);
 		db.delete("map", null, null);
-		db.delete("contact", null, null);
+		//db.delete("contact", null, null);
 
 	}
 
@@ -313,6 +329,16 @@ public class ClientDatabaseManager extends Observable {
 		//		setChanged();
 		//		notifyObservers(m);
 	}
+	
+	public void deleteBufferedMesageRow(String gsonString){
+		try{
+			db.delete("bufferedMessage", "gsonString = \'" + gsonString + "\'", null);
+		}catch (Exception e) {
+			Log.e("DB ERROR", e.toString());
+			e.printStackTrace();
+		}
+		
+	}
 
 	/********************************************************************
 	 * 
@@ -332,6 +358,13 @@ public class ClientDatabaseManager extends Observable {
 		setChanged();
 		notifyObservers(mo);
 	}
+	/********************************************************************
+	 * Clears an entire table of all rows
+	 * @param table the table that is to be cleared
+	 */
+	public void	clearTable(String table){
+		db.delete(table, null, null);
+	}
 
 
 	/********************************************************************
@@ -346,6 +379,7 @@ public class ClientDatabaseManager extends Observable {
 		// generella fallet.
 		ArrayList dataArrays = new ArrayList();
 		Cursor cursor = null;
+		Log.e("TABLE",table);
 		try {
 			// ask the database object to create the cursor.
 			if(table.equals("message")){
@@ -377,6 +411,10 @@ public class ClientDatabaseManager extends Observable {
 				cursor = db.query(
 						"map",
 						MAP_TABLE_ROWS,
+						null, null, null, null, null);
+			}
+			else if(table.equals("bufferedMessage")){
+				cursor = db.query("bufferedMessage", BUFFERED_MESSAGE_TABLE_ROWS,
 						null, null, null, null, null);
 			}
 			cursor.moveToFirst();
@@ -427,6 +465,11 @@ public class ClientDatabaseManager extends Observable {
 						}
 						MapObject mo = gson.fromJson(cursor.getString(0), c);
 						dataArrays.add(mo);
+					}
+					else if (table.equals("bufferedMessage")){
+						Log.e("cursor burzor",cursor.getString(0));
+						String gsonString = cursor.getString(0);
+						dataArrays.add(gsonString);
 					}
 				}
 				// move the cursor's pointer up one position.
@@ -504,7 +547,11 @@ public class ClientDatabaseManager extends Observable {
 					"rDate integer," +
 					"subject text," +
 					"mData text)";
-
+			Log.d("CustomSQLiteOpenHelper","Creating table \'bufferedMessage\'");
+			String bufferedmessageTableQueryString = "create table bufferedMessage (" 
+					+ "msgId integer primary key autoincrement not null," + 
+					"gsonString text)";
+			
 
 			/*
 			 * String newTableQueryString = "create table " + TABLE_NAME + " ("
@@ -518,7 +565,7 @@ public class ClientDatabaseManager extends Observable {
 			db.execSQL(messageTableQueryString);
 			db.execSQL(imageMessageTableQueryString);
 			db.execSQL(outboxTableQueryString);
-			db.execSQL(draftTableQueryString);
+			db.execSQL(bufferedmessageTableQueryString);
 		}
 
 		/**

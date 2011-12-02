@@ -22,6 +22,7 @@ public class Sender implements Runnable {
 	// Meddelandet som ska skickas
 	private Message message;
 	// MapObject som ska skickas
+	private String send;
 
 	private Sender(InetAddress address, int port){
 		this.address = address;
@@ -34,8 +35,6 @@ public class Sender implements Runnable {
 		this.message = message;
 		thread.start();
 	}
-
-
 	
 	public Sender(Message message) throws UnknownHostException {
 		this.message = message;
@@ -43,30 +42,32 @@ public class Sender implements Runnable {
 		this.address = InetAddress.getByName(ServerInfo.SERVER_IP);
 		thread.start();
 	}
+	
+	public Sender(String send) throws UnknownHostException{
+		this.send = send;
+		this.port = ServerInfo.SERVER_PORT;
+		this.address = InetAddress.getByName(ServerInfo.SERVER_IP);
+		thread.start();
+	}
 
 	public void run() {
+		Gson gson = new Gson();
+		if(message!=null){
+			send = message.getClass().getName()+"\r\n";
+			send +=	gson.toJson(message);	
+		}
+		Log.d("Sending", "Sending: "+send);
 		try {
 			Socket so = new Socket(address, port);
 			so.setSoTimeout(5000);
-			Gson gson = new Gson();
-			String send = null;
-			if(message!=null){
-				send = message.getClass().getName()+"\r\n";
-				send +=	gson.toJson(message);	
-			}
-
-			Log.d("Send",send);
-
 			PrintWriter out = new PrintWriter(so.getOutputStream(), true);
-
 			out.println(send);
-
 			so.close();
 			out.close();
-
-
+			Log.e("Sendzordz",send);
 		} catch (IOException ie) {
 			Log.d("Skapandet av socket [2]", ie.toString());
+			DatabaseController.db.addBufferedMessageRow(send);
 		} //catch (InterruptedException e) {
 		//Log.d("Avbruten väntan", "Gick inte");
 		//}
