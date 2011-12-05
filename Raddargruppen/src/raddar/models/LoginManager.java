@@ -50,7 +50,7 @@ public class LoginManager extends Observable {
 	 *            Lösenordet
 	 * @return true om verifieringen går bra, false annars
 	 */
-	public void evaluate(String username, String password) {
+	public void evaluate(String username, String password, boolean firstLogIn) {
 		try {
 			
 			//nya ssl
@@ -65,16 +65,19 @@ public class LoginManager extends Observable {
 			// Socket so = new
 			// Socket(InetAddress.getByName(ServerInfo.SERVER_IP),
 			// ServerInfo.SERVER_PORT);
+			Log.d("LoginManager", "LULZ 1");
 			InetAddress addr = InetAddress.getByName(ServerInfo.SERVER_IP);
 			int port = ServerInfo.SERVER_PORT;
 			SocketAddress sockAddr = new InetSocketAddress(addr, port);
 			int TIME_OUT = 5000;
 			so.connect(sockAddr, TIME_OUT);
+<<<<<<< HEAD
 
 			*/
 			
 			
 			PrintWriter pw = new PrintWriter(sslsocket.getOutputStream(), true);
+
 			BufferedReader br = new BufferedReader(new InputStreamReader(
 					sslsocket.getInputStream()));
 
@@ -98,7 +101,7 @@ public class LoginManager extends Observable {
 			send = nm.getClass().getName() + "\r\n";
 			gg = new Gson().toJson(nm);
 			send += gg;
-			
+
 			// Skicka det saltade och krypterade lösenordet
 			pw.println(send);
 
@@ -108,8 +111,12 @@ public class LoginManager extends Observable {
 			// Stäng ner strömmar och socket
 			pw.close();
 			br.close();
+
 			sslsocket.close();
 			
+
+			//so.close();
+
 			if (response.equals("OK")) {
 				SessionController.setPassword(password);
 				SessionController.setUserName(username);
@@ -134,8 +141,9 @@ public class LoginManager extends Observable {
 			// Om servern inte kan nås, kolla om vi har en försökande tråd redan
 			// ...har vi en försökande tråd innebär det att vi redan är inloggade lokalt
 			// och då returnerar vi här, annars loggar vi in lokalt
-			if(SessionController.getConnectionStatus()==ConnectionStatus.DISCONNECTED && s==null){
+			if(!firstLogIn && s==null){
 				s = new StubbornLoginThread(username, password);
+				Log.d("LoginManager", "LULZ 3");
 				return;
 			}
 			else if (s == null)
@@ -192,7 +200,6 @@ public class LoginManager extends Observable {
 		ArrayList<String> bufferedMessages = new ArrayList<String>();
 		bufferedMessages = DatabaseController.db.getAllRowsAsArrays("bufferedMessage");
 		if(bufferedMessages != null){
-			
 			for(String gsonString: bufferedMessages){
 				new Sender(gsonString);
 				Log.d("GSONSTRING",gsonString);
@@ -200,7 +207,7 @@ public class LoginManager extends Observable {
 			}
 		}
 	}
-	
+
 	/*
 	 * Privat klass som försöker att logga in emot servern med jämna mellanrum
 	 */
@@ -220,11 +227,11 @@ public class LoginManager extends Observable {
 				try {
 					if (s == null)
 						break;
-					evaluate(username, password);
+					evaluate(username, password,false);
 					if (s == null)
 						break;
 					// Vänta två minuter mellan varje försök
-					Thread.sleep(1000 * 10);
+					Thread.sleep(5000 * 10);
 
 				} catch (InterruptedException e) {
 					Log.d("LoginManager.java", "evaluateLocally FAILADE!!");

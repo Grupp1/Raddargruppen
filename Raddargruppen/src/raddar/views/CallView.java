@@ -16,6 +16,7 @@ import android.net.sip.SipProfile;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -44,6 +45,7 @@ public class CallView extends Activity implements OnClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.walkietalkie);
 		SessionController.titleBar(this, " - Samtal");
 		Bundle extras = getIntent().getExtras();
@@ -189,9 +191,6 @@ public class CallView extends Activity implements OnClickListener {
 	private void updateText(final String info, final String caller) {
 		runOnUiThread(new Runnable() {
 			public void run() {
-				Log.d("info", info);
-				Log.d("caller", caller);
-				
 																		
 				infoText.setText(info);
 				callerText.setText(caller);
@@ -214,7 +213,7 @@ public class CallView extends Activity implements OnClickListener {
 
 					stopSounds();
 					call.startAudio();
-					call.setSpeakerMode(true);
+					call.setSpeakerMode(false);
 					if (call.isMuted()) {
 						call.toggleMute();
 					}
@@ -305,7 +304,7 @@ public class CallView extends Activity implements OnClickListener {
 			updateText("Pratar med ", call.getPeerProfile().getUserName());
 			call.answerCall(30);
 			call.startAudio();
-			call.setSpeakerMode(true);
+			call.setSpeakerMode(false);
 			if (call.isMuted()) {
 				call.toggleMute();
 			}

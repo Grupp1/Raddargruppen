@@ -30,6 +30,7 @@ import android.os.BatteryManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -45,9 +46,9 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	private ImageButton setupButton;
 	private ImageButton logButton;
 	private ImageButton connectionButton;
-	private Bundle extras;
 	public static MapCont mapCont;
 	public static MainView theOne;
+	private Bundle extras;
 
 	/*
 	 * Lyssnar efter ändringar hos batterinivån
@@ -70,27 +71,25 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.main);
 		SessionController.titleBar(this, " ");
-
+		extras = getIntent().getExtras();
 		theOne = this;
-		
-		new DatabaseController(this);
+
 		DatabaseController.db.addObserver(this);
 		/**
 		 * Initierar kartans controller för att kunna få gps koordinaterna för sin position
 		 */
-		new Thread(new Runnable() {
-			public void run(){
-				mapCont = new MapCont(MainView.this);
-			}
-		}).start();
-		
-		extras = getIntent().getExtras();
+		Log.d("MAINVIEW",new SessionController(extras.get("user").toString())+" ");
 		new SessionController(extras.get("user").toString());
+		mapCont = new MapCont(MainView.this);
+
+
+
 		new SipController(this);
 		new ReciveHandler(this).addObserver(this);
-		
+
 		String level = BatteryManager.EXTRA_LEVEL;
 		Log.d("EXTRA_LEVEL", level);
 
@@ -102,8 +101,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		//		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
 
 		new SessionController(extras.get("user").toString()).addObserver(this);
-//		new DatabaseController(this);
-		new SipController(this);
+		//		new DatabaseController(this);
 		new ReciveHandler(this).addObserver(this);
 		
 //		try {
@@ -114,6 +112,16 @@ public class MainView extends Activity implements OnClickListener, Observer {
 //		} catch (UnknownHostException e) {
 //			e.printStackTrace();
 //		}
+		try {
+			new Sender(new RequestMessage(RequestType.MESSAGE));
+			new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
+			DatabaseController.db.clearTable("contact");
+			new Sender(new RequestMessage(RequestType.CONTACTS));
+			new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
+			new Sender(new RequestMessage(RequestType.ONLINE_CONTACTS));
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
 
 
 		callButton = (ImageButton)this.findViewById(R.id.callButton);
@@ -139,9 +147,10 @@ public class MainView extends Activity implements OnClickListener, Observer {
 
 		logButton = (ImageButton)this.findViewById(R.id.logButton);
 		logButton.setOnClickListener(this);
-
+		
 		connectionButton = (ImageButton) findViewById(R.id.presence);
 		connectionButton.setOnClickListener(this);
+		
 		if (extras.get("connectionStatus").equals(ConnectionStatus.CONNECTED)){
 			connectionButton.setImageResource(R.drawable.connected);
 		}
@@ -149,11 +158,14 @@ public class MainView extends Activity implements OnClickListener, Observer {
 			connectionButton.setImageResource(R.drawable.disconnected);
 		}
 
+
+		update(SessionController.getSessionController(),ConnectionStatus.CONNECTED);
+
 	}
 
 	public void onClick(View v) {
 		if(v == callButton){
-			
+
 			Intent nextIntent = new Intent(MainView.this, CallContactListView.class);
 			startActivity(nextIntent);
 		}
@@ -182,41 +194,43 @@ public class MainView extends Activity implements OnClickListener, Observer {
 			startActivity(nextIntent);
 		}
 		else if(v == logButton){
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("Är du säker på att du vill logga ut?")
-			.setCancelable(false)
-			.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
-
-				public void onClick(DialogInterface dialog, int id) {
-					// Notifiera servern att vi går offline
-					NotificationMessage nm = new NotificationMessage(SessionController.getUser(), 
-							NotificationType.DISCONNECT);
-					try {
-						// Skicka meddelandet
-						new Sender(nm);		
-					} catch (UnknownHostException e) {
-						Log.d("NotificationMessage", "Disconnect failed");
-					}
-					MainView.this.finish();
-				}
-			})
-			.setNegativeButton("Nej", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-				}
-			});
-			AlertDialog alert = builder.create();
-			alert.show();
+			showLogoutWindow();
 		}
 		else if (v == connectionButton){
 			Toast.makeText(getBaseContext(), extras.get("connectionStatus").toString()+", inloggad som: "
 					+SessionController.getUser(), Toast.LENGTH_LONG).show();
 		}
 	}
+	private void showLogoutWindow(){
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Är du säker på att du vill logga ut?")
+		.setCancelable(false)
+		.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+
+			public void onClick(DialogInterface dialog, int id) {
+				MainView.this.finish();
+			}
+		})
+		.setNegativeButton("Nej", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.cancel();
+			}
+		});
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
+
+	@Override
+	public void onBackPressed() {
+		showLogoutWindow();
+	}
+
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		Log.d("koaz","KOAZ");
+		SessionController.getSessionController().deleteObserver(this);
 		SipController.onClose();
 		// Notifiera servern att vi går offline
 		NotificationMessage nm = new NotificationMessage(SessionController.getUser(), 
@@ -224,7 +238,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		try {
 			// Skicka meddelandet
 			new Sender(nm);		
-			DatabaseController.db.clearDatabase();
+
 		} catch (UnknownHostException e) {
 			Log.d("NotificationMessage", "Disconnect failed");
 		}
@@ -233,10 +247,10 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		   notifikationsfältet längst upp på telefonens skärm */
 		NotificationManager mNtf = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		mNtf.cancelAll();
-		DatabaseController.db.close();
 		if (SettingsView.powerIsAutomatic())
 			unregisterReceiver(mBatteryInfoReceiver);
 	}
+
 
 	public void update(Observable observable, final Object data) {
 		runOnUiThread(new Runnable(){
@@ -250,8 +264,8 @@ public class MainView extends Activity implements OnClickListener, Observer {
 					connectionButton.setImageResource(R.drawable.connected);
 					Toast.makeText(getApplicationContext(), "Ansluten till servern, inloggad som: "+SessionController.getUser()
 							, Toast.LENGTH_LONG).show();
-//					DatabaseController.db.clearDatabase();
-//					mapCont.renewYou();
+					DatabaseController.db.clearDatabase();
+					mapCont.renewYou();
 					try {
 						new Sender(new RequestMessage(RequestType.MESSAGE));
 						new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));

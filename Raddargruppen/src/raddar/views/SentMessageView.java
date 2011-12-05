@@ -5,6 +5,7 @@ import raddar.gruppen.R;
 import raddar.models.QoSManager;
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.Window;
 import android.widget.TextView;
 
 /**
@@ -18,7 +19,7 @@ public class SentMessageView extends Activity{
 	public void onCreate(Bundle savedInstanceState){
 
 		super.onCreate(savedInstanceState);
-
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.sent_message);
 		SessionController.titleBar(this, " - Utkorg");
 		Bundle extras = getIntent().getExtras();

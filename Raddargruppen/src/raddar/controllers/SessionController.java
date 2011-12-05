@@ -1,22 +1,36 @@
 package raddar.controllers;
 
-import java.util.Observable;
 
 import raddar.enums.ConnectionStatus;
 import raddar.gruppen.R;
+
+
+import raddar.models.Contact;
+
 import android.app.Activity;
 import android.graphics.Color;
+import android.view.Window;
+
+import java.util.Observable;
+
 import android.view.View;
+import java.util.ArrayList;
+
 
 /**
  * Controller for a user log in session
  * @author danan612
  *
  */
+
 public class SessionController extends Observable{
-	
+		
+	private static ArrayList<String> onlineUsers = new ArrayList<String>();
+
+	public static String password;
 	private static String user;
 	private static ConnectionStatus connection = ConnectionStatus.DISCONNECTED;
+
 	private static SessionController sessionController;
 	private static String userName;
 	 static String getUserName() {
@@ -32,7 +46,7 @@ public class SessionController extends Observable{
 		SessionController.password = password;
 	}
 
-	public static String password;
+	
 	/**
 	 * Create new session on the client
 	 * @param user The user whom is the owner of the session
@@ -48,6 +62,7 @@ public class SessionController extends Observable{
 	public static String getUser() {
 		return user;
 	}
+
 	public void changeConnectionStatus(ConnectionStatus status){
 		this.connection = status;
 		setChanged();
@@ -69,7 +84,46 @@ public class SessionController extends Observable{
 		a.setTitle("Räddargruppen" + s);
 		View title = a.getWindow().findViewById(android.R.id.title);
 		View titleBar = (View) title.getParent();
+		if (connection.equals(ConnectionStatus.CONNECTED)){
+			a.setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.connected);
+		}
+		else if (connection.equals(ConnectionStatus.DISCONNECTED)){
+			a.setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.disconnected);
+		}
+
 		titleBar.setBackgroundColor(Color.rgb(48,128,20));
 		
 	}
+
+	
+	public void setOnlineUsers(ArrayList<String> onlineUsers){
+		this.onlineUsers = onlineUsers;
+	}
+	
+	public static ArrayList<Contact> getOnlineContacts(){
+		ArrayList<Contact> temp = new ArrayList<Contact>();
+		for(String s: onlineUsers){
+			temp.add(new Contact(s,false));
+		}
+		return temp;
+	}
+	
+	public static ArrayList getOnlineUsers(){
+		return onlineUsers;
+	}
+	
+	public static void addOnlineUser(String userName){
+		if(!onlineUsers.contains(userName));
+			onlineUsers.add(userName);
+	}
+	
+	public static void removeOnlineUser(String userName){
+		onlineUsers.remove(userName);
+	}
+	
+	public static boolean isOnline(String userName){
+		return onlineUsers.contains(userName);
+	}
+
+
 }
