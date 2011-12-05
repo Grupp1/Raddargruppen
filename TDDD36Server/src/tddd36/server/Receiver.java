@@ -9,9 +9,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import raddar.enums.NotificationType;
+import raddar.enums.OnlineOperation;
 import raddar.models.MapObjectMessage;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
+import raddar.models.OnlineUsersMessage;
 import raddar.models.RequestMessage;
 import raddar.models.TextMessage;
 
@@ -44,6 +46,7 @@ public class Receiver implements Runnable {
 	@Override
 	public void run() {
 		try {
+			
 			// För att läsa inkommande data från klienten
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
 			Class c= null ;
@@ -57,8 +60,12 @@ public class Receiver implements Runnable {
 
 			String temp = in.readLine();
 			System.out.println(temp);
-			
+
 			Message m = new Gson().fromJson(temp, c);
+//			if(Server.onlineUsers.isUserOnline(m.getSrcUser())){
+//					so.close();
+//				return;
+//			}
 			// if message
 			// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
 			// meddelandet som klienten har skickat blir inläst på korrekt sätt
@@ -113,7 +120,8 @@ public class Receiver implements Runnable {
 			break;
 		case DISCONNECT:
 			// Behandla logoutförsöket
-			LoginManager.logoutUser(nm.getSrcUser());
+			if(so.getInetAddress().equals(Server.onlineUsers.getUserAddress(nm.getSrcUser())))
+				LoginManager.logoutUser(nm.getSrcUser());
 			break;
 		default:
 			// Här hamnar vi om något gått fel i formatteringen eller inläsandet av meddelandet
@@ -137,7 +145,6 @@ public class Receiver implements Runnable {
 		switch(mo.getMapOperation()){
 		case ADD:
 			System.out.println("handleMapObjectMessage ADD");
-			
 			if(Database.addMapObject(mo))
 				broadcast(mo);
 			break;
@@ -203,6 +210,13 @@ public class Receiver implements Runnable {
 		case MAP_OBJECTS:
 			ArrayList<Message> mapObjectMessages = Database.retrieveAllMapObjects();
 			new Sender(mapObjectMessages, rm.getSrcUser());
+			break;
+		case ONLINE_CONTACTS:
+			ArrayList<String> onlineUsersMessages = Associations.getOnlineUserNames();
+			for(String onlineUser: onlineUsersMessages){
+				OnlineUsersMessage onlineUsermessage  = new OnlineUsersMessage(OnlineOperation.ADD, onlineUser);
+				new Sender(onlineUsermessage, rm.getSrcUser());
+			}
 			break;
 		default:
 			System.out.println("Okänd RequestType");

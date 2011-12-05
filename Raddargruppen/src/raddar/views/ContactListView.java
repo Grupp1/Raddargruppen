@@ -89,7 +89,7 @@ public class ContactListView extends ListActivity implements OnClickListener {
 
 
 	}
-
+	
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);

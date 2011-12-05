@@ -191,9 +191,6 @@ public class CallView extends Activity implements OnClickListener {
 	private void updateText(final String info, final String caller) {
 		runOnUiThread(new Runnable() {
 			public void run() {
-				Log.d("info", info);
-				Log.d("caller", caller);
-				
 																		
 				infoText.setText(info);
 				callerText.setText(caller);
@@ -216,7 +213,7 @@ public class CallView extends Activity implements OnClickListener {
 
 					stopSounds();
 					call.startAudio();
-					call.setSpeakerMode(true);
+					call.setSpeakerMode(false);
 					if (call.isMuted()) {
 						call.toggleMute();
 					}
@@ -307,7 +304,7 @@ public class CallView extends Activity implements OnClickListener {
 			updateText("Pratar med ", call.getPeerProfile().getUserName());
 			call.answerCall(30);
 			call.startAudio();
-			call.setSpeakerMode(true);
+			call.setSpeakerMode(false);
 			if (call.isMuted()) {
 				call.toggleMute();
 			}

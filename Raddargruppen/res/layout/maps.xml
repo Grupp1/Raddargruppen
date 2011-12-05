@@ -1,30 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent" android:layout_height="match_parent"
-	android:weightSum="1" android:orientation="vertical">
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:weightSum="1"
+	android:orientation="vertical">
 
 	<com.google.android.maps.MapView
-		xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/mapview"
-		android:layout_width="fill_parent" android:clickable="true"
 		
-		android:apiKey="0b1qi7XBfQqn9A3za-xBrAlalU6nTrHtuJ-lKog"
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/mapview"
+		android:layout_width="fill_parent"
+		android:clickable="true"
 
-		android:enabled="true" android:layout_height="match_parent"/>
+		android:apiKey="0sfNWnyLW9XDZyE6ofqFmhQCysDsbRTK_0Yh00A"
+
+		android:enabled="true"
+		android:layout_height="match_parent" />
+
 
 
 </LinearLayout>
 
 
-<!-- 
 
-Lalles nyckel på PC11:12/11
-0b1qi7XBfQqm8teK24blL1Hhnfhqc9iOFejhYUw
+<!--
+	Daniel nyckel på PC11:3 0sfNWnyLW9XDZyE6ofqFmhQCysDsbRTK_0Yh00A
 
-Magnus nyckel på PC11:12
-0P4uyHaBFnO1w1ZvrAL_GO-vnVjyg6tYishNE8w
-
-Mikaelas nyckel på PC11:2
-0s2mG7BRwMEO7k1qqPwPYY-WJQZRItVie8xVLtg
-
-
- -->
+	Lalles nyckel på PC11:12/11 0b1qi7XBfQqm8teK24blL1Hhnfhqc9iOFejhYUw 
+	
+	
+	Magnus nyckel på PC11:12 0P4uyHaBFnO1w1ZvrAL_GO-vnVjyg6tYishNE8w 
+	
+	
+	Mikaelas nyckel på PC11:2 0s2mG7BRwMEO7k1qqPwPYY-WJQZRItVie8xVLtg -->

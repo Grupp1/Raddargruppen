@@ -62,7 +62,6 @@ public abstract class Message {
 	//Temporärt en string bara för att testa
 	protected String data;
 	
-
 	public String getSubject() {
 		return subject;
 	}

@@ -26,6 +26,7 @@ public class StartView extends Activity implements Observer {
 	private Button loginButton;
 	private EditText user;
 	private EditText password;
+	
 	/**
 	 * The progressbar that is shown when the client is attempting to log in
 	 */
@@ -39,10 +40,12 @@ public class StartView extends Activity implements Observer {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.start);
 		SessionController.titleBar(this, " - Logga in");
-		
+
+		this.deleteDatabase("client_database");
 		new DatabaseController(this);
 
 		// Lite hårdkodade testanvändare att testa med
@@ -56,8 +59,8 @@ public class StartView extends Activity implements Observer {
 		password = (EditText) this.findViewById(R.id.passwordtext1);
 		// Endast för lättare testning
 
-		user.setText("lalle");
-		password.setText("lalle");
+		user.setText("danan612");
+		password.setText("raddar");
 
 		final LoginManager lm = new LoginManager();
 		lm.addObserver(this);
@@ -83,7 +86,7 @@ public class StartView extends Activity implements Observer {
 				Thread s = new Thread(new Runnable(){ 
 					public void run() {
 						lm.evaluate(user.getText().toString(),
-								password.getText().toString());
+								password.getText().toString(),true);
 					}
 				});
 				s.start();
@@ -147,5 +150,11 @@ public class StartView extends Activity implements Observer {
 			}
 		});
 
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		DatabaseController.db.clearDatabase();
+		DatabaseController.db.close();
 	}
 }

@@ -58,6 +58,7 @@ public class OutBoxView extends ListActivity {
 		}else{
 			outbox = (ArrayList<Message>) temp.clone(); 
 		}
+		
 		ia = new OutboxAdapter(this, R.layout.row,outbox);
 		setListAdapter(ia);
 		ListView lv = getListView();
@@ -68,10 +69,11 @@ public class OutBoxView extends ListActivity {
 					int position, long id) {
 				Intent nextIntent = new Intent(OutBoxView.this, SentMessageView.class);
 				nextIntent.putExtra("reciever",outbox.get(position).getDestUser());
-				Log.e("Dest user", outbox.get(position).getDestUser());
+				Log.e("destuser OutBoxView", outbox.get(position).getDestUser());
 				nextIntent.putExtra("subject",outbox.get(position).getSubject());
 				nextIntent.putExtra("data",outbox.get(position).getData());
 				nextIntent.putExtra("date", outbox.get(position).getDate());
+				Log.e("Datum OutBoxView", outbox.get(position).getDate().toString());
 				nextIntent.putExtra("type", outbox.get(position).getType());
 				startActivity(nextIntent);
 

@@ -8,5 +8,6 @@ public enum RequestType {
 	BUFFERED_MESSAGE,
 	SALT,
 	CONTACTS,
-	MAP_OBJECTS;
+	MAP_OBJECTS,
+	ONLINE_CONTACTS;
 }

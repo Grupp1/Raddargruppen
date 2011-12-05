@@ -1,6 +1,10 @@
 package raddar.views;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Observable;
+import java.util.Observer;
 
 import raddar.controllers.DatabaseController;
 import raddar.controllers.SessionController;
@@ -22,7 +26,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class CallContactListView extends ListActivity{
+public class CallContactListView extends ListActivity implements Observer{
 
 	private static final int RESULT_FIRST_USER_EDIT = 5;
 	private ContactAdapter ia;
@@ -38,7 +42,13 @@ public class CallContactListView extends ListActivity{
 		SessionController.titleBar(this, " - Samtal");
 
 		contacts = DatabaseController.db.getAllRowsAsArrays("contact");
+		DatabaseController.db.addObserver(this);
+		Collections.sort(contacts,new Comparator<Contact>(){
+			public int compare(Contact object1, Contact object2) {
+				return object1.getUserName().compareToIgnoreCase(object2.getUserName());
+			}
 
+		});
 		ia = new ContactAdapter(this, R.layout.call_contact_list, contacts);
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
@@ -85,8 +95,14 @@ public class CallContactListView extends ListActivity{
 		}
 
 
-		
+
 	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		DatabaseController.db.deleteObserver(this);
+	}
+
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -94,8 +110,16 @@ public class CallContactListView extends ListActivity{
 		QoSManager.setPowerMode();
 	}
 
-
-
+	public void update(Observable observable, final Object data) {
+		if(data instanceof Contact){
+			runOnUiThread(new Runnable(){
+				public void run() {
+					contacts.add((Contact)data);
+					ia.notifyDataSetChanged();					
+				}
+			});
+		}
+	}
 }
 
 

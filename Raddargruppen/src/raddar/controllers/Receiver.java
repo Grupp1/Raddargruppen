@@ -38,6 +38,7 @@ public class Receiver implements Runnable {
 			Message m = null;
 			Gson gson = new Gson();
 			while (test != null) {
+				Log.d("RECIVEER",test);
 				Class c = Class.forName(test);
 				String temp = in.readLine();
 				m = gson.fromJson(temp, c);
@@ -51,7 +52,13 @@ public class Receiver implements Runnable {
 
 			if (m != null && notify) {
 				Intent intent = new Intent(context, NotificationService.class);
-				context.startService(intent.putExtra("msg", m.getSubject()));
+				String[] message = new String[5];
+				message[0] = m.getSrcUser();
+				message[1] = m.getSubject();
+				message[2] = m.getData();
+				message[3] = m.getDate();
+				message[4] = m.getType().toString();
+				context.startService(intent.putExtra("msg", message));
 			}
 		} catch (IOException ie) {
 			Log.d("Receiver", "IOException");

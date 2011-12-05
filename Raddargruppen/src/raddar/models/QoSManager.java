@@ -21,6 +21,9 @@ public class QoSManager {
 	public static void setCurrentActivity(Activity a) {
 		current = a;
 	}
+	public static Activity getCurrentActivity(){
+		return current;
+	}
 	
 	/**
 	 * Ställ in telefonens strömläge beroende på telefonens

@@ -15,6 +15,8 @@ import java.util.Observable;
 
 import raddar.controllers.DatabaseController;
 import raddar.controllers.Sender;
+import raddar.controllers.SessionController;
+import raddar.enums.ConnectionStatus;
 import raddar.enums.LoginResponse;
 import raddar.enums.NotificationType;
 import raddar.enums.RequestType;
@@ -45,19 +47,20 @@ public class LoginManager extends Observable {
 	 *            Lösenordet
 	 * @return true om verifieringen går bra, false annars
 	 */
-	public void evaluate(String username, String password) {
+	public void evaluate(String username, String password, boolean firstLogIn) {
 		try {
 			// Skapa socket som används för att skicka NotificationMessage
 			Socket so = new Socket();
 			// Socket so = new
 			// Socket(InetAddress.getByName(ServerInfo.SERVER_IP),
 			// ServerInfo.SERVER_PORT);
+			Log.d("LoginManager", "LULZ 1");
 			InetAddress addr = InetAddress.getByName(ServerInfo.SERVER_IP);
 			int port = ServerInfo.SERVER_PORT;
 			SocketAddress sockAddr = new InetSocketAddress(addr, port);
 			int TIME_OUT = 5000;
 			so.connect(sockAddr, TIME_OUT);
-
+			Log.d("LoginManager", "LULZ 2");
 			PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
 			BufferedReader br = new BufferedReader(new InputStreamReader(
 					so.getInputStream()));
@@ -82,7 +85,7 @@ public class LoginManager extends Observable {
 			send = nm.getClass().getName() + "\r\n";
 			gg = new Gson().toJson(nm);
 			send += gg;
-			
+
 			// Skicka det saltade och krypterade lösenordet
 			pw.println(send);
 
@@ -93,15 +96,24 @@ public class LoginManager extends Observable {
 			pw.close();
 			br.close();
 			so.close();
-			
+
 			if (response.equals("OK")) {
-				
+				SessionController.setPassword(password);
+				SessionController.setUserName(username);
+				if(SessionController.getSessionController()!=null)
+					SessionController.getSessionController().changeConnectionStatus(ConnectionStatus.CONNECTED);
+
 				logIn = LoginResponse.ACCEPTED;
 				sendBufferedMessages();
 				s = null;
 			}
 			else if(response.equals("OK_FORCE_LOGOUT")){
+				SessionController.setPassword(password);
+				SessionController.setUserName(username);
+				if(SessionController.getSessionController()!=null)
+					SessionController.getSessionController().changeConnectionStatus(ConnectionStatus.CONNECTED);
 				logIn = LoginResponse.USER_ALREADY_LOGGED_IN;
+				sendBufferedMessages();
 				s = null;
 			}
 		} catch (IOException e) {
@@ -109,7 +121,12 @@ public class LoginManager extends Observable {
 			// Om servern inte kan nås, kolla om vi har en försökande tråd redan
 			// ...har vi en försökande tråd innebär det att vi redan är inloggade lokalt
 			// och då returnerar vi här, annars loggar vi in lokalt
-			if (s == null)
+			if(!firstLogIn && s==null){
+				s = new StubbornLoginThread(username, password);
+				Log.d("LoginManager", "LULZ 3");
+				return;
+			}
+			else if (s == null)
 				logIn = evaluateLocally(username, password);
 			else
 				return;
@@ -163,8 +180,6 @@ public class LoginManager extends Observable {
 		ArrayList<String> bufferedMessages = new ArrayList<String>();
 		bufferedMessages = DatabaseController.db.getAllRowsAsArrays("bufferedMessage");
 		if(bufferedMessages != null){
-
-			
 			for(String gsonString: bufferedMessages){
 				new Sender(gsonString);
 				Log.d("GSONSTRING",gsonString);
@@ -172,7 +187,7 @@ public class LoginManager extends Observable {
 			}
 		}
 	}
-	
+
 	/*
 	 * Privat klass som försöker att logga in emot servern med jämna mellanrum
 	 */
@@ -192,11 +207,11 @@ public class LoginManager extends Observable {
 				try {
 					if (s == null)
 						break;
-					evaluate(username, password);
+					evaluate(username, password,false);
 					if (s == null)
 						break;
 					// Vänta två minuter mellan varje försök
-					Thread.sleep(1000 * 10);
+					Thread.sleep(5000 * 10);
 
 				} catch (InterruptedException e) {
 					Log.d("LoginManager.java", "evaluateLocally FAILADE!!");
