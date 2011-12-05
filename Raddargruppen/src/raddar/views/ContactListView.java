@@ -76,11 +76,11 @@ public class ContactListView extends ListActivity implements OnClickListener {
 			if (c != null) {
 				TextView tt = (TextView) v.findViewById(R.id.label);
 				tt.setText(c.getUserName());
-				if (true){
-					statusImage.setId(R.drawable.online_circle_green);
+				if (SessionController.isOnline(c.getUserName())){
+					statusImage.setImageResource(R.drawable.online_circle_green);
 				}
 				else {
-					statusImage.setId(R.drawable.online_circle_red);
+					statusImage.setImageResource(R.drawable.online_circle_red);
 				} 
 			}
 

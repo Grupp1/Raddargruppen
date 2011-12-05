@@ -3,6 +3,7 @@ package raddar.controllers;
 
 import raddar.enums.ConnectionStatus;
 import raddar.gruppen.R;
+import raddar.models.Contact;
 import android.app.Activity;
 import android.graphics.Color;
 import android.view.Window;
@@ -96,7 +97,15 @@ public class SessionController extends Observable{
 		this.onlineUsers = onlineUsers;
 	}
 	
-	public ArrayList getOnlineUsers(){
+	public static ArrayList<Contact> getOnlineContacts(){
+		ArrayList<Contact> temp = new ArrayList<Contact>();
+		for(String s: onlineUsers){
+			temp.add(new Contact(s,false));
+		}
+		return temp;
+	}
+	
+	public static ArrayList getOnlineUsers(){
 		return onlineUsers;
 	}
 	
@@ -107,6 +116,10 @@ public class SessionController extends Observable{
 	
 	public static void removeOnlineUser(String userName){
 		onlineUsers.remove(userName);
+	}
+	
+	public static boolean isOnline(String userName){
+		return onlineUsers.contains(userName);
 	}
 
 
