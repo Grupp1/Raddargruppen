@@ -35,17 +35,20 @@ public class SendMessageView extends Activity implements OnClickListener {
 	private EditText subject;
 	private EditText messageData;
 	private Button sendButton;
+	private boolean isDraft = false;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.send_message);
 		SessionController.titleBar(this, " - Nytt textmeddelande");
-		
+
 		try {
 
 			Bundle extras = getIntent().getExtras();
 			String[] items = (String[]) extras.getCharSequenceArray("message");
+
+			isDraft = extras.getBoolean("isDraft");
 
 			destUser = (EditText) this.findViewById(R.id.destUser);
 			subject = (EditText) this.findViewById(R.id.subject);
@@ -66,6 +69,8 @@ public class SendMessageView extends Activity implements OnClickListener {
 			try{
 				Bundle extras = getIntent().getExtras();
 				String destMapUser = extras.getString("map");
+				
+				isDraft = false;
 
 				Log.d("Map", e.toString());
 				destUser = (EditText) this.findViewById(R.id.destUser);
@@ -82,6 +87,8 @@ public class SendMessageView extends Activity implements OnClickListener {
 
 			} catch (Exception c){
 
+				isDraft = false;
+				
 				Log.d("SendMessageView", c.toString());
 				destUser = (EditText) this.findViewById(R.id.destUser);
 				subject = (EditText) this.findViewById(R.id.subject);
@@ -160,7 +167,9 @@ public class SendMessageView extends Activity implements OnClickListener {
 					+ destUsers[i]);
 			m.setSubject(subject.getText() + "");
 			m.setData(messageData.getText() + "");
-			DatabaseController.db.addDraftRow(m);
+			if(!isDraft){
+				DatabaseController.db.addDraftRow(m);	
+			}
 		}
 
 		super.onBackPressed();

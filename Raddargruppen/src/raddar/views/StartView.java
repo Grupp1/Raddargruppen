@@ -42,7 +42,7 @@ public class StartView extends Activity implements Observer {
 		this.deleteDatabase("client_database");
 
 		setContentView(R.layout.start);
-		SessionController.titleBar(this, " - Logga in");
+	//	SessionController.titleBar(this, " - Logga in");
 		new DatabaseController(this);
 
 		// Lite hårdkodade testanvändare att testa med

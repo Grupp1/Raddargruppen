@@ -39,6 +39,7 @@ public class DraftMessageView extends Activity {
 				Log.d("DraftMessageView", "String [] mottagen");
 				Intent nextIntent = new Intent(DraftMessageView.this, SendMessageView.class);
 				nextIntent.putExtra("message", items);
+				nextIntent.putExtra("isDraft", true);
 				startActivity(nextIntent);
 				 
 				finish();

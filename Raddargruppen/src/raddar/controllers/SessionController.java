@@ -5,6 +5,7 @@ import java.util.Observable;
 import raddar.enums.ConnectionStatus;
 import android.app.Activity;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 
 /**
