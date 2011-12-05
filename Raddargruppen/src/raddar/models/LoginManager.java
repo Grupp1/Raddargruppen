@@ -163,7 +163,6 @@ public class LoginManager extends Observable {
 		ArrayList<String> bufferedMessages = new ArrayList<String>();
 		bufferedMessages = DatabaseController.db.getAllRowsAsArrays("bufferedMessage");
 		if(bufferedMessages != null){
-
 			
 			for(String gsonString: bufferedMessages){
 				new Sender(gsonString);

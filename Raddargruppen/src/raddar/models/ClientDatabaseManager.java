@@ -109,8 +109,9 @@ public class ClientDatabaseManager extends Observable {
 	public void addOutboxRow(Message m){
 		ContentValues values = new ContentValues();
 		values.put("destUser", m.getDestUser());
-		Log.e("destUser", m.getDestUser().toString());
+		Log.e("destUser addOutboxRow", m.getDestUser().toString());
 		values.put("rDate", m.getDate());
+		Log.e("rDate addOutboxRow", m.getDestUser().toString());
 		values.put("subject", m.getSubject());
 		values.put("mData", m.getData());
 		try {
@@ -426,6 +427,7 @@ public class ClientDatabaseManager extends Observable {
 								cursor.getString(1), DB_NAME);
 						m.setSubject(cursor.getString(3));
 						m.setData(cursor.getString(4));
+						m.setDate(cursor.getString(2));
 						dataArrays.add(m);
 					} 
 					else if (table.equals("imageMessage")) {
@@ -441,18 +443,18 @@ public class ClientDatabaseManager extends Observable {
 					}
 					else if(table.equals("outbox")){
 						Message m = new TextMessage(MessageType.TEXT, 
-								cursor.getString(1), 
-								DB_NAME,  
+								DB_NAME, cursor.getString(1),
 								cursor.getString(4));
 						m.setSubject(cursor.getString(3));
+						m.setDate(cursor.getString(2));
 						dataArrays.add(m);
 					}
 					else if(table.equals("drafts")){
 						Message m = new TextMessage(MessageType.TEXT, 
-								cursor.getString(1), 
-								DB_NAME,  
+								DB_NAME, cursor.getString(1),
 								cursor.getString(4));
 						m.setSubject(cursor.getString(3));
+						m.setDate(cursor.getString(2));
 						dataArrays.add(m);
 					}
 					else if (table.equals("map")) {
@@ -541,7 +543,7 @@ public class ClientDatabaseManager extends Observable {
 					"subject text," +
 					"mData text)";
 
-			String draftTableQueryString = "create table drafts (" 
+			String draftsTableQueryString = "create table drafts (" 
 					+ "msgId integer primary key autoincrement not null," + 
 					"destUser text," +
 					"rDate integer," +
@@ -566,6 +568,7 @@ public class ClientDatabaseManager extends Observable {
 			db.execSQL(imageMessageTableQueryString);
 			db.execSQL(outboxTableQueryString);
 			db.execSQL(bufferedmessageTableQueryString);
+			db.execSQL(draftsTableQueryString);
 		}
 
 		/**

@@ -2,14 +2,16 @@ package raddar.views;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import raddar.controllers.DatabaseController;
 import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
+import raddar.gruppen.R;
 import raddar.models.Message;
 import raddar.models.QoSManager;
 import raddar.models.TextMessage;
-import raddar.gruppen.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -130,8 +132,8 @@ public class SendMessageView extends Activity implements OnClickListener {
 					+ destUsers[i]);
 			m.setSubject(subject.getText() + "");
 			m.setData(messageData.getText() + "");
-//			m.setDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-//			Log.d("Datum", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()).toString());
+			m.setDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+			Log.d("Datum sendMessages", m.getDate().toString());
 			try {
 				new Sender(m,
 						InetAddress

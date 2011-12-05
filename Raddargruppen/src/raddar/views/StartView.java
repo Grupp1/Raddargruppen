@@ -37,6 +37,7 @@ public class StartView extends Activity implements Observer {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		this.deleteDatabase("client_database");
 		new DatabaseController(this);
 		setContentView((int) R.layout.start);
 		// Lite hårdkodade testanvändare att testa med
