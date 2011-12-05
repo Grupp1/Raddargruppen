@@ -5,8 +5,13 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import raddar.enums.NotificationType;
+import raddar.models.MapObjectMessage;
+import raddar.models.Message;
+import raddar.models.NotificationMessage;
+
 public class LoginManager {
-	
+
 	/**
 	 * Verifiera att en användare som försöker logga in har skrivit in rätt
 	 * användarnamn och rätt lösenord. Om inloggningsuppgifterna är giltiga
@@ -23,30 +28,32 @@ public class LoginManager {
 	public static void evaluateUser(String username, String password, Socket so) {
 		// Om användaren har loggat in med korrekt lösenord
 		PrintWriter pw;
-		if(Server.onlineUsers.isUserOnline(username)){
-			System.out.println(username+" har försökt logga in, men är redan inloggad på ip-adressen "
-					+ Server.onlineUsers.getUserAddress(username));
-			try {
-				pw = new PrintWriter(so.getOutputStream(), true);
-				pw.println("USER_ALREADY_EXIST");
-				pw.close();
-			} catch (IOException e) {
-				System.out.println("Could not respond with \"USER_ALREADY_EXIST\" to client attempting to Log in. Socket error? ");
-				e.printStackTrace();
-			}
-		}
-		else if (Database.evalutateUser(username, password)) {
+
+		if (Database.evalutateUser(username, password)) {
 			try {
 				// Skapa utströmmen till klienten
 				pw = new PrintWriter(so.getOutputStream(), true);
-				
-				// Svara med att det är OK
-				pw.println("OK");
+				if(Server.onlineUsers.getUserAddress(username)!=null){
+					System.out.println(username+" har försökt logga in, men är redan inloggad på ip-adressen "
+							+ Server.onlineUsers.getUserAddress(username));
+					if(Server.onlineUsers.getUserAddress(username).equals(so.getInetAddress())){
+						pw.println("OK");
+						pw.close();
+						return;
+					}else{
+						new Sender(new NotificationMessage("Server", NotificationType.DISCONNECT), username);
+						pw.println("OK_FORCE_LOGOUT");
+						Server.onlineUsers.removeUser(username);
+					}
+				}else{
+					// Svara med att det är OK
+					pw.println("OK");
+				}
 				pw.close();
-				
 				System.out.println(username + " har loggat in (" + so.getInetAddress().getHostAddress() + ") ");
-				
+
 				// Lägg till användaren i listan över inloggade användare
+
 				Server.onlineUsers.addUser(username, so.getInetAddress());
 			} catch (IOException e) {
 				System.out.println("Could not respond with \"OK\" to client attempting to Log in. Socket error? ");
@@ -64,13 +71,20 @@ public class LoginManager {
 			}
 		}
 	}
-	
+
 	/**
 	 * Logga ut en användare och avassociera dennes IP-adress
 	 * 
 	 * @param username Användaren som ska loggas ut
 	 */
 	public static void logoutUser(String username) {
+		if(username==null) return;
+		MapObjectMessage mom = Database.getMapObject(username);
+		if(mom != null){
+			Database.removeMapObject(username);
+			broadcast(mom);
+		}
+		System.out.println(username+" logout");
 		InetAddress a = Server.onlineUsers.removeUser(username);
 		// Kolla om användaren redan är utloggad
 		if (a == null)
@@ -78,5 +92,13 @@ public class LoginManager {
 		// ...annars loggar vi ut denne.
 		else			
 			System.out.println(username + " har loggat ut (" + a.getHostAddress() + ") ");
+	}
+	private static void broadcast(Message m) {
+		InetAddress srcAdr = Server.onlineUsers.getUserAddress(m.getSrcUser());
+		for (InetAddress adr: Server.onlineUsers.getAllAssociations().values()){
+			if(adr == srcAdr) continue;
+			new Sender(m, adr, 4043);
+		}
+
 	}
 }

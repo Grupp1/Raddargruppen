@@ -3,12 +3,13 @@ package raddar.views;
 import java.util.Observable;
 import java.util.Observer;
 
+import raddar.controllers.DatabaseController;
+import raddar.controllers.SessionController;
 import raddar.controllers.SipController;
 import raddar.enums.ConnectionStatus;
 import raddar.enums.LoginResponse;
 import raddar.gruppen.R;
 import raddar.models.LoginManager;
-import raddar.models.QoSManager;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -24,6 +25,7 @@ public class StartView extends Activity implements Observer {
 	private Button loginButton;
 	private EditText user;
 	private EditText password;
+	
 	/**
 	 * The progressbar that is shown when the client is attempting to log in
 	 */
@@ -37,16 +39,22 @@ public class StartView extends Activity implements Observer {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		this.deleteDatabase("client_database");
+
 		setContentView(R.layout.start);
+		SessionController.titleBar(this, " - Logga in");
+		new DatabaseController(this);
+
 		// Lite hårdkodade testanvändare att testa med
 		LoginManager.cache("Borche", "hej123");
 		LoginManager.cache("Danne", "raddar");
 		LoginManager.cache("Alice", "longshot");
 		LoginManager.cache("danan612","raddar");
 
-		user = (EditText) this.findViewById(R.id.usertext1);
-		password = (EditText) this.findViewById(R.id.passwordtext1);
+		user = (EditText) this.findViewById(R.id.usertext);
+		password = (EditText) this.findViewById(R.id.passwordtext);
 		// Endast för lättare testning
+
 		user.setText("danan612");
 		password.setText("raddar");
 
@@ -70,6 +78,7 @@ public class StartView extends Activity implements Observer {
 				loginButton.setEnabled(false);
 				dialog.show();
 
+				
 				Thread s = new Thread(new Runnable(){ 
 					public void run() {
 						lm.evaluate(user.getText().toString(),
@@ -99,7 +108,6 @@ public class StartView extends Activity implements Observer {
 								MainView.class);
 						nextIntent.putExtra("user", user.getText().toString());
 						nextIntent.putExtra("connectionStatus", ConnectionStatus.CONNECTED);
-						
 						startActivity(nextIntent);
 						
 					}
@@ -125,8 +133,13 @@ public class StartView extends Activity implements Observer {
 					startActivity(nextIntent);
 				}
 				else if((LoginResponse) data == LoginResponse.USER_ALREADY_LOGGED_IN){
-					Toast.makeText(StartView.this, "Användaren är redan inloggad på servern",
+					Toast.makeText(StartView.this, "Användaren är redan inloggad på servern, loggar ut denne",
 							Toast.LENGTH_LONG).show();
+					Intent nextIntent = new Intent(StartView.this,
+							MainView.class);
+					nextIntent.putExtra("user", user.getText().toString());
+					nextIntent.putExtra("connectionStatus", ConnectionStatus.CONNECTED);
+					startActivity(nextIntent);
 				}
 				loginButton.setEnabled(true);
 				dialog.cancel();

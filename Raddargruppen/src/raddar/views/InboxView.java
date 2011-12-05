@@ -5,10 +5,11 @@ import java.util.Observable;
 import java.util.Observer;
 
 import raddar.controllers.DatabaseController;
+import raddar.controllers.SessionController;
 import raddar.enums.MessageType;
-import raddar.gruppen.R;
 import raddar.models.Message;
 import raddar.models.QoSManager;
+import raddar.gruppen.R;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -33,6 +34,7 @@ public class InboxView extends ListActivity implements Observer{
 	
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
+		SessionController.titleBar(this, " - Inkorg");
 		DatabaseController.db.addObserver(this);
 		temp = DatabaseController.db.getAllRowsAsArrays("message");
 		//imageInbox = DatabaseController.db.getAllRowsAsArrays("imageMessage");

@@ -36,6 +36,11 @@ public enum MessageType {
 		public String toString() {
 			return("contact");
 		}
+	},
+	PROBE("probe") {
+		public String toString() {
+			return("probe");
+		}
 	};
 	
 	

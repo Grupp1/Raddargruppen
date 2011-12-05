@@ -5,11 +5,10 @@ import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
+import raddar.controllers.SessionController;
 import raddar.enums.ResourceStatus;
 import raddar.enums.SituationPriority;
 import raddar.gruppen.R;
-import raddar.models.Fire;
-import raddar.models.FireTruck;
 import raddar.models.MapObject;
 import raddar.models.MapObjectList;
 import raddar.models.QoSManager;
@@ -37,7 +36,6 @@ import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 
 
-
 public class MapUI extends MapActivity implements Observer {
 
 	private MapView mapView;
@@ -51,14 +49,14 @@ public class MapUI extends MapActivity implements Observer {
 	private Touchy touchy;
 	public boolean follow;
 	private Toast toast;
-	private Geocoder geocoder;
-
+	private Geocoder geocoder;	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.maps);
 
+		SessionController.titleBar(this, " - Karta");
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 		mapView.setSatellite(true);
@@ -75,6 +73,7 @@ public class MapUI extends MapActivity implements Observer {
 		/**
 		 * Random locations
 		 */
+		
 		myLocation = new GeoPoint(0,0);
 		liu = new GeoPoint(58395730, 15573080);
 		sthlmLocation = new GeoPoint(59357290, 17960050);
@@ -89,14 +88,17 @@ public class MapUI extends MapActivity implements Observer {
 		controller.animateTo(sthlmLocation);
 		controller.setZoom(8);
 
+		//		Drawable d = getResources().getIdentifier(null, null, null);
+
 	}
+	
 
 	@Override
 	protected void onStart() {
 		if(MainView.mapCont.areYouFind){
 			follow = true;
 			controller.animateTo(MainView.mapCont.getYou().getPoint());
-			controller.setZoom(12);
+			controller.setZoom(15);
 		}
 		super.onStart();
 	}
@@ -140,7 +142,7 @@ public class MapUI extends MapActivity implements Observer {
 		nextIntent.putExtra("map", user);
 		startActivity(nextIntent);
 	}
-	
+
 	public void callUser(String user){
 		Intent nextIntent = new Intent(MapUI.this,
 				CallView.class);
@@ -152,17 +154,23 @@ public class MapUI extends MapActivity implements Observer {
 
 	class Touchy extends Overlay{
 		private Context context;
-		private CharSequence [] items = {"Brand", "Brandbil", "Situation", "Resurs"};
+		//		private CharSequence [] items = {"Brand", "Brandbil", "Händelse", "Resurs"};
+		private CharSequence [] items = {"Händelse", "Resurs"};
+		private CharSequence [] prio = {"Hög", "Mellan", "Låg"};
+		private CharSequence [] stat = {"Ledig", "Upptagen"};
 		private String value;
 		private EditText input;
 		private int item;
+		private int prioritet;
+		private int status;
+		private MapObject o = null;
 
 		public Touchy(Context context){
 			this.context = context;
 		}
 
 		public boolean onTouchEvent(MotionEvent e, MapView m) {
-			int holdTime = 800;
+			int holdTime = 750;
 			if(e.getAction() == MotionEvent.ACTION_DOWN){
 				start = e.getEventTime();
 				touchedX = (int) e.getX();
@@ -172,13 +180,14 @@ public class MapUI extends MapActivity implements Observer {
 			if(e.getAction() == MotionEvent.ACTION_UP){
 				stop = e.getEventTime();
 			}
+
 			if(stop - start > holdTime){
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(context);
 				builder.setTitle("Placera");
+
+
 				builder.setItems(items, new DialogInterface.OnClickListener() {
-
-
 					public void onClick(DialogInterface dialog, int item) {
 						Touchy.this.item = item;
 						AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
@@ -189,24 +198,114 @@ public class MapUI extends MapActivity implements Observer {
 						input = new EditText(context);
 						alertDialog.setView(input);
 
+
 						alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+							
 							public void onClick(DialogInterface dialog, int whichButton) {
 								value = input.getText().toString();
-								MapObject o = null;
-								if(Touchy.this.item == 0){		
-									MainView.mapCont.add(o = new Fire(touchedPoint, value, SituationPriority.HIGH),true);
-								}
-								if(Touchy.this.item == 1){
-									MainView.mapCont.add(o = new FireTruck(touchedPoint, value, ResourceStatus.BUSY),true);
-								}
-								if(Touchy.this.item == 2){
+								
+								/*
+								 * Om situation sätt prioritet
+								 */
+								
+								if(Touchy.this.item == 0){
 									MainView.mapCont.add(o = new Situation(touchedPoint, "Situation", value, R.drawable.situation, SituationPriority.NORMAL),true);
+
+									AlertDialog.Builder builder = new AlertDialog.Builder(context);
+									builder.setTitle("Välj prioritet");
+
+									builder.setSingleChoiceItems(prio, -1, new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int item) {
+											
+											prioritet = item;
+											
+										}
+									});
+
+									builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int whichButton) {
+
+											
+											if(Touchy.this.prioritet == 0){
+												
+												((Situation) o).setPriority(SituationPriority.HIGH);
+												MainView.mapCont.updateObject(o,true);
+											}
+											if(Touchy.this.prioritet == 1){
+												
+												
+												((Situation) o).setPriority(SituationPriority.NORMAL);
+												MainView.mapCont.updateObject(o,true);
+											}
+											if(Touchy.this.prioritet == 2){
+												
+												((Situation) o).setPriority(SituationPriority.LOW);
+												MainView.mapCont.updateObject(o,true);
+											}
+
+
+										}
+									});
+									
+									builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int whichButton) {
+
+										}
+									});
+
+									builder.show();
+
 								}
-								if(Touchy.this.item == 3){
+
+								/*
+								 * Om resurs, sätt prioritet
+								 */
+								
+								if(Touchy.this.item == 1){
 									MainView.mapCont.add(o = new Resource(touchedPoint, "Resurs", value, R.drawable.resource, ResourceStatus.BUSY),true);
+
+									AlertDialog.Builder builder = new AlertDialog.Builder(context);
+									builder.setTitle("Välj status");
+
+									builder.setSingleChoiceItems(stat, -1, new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int item) {
+
+											status = item;
+											
+										}
+									});
+
+									builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int whichButton) {
+
+											status = whichButton;
+											
+											if(Touchy.this.status == 0){
+												((Resource) o).setStatus(ResourceStatus.FREE);
+												MainView.mapCont.updateObject(o,true);
+											}
+											if(Touchy.this.status == 1){
+												((Resource) o).setStatus(ResourceStatus.BUSY);
+												MainView.mapCont.updateObject(o,true);
+											}
+
+
+										}
+									});
+
+									builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int whichButton) {
+
+										}
+									});
+
+									builder.show();
+
 								}
 								o.updateData(geocoder);;
 								Toast.makeText(getApplicationContext(), items[Touchy.this.item]+" utplacerad", Toast.LENGTH_LONG).show();
+
+
 							}
 						});
 						alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -256,23 +355,46 @@ public class MapUI extends MapActivity implements Observer {
 
 	}
 
-	public void drawNewMapObject(MapObject mo){
+	public void drawNewMapObject(final MapObject mo){
 		MapObjectList list = MainView.mapCont.getList(mo);
 		if(list == null){
-			Log.d("MapUI", "list är null");
 			return;
 		}
+
 		if (!mapOverlays.contains(list)){
 			mapOverlays.add((MapObjectList) list);
 		}
 		else{
 			mapOverlays.set(mapOverlays.indexOf(list), list);
 		}
-		mapView.postInvalidate();
+		runOnUiThread(new Runnable(){
+			public void run() {
+				MapObjectList list = MainView.mapCont.getList(mo);
+				Log.d("MAPUI", " "+list);
+				if(list == null){
+					Log.d("MAPUI", "fyufdyfdjyuyudrtufr");
+					return;
+				}
+				
+				if (!mapOverlays.contains(list)){
+					Log.d("MAPUI", "if");
+					mapOverlays.add((MapObjectList) list);
+				}
+				else{
+					Log.d("MAPUI", "else");
+					mapOverlays.set(mapOverlays.indexOf(list), list);
+				}
+
+				if(!mo.getId().equals(SessionController.getUser())){
+					toast = Toast.makeText(getBaseContext(), "Objekt tillagt: "+mo.getTitle()
+							+"Skapad av: "+mo.getAddedBy(), Toast.LENGTH_LONG);
+					toast.show();
+				}
+				mapView.invalidate();
+			}});
 	}
 
 	public void update(Observable observable, Object data) {
-		Log.d("MAPUI",observable.toString());
 		if (data instanceof GeoPoint){
 
 		}
@@ -288,7 +410,6 @@ public class MapUI extends MapActivity implements Observer {
 		else if(data instanceof MapObject){
 			MapObjectList list = MainView.mapCont.getList((MapObject)data);
 			if(list == null){
-				Log.d("MapUI", "list är null");
 				return;
 			}
 			if (!mapOverlays.contains(list)){

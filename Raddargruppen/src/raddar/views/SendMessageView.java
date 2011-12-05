@@ -13,8 +13,6 @@ import raddar.models.Message;
 import raddar.models.QoSManager;
 import raddar.models.TextMessage;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,7 +40,8 @@ public class SendMessageView extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.send_message);
-
+		SessionController.titleBar(this, " - Nytt textmeddelande");
+		
 		try {
 
 			Bundle extras = getIntent().getExtras();
@@ -58,6 +57,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 			sendButton = (Button) this.findViewById(R.id.sendButton);
 			sendButton.setOnClickListener(this);
 			destUser.setOnClickListener(this);
+			destUser.setFocusable(false);
 
 		} catch (Exception e) {
 
@@ -77,6 +77,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 				sendButton = (Button) this.findViewById(R.id.sendButton);
 				sendButton.setOnClickListener(this);
 				destUser.setOnClickListener(this);
+				destUser.setFocusable(false);
 
 
 			} catch (Exception c){
@@ -88,6 +89,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 				sendButton = (Button) this.findViewById(R.id.sendButton);
 				sendButton.setOnClickListener(this);
 				destUser.setOnClickListener(this);
+				destUser.setFocusable(false);
 
 			}
 		}
@@ -116,7 +118,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 			Intent nextIntent = new Intent(SendMessageView.this, ContactView.class);
 			startActivityForResult(nextIntent,0);
 
-		} else{
+		}else{
 			onBackPressed();
 			Intent nextIntent = new Intent(SendMessageView.this,
 					ContactView.class);
@@ -135,6 +137,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 			m.setSubject(subject.getText() + "");
 			m.setData(messageData.getText() + "");
 			m.setDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+			Log.d("Datum sendMessages", m.getDate().toString());
 			try {
 				new Sender(m,
 						InetAddress
@@ -189,7 +192,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 
 
 
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();

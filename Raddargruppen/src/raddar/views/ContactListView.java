@@ -7,10 +7,8 @@ import raddar.controllers.SessionController;
 import raddar.gruppen.R;
 import raddar.models.Contact;
 import raddar.models.QoSManager;
-import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -25,7 +23,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class ContactListView extends ListActivity implements OnClickListener {
 	private static final int RESULT_FIRST_USER_EDIT = 5;
@@ -38,6 +35,7 @@ public class ContactListView extends ListActivity implements OnClickListener {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		SessionController.titleBar(this, " - Kontaktlista");
 		contacts = DatabaseController.db.getAllRowsAsArrays("contact");
 		// for(int i = 0;i <10;i++)
 		// contacts.add(new Contact("Peter"+i, false));
@@ -95,7 +93,7 @@ public class ContactListView extends ListActivity implements OnClickListener {
 	public boolean onContextItemSelected(MenuItem item) {
 		if (item.getTitle() == "Ring") {
 			Intent nextIntent = new Intent(this,CallView.class);
-			nextIntent.putExtra("sip","sip:" + contacts.get(info.position).getSipUsr()
+			nextIntent.putExtra("sip","sip:" + contacts.get(info.position).getUserName()
 					+ "@ekiga.net" );
 			startActivityForResult(nextIntent,9);
 

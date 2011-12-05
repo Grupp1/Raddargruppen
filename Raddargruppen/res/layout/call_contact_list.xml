@@ -9,7 +9,7 @@
 		android:id="@+id/linearLayout1"
 		android:orientation="vertical">
 		<TextView
-			android:textSize="35dip"
+			android:textAppearance="?android:attr/textAppearanceLarge"
 			android:text=""
 			android:layout_width="wrap_content"
 			android:id="@+id/label"
@@ -26,10 +26,9 @@
 
 		<ImageView
 			android:layout_width="wrap_content"
-			android:id="@+id/phoneImage"
+			android:id="@+id/loginImage"
 			android:layout_height="wrap_content"
-			android:layout_gravity="right"
-			android:src="@drawable/phone_small">
+			android:layout_gravity="right">
 		</ImageView>
 		
 

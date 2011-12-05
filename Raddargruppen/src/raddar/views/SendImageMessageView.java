@@ -7,9 +7,9 @@ import raddar.controllers.DatabaseController;
 import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
 import raddar.enums.MessageType;
-import raddar.gruppen.R;
 import raddar.models.ImageMessage;
 import raddar.models.QoSManager;
+import raddar.gruppen.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -38,6 +38,7 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.send_image_message);
+		SessionController.titleBar(this, " - Nytt bildmeddelande");
 		destUser = (EditText) this.findViewById(R.id.destUser);
 		subject = (EditText) this.findViewById(R.id.subject);
 		sendButton = (Button) this.findViewById(R.id.sendButton);

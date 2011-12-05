@@ -1,5 +1,6 @@
 package raddar.views;
 
+import raddar.controllers.SessionController;
 import raddar.gruppen.R;
 import raddar.models.QoSManager;
 import android.app.Activity;
@@ -21,6 +22,7 @@ public class MessageChoiceView extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.message_choice);
+		SessionController.titleBar(this, " - Meddelanden");
 		
 		newTextButton = (ImageButton)this.findViewById(R.id.newTextButton);
 		newTextButton.setOnClickListener(this);

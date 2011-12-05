@@ -21,10 +21,11 @@ import com.google.android.maps.OverlayItem;
 public class MapObject extends OverlayItem {
 
 	private GeoPoint point;
-	private String title, snippet, id, adress, description, addedBy, date, changedBy, changedDate;
+	private String title, snippet, adress, description, addedBy, date, changedBy, changedDate;
+	protected String id;
 	private int icon;
 	private ID idGen;
-	
+
 	/**
 	 * Super-klassen för ett objekt på kartan
 	 * 
@@ -41,14 +42,19 @@ public class MapObject extends OverlayItem {
 		this.icon = icon;
 		this.addedBy = SessionController.getUser();
 		this.date = new SimpleDateFormat("yyyy:MM:dd 'kl' HH:mm:ss").format(new Date());
-		
-		this.changedBy = "Har inte blivit ändrad";
-		this.changedDate = "Har inte blivit ändrad";
-		
-		idGen = new ID(addedBy,point.getLatitudeE6(),point.getLongitudeE6(), date);
-		id = idGen.generateID();
+
+
+		this.changedBy = "Ej ändrad";
+		this.changedDate = "Ej ändrad";
+
+
+		if(point!= null && addedBy!= null&& date != null){
+			idGen = new ID(addedBy,point.getLatitudeE6(),point.getLongitudeE6(), date);
+			id = idGen.generateID();
+		}
+
 	}
-	
+
 	public String getChangedBy() {
 		return changedBy;
 	}
@@ -69,7 +75,7 @@ public class MapObject extends OverlayItem {
 	public String getAddedBy(){
 		return addedBy;
 	}
-	
+
 	/**
 	 * 
 	 * @return Tiden och datumet då objektet skapades
@@ -84,6 +90,14 @@ public class MapObject extends OverlayItem {
 	 */
 	public void setPoint(GeoPoint point) {
 		this.point = point;
+	}
+	
+	/**
+	 * @param point Objektets koordinater
+	 */
+	
+	public GeoPoint getPoint(){
+		return point;
 	}
 
 	/**
@@ -109,7 +123,7 @@ public class MapObject extends OverlayItem {
 		this.snippet = snippet;
 		changeLatestUser();
 	}
-	
+
 	/**
 	 * @return Objektets beskrivning
 	 */
@@ -149,7 +163,7 @@ public class MapObject extends OverlayItem {
 		return adress;
 	}
 
-	
+
 	/**
 	 * 
 	 * @param adress Objektets adress
@@ -157,7 +171,7 @@ public class MapObject extends OverlayItem {
 	public void setAdress(String adress) {
 		this.adress = adress;
 	}
-	
+
 	/**
 	 * Returnerar en sträng som visar all relevant information för det specifika objektet
 	 * @return Objektets relevanta information för användaren
@@ -165,7 +179,7 @@ public class MapObject extends OverlayItem {
 	public String getDescription() {
 		return description;
 	}
-	
+
 	/**
 	 * 
 	 * @param description En sträng som samlar objektets relevanta information
@@ -173,7 +187,7 @@ public class MapObject extends OverlayItem {
 	public void setDescription(String description){
 		this.description = description;
 	}
-	
+
 	/**
 	 * Anropar updateAdress och updateDescription
 	 * @param geocoder Kartans geocoder
@@ -182,10 +196,6 @@ public class MapObject extends OverlayItem {
 		updateAdress(geocoder);
 		updateDescription();
 	}	
-	
-	public GeoPoint getPoint() {
-		return point;
-	}
 
 	/**
 	 * Tar fram objektets geografiska adress från dess koordinater
@@ -205,20 +215,20 @@ public class MapObject extends OverlayItem {
 			//e.printStackTrace();
 			Log.d("Geocoder", "Service not avalible");
 		}finally{
-			
+
 		}
 		setAdress(display);
 	}
-	
+
 	/**
 	 * Uppdaterar strängen description med objektets variabler
 	 */
 	public void updateDescription(){
-		setDescription("Beskrivning: "+getSnippet()+"\nAdress: "+getAdress()+
-				  "Koordinater: "+getPoint().getLatitudeE6()/1E6+", "+getPoint().getLongitudeE6()/1E6 + "\nSkapad: " + 
+		setDescription("Beskrivning: " + "\n" +getSnippet()+"\n\nAdress: "+getAdress()+
+				"Koordinater:" + "\n" +getPoint().getLatitudeE6()/1E6+", "+getPoint().getLongitudeE6()/1E6 + "\n\nSkapad: " + 
 				getDate() + "\nSkapad av: " + getAddedBy() + "\nSenast ändrad: " + getChangedDate() + "\nSenast ändrad av: " +
-				  getChangedBy() + "\n ID: " + getId());
+				getChangedBy() + "\n" + "ID: " + getId()+ "\n");
 	}
-	
+
 }
 
