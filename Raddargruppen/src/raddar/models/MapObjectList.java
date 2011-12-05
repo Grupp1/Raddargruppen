@@ -19,7 +19,6 @@ import com.google.android.maps.OverlayItem;
 
 public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
-
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
 	private Context mContext;
 	private EditText input;
@@ -68,7 +67,6 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 	 * Vad som händer när man trycker på en situation
 	 */
 
-	@Override
 	protected boolean onTap(final int index) {
 
 		final CharSequence [] situationPriority = {SituationPriority.HIGH.toString(), SituationPriority.NORMAL.toString(), SituationPriority.LOW.toString()};
@@ -144,13 +142,49 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 						alertDialog.setNegativeButton("Nej", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
+						}
+					});
+					alertDialog.show();
+				}
+			});
+		}else{
 
-							}
-						});
-						alertDialog.show();
-					}
-				});
-			}
+			alert.setButton2("Ring/Skicka meddelande", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+
+					AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+
+					alertDialog.setTitle("Vill du ringa eller skicka meddelande?");
+
+					AlertDialog alert = alertDialog.create();
+
+					alert.setButton("Ring", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+							MainView.mapCont.callUser(item.getAddedBy());
+
+						}
+					});
+					alert.setButton2("Skicka meddelande", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+							MainView.mapCont.sendMessage(item.getAddedBy());
+							
+						}
+					});
+					alert.show();
+				
+				}
+			});
+		}
+//		/*
+//		 * Ändra prioritet på situation på kartan
+//		 */
+//
+//							}
+//						});
+//						alertDialog.show();
+//					}
+//				});
+//			}
 
 
 			/*

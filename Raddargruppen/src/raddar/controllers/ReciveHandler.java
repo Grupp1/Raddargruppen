@@ -86,6 +86,7 @@ public class ReciveHandler extends Observable implements Runnable {
 			DatabaseController.db.addRow(m, notify);
 			
 		} else if (mt == MessageType.SOS) {
+			//((Activity) context).runOnUiThread(new Runnable() {
 			QoSManager.getCurrentActivity().runOnUiThread(new Runnable() {
 				public void run() {
 					You you = new You(((SOSMessage)m).getPoint(), m.getSrcUser()+" positition",m.getData(),R.drawable.circle_red,
@@ -102,6 +103,7 @@ public class ReciveHandler extends Observable implements Runnable {
 							new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,
 								int whichButton) {
+							
 							// Gå till kartan¨
 						Intent intent = new Intent(QoSManager.getCurrentActivity(),MapUI.class);
 						intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);

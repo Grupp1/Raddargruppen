@@ -91,6 +91,14 @@ public class MapObject extends OverlayItem {
 	public void setPoint(GeoPoint point) {
 		this.point = point;
 	}
+	
+	/**
+	 * @param point Objektets koordinater
+	 */
+	
+	public GeoPoint getPoint(){
+		return point;
+	}
 
 	/**
 	 * @return Objektets titel
@@ -188,10 +196,6 @@ public class MapObject extends OverlayItem {
 		updateAdress(geocoder);
 		updateDescription();
 	}	
-
-	public GeoPoint getPoint() {
-		return point;
-	}
 
 	/**
 	 * Tar fram objektets geografiska adress från dess koordinater

@@ -180,8 +180,6 @@ public class LoginManager extends Observable {
 		ArrayList<String> bufferedMessages = new ArrayList<String>();
 		bufferedMessages = DatabaseController.db.getAllRowsAsArrays("bufferedMessage");
 		if(bufferedMessages != null){
-
-
 			for(String gsonString: bufferedMessages){
 				new Sender(gsonString);
 				Log.d("GSONSTRING",gsonString);
@@ -213,7 +211,7 @@ public class LoginManager extends Observable {
 					if (s == null)
 						break;
 					// Vänta två minuter mellan varje försök
-					Thread.sleep(1000 * 10);
+					Thread.sleep(5000 * 10);
 
 				} catch (InterruptedException e) {
 					Log.d("LoginManager.java", "evaluateLocally FAILADE!!");

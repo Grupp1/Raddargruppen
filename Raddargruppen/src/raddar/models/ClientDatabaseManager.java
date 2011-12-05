@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Observable;
 
 import raddar.enums.MessageType;
-import raddar.enums.SituationPriority;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -14,7 +13,6 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.google.android.maps.GeoPoint;
 import com.google.gson.Gson;
 
 public class ClientDatabaseManager extends Observable {
@@ -41,12 +39,12 @@ public class ClientDatabaseManager extends Observable {
 	private final String[] BUFFERED_MESSAGE_TABLE_ROWS = new String[] {"gsonString"};
 
 
-
 	/**********************************************************************
 	 * CREATE OR OPEN A DATABASE SPECIFIC TO THE USER
 	 * @param context 
 	 * @param userName The name of the database is equal to the user name
 	 */
+
 	public ClientDatabaseManager(Context context) {
 		this.context = context;
 		this.DB_NAME = "client_database";
@@ -64,6 +62,9 @@ public class ClientDatabaseManager extends Observable {
 	// TEST KOD FÖR MAP
 	//addRow(new Fire(new GeoPoint(58395730, 15573080), "Här brinner det!", SituationPriority.HIGH));
 
+		//TEST KOD FÖR SAMTAL
+		//addSipProfile( user, String password);
+		Contact einar = new Contact("Einar", false, "marcuseinar", "einar");
 	//TEST KOD FÖR SAMTAL
 	//addSipProfile( user, String password);
 	/*Contact einar = new Contact("Einar", false, "marcuseinar", "einar");
@@ -78,10 +79,6 @@ public class ClientDatabaseManager extends Observable {
 		addRow(lalle);
 		addRow(borche);
 		/*addRow(mange);
-
-
-
-
 
 	/**********************************************************************
 	 * ADDING A MESSAGE ROW TO THE DATABASE TABLE
@@ -106,15 +103,15 @@ public class ClientDatabaseManager extends Observable {
 
 	/**********************************************************************
 	 * 
-	 *
 	 * Messages to be addad to the outbox
 	 * @param m The message that is to be added to the database
 	 */
 	public void addOutboxRow(Message m){
 		ContentValues values = new ContentValues();
 		values.put("destUser", m.getDestUser());
-		Log.e("destUser", m.getDestUser().toString());
+		Log.e("destUser addOutboxRow", m.getDestUser().toString());
 		values.put("rDate", m.getDate());
+		Log.e("rDate addOutboxRow", m.getDestUser().toString());
 		values.put("subject", m.getSubject());
 		values.put("mData", m.getData());
 		try {
@@ -283,7 +280,13 @@ public class ClientDatabaseManager extends Observable {
 			e.printStackTrace();
 		}
 	}
-
+	
+	/**********************************************************************
+	 * UPDATING A ROW IN THE MAPOBJECT TABLE
+	 * 
+	 * @param c 
+	 * @param 
+	 */
 	public void updateRow(MapObject o) {
 		ContentValues values = new ContentValues();
 		values.put("mapObject", new Gson().toJson(o));
@@ -309,7 +312,6 @@ public class ClientDatabaseManager extends Observable {
 		db.delete("contact", null, null);
 
 	}
-
 
 	/********************************************************************
 	 * DELETING A ROW IN THE DRAFT TABLE
@@ -425,6 +427,7 @@ public class ClientDatabaseManager extends Observable {
 								cursor.getString(1), DB_NAME);
 						m.setSubject(cursor.getString(3));
 						m.setData(cursor.getString(4));
+						m.setDate(cursor.getString(2));
 						dataArrays.add(m);
 					} 
 					else if (table.equals("imageMessage")) {
@@ -440,18 +443,18 @@ public class ClientDatabaseManager extends Observable {
 					}
 					else if(table.equals("outbox")){
 						Message m = new TextMessage(MessageType.TEXT, 
-								cursor.getString(1), 
-								DB_NAME,  
+								DB_NAME, cursor.getString(1),
 								cursor.getString(4));
 						m.setSubject(cursor.getString(3));
+						m.setDate(cursor.getString(2));
 						dataArrays.add(m);
 					}
 					else if(table.equals("drafts")){
 						Message m = new TextMessage(MessageType.TEXT, 
-								cursor.getString(1), 
-								DB_NAME,  
+								DB_NAME, cursor.getString(1),
 								cursor.getString(4));
 						m.setSubject(cursor.getString(3));
+						m.setDate(cursor.getString(2));
 						dataArrays.add(m);
 					}
 					else if (table.equals("map")) {

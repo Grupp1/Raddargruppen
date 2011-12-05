@@ -10,7 +10,6 @@ import java.util.Observer;
 
 import raddar.enums.MapOperation;
 import raddar.enums.ResourceStatus;
-import raddar.gruppen.R;
 import raddar.models.GPSModel;
 import raddar.models.MapModel;
 import raddar.models.MapObject;
@@ -19,6 +18,7 @@ import raddar.models.MapObjectMessage;
 import raddar.models.You;
 import raddar.views.MainView;
 import raddar.views.MapUI;
+import raddar.gruppen.R;
 import android.location.Address;
 import android.location.Geocoder;
 import android.util.Log;
@@ -173,7 +173,6 @@ public class MapCont implements Observer, Runnable{
 			}
 			else{
 				updateObject(you,true);
-				//removeObject(you, false);
 			}
 			you.setPoint((GeoPoint)data);	
 
@@ -204,6 +203,14 @@ public class MapCont implements Observer, Runnable{
 
 		}
 		return display;
+	}
+	
+	public void sendMessage(String user){
+		mapModel.sendMessage(user);
+	}
+	
+	public void callUser(String user){
+		mapModel.callUser(user);
 	}
 
 	public void renewYou() {
