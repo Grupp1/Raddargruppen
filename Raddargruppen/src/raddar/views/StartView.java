@@ -15,6 +15,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,9 +39,10 @@ public class StartView extends Activity implements Observer {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.start);
 		SessionController.titleBar(this, " - Logga in");
+		
 		new DatabaseController(this);
 
 		// Lite hårdkodade testanvändare att testa med
@@ -50,8 +52,8 @@ public class StartView extends Activity implements Observer {
 		LoginManager.cache("danan612","raddar");
 
 
-		user = (EditText) this.findViewById(R.id.usertext);
-		password = (EditText) this.findViewById(R.id.passwordtext);
+		user = (EditText) this.findViewById(R.id.usertext1);
+		password = (EditText) this.findViewById(R.id.passwordtext1);
 		// Endast för lättare testning
 
 		user.setText("lalle");

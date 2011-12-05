@@ -30,6 +30,7 @@ import android.os.BatteryManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -70,6 +71,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.main);
 		SessionController.titleBar(this, " ");
 
@@ -134,15 +136,18 @@ public class MainView extends Activity implements OnClickListener, Observer {
 
 		logButton = (ImageButton)this.findViewById(R.id.logButton);
 		logButton.setOnClickListener(this);
-
+		
 		connectionButton = (ImageButton) findViewById(R.id.presence);
 		connectionButton.setOnClickListener(this);
+		
 		if (extras.get("connectionStatus").equals(ConnectionStatus.CONNECTED)){
 			connectionButton.setImageResource(R.drawable.connected);
 		}
 		else if (extras.get("connectionStatus").equals(ConnectionStatus.DISCONNECTED)){
 			connectionButton.setImageResource(R.drawable.disconnected);
 		}
+
+	
 	}
 
 	public void onClick(View v) {

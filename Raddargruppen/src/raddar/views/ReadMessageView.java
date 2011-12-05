@@ -6,6 +6,7 @@ import raddar.models.QoSManager;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,7 +15,7 @@ public class ReadMessageView extends Activity{
 	public void onCreate(Bundle savedInstanceState){
 
 		super.onCreate(savedInstanceState);
-
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.read_message);
 		SessionController.titleBar(this, " - Meddelanden");
 		Bundle extras = getIntent().getExtras();
