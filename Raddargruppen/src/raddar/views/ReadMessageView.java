@@ -1,5 +1,6 @@
 package raddar.views;
 
+import raddar.controllers.SessionController;
 import raddar.gruppen.R;
 import raddar.models.QoSManager;
 import android.app.Activity;
@@ -20,6 +21,7 @@ public class ReadMessageView extends Activity{
 
 		setContentView(R.layout.read_message);
 		final Bundle extras = getIntent().getExtras();
+		SessionController.titleBar(this, " - Meddelanden");
 
 		TextView readMessageSrcUser = (TextView)this.findViewById(R.id.readMessageSrcUser);
 		TextView readMessageDate = (TextView)this.findViewById(R.id.readMessageDate);

@@ -7,7 +7,7 @@
 	android:orientation="vertical">
 
 	<com.google.android.maps.MapView
-
+		
 		xmlns:android="http://schemas.android.com/apk/res/android"
 		android:id="@+id/mapview"
 		android:layout_width="fill_parent"
@@ -23,7 +23,11 @@
 </LinearLayout>
 
 
-<!-- Lalles nyckel på PC11:12/11 0b1qi7XBfQqm8teK24blL1Hhnfhqc9iOFejhYUw 
+
+<!--
+	Daniel nyckel på PC11:3 0sfNWnyLW9XDZyE6ofqFmhQCysDsbRTK_0Yh00A
+
+	Lalles nyckel på PC11:12/11 0b1qi7XBfQqm8teK24blL1Hhnfhqc9iOFejhYUw 
 	
 	
 	Magnus nyckel på PC11:12 0P4uyHaBFnO1w1ZvrAL_GO-vnVjyg6tYishNE8w 

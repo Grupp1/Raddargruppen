@@ -57,12 +57,15 @@ public class Receiver implements Runnable {
 
 			String temp = in.readLine();
 			System.out.println(temp);
-			
+
 			Message m = new Gson().fromJson(temp, c);
 			// if message
 			// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
 			// meddelandet som klienten har skickat blir inläst på korrekt sätt
 			switch (m.getType()) {
+			case PROBE:
+				Server.onlineUsers.confirmedProbeMessage(m.getSrcUser(), so.getInetAddress());
+				break;
 			case SOS:
 				broadcast(m);
 				break;
@@ -110,7 +113,8 @@ public class Receiver implements Runnable {
 			break;
 		case DISCONNECT:
 			// Behandla logoutförsöket
-			LoginManager.logoutUser(nm.getSrcUser());
+			if(so.getInetAddress().equals(Server.onlineUsers.getUserAddress(nm.getSrcUser())))
+				LoginManager.logoutUser(nm.getSrcUser());
 			break;
 		default:
 			// Här hamnar vi om något gått fel i formatteringen eller inläsandet av meddelandet
@@ -134,7 +138,6 @@ public class Receiver implements Runnable {
 		switch(mo.getMapOperation()){
 		case ADD:
 			System.out.println("handleMapObjectMessage ADD");
-			
 			if(Database.addMapObject(mo))
 				broadcast(mo);
 			break;

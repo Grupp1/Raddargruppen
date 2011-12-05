@@ -3,9 +3,10 @@ package raddar.views;
 import java.util.ArrayList;
 
 import raddar.controllers.DatabaseController;
+import raddar.controllers.SessionController;
+import raddar.gruppen.R;
 import raddar.models.Contact;
 import raddar.models.QoSManager;
-import raddar.gruppen.R;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -34,6 +35,7 @@ public class ContactListView extends ListActivity implements OnClickListener {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		SessionController.titleBar(this, " - Kontaktlista");
 		contacts = DatabaseController.db.getAllRowsAsArrays("contact");
 		// for(int i = 0;i <10;i++)
 		// contacts.add(new Contact("Peter"+i, false));

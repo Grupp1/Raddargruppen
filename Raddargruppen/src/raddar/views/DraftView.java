@@ -3,9 +3,11 @@ package raddar.views;
 import java.util.ArrayList;
 
 import raddar.controllers.DatabaseController;
+import raddar.controllers.SessionController;
 import raddar.enums.MessageType;
-import raddar.models.Message;
 import raddar.gruppen.R;
+import raddar.models.Message;
+import raddar.models.QoSManager;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -33,7 +35,7 @@ public class DraftView extends ListActivity {
 	
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-
+		SessionController.titleBar(this, " - Utkast");
 		drafts = DatabaseController.db.getAllRowsAsArrays("drafts");
 
 		ia = new DraftAdapter(this, R.layout.row,drafts);
@@ -97,6 +99,11 @@ public class DraftView extends ListActivity {
 			}			
 			return v;
 		}
+	}@Override
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
 	}
 }
 

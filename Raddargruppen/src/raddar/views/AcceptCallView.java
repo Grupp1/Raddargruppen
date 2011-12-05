@@ -1,7 +1,8 @@
 package raddar.views;
 
-import raddar.models.QoSManager;
+import raddar.controllers.SessionController;
 import raddar.gruppen.R;
+import raddar.models.QoSManager;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,7 +17,8 @@ public class AcceptCallView extends Activity implements OnClickListener{
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.accept_call);
+		setContentView(R.layout.walkietalkie);
+		SessionController.titleBar(this, " - Samtal");
 
 		acceptCall = (Button)this.findViewById(R.id.denyCall);
 		acceptCall.setOnClickListener(this);

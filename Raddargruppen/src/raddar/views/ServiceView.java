@@ -1,7 +1,8 @@
 package raddar.views;
 
-import raddar.models.QoSManager;
+import raddar.controllers.SessionController;
 import raddar.gruppen.R;
+import raddar.models.QoSManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,7 +17,7 @@ public class ServiceView extends Activity implements OnClickListener{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.services);
-		
+		SessionController.titleBar(this, " - Externa tjänster");
 		yrButton = (ImageButton)this.findViewById(R.id.yrButton);
 		yrButton.setOnClickListener(this);
 		

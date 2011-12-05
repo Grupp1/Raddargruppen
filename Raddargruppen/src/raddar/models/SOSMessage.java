@@ -2,6 +2,11 @@ package raddar.models;
 
 import raddar.enums.MessageType;
 import raddar.enums.SOSType;
+import raddar.views.MainView;
+
+import android.util.Log;
+
+import com.google.android.maps.GeoPoint;
 
 /**
  * Ett SOS-meddelande. SOS-meddelanden som skickas till servern broadcastas
@@ -14,25 +19,22 @@ import raddar.enums.SOSType;
 public class SOSMessage extends Message {
 	
 	private SOSType SOSType;
-	
-	/**
-	 * Skapa ett SOS-meddelande
-	 * @param msg Ett medföljande meddelande
-	 */
-	public SOSMessage(String fromUser, SOSType st) {
-		this("", fromUser, st);
-	}
-	
+	private int longitude;
+	private int latitude;
+
 	/**
 	 * Skapa ett SOS-meddelande med avsändare
 	 * @param msg Medföljande meddelande
 	 * @param fromUser Avsändaren
 	 */
-	public SOSMessage(String msg, String fromUser, SOSType st) {
+	public SOSMessage(String msg, String fromUser, SOSType st,int longitude,int latitude) {
 		this.SOSType = st;
 		this.data = msg;
 		this.fromUser = fromUser;
 		this.type = MessageType.SOS;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		Log.e("SEND SOS", longitude+" ");
 	}
 
 	@Override
@@ -49,4 +51,7 @@ public class SOSMessage extends Message {
 		SOSType = sOSType;
 	}
 
+	public GeoPoint getPoint() {
+		return new GeoPoint(latitude, longitude);
+	}
 }

@@ -1,5 +1,6 @@
 package raddar.views;
 
+import raddar.controllers.SessionController;
 import raddar.models.QoSManager;
 import raddar.models.XMLFetcher;
 import android.app.ExpandableListActivity;
@@ -23,7 +24,7 @@ public class WeatherView extends ExpandableListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
-    	
+    	SessionController.titleBar(this, " - Väder");
     	mAdapter = new MyExpandableListAdapter();
         setListAdapter(mAdapter);
         registerForContextMenu(getExpandableListView());

@@ -80,11 +80,15 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 
 		alert.setButton("Ändra beskrivning", new DialogInterface.OnClickListener() {
+
+			//alert.setBackground(R.drawable.rounded_button);
+			//setBackgroundResource(R.drawable.rounded_button);
 			public void onClick(DialogInterface dialog, int whichButton) {
 				AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
 				alertDialog.setTitle("Ändra beskrivning");
 				alertDialog.setMessage("Beskrivning");
+				
 
 				input = new EditText(mContext);
 				alertDialog.setView(input);

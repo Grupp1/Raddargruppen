@@ -38,6 +38,7 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.send_image_message);
+		SessionController.titleBar(this, " - Nytt bildmeddelande");
 		destUser = (EditText) this.findViewById(R.id.destUser);
 		subject = (EditText) this.findViewById(R.id.subject);
 		sendButton = (Button) this.findViewById(R.id.sendButton);
