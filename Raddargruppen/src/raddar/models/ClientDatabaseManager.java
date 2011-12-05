@@ -53,32 +53,8 @@ public class ClientDatabaseManager extends Observable {
 
 		clearDatabase();
 	}
-	// TEST KOD ANVÄNDS FÖR ATT TESTA KONTAKTLISTAN
-	/*
-	 * addRow(new Contact("Alice",false)); addRow(new
-	 * Contact("Borche",false)); addRow(new Contact("Daniel",false));
-	 */
 
-	// TEST KOD FÖR MAP
-	//addRow(new Fire(new GeoPoint(58395730, 15573080), "Här brinner det!", SituationPriority.HIGH));
-
-		//TEST KOD FÖR SAMTAL
-		//addSipProfile( user, String password);
-		Contact einar = new Contact("Einar", false, "marcuseinar", "einar");
-	//TEST KOD FÖR SAMTAL
-	//addSipProfile( user, String password);
-	/*Contact einar = new Contact("Einar", false, "marcuseinar", "einar");
-		Contact danan = new Contact("danan612", false, "danan612", "raddar");
-		Contact lalle = new Contact("lalle", false, "lalle", "lalle");
-		Contact alice = new Contact("Alice",false,null,null);
-		Contact borche = new Contact("Borche", false, "borche", "hej123");
-		Contact mange = new Contact("Mange", false, "magkj501", "magkj501");
-		addRow(alice);
-		addRow(einar);
-		addRow(danan);
-		addRow(lalle);
-		addRow(borche);
-		/*addRow(mange);
+	Contact einar = new Contact("Einar", false, "marcuseinar", "einar");
 
 	/**********************************************************************
 	 * ADDING A MESSAGE ROW TO THE DATABASE TABLE
@@ -139,28 +115,6 @@ public class ClientDatabaseManager extends Observable {
 		setChanged();
 	}
 
-	/**********************************************************************
-	 * ADDING A IMAGEMESSAGE ROW TO THE DATABASETABLE
-	 *
-	 * Messages to be added to the imageMessage database
-	 * @param m The message that is to be added to the database
-	 */
-	public void addImageMessageRow(ImageMessage m){
-		ContentValues values = new ContentValues();
-		values.put("destUser", m.getDestUser());
-		values.put("rDate", m.getDate());
-		values.put("subject", m.getSubject());
-		values.put("filePath", m.getFilePath());
-		try {
-			db.insert("imageMessage", null, values);
-		} catch (Exception e) {
-			Log.e("DB ERROR", e.toString());
-			e.printStackTrace();
-		}
-		setChanged();
-		notifyObservers(m);			
-	}
-	
 	/**********************************************************************
 	 * ADDING A CONTACT ROW IN THE DATABASE TABLE
 	 *
@@ -280,7 +234,7 @@ public class ClientDatabaseManager extends Observable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**********************************************************************
 	 * UPDATING A ROW IN THE MAPOBJECT TABLE
 	 * 
@@ -323,14 +277,22 @@ public class ClientDatabaseManager extends Observable {
 	public void deleteDraftRow(Message m) {
 		try {
 			db.delete("drafts", "destUser = '" + m.getDestUser().toString().trim() +"'", null);
+			Log.e("ClientDatabaseManager", m.getDestUser().toString());
 		} catch (Exception e) {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
-		//		setChanged();
-		//		notifyObservers(m);
+//		setChanged();
+//		notifyObservers(m);
 	}
-	
+
+	/********************************************************************
+	 * DELETING A ROW IN THE BUFFEREDMESSAGE TABLE
+	 * 
+	 * @param 
+	 * @return
+	 */
+
 	public void deleteBufferedMesageRow(String gsonString){
 		try{
 			db.delete("bufferedMessage", "gsonString = \'" + gsonString + "\'", null);
@@ -338,7 +300,7 @@ public class ClientDatabaseManager extends Observable {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	/********************************************************************
@@ -553,7 +515,7 @@ public class ClientDatabaseManager extends Observable {
 			String bufferedmessageTableQueryString = "create table bufferedMessage (" 
 					+ "msgId integer primary key autoincrement not null," + 
 					"gsonString text)";
-			
+
 
 			/*
 			 * String newTableQueryString = "create table " + TABLE_NAME + " ("

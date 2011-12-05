@@ -1,6 +1,8 @@
 package raddar.views;
 
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
 import raddar.controllers.DatabaseController;
 import raddar.controllers.SessionController;
@@ -29,7 +31,7 @@ import android.widget.TextView;
  *
  */
 
-public class DraftView extends ListActivity {
+public class DraftView extends ListActivity implements Observer {
 	private DraftAdapter ia;
 	private ArrayList<Message> drafts;
 	
@@ -47,17 +49,19 @@ public class DraftView extends ListActivity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				Intent nextIntent = new Intent(DraftView.this, DraftMessageView.class);
-				nextIntent.putExtra("reciever", drafts.get(position).getDestUser());
-				nextIntent.putExtra("subject", drafts.get(position).getSubject());
-				nextIntent.putExtra("data", drafts.get(position).getData());
-				nextIntent.putExtra("date", drafts.get(position).getDate());
-				nextIntent.putExtra("type", drafts.get(position).getType());
 				
 				Message m = drafts.get(position);
 				String [] items = {m.getDestUser().toString(), m.getSubject().toString(), m.getData().toString()};
 				for(int i=0; i<items.length; i++){
 				Log.d("DraftView", items[i]);
 				}
+				
+				nextIntent.putExtra("reciever", drafts.get(position).getDestUser());
+				nextIntent.putExtra("subject", drafts.get(position).getSubject());
+				nextIntent.putExtra("data", drafts.get(position).getData());
+				nextIntent.putExtra("date", drafts.get(position).getDate());
+				nextIntent.putExtra("type", drafts.get(position).getType());
+				
 				nextIntent.putExtra("message", items);
 				startActivity(nextIntent);
 			}
@@ -77,6 +81,7 @@ public class DraftView extends ListActivity {
 		public DraftAdapter(Context context, int textViewResourceId,ArrayList<Message> items) {
 			super(context, textViewResourceId,items);
 			this.items = items;
+			Log.d("Items DraftView", Integer.toString(items.size()));
 		}
 
 		public View getView(int position, View convertView, ViewGroup parent) {
@@ -104,6 +109,15 @@ public class DraftView extends ListActivity {
 		super.onResume();
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
+	}
+	
+	
+	public void update(Observable observable, Object data) {
+		runOnUiThread(new Runnable(){
+			public void run(){
+				// Ska uppdatera Draftview så att meddelande tas bort så fort det skickats
+			}
+		});
 	}
 }
 

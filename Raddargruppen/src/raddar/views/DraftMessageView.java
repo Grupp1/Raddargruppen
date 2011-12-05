@@ -23,36 +23,29 @@ public class DraftMessageView extends Activity {
 		TextView draftMessageDate = (TextView)this.findViewById(R.id.draftMessageDate);
 		TextView draftMessageSubject =(TextView)this.findViewById(R.id.draftMessageSubject);
 		Button editDraftButton = (Button)this.findViewById(R.id.editDraftButton);
-		
+
+		TextView draftMessage =(TextView)this.findViewById(R.id.draftMessage);
+		draftMessageDestUser.setText(extras.get("reciever").toString());
+		draftMessageDate.setText(extras.get("date").toString());
+		draftMessageSubject.setText(extras.get("subject").toString());
+		draftMessage.setText("\n"+extras.get("data").toString());
+
 		editDraftButton.setOnClickListener(new View.OnClickListener() {
-			
-		
-		/**
-		 * Måste fixas. Går man in i utkast och trycker på redigera utkast men sedan inte skickar det läggs det till 
-		 * på nytt i databasen, dvs det finns 2 likadana meddelanden i utkast. 
-		 * 
-		 */
-		
+
 			public void onClick(View v) {
-				
+
 				String [] items = (String[]) extras.getCharSequenceArray("message");
 				Log.d("DraftMessageView", "String [] mottagen");
 				Intent nextIntent = new Intent(DraftMessageView.this, SendMessageView.class);
 				nextIntent.putExtra("message", items);
 				nextIntent.putExtra("isDraft", true);
 				startActivity(nextIntent);
-				 
+
 				finish();
-				
+
 			}
 		});
-		
-		TextView draftMessage =(TextView)this.findViewById(R.id.draftMessage);
-		draftMessageDestUser.setText(extras.get("reciever").toString());
-		draftMessageDate.setText(extras.get("date").toString());
-		draftMessageSubject.setText(extras.get("subject").toString());
-		draftMessage.setText("\n"+extras.get("data").toString());
-		
+
 	}
 
 }

@@ -44,7 +44,9 @@ public class SendMessageView extends Activity implements OnClickListener {
 		SessionController.titleBar(this, " - Nytt textmeddelande");
 
 		try {
-
+			
+			// Utkast
+			
 			Bundle extras = getIntent().getExtras();
 			String[] items = (String[]) extras.getCharSequenceArray("message");
 
@@ -64,9 +66,10 @@ public class SendMessageView extends Activity implements OnClickListener {
 
 		} catch (Exception e) {
 
-			Log.d("Ej outbox", e.toString());
-
 			try{
+				
+				// Kartan
+				
 				Bundle extras = getIntent().getExtras();
 				String destMapUser = extras.getString("map");
 				
@@ -86,6 +89,8 @@ public class SendMessageView extends Activity implements OnClickListener {
 
 
 			} catch (Exception c){
+				
+				// Skicka meddelande
 
 				isDraft = false;
 				
@@ -144,7 +149,6 @@ public class SendMessageView extends Activity implements OnClickListener {
 			m.setSubject(subject.getText() + "");
 			m.setData(messageData.getText() + "");
 			m.setDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-			Log.d("Datum sendMessages", m.getDate().toString());
 			try {
 				new Sender(m,
 						InetAddress
@@ -168,7 +172,9 @@ public class SendMessageView extends Activity implements OnClickListener {
 			m.setSubject(subject.getText() + "");
 			m.setData(messageData.getText() + "");
 			if(!isDraft){
+				Log.d("isDraft",m.getDestUser().toString());
 				DatabaseController.db.addDraftRow(m);	
+				
 			}
 		}
 

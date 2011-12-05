@@ -125,9 +125,6 @@ public class ReciveHandler extends Observable implements Runnable {
 
 			});
 		} else if (mt == MessageType.IMAGE) {
-			ImageMessage im = (ImageMessage) m;
-			DatabaseController.db.addImageMessageRow(im);
-
 
 		}else if (mt == MessageType.MAPOBJECT) {
 			MapObject mo = ((MapObjectMessage)m).toMapObject();

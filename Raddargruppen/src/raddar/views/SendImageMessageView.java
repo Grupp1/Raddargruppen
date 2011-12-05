@@ -127,7 +127,7 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 			m.setFilePath(filePath);
 			try {
 				new Sender(m, InetAddress.getByName(raddar.enums.ServerInfo.SERVER_IP), raddar.enums.ServerInfo.SERVER_PORT);
-				DatabaseController.db.addImageMessageRow(m);
+				//  DatabaseController.db.addImageMessageRow(m);
 				//	DatabaseController.db.addOutboxRow(m);
 				//	DatabaseController.db.deleteDraftRow(m);
 
