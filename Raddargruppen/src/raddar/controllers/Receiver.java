@@ -38,6 +38,7 @@ public class Receiver implements Runnable {
 			Message m = null;
 			Gson gson = new Gson();
 			while (test != null) {
+				Log.d("RECIVEER",test);
 				Class c = Class.forName(test);
 				String temp = in.readLine();
 				m = gson.fromJson(temp, c);

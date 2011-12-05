@@ -370,7 +370,6 @@ public class MapUI extends MapActivity implements Observer {
 		runOnUiThread(new Runnable(){
 			public void run() {
 				MapObjectList list = MainView.mapCont.getList(mo);
-				Log.d("MAPUI", " "+list);
 				if(list == null){
 					Log.d("MAPUI", "fyufdyfdjyuyudrtufr");
 					return;

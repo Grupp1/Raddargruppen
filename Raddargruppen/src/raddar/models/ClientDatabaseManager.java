@@ -200,8 +200,8 @@ public class ClientDatabaseManager extends Observable {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
-		//		setChanged();
-		//		notifyObservers(c);
+		setChanged();
+		notifyObservers(c);
 	}
 
 	/**********************************************************************
@@ -309,7 +309,7 @@ public class ClientDatabaseManager extends Observable {
 	public void clearDatabase(){
 		db.delete("message", null, null);
 		db.delete("map", null, null);
-		//db.delete("contact", null, null);
+		db.delete("contact", null, null);
 
 	}
 

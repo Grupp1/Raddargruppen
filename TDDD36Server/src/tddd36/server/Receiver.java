@@ -46,6 +46,7 @@ public class Receiver implements Runnable {
 	@Override
 	public void run() {
 		try {
+			
 			// För att läsa inkommande data från klienten
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
 			Class c= null ;
@@ -61,6 +62,10 @@ public class Receiver implements Runnable {
 			System.out.println(temp);
 
 			Message m = new Gson().fromJson(temp, c);
+//			if(Server.onlineUsers.isUserOnline(m.getSrcUser())){
+//					so.close();
+//				return;
+//			}
 			// if message
 			// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
 			// meddelandet som klienten har skickat blir inläst på korrekt sätt
