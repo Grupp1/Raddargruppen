@@ -206,7 +206,6 @@ public class Receiver implements Runnable {
 		case ONLINE_CONTACTS:
 			ArrayList<String> onlineUsersMessages = Associations.getOnlineUserNames();
 			for(String onlineUser: onlineUsersMessages){
-				//Y U NO WORK!
 				OnlineUsersMessage onlineUsermessage  = new OnlineUsersMessage(OnlineOperation.ADD, onlineUser);
 				new Sender(onlineUsermessage, rm.getSrcUser());
 			}

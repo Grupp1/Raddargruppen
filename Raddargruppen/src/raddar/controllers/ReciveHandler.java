@@ -122,9 +122,12 @@ public class ReciveHandler extends Observable implements Runnable {
 			switch(((OnlineUsersMessage) m).getOnlineOperation()){
 			case ADD:
 				SessionController.addOnlineUser(((OnlineUsersMessage)m).getUserName());
+				Log.d("ONLINE_USER TRUE", ((OnlineUsersMessage)m).getUserName());
 				break;
 			case REMOVE:
 				SessionController.removeOnlineUser(((OnlineUsersMessage)m).getUserName());
+				Log.d("ONLINE_USER FALSE", ((OnlineUsersMessage)m).getUserName());
+
 				break;
 			default:
 				break;

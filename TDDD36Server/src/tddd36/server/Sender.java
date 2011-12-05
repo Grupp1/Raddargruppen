@@ -57,6 +57,18 @@ public class Sender implements Runnable {
 	}
 
 	
+	/**
+	 * Skickar ett meddeladne till alla som är online.
+	 * @param m meddeladnen som ska skickas.
+	 */
+	public static void broadcast(Message m) {
+		for (InetAddress adr: Server.onlineUsers.getAllAssociations().values()){
+			//if(adr == srcAdr) continue; //Behövs inte i sender?
+			new Sender(m, adr, 4043);
+		}
+
+	}
+	
 	public Sender(ArrayList<Message> list, InetAddress toUser){
 		this.messages = list;
 		adr = toUser;
