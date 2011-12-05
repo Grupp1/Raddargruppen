@@ -3,6 +3,10 @@ package tddd36.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.SSLSocket;
+
 public class Server {
 	
 	
@@ -28,16 +32,28 @@ public class Server {
 	private void startServer() {
 		try {
 			
-			ServerSocket so = new ServerSocket(port);
+			//Gamla icke ssl
+			//ServerSocket so = new ServerSocket(port);
 			
+			//Printar info om server, nya ssl
+			String userHome = System.getProperty( "user.home" );
+            System.out.println(userHome);
 			
-			
-			System.out.println("Listening on port: " + port + "... ");
-			
+            
+            SSLServerSocketFactory sslserversocketfactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+            SSLServerSocket sslserversocket = (SSLServerSocket) sslserversocketfactory.createServerSocket(port);
+            
+            System.out.println("Listening on port: " + port + "... ");
+
 			while (true) 
 				// Acceptera en inkommande klient och skapa en ny Receiver 
 				// som hanterar klienten i en egen tråd
-				new Receiver(so.accept());
+				
+				//Gamla icke ssl
+				//new Receiver(so.accept());
+				
+				//nya ssl			
+				new Receiver((SSLSocket) sslserversocket.accept());
 			
 		} catch (IOException ie) {
 			ie.printStackTrace();

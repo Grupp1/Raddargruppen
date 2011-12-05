@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
 
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+
 import raddar.controllers.DatabaseController;
 import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
@@ -49,6 +52,14 @@ public class LoginManager extends Observable {
 	 */
 	public void evaluate(String username, String password) {
 		try {
+			
+			//nya ssl
+			SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+			SSLSocket sslsocket = (SSLSocket) sslsocketfactory.createSocket(ServerInfo.SERVER_IP, ServerInfo.SERVER_PORT);
+		
+			
+			/* Gamla anslutningen
+			 
 			// Skapa socket som används för att skicka NotificationMessage
 			Socket so = new Socket();
 			// Socket so = new
@@ -60,9 +71,12 @@ public class LoginManager extends Observable {
 			int TIME_OUT = 5000;
 			so.connect(sockAddr, TIME_OUT);
 
-			PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
+			*/
+			
+			
+			PrintWriter pw = new PrintWriter(sslsocket.getOutputStream(), true);
 			BufferedReader br = new BufferedReader(new InputStreamReader(
-					so.getInputStream()));
+					sslsocket.getInputStream()));
 
 			RequestMessage rm = new RequestMessage(RequestType.SALT);
 			rm.setSrcUser(username);
@@ -94,7 +108,7 @@ public class LoginManager extends Observable {
 			// Stäng ner strömmar och socket
 			pw.close();
 			br.close();
-			so.close();
+			sslsocket.close();
 			
 			if (response.equals("OK")) {
 				SessionController.setPassword(password);

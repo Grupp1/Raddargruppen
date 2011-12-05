@@ -8,6 +8,8 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import javax.net.ssl.SSLSocket;
+
 import raddar.enums.NotificationType;
 import raddar.models.MapObjectMessage;
 import raddar.models.Message;
@@ -32,11 +34,15 @@ import com.google.gson.Gson;
 public class Receiver implements Runnable {
 
 	private Thread clientThread = new Thread(this);
-
-	private Socket so;
+	
+	//Gamla inlogg
+	//private Socket so;
 	private BufferedReader in;
+	
+	//Nya ssl
+	private SSLSocket so;
 
-	public Receiver(Socket clientSocket) {
+	public Receiver(SSLSocket clientSocket) {
 		so = clientSocket;
 		clientThread.start();
 	}

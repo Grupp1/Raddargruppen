@@ -3,6 +3,7 @@ package raddar.controllers;
 import java.util.Observable;
 
 import raddar.enums.ConnectionStatus;
+import raddar.gruppen.R;
 import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
