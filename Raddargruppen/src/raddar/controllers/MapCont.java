@@ -31,7 +31,7 @@ public class MapCont implements Observer, Runnable{
 	private MapModel mapModel;
 	public static GPSModel gps;
 	private Thread thread = new Thread(this);
-	private ArrayList<MapObject>  olist;
+	//private ArrayList<MapObject>  olist;
 	private MapUI mapUI;
 	public boolean areYouFind = false;
 	private You you;
@@ -64,6 +64,9 @@ public class MapCont implements Observer, Runnable{
 		//	DatabaseController.db.addObserver(mapUI);
 	}
 	public MapObjectList getList(MapObject mo){
+		Log.d("GET MAP OBJECT LIST",""+mo.getTitle());
+		if(mapModel==null)
+			return null;
 		return mapModel.getList(mo);
 	}
 
@@ -98,6 +101,7 @@ public class MapCont implements Observer, Runnable{
 			mapUI.drawNewMapObject(o);
 			mapModel.updateObject(o);
 			o.updateData(geocoder);
+			Log.d("HEEEEEEEEEEEEEEEEEEEEEEEEEJ", "HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEJ");
 		}
 		if(sendToServer){
 			Gson gson = new Gson();
@@ -113,9 +117,9 @@ public class MapCont implements Observer, Runnable{
 		DatabaseController.db.updateRow(o);
 	}
 
-	
+
 	public void run() {
-		olist = DatabaseController.db.getAllRowsAsArrays("map");
+		ArrayList<MapObject> olist = DatabaseController.db.getAllRowsAsArrays("map");
 		for(int i = 0; i < olist.size();i++){
 			MapObject o = olist.get(i);
 			mapModel.add(o);
@@ -129,18 +133,18 @@ public class MapCont implements Observer, Runnable{
 		}
 	}
 
-	public void removeObject(MapObject mo,boolean notify){
-
+	public void removeObject(MapObject o,boolean notify){
+		Log.d("RemoveObject", "MapCont:"+o.getTitle());
 		if(mapModel != null){
-			mapModel.removeObject(mo);
+			mapModel.removeObject(o);
 			if(!notify){
-				mapUI.drawNewMapObject(mo);
+				mapUI.drawNewMapObject(o);
 			}else{
-				mapUI.drawNewMapObject(mo);
+				mapUI.drawNewMapObject(o);
 				Gson gson = new Gson();
 				try{
-					MapObjectMessage mom = new MapObjectMessage(gson.toJson(mo),
-							(mo).getClass().getName(),mo.getId(),MapOperation.REMOVE);
+					MapObjectMessage mom = new MapObjectMessage(gson.toJson(o),
+							(o).getClass().getName(),o.getId(),MapOperation.REMOVE);
 					new Sender(mom);
 				}
 				catch (UnknownHostException e) {
@@ -148,7 +152,7 @@ public class MapCont implements Observer, Runnable{
 
 			}
 		}
-		DatabaseController.db.deleteRow(mo);
+		DatabaseController.db.deleteRow(o);
 	}
 
 	public You getYou(){
@@ -161,7 +165,7 @@ public class MapCont implements Observer, Runnable{
 		if (data instanceof GeoPoint){
 			if (!areYouFind){
 				areYouFind = true;
-
+				Log.d("YOU", o.toString());
 				you = new You((GeoPoint)data, SessionController.getUser()+" position", "Här är "+SessionController.getUser(),
 						R.drawable.circle_green, ResourceStatus.FREE);
 				//olist.add(you); // databas, bortkommenterad fel?
@@ -203,17 +207,18 @@ public class MapCont implements Observer, Runnable{
 	}
 
 	public void renewYou() {
-		if (areYouFind){
-
+		if (you!=null){
+			//olist.remove(you);
 			you = new You((GeoPoint)you.getPoint(), SessionController.getUser()+" position", "Här är "+SessionController.getUser(),
 					R.drawable.circle_green, ResourceStatus.FREE);
-
-			you.updateData(geocoder);
-			olist.add(you); // databas
-			add(you,true);		// karta
-			mapUI.controller.animateTo(you.getPoint());
-			mapUI.controller.setZoom(13);
-			mapUI.follow = true;
+			//olist.add(you); // databas
+			updateObject(you,true);		// karta
+			if (mapUI != null){
+				mapUI.drawNewMapObject(you);
+				if(mapUI.follow){
+					mapUI.controller.animateTo(you.getPoint());
+				}
+			}
 		}
 	}
 }

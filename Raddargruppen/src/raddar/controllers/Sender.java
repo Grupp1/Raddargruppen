@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import raddar.enums.ConnectionStatus;
@@ -65,17 +66,17 @@ public class Sender implements Runnable {
 			out.println(send);
 			so.close();
 			out.close();
-			Log.e("Sendzordz",send);
 		} catch (IOException ie) {
 			Log.d("Skapandet av socket [2]", ie.toString());
 			SessionController.getSessionController().changeConnectionStatus(ConnectionStatus.DISCONNECTED);
 			LoginManager lm = new LoginManager();
-			lm.evaluate(SessionController.getUserName(), SessionController.getPassword());
+			lm.evaluate(SessionController.getUserName(), SessionController.getPassword(),false);
 			
 			DatabaseController.db.addBufferedMessageRow(send);
-		} //catch (InterruptedException e) {
-		//Log.d("Avbruten väntan", "Gick inte");
-		//}
+		} 
+//		catch (SocketException e) {
+//			
+//		}
 	}
 
 }

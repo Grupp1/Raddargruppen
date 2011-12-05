@@ -39,7 +39,7 @@ public class StartView extends Activity implements Observer {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		this.deleteDatabase("client_database");
 		setContentView(R.layout.start);
 		SessionController.titleBar(this, " - Logga in");
 		new DatabaseController(this);
@@ -81,7 +81,7 @@ public class StartView extends Activity implements Observer {
 				Thread s = new Thread(new Runnable(){ 
 					public void run() {
 						lm.evaluate(user.getText().toString(),
-								password.getText().toString());
+								password.getText().toString(),true);
 					}
 				});
 				s.start();
@@ -145,5 +145,11 @@ public class StartView extends Activity implements Observer {
 			}
 		});
 
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		DatabaseController.db.clearDatabase();
+		DatabaseController.db.close();
 	}
 }
