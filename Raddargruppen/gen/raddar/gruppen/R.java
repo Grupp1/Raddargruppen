@@ -124,7 +124,7 @@ public final class R {
         public static final int normal_power_radio_button=0x7f070058;
         public static final int okbutton=0x7f07005d;
         public static final int outboxButton=0x7f07003c;
-        public static final int passwordtext=0x7f07005c;
+        public static final int passwordtext1=0x7f07005c;
         public static final int power_program_radio_group=0x7f070057;
         public static final int power_programs_textview=0x7f070056;
         public static final int presence=0x7f070032;
@@ -154,7 +154,7 @@ public final class R {
         public static final int toptext=0x7f070045;
         public static final int traffic=0x7f070062;
         public static final int trafikverketButton=0x7f070055;
-        public static final int usertext=0x7f07005b;
+        public static final int usertext1=0x7f07005b;
         public static final int yrButton=0x7f070054;
     }
     public static final class layout {

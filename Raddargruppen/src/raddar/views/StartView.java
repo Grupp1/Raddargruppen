@@ -42,7 +42,7 @@ public class StartView extends Activity implements Observer {
 		this.deleteDatabase("client_database");
 
 		setContentView(R.layout.start);
-		SessionController.titleBar(this, " - Logga in");
+		//SessionController.titleBar(this, " - Logga in");
 		new DatabaseController(this);
 
 		// Lite hårdkodade testanvändare att testa med
@@ -51,8 +51,8 @@ public class StartView extends Activity implements Observer {
 		LoginManager.cache("Alice", "longshot");
 		LoginManager.cache("danan612","raddar");
 
-		user = (EditText) this.findViewById(R.id.usertext);
-		password = (EditText) this.findViewById(R.id.passwordtext);
+		user = (EditText) this.findViewById(R.id.usertext1);
+		password = (EditText) this.findViewById(R.id.passwordtext1);
 		// Endast för lättare testning
 
 		user.setText("danan612");

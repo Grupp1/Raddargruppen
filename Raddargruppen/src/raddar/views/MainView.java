@@ -114,6 +114,16 @@ public class MainView extends Activity implements OnClickListener, Observer {
 //		} catch (UnknownHostException e) {
 //			e.printStackTrace();
 //		}
+		try {
+			new Sender(new RequestMessage(RequestType.MESSAGE));
+			new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
+			DatabaseController.db.clearTable("contact");
+			new Sender(new RequestMessage(RequestType.CONTACTS));
+			new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
+			new Sender(new RequestMessage(RequestType.ONLINE_CONTACTS));
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
 
 
 		callButton = (ImageButton)this.findViewById(R.id.callButton);

@@ -18,6 +18,7 @@ import raddar.models.Message;
 import raddar.models.NotificationMessage;
 import raddar.models.QoSManager;
 import raddar.models.SOSMessage;
+import raddar.models.OnlineUsersMessage;
 import raddar.models.You;
 import raddar.views.MainView;
 import raddar.views.MapUI;
@@ -154,6 +155,21 @@ public class ReciveHandler extends Observable implements Runnable {
 		}
 		else if(mt == MessageType.CONTACT){
 			DatabaseController.db.addRow(((ContactMessage)m).toContact());
+		}
+		else if(mt == MessageType.ONLINE_USERS){
+			switch(((OnlineUsersMessage) m).getOnlineOperation()){
+			case ADD:
+				SessionController.addOnlineUser(((OnlineUsersMessage)m).getUserName());
+				Log.d("ONLINE_USER TRUE", ((OnlineUsersMessage)m).getUserName());
+				break;
+			case REMOVE:
+				SessionController.removeOnlineUser(((OnlineUsersMessage)m).getUserName());
+				Log.d("ONLINE_USER FALSE", ((OnlineUsersMessage)m).getUserName());
+
+				break;
+			default:
+				break;
+			}
 		}
 		else if(mt == MessageType.NOTIFICATION){
 			Log.e("LOGOUT","OTHER USER HAS LOGGED IN ON ANOTHER DEVICE");

@@ -1,19 +1,26 @@
 package raddar.controllers;
 
+
 import java.util.Observable;
 
 import raddar.enums.ConnectionStatus;
 import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
+import java.util.ArrayList;
+
 
 /**
  * Controller for a user log in session
  * @author danan612
  *
  */
+
 public class SessionController extends Observable{
-	
+		
+	private static ArrayList<String> onlineUsers = new ArrayList<String>();
+
+
 	private static String user;
 	private static ConnectionStatus connection = ConnectionStatus.DISCONNECTED;
 	private static SessionController sessionController;
@@ -47,6 +54,7 @@ public class SessionController extends Observable{
 	public static String getUser() {
 		return user;
 	}
+
 	public void changeConnectionStatus(ConnectionStatus status){
 		this.connection = status;
 		setChanged();
@@ -71,4 +79,24 @@ public class SessionController extends Observable{
 		titleBar.setBackgroundColor(Color.rgb(48,128,20));
 		
 	}
+
+	
+	public void setOnlineUsers(ArrayList<String> onlineUsers){
+		this.onlineUsers = onlineUsers;
+	}
+	
+	public ArrayList getOnlineUsers(){
+		return onlineUsers;
+	}
+	
+	public static void addOnlineUser(String userName){
+		if(!onlineUsers.contains(userName));
+			onlineUsers.add(userName);
+	}
+	
+	public static void removeOnlineUser(String userName){
+		onlineUsers.remove(userName);
+	}
+
+
 }
