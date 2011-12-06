@@ -58,8 +58,8 @@ public class MapCont implements Observer, Runnable{
 	}
 	public MapObjectList getList(MapObject mo){
 		Log.d("GET MAP OBJECT LIST",""+mo.getTitle());
-		if(mapModel==null)
-			return null;
+//		if(mapModel==null)
+//			return null;
 		return mapModel.getList(mo);
 	}
 
@@ -91,9 +91,9 @@ public class MapCont implements Observer, Runnable{
 	public void updateObject(MapObject o,boolean sendToServer){
 		Log.d("UpdateObject","MapCont: "+o.getTitle());
 		if(mapUI!=null){
-			mapUI.drawNewMapObject(o);
 			mapModel.updateObject(o);
 			o.updateData(geocoder);
+			mapUI.drawNewMapObject(o);
 		}
 		if(sendToServer){
 			Gson gson = new Gson();
@@ -138,10 +138,8 @@ public class MapCont implements Observer, Runnable{
 		Log.d("RemoveObject", "MapCont:"+o.getTitle());
 		if(mapModel != null){
 			mapModel.removeObject(o);
-			if(!notify){
-				mapUI.drawNewMapObject(o);
-			}else{
-				mapUI.drawNewMapObject(o);
+			mapUI.drawNewMapObject(o);
+			if(notify){
 				Gson gson = new Gson();
 				try{
 					MapObjectMessage mom = new MapObjectMessage(gson.toJson(o),
@@ -150,7 +148,6 @@ public class MapCont implements Observer, Runnable{
 				}
 				catch (UnknownHostException e) {
 				}
-
 			}
 		}
 		DatabaseController.db.deleteRow(o);
@@ -206,12 +203,16 @@ public class MapCont implements Observer, Runnable{
 		return display;
 	}
 	
-	public void sendMessage(String user){
-		mapModel.sendMessage(user);
+	public void sendTextMessage(String user){
+		mapUI.sendTextMessage(user);
+	}
+	
+	public void sendImageMessage(String user){
+		mapUI.sendImageMessage(user);
 	}
 	
 	public void callUser(String user){
-		mapModel.callUser(user);
+		mapUI.callUser(user);
 	}
 
 	public void renewYou() {

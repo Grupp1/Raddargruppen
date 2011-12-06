@@ -91,10 +91,13 @@ public class ReciveHandler extends Observable implements Runnable {
 			QoSManager.getCurrentActivity().runOnUiThread(new Runnable() {
 				public void run() {
 					if(((SOSMessage)m).getSOSType() == SOSType.ALARM){
-						final You you = new You(((SOSMessage)m).getPoint(), m.getSrcUser()+" positition",m.getData(),
-								R.drawable.circle_red, ResourceStatus.BUSY);
+						final You you = new You(((SOSMessage)m).getPoint(), ((SOSMessage)m).getSrcUser(), "",
+								R.drawable.circle_green, ((SOSMessage)m).getStatus());
+						you.setSOS(false);
+						MainView.mapCont.removeObject(you, false);
+						you.setSOS(true);
+						MainView.mapCont.add(you, false);
 						Log.d("SOS", "add: "+m.getSrcUser());
-						MainView.mapCont.updateObject(you, false);
 						AlertDialog.Builder alert = new AlertDialog.Builder(QoSManager.getCurrentActivity());
 
 						alert.setTitle("SOS-meddelande från: "+m.getSrcUser());
@@ -122,8 +125,12 @@ public class ReciveHandler extends Observable implements Runnable {
 
 						alert.show();
 					}else{
-						final You you = new You(((SOSMessage)m).getPoint(), m.getSrcUser()+" positition",m.getData(),
-								R.drawable.circle_yellow, ResourceStatus.BUSY);
+						final You you = new You(((SOSMessage)m).getPoint(), ((SOSMessage)m).getSrcUser(), "",
+								R.drawable.circle_green, ((SOSMessage)m).getStatus());
+						you.setSOS(false);
+						MainView.mapCont.removeObject(you, false);
+						you.setSOS(true);
+						MainView.mapCont.add(you, false);
 						Log.d("SOS", "cancel_sos: "+m.getSrcUser());
 						MainView.mapCont.updateObject(you, false);
 					}
@@ -143,14 +150,7 @@ public class ReciveHandler extends Observable implements Runnable {
 				MainView.mapCont.add(mo,false);
 				break;
 			case REMOVE:
-				Log.d("REMOVE", "SWITCH");
-				// MapObject är inte med i meddelandet.. endast id skickas idag....
-				if(mo==null){
-					Log.d("REMOVE", "IF");
-				}else{
-					Log.d("REMOVE", "ELSE");
-					MainView.mapCont.removeObject(mo, false);
-				}
+				MainView.mapCont.removeObject(mo, false);
 				break;
 			case UPDATE:
 				MainView.mapCont.updateObject(mo,false);
@@ -160,21 +160,25 @@ public class ReciveHandler extends Observable implements Runnable {
 			}
 		}
 		else if(mt == MessageType.CONTACT){
+			if(((ContactMessage)m).getContact().equals(SessionController.getUser())){
+				return;
+			}
 			DatabaseController.db.addRow(((ContactMessage)m).toContact());
 		}
 		else if(mt == MessageType.ONLINE_USERS){
-			switch(((OnlineUsersMessage) m).getOnlineOperation()){
-			case ADD:
-				SessionController.addOnlineUser(((OnlineUsersMessage)m).getUserName());
-				Log.d("ONLINE_USER TRUE", ((OnlineUsersMessage)m).getUserName());
-				break;
-			case REMOVE:
-				SessionController.removeOnlineUser(((OnlineUsersMessage)m).getUserName());
-				Log.d("ONLINE_USER FALSE", ((OnlineUsersMessage)m).getUserName());
-
-				break;
-			default:
-				break;
+			if(!((OnlineUsersMessage)m).getUserName().equals(SessionController.getUser())){
+				switch(((OnlineUsersMessage) m).getOnlineOperation()){
+				case ADD:
+					SessionController.addOnlineUser(((OnlineUsersMessage)m).getUserName());
+					Log.d("ONLINE_USER TRUE", ((OnlineUsersMessage)m).getUserName());
+					break;
+				case REMOVE:
+					SessionController.removeOnlineUser(((OnlineUsersMessage)m).getUserName());
+					Log.d("ONLINE_USER FALSE", ((OnlineUsersMessage)m).getUserName());
+					break;
+				default:
+					break;
+				}
 			}
 		}
 		else if(mt == MessageType.NOTIFICATION){
@@ -184,7 +188,7 @@ public class ReciveHandler extends Observable implements Runnable {
 					AlertDialog.Builder alert = new AlertDialog.Builder(QoSManager.getCurrentActivity());
 
 					alert.setTitle("Forcerad utloggning");
-					alert.setMessage("En annan klient har loggat in på denna användare. Du kommer nu att loggas ut.");
+					alert.setMessage(m.getData());
 					alert.setOnCancelListener(new OnCancelListener(){
 						public void onCancel(DialogInterface dialog) {
 							Intent intent = new Intent(QoSManager.getCurrentActivity(),StartView.class);

@@ -18,6 +18,7 @@ import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
 import raddar.enums.ConnectionStatus;
 import raddar.enums.LoginResponse;
+import raddar.enums.MessageType;
 import raddar.enums.NotificationType;
 import raddar.enums.RequestType;
 import raddar.enums.ServerInfo;
@@ -54,13 +55,11 @@ public class LoginManager extends Observable {
 			// Socket so = new
 			// Socket(InetAddress.getByName(ServerInfo.SERVER_IP),
 			// ServerInfo.SERVER_PORT);
-			Log.d("LoginManager", "LULZ 1");
 			InetAddress addr = InetAddress.getByName(ServerInfo.SERVER_IP);
 			int port = ServerInfo.SERVER_PORT;
 			SocketAddress sockAddr = new InetSocketAddress(addr, port);
 			int TIME_OUT = 5000;
 			so.connect(sockAddr, TIME_OUT);
-			Log.d("LoginManager", "LULZ 2");
 			PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
 			BufferedReader br = new BufferedReader(new InputStreamReader(
 					so.getInputStream()));

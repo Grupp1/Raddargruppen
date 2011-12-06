@@ -22,7 +22,6 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
 	private Context mContext;
 	private EditText input;
-	//private String value;
 	private MapObject item;
 	private int whichItem;
 
@@ -79,173 +78,169 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 		AlertDialog alert = dialog.create();
 		if(!(item instanceof You && item.getId()!=SessionController.getUser())){
-		alert.setButton("Ändra beskrivning", new DialogInterface.OnClickListener() {
+			alert.setButton("Ändra beskrivning", new DialogInterface.OnClickListener() {
 
-			//alert.setBackground(R.drawable.rounded_button);
-			//setBackgroundResource(R.drawable.rounded_button);
-			public void onClick(DialogInterface dialog, int whichButton) {
-				AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+				//alert.setBackground(R.drawable.rounded_button);
+				//setBackgroundResource(R.drawable.rounded_button);
+				public void onClick(DialogInterface dialog, int whichButton) {
+					AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
-				alertDialog.setTitle("Ändra beskrivning");
-				alertDialog.setMessage("Beskrivning");
+					alertDialog.setTitle("Ändra beskrivning");
+					alertDialog.setMessage("Beskrivning");
 
-				input = new EditText(mContext);
-				alertDialog.setView(input);
-				input.setText(item.getSnippet());
-				if(!(item instanceof You && item.getId()!=SessionController.getUser())){
-					alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int whichButton) {
-							item.setSnippet(input.getText().toString());
-							MainView.mapCont.updateObject(item,true);		
-						}
-					});
-
-					alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int whichButton) {
-
-						}
-					});
-				}
-				alertDialog.show();
-			}
-
-		});
-
-		}
-		
-
-
-
-			/*
-			 * Ta bort från kartan. Går ej att ta bort sig själv
-			 */
-
-			if(!(item instanceof You)){
-				alert.setButton2("Ta bort", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {
-
-						AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
-
-						alertDialog.setTitle("Är du säker på att du vill ta bort objektet?");
-
-
-						alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+					input = new EditText(mContext);
+					alertDialog.setView(input);
+					input.setText(item.getSnippet());
+					if(!(item instanceof You && item.getId()!=SessionController.getUser())){
+						alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
-								mOverlays.remove(item);
-
-								MainView.mapCont.removeObject(item,true);
-								setLastFocusedIndex(-1);
-								populate();
+								item.setSnippet(input.getText().toString());
+								MainView.mapCont.updateObject(item,true);		
 							}
-
 						});
 
-						alertDialog.setNegativeButton("Nej", new DialogInterface.OnClickListener() {
+						alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
+
+							}
+						});
+					}
+					alertDialog.show();
+				}
+
+			});
+
+		}
+
+
+
+
+		/*
+		 * Ta bort från kartan. Går ej att ta bort sig själv
+		 */
+
+		if(!(item instanceof You)){
+			alert.setButton2("Ta bort", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+
+					AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+
+					alertDialog.setTitle("Är du säker på att du vill ta bort objektet?");
+
+
+					alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+							//mOverlays.remove(item);
+
+							MainView.mapCont.removeObject(item,true);
+							setLastFocusedIndex(-1);
+							populate();
+						}
+
+					});
+
+					alertDialog.setNegativeButton("Nej", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
 						}
 					});
 					alertDialog.show();
 				}
 			});
-		}else{
-
-			alert.setButton2("Ring/Skicka meddelande", new DialogInterface.OnClickListener() {
+		}
+		
+		
+		// Ringa och skicka meddelande till instanser av You som inte är dig själv
+		if (item instanceof You && !(item.getId().equals(SessionController.getUser()))){
+			alert.setButton("Ring", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
-
-					AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
-
-					alertDialog.setTitle("Vill du ringa eller skicka meddelande?");
-
-					AlertDialog alert = alertDialog.create();
-
-					alert.setButton("Ring", new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int whichButton) {
-							MainView.mapCont.callUser(item.getAddedBy());
-
-						}
-					});
-					alert.setButton2("Skicka meddelande", new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int whichButton) {
-							MainView.mapCont.sendMessage(item.getAddedBy());
-							
-						}
-					});
-					alert.show();
-				
+					MainView.mapCont.callUser(item.getAddedBy());
+				}
+			});
+			alert.setButton2("Skicka bildmeddelande", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					MainView.mapCont.sendImageMessage(item.getAddedBy());
+				}
+			});
+			alert.setButton3("Skicka textmeddelande", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					MainView.mapCont.sendTextMessage(item.getAddedBy());
 				}
 			});
 		}
-//		/*
-//		 * Ändra prioritet på situation på kartan
-//		 */
-//
-//							}
-//						});
-//						alertDialog.show();
-//					}
-//				});
-//			}
+		
+		
+		
+		//		/*
+		//		 * Ändra prioritet på situation på kartan
+		//		 */
+		//
+		//							}
+		//						});
+		//						alertDialog.show();
+		//					}
+		//				});
+		//			}
 
 
-			/*
-			 * Ändra prioritet på situation på kartan
-			 */
+		/*
+		 * Ändra prioritet på situation på kartan
+		 */
 
-			if(item instanceof Situation){
-				alert.setButton3("Ändra prioritet", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {
+		if(item instanceof Situation){
+			alert.setButton3("Ändra prioritet", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
 
-						AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-						builder.setTitle("Prioritet");
-						builder.setItems(situationPriority, new DialogInterface.OnClickListener() {
+					AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+					builder.setTitle("Prioritet");
+					builder.setItems(situationPriority, new DialogInterface.OnClickListener() {
 
-							public void onClick(DialogInterface dialog, int i) {
+						public void onClick(DialogInterface dialog, int i) {
 
-								whichItem = i;
+							whichItem = i;
 
-								AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+							AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
-								alertDialog.setTitle("Är du säker på att du vill ändra prioritet?");
+							alertDialog.setTitle("Är du säker på att du vill ändra prioritet?");
 
 
-								alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog, int whichButton) {
+							alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int whichButton) {
 
-										if(whichItem == 0){
-											((Situation) item).setPriority(SituationPriority.HIGH);
-											MainView.mapCont.updateObject(item,true);
-										}
-										if(whichItem == 1){
-											((Situation) item).setPriority(SituationPriority.NORMAL);
-											MainView.mapCont.updateObject(item,true);
-										}
-										if(whichItem == 2){
-											((Situation) item).setPriority(SituationPriority.LOW);
-											MainView.mapCont.updateObject(item,true);
-										}
-
+									if(whichItem == 0){
+										((Situation) item).setPriority(SituationPriority.HIGH);
+										MainView.mapCont.updateObject(item,true);
 									}
-								});
-								alertDialog.setNegativeButton("Nej", new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog, int whichButton) {
-
+									if(whichItem == 1){
+										((Situation) item).setPriority(SituationPriority.NORMAL);
+										MainView.mapCont.updateObject(item,true);
 									}
-								});
-								alertDialog.show();
-							}
+									if(whichItem == 2){
+										((Situation) item).setPriority(SituationPriority.LOW);
+										MainView.mapCont.updateObject(item,true);
+									}
 
-						});
-						AlertDialog alert1 = builder.create();
-						alert1.show();
-					}
-				});
-				alert.show();
-			}
-			/*
-			 * Ändra Status på resurs på kartan.
-			 */
-			else{
-				if(!(item instanceof You && item.getId()!=SessionController.getUser())){
+								}
+							});
+							alertDialog.setNegativeButton("Nej", new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int whichButton) {
+
+								}
+							});
+							alertDialog.show();
+						}
+
+					});
+					AlertDialog alert1 = builder.create();
+					alert1.show();
+				}
+			});
+			alert.show();
+		}
+		/*
+		 * Ändra Status på resurs på kartan.
+		 */
+		else{
+			if(!(item instanceof You && item.getId()!=SessionController.getUser())){
 				alert.setButton3("Ändra status", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
 
@@ -288,13 +283,22 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 						alert1.show();
 					}
 				});
-				}
-				alert.show();
+			}
+			alert.show();
 
-			
+
 		}
 
 		return true;
+	}
+	public void addMapObject(MapObject o){
+		String oId = o.getId();
+		for(OverlayItem mo:mOverlays){
+			if(((MapObject)mo).getId().equals(oId))
+				return;;
+		}
+		mOverlays.add(o);
+		populate();
 	}
 
 	public void removeMapObject(final MapObject o) {
@@ -302,15 +306,14 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 			public void run() {
 				Log.d("MAPOBJECTLIST", "REMOVE");
 				String oId = o.getId();
-				for(OverlayItem mo:mOverlays){
-					if(((MapObject)mo).getId().equals(oId)){
-						Log.d("MAPOBJECTLIST","REMOVE  "+mOverlays.remove(mo));
-						setLastFocusedIndex(-1);
-						populate();
-						Log.d("MAPOBJECTLIST", "REMOVE "+mo.getTitle());
+				for(int i = 0; i < mOverlays.size(); i++){
+					if(((MapObject)mOverlays.get(i)).getId().equals(oId)){
+						Log.d("MAPOBJECTLIST","REMOVE  "+mOverlays.remove(mOverlays.remove(i)));
 						return;
 					}
 				}
+				setLastFocusedIndex(-1);
+				populate();
 			}
 		});
 	}

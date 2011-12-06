@@ -69,9 +69,12 @@ public class SendSOSView extends Activity {
 	
 	private void startAlarm() {
 		txt = et.getText().toString();
-		GeoPoint point = MainView.mapCont.getYou().getPoint();
-		SOSMessage sm = new SOSMessage(txt, SessionController.getUser(), SOSType.ALARM,
-				point.getLatitudeE6(),point.getLongitudeE6());
+		MainView.mapCont.getYou().setSOS(true);
+		SOSMessage sm = new SOSMessage(txt, SessionController.getUser(),
+				MainView.mapCont.getYou().getPoint().getLatitudeE6(),
+				MainView.mapCont.getYou().getPoint().getLatitudeE6(),
+				SOSType.ALARM, MainView.mapCont.getYou().getStatus(),
+				MainView.mapCont.getYou().isSOS());
 		try {
 			new Sender(sm, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
 			SOS_ALARM_IS_ACTIVE = true;
@@ -82,9 +85,12 @@ public class SendSOSView extends Activity {
 	
 	private void cancelAlarm() {
 		txt = "";
-		GeoPoint point = MainView.mapCont.getYou().getPoint();
-		SOSMessage sm = new SOSMessage(SessionController.getUser(),"", SOSType.CANCEL_ALARM,
-				point.getLatitudeE6(),point.getLongitudeE6());
+		MainView.mapCont.getYou().setSOS(false);
+		SOSMessage sm = new SOSMessage(txt, SessionController.getUser(),
+				MainView.mapCont.getYou().getPoint().getLatitudeE6(),
+				MainView.mapCont.getYou().getPoint().getLatitudeE6(),
+				SOSType.ALARM, MainView.mapCont.getYou().getStatus(),
+				MainView.mapCont.getYou().isSOS());
 		try {
 			new Sender(sm, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
 			SOS_ALARM_IS_ACTIVE = false;

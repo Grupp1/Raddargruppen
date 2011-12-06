@@ -42,59 +42,33 @@ public class SendMessageView extends Activity implements OnClickListener {
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.send_message);
 		SessionController.titleBar(this, " - Nytt textmeddelande");
-		
+
+		destUser = (EditText) this.findViewById(R.id.destUser);
+		subject = (EditText) this.findViewById(R.id.subject);
+		messageData = (EditText) this.findViewById(R.id.messageData);
+		sendButton = (Button) this.findViewById(R.id.sendButton);
+
+		Bundle extras = getIntent().getExtras();
 		try {
-
-			Bundle extras = getIntent().getExtras();
 			String[] items = (String[]) extras.getCharSequenceArray("message");
-
-			destUser = (EditText) this.findViewById(R.id.destUser);
-			subject = (EditText) this.findViewById(R.id.subject);
-			messageData = (EditText) this.findViewById(R.id.messageData);
-
 			destUser.setText(items[0].toString());
 			subject.setText(items[1].toString());
 			messageData.setText(items[2].toString());
-			sendButton = (Button) this.findViewById(R.id.sendButton);
-			sendButton.setOnClickListener(this);
-			destUser.setOnClickListener(this);
-			destUser.setFocusable(false);
-
 		} catch (Exception e) {
-
-			Log.d("Ej outbox", e.toString());
-
-			try{
-				Bundle extras = getIntent().getExtras();
-				String destMapUser = extras.getString("map");
-
-				Log.d("Map", e.toString());
-				destUser = (EditText) this.findViewById(R.id.destUser);
-				subject = (EditText) this.findViewById(R.id.subject);
-				messageData = (EditText) this.findViewById(R.id.messageData);
-
-				destUser.setText(destMapUser);
-
-				sendButton = (Button) this.findViewById(R.id.sendButton);
-				sendButton.setOnClickListener(this);
-				destUser.setOnClickListener(this);
-				destUser.setFocusable(false);
-
-
-			} catch (Exception c){
-
-				Log.d("SendMessageView", c.toString());
-				destUser = (EditText) this.findViewById(R.id.destUser);
-				subject = (EditText) this.findViewById(R.id.subject);
-				messageData = (EditText) this.findViewById(R.id.messageData);
-				sendButton = (Button) this.findViewById(R.id.sendButton);
-				sendButton.setOnClickListener(this);
-				destUser.setOnClickListener(this);
-				destUser.setFocusable(false);
-
-			}
+			Log.d("SendMessageView", "message:"+e.toString());
 		}
+
+		try{
+			String destMapUser = extras.getString("map");
+			destUser.setText(destMapUser);
+		} catch (Exception e){
+			Log.d("SendMessageView", "map:"+e.toString());
+		}
+		sendButton.setOnClickListener(this);
+		destUser.setOnClickListener(this);
+		destUser.setFocusable(false);
 	}
+
 
 	public void onClick(View v) {
 		if (v.equals(sendButton)) {

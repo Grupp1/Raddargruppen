@@ -1,6 +1,7 @@
 package raddar.models;
 
 import raddar.enums.MessageType;
+import raddar.enums.ResourceStatus;
 import raddar.enums.SOSType;
 import raddar.views.MainView;
 
@@ -19,22 +20,38 @@ import com.google.android.maps.GeoPoint;
 public class SOSMessage extends Message {
 	
 	private SOSType SOSType;
-	private int longitude;
-	private int latitude;
+	private int lat, lon;
+	private ResourceStatus status;
+	private boolean isSOS;
+
 
 	/**
 	 * Skapa ett SOS-meddelande med avsändare
-	 * @param msg Medföljande meddelande
-	 * @param fromUser Avsändaren
+	 * @param msg Meddelandet
+	 * @param you Användaren
+	 * @param st SOS-typen, alarm eller cancel
 	 */
-	public SOSMessage(String msg, String fromUser, SOSType st,int longitude,int latitude) {
-		this.SOSType = st;
+	public SOSMessage(String msg, String fromUser, int lat, int lon, SOSType st, ResourceStatus status, boolean isSOS){
 		this.data = msg;
 		this.fromUser = fromUser;
 		this.type = MessageType.SOS;
-		this.latitude = latitude;
-		this.longitude = longitude;
-		Log.e("SEND SOS", longitude+" ");
+		this.SOSType = st;
+		this.lat = lat;
+		this.lon = lon;
+		this.isSOS = isSOS;
+		this.status = status;
+	}
+	
+	public GeoPoint getPoint(){
+		return new GeoPoint(lat, lon);
+	}
+	
+	public boolean isSOS(){
+		return isSOS;
+	}
+
+	public ResourceStatus getStatus() {
+		return status;
 	}
 
 	@Override
@@ -49,9 +66,5 @@ public class SOSMessage extends Message {
 
 	public void setSOSType(SOSType sOSType) {
 		SOSType = sOSType;
-	}
-
-	public GeoPoint getPoint() {
-		return new GeoPoint(latitude, longitude);
 	}
 }
