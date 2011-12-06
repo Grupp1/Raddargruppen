@@ -92,7 +92,7 @@ public class ReciveHandler extends Observable implements Runnable {
 		}
 		else if (mt == MessageType.TEXT) {
 			DatabaseController.db.addRow(m, notify);
-			
+
 		} else if (mt == MessageType.SOS) {
 			//((Activity) context).runOnUiThread(new Runnable() {
 			QoSManager.getCurrentActivity().runOnUiThread(new Runnable() {
@@ -111,12 +111,12 @@ public class ReciveHandler extends Observable implements Runnable {
 							new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,
 								int whichButton) {
-							
+
 							// Gå till kartan¨
-						Intent intent = new Intent(QoSManager.getCurrentActivity(),MapUI.class);
-						intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-						QoSManager.getCurrentActivity().startActivity(intent);
-						((SOSMessage)m).getPoint();
+							Intent intent = new Intent(QoSManager.getCurrentActivity(),MapUI.class);
+							intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+							QoSManager.getCurrentActivity().startActivity(intent);
+							((SOSMessage)m).getPoint();
 						}
 					});
 
@@ -144,14 +144,7 @@ public class ReciveHandler extends Observable implements Runnable {
 				MainView.mapCont.add(mo,false);
 				break;
 			case REMOVE:
-				Log.d("REMOVE", "SWITCH");
-				// MapObject är inte med i meddelandet.. endast id skickas idag....
-				if(mo==null){
-					Log.d("REMOVE", "IF");
-				}else{
-					Log.d("REMOVE", "ELSE");
-					MainView.mapCont.removeObject(mo, false);
-				}
+				MainView.mapCont.removeObject(mo, false);
 				break;
 			case UPDATE:
 				MainView.mapCont.updateObject(mo,false);
@@ -185,7 +178,7 @@ public class ReciveHandler extends Observable implements Runnable {
 					AlertDialog.Builder alert = new AlertDialog.Builder(QoSManager.getCurrentActivity());
 
 					alert.setTitle("Forcerad utloggning");
-					alert.setMessage("En annan klient har loggat in på denna användare. Du kommer nu att loggas ut.");
+					alert.setMessage(m.getData());
 					alert.setOnCancelListener(new OnCancelListener(){
 						public void onCancel(DialogInterface dialog) {
 							Intent intent = new Intent(QoSManager.getCurrentActivity(),StartView.class);

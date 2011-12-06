@@ -1,6 +1,7 @@
 package raddar.views;
 
 import raddar.controllers.SessionController;
+import raddar.gruppen.R;
 import raddar.models.QoSManager;
 import raddar.models.XMLFetcher;
 import android.app.ExpandableListActivity;
@@ -111,7 +112,7 @@ public class WeatherView extends ExpandableListActivity {
             textView.setLayoutParams(lp);
             // Center the text vertically
             textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
-            textView.setTextSize(10);
+            textView.setTextSize(17);
             // Set the text starting position
             textView.setPadding(36, 0, 0, 0);
             return textView;

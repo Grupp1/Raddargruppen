@@ -45,7 +45,7 @@ public class ContactListView extends ListActivity implements OnClickListener {
 		// for(int i = 0;i <10;i++)
 		// contacts.add(new Contact("Peter"+i, false));
 		ia = new ContactAdapter(this, R.layout.contact_list, contacts);
-		statusImage = (ImageView) this.findViewById(R.id.statusImage);
+		
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
 		setListAdapter(ia);
@@ -76,10 +76,13 @@ public class ContactListView extends ListActivity implements OnClickListener {
 			if (c != null) {
 				TextView tt = (TextView) v.findViewById(R.id.label);
 				tt.setText(c.getUserName());
+				
 				if (SessionController.isOnline(c.getUserName())){
+					ImageView statusImage = (ImageView) v.findViewById(R.id.statusImage);
 					statusImage.setImageResource(R.drawable.online_circle_green);
 				}
 				else {
+					ImageView statusImage = (ImageView) v.findViewById(R.id.statusImage);
 					statusImage.setImageResource(R.drawable.online_circle_red);
 				} 
 			}

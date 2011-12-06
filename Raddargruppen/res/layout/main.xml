@@ -216,15 +216,16 @@
 			android:text="@string/main_logout"
 			android:layout_gravity="center"></TextView>
 	</LinearLayout>
-	
-	<ImageButton android:layout_width="wrap_content"
-			   android:layout_height="wrap_content"
-			   android:src="@drawable/disconnected"
-			   android:background="#000000"
-			   android:layout_alignParentTop="true"
-			   android:layout_alignParentRight="true"
-			   android:id="@+id/presence" android:layout_marginRight="5dip" android:layout_marginTop="5dip">
-	</ImageButton>
+	<TextView
+		android:text=" "
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/statusText"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentLeft="true"
+		android:layout_marginLeft="5dip"
+		android:layout_marginBottom="5dip"></TextView>
 
 
 

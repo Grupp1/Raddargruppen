@@ -41,24 +41,13 @@ public class StartView extends Activity implements Observer {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		
-		String userHome = System.getProperty( "user.home" );
-		Log.d("hemma",userHome);
+		setContentView(R.layout.start);
 		
 		System.setProperty("javax.net.ssl.keyStore","assets/androidKey");
 	    System.setProperty("javax.net.ssl.keyStorePassword","android");
 		
-		
-		//System.setProperty("javax.net.ssl.trustStore","clientTrustStore.key");
-		//System.setProperty("javax.net.ssl.trustStorePassword","android");
-		
-		
-		
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
-		setContentView(R.layout.start);
 		SessionController.titleBar(this, " - Logga in");
-
 		this.deleteDatabase("client_database");
 		new DatabaseController(this);
 
@@ -68,14 +57,11 @@ public class StartView extends Activity implements Observer {
 		LoginManager.cache("Alice", "longshot");
 		LoginManager.cache("danan612","raddar");
 
-
 		user = (EditText) this.findViewById(R.id.usertext1);
 		password = (EditText) this.findViewById(R.id.passwordtext1);
 		
-		
-		// Endast för lättare testning
-		//user.setText("danan612");
-		//password.setText("raddar");
+		user.setText("kjeka190");
+		password.setText("kjeka190");
 
 		final LoginManager lm = new LoginManager();
 		lm.addObserver(this);
@@ -96,7 +82,6 @@ public class StartView extends Activity implements Observer {
 				//startActivity(nextIntent);
 				loginButton.setEnabled(false);
 				dialog.show();
-
 				
 				Thread s = new Thread(new Runnable(){ 
 					public void run() {

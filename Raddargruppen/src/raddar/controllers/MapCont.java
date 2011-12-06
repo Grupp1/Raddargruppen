@@ -65,8 +65,8 @@ public class MapCont implements Observer, Runnable{
 	}
 	public MapObjectList getList(MapObject mo){
 		Log.d("GET MAP OBJECT LIST",""+mo.getTitle());
-		if(mapModel==null)
-			return null;
+//		if(mapModel==null)
+//			return null;
 		return mapModel.getList(mo);
 	}
 
@@ -137,10 +137,8 @@ public class MapCont implements Observer, Runnable{
 		Log.d("RemoveObject", "MapCont:"+o.getTitle());
 		if(mapModel != null){
 			mapModel.removeObject(o);
-			if(!notify){
-				mapUI.drawNewMapObject(o);
-			}else{
-				mapUI.drawNewMapObject(o);
+			mapUI.drawNewMapObject(o);
+			if(notify){
 				Gson gson = new Gson();
 				try{
 					MapObjectMessage mom = new MapObjectMessage(gson.toJson(o),
@@ -149,7 +147,6 @@ public class MapCont implements Observer, Runnable{
 				}
 				catch (UnknownHostException e) {
 				}
-
 			}
 		}
 		DatabaseController.db.deleteRow(o);

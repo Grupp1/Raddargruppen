@@ -5,13 +5,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
-import java.net.Socket;
 import java.util.ArrayList;
 
 import javax.net.ssl.SSLSocket;
 
+import raddar.enums.MessageType;
 import raddar.enums.NotificationType;
 import raddar.enums.OnlineOperation;
+import raddar.enums.RequestType;
 import raddar.models.MapObjectMessage;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
@@ -68,6 +69,21 @@ public class Receiver implements Runnable {
 			System.out.println(temp);
 
 			Message m = new Gson().fromJson(temp, c);
+
+			//Det den här if-satsen gör ät att undersöka om användaren som skickade meddelandet är online.
+			//Om han inte är det måste är det enda meddelandena har får skicka notifications och requesta salt.
+			//Om han gör mågot annat loggas han ut.
+			if(!Server.onlineUsers.isUserOnline(m.getSrcUser()) &&
+					(m.getType() != MessageType.NOTIFICATION && !(m.getType() == MessageType.REQUEST &&
+					((RequestMessage)m).getRequestType() == RequestType.SALT))){
+				System.out.println("Not online");
+				NotificationMessage nm = (new NotificationMessage("Server", NotificationType.DISCONNECT));
+				nm.setData("Du är inte inloggad mot servern. Var vänlig logga in igen.");
+				LoginManager.logoutUser(m.getSrcUser());
+				new Sender(nm, so.getInetAddress()); 
+				return;
+			}
+			
 //			if(Server.onlineUsers.isUserOnline(m.getSrcUser())){
 //					so.close();
 //				return;
@@ -167,7 +183,6 @@ public class Receiver implements Runnable {
 		default:
 			System.out.println("Okänd MapOperation");
 		}	
-
 	}
 
 	/**

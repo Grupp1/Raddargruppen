@@ -44,8 +44,6 @@ public class CallContactListView extends ListActivity implements Observer{
 
 		//contacts = DatabaseController.db.getAllRowsAsArrays("contact");
 		contacts = SessionController.getOnlineContacts();
-		for(Contact c: contacts)
-			Log.e("onlineContacts", c.getUserName() );
 		DatabaseController.db.addObserver(this);
 		/*Collections.sort(contacts,new Comparator<Contact>(){
 			public int compare(Contact object1, Contact object2) {
