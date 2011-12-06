@@ -4,6 +4,8 @@ import java.net.UnknownHostException;
 import java.util.Observable;
 import java.util.Observer;
 
+import com.google.gson.Gson;
+
 import raddar.controllers.DatabaseController;
 import raddar.controllers.MapCont;
 import raddar.controllers.ReciveHandler;
@@ -11,9 +13,11 @@ import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
 import raddar.controllers.SipController;
 import raddar.enums.ConnectionStatus;
+import raddar.enums.MapOperation;
 import raddar.enums.NotificationType;
 import raddar.enums.RequestType;
 import raddar.gruppen.R;
+import raddar.models.MapObjectMessage;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
 import raddar.models.QoSManager;
@@ -129,13 +133,13 @@ public class MainView extends Activity implements OnClickListener, Observer {
 
 		connectionButton = (ImageButton) findViewById(R.id.presence);
 		connectionButton.setOnClickListener(this);
-		if (extras.get("connectionStatus").equals(ConnectionStatus.CONNECTED)){
-			connectionButton.setImageResource(R.drawable.connected);
-		}
-		else if (extras.get("connectionStatus").equals(ConnectionStatus.DISCONNECTED)){
-			connectionButton.setImageResource(R.drawable.disconnected);
-		}
-		update(SessionController.getSessionController(),ConnectionStatus.CONNECTED);
+//		if (extras.get("connectionStatus").equals(ConnectionStatus.CONNECTED)){
+//			connectionButton.setImageResource(R.drawable.connected);
+//		}
+//		else if (extras.get("connectionStatus").equals(ConnectionStatus.DISCONNECTED)){
+//			connectionButton.setImageResource(R.drawable.disconnected);
+//		}
+		update(SessionController.getSessionController(),extras.get("connectionStatus"));
 	}
 
 	public void onClick(View v) {
@@ -210,6 +214,17 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		// Notifiera servern att vi går offline
 		NotificationMessage nm = new NotificationMessage(SessionController.getUser(), 
 				NotificationType.DISCONNECT);
+		
+		//TESTTESTETSTETTST
+//		Gson gson = new Gson();
+//		try{
+//			MapObjectMessage mom = new MapObjectMessage(gson.toJson(mapCont.getYou()),
+//					(mapCont.getYou()).getClass().getName(),mapCont.getYou().getId(),MapOperation.UPDATE);
+//			new Sender(mom);
+//		}
+//		catch (UnknownHostException e) {
+//		}
+		
 		try {
 			// Skicka meddelandet
 			new Sender(nm);		

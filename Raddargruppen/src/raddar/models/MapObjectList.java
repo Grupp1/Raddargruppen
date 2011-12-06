@@ -131,7 +131,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 						alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
-								mOverlays.remove(item);
+								//mOverlays.remove(item);
 
 								MainView.mapCont.removeObject(item,true);
 								setLastFocusedIndex(-1);
@@ -296,21 +296,29 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 		return true;
 	}
+	public void addMapObject(MapObject o){
+		String oId = o.getId();
+		for(OverlayItem mo:mOverlays){
+			if(((MapObject)mo).getId().equals(oId))
+				return;;
+		}
+		mOverlays.add(o);
+		populate();
+	}
 
 	public void removeMapObject(final MapObject o) {
 		((Activity)mContext).runOnUiThread(new Runnable(){
 			public void run() {
 				Log.d("MAPOBJECTLIST", "REMOVE");
 				String oId = o.getId();
-				for(OverlayItem mo:mOverlays){
-					if(((MapObject)mo).getId().equals(oId)){
-						Log.d("MAPOBJECTLIST","REMOVE  "+mOverlays.remove(mo));
-						setLastFocusedIndex(-1);
-						populate();
-						Log.d("MAPOBJECTLIST", "REMOVE "+mo.getTitle());
+				for(int i = 0; i < mOverlays.size(); i++){
+					if(((MapObject)mOverlays.get(i)).getId().equals(oId)){
+						Log.d("MAPOBJECTLIST","REMOVE  "+mOverlays.remove(mOverlays.remove(i)));
 						return;
 					}
 				}
+				setLastFocusedIndex(-1);
+				populate();
 			}
 		});
 	}
