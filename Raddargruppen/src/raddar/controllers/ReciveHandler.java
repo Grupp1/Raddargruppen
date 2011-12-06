@@ -186,7 +186,6 @@ public class ReciveHandler extends Observable implements Runnable {
 							QoSManager.getCurrentActivity().startActivity(intent);
 						}
 					});
-
 					alert.show();
 				}
 			});

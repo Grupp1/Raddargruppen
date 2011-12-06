@@ -98,40 +98,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 
 		String level = BatteryManager.EXTRA_LEVEL;
 		Log.d("EXTRA_LEVEL", level);
-		
-
-		//		controller = new InternalComManager();
-		//		controller.setUser(extras.get("user").toString());
-		//		db = new ClientDatabaseManager(this,controller.getUser());
-
-		//		//TEMPORÄRT MÅSTE FIXAS
-		//		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
-
 		new SessionController(extras.get("user").toString()).addObserver(this);
-		//		new DatabaseController(this);
-		//new ReciveHandler(this).addObserver(this);
-		
-		
-		
-//		try {
-//			new Sender(new RequestMessage(RequestType.MESSAGE));
-//			new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
-//			new Sender(new RequestMessage(RequestType.CONTACTS));
-//			new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
-//		} catch (UnknownHostException e) {
-//			e.printStackTrace();
-//		}
-		try {
-			new Sender(new RequestMessage(RequestType.MESSAGE));
-			new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
-			DatabaseController.db.clearTable("contact");
-			new Sender(new RequestMessage(RequestType.CONTACTS));
-			new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
-			new Sender(new RequestMessage(RequestType.ONLINE_CONTACTS));
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-
 
 		callButton = (ImageButton)this.findViewById(R.id.callButton);
 		callButton.setOnClickListener(this);
@@ -158,6 +125,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		logButton.setOnClickListener(this);
 		
 		statusText = (TextView)this.findViewById(R.id.statusText);
+		
 		statusText.setText("Inloggad som: " +  SessionController.getUser());
 		statusText.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC), Typeface.ITALIC);
 		
@@ -280,8 +248,10 @@ public class MainView extends Activity implements OnClickListener, Observer {
 					try {
 						new Sender(new RequestMessage(RequestType.MESSAGE));
 						new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
+						DatabaseController.db.clearTable("contact");
 						new Sender(new RequestMessage(RequestType.CONTACTS));
 						new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
+						new Sender(new RequestMessage(RequestType.ONLINE_CONTACTS));
 					} catch (UnknownHostException e) {
 						e.printStackTrace();
 					}

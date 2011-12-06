@@ -41,16 +41,16 @@ public class StartView extends Activity implements Observer {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.start);
 		
-		System.setProperty("javax.net.ssl.keyStore","assets/androidKey");
-	    System.setProperty("javax.net.ssl.keyStorePassword","android");
-		
-		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		SessionController.titleBar(this, " - Logga in");
 		this.deleteDatabase("client_database");
 		new DatabaseController(this);
 
+		System.setProperty("javax.net.ssl.keyStore","assets/androidKey");
+	    System.setProperty("javax.net.ssl.keyStorePassword","android");
+		
 		// Lite hårdkodade testanvändare att testa med
 		LoginManager.cache("Borche", "hej123");
 		LoginManager.cache("Danne", "raddar");

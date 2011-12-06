@@ -64,18 +64,6 @@ public class Sender implements Runnable {
 		}
 		Log.d("Sending", "Sending: "+send);
 		try {
-			
-			/* Gamla anslutningen
-			Socket so = new Socket(address, port);
-			so.setSoTimeout(5000);
-			PrintWriter out = new PrintWriter(so.getOutputStream(), true);
-			out.println(send);
-			so.close();
-			out.close();
-
-			*/
-			
-			//nya ssl varianten
 			SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 			SSLSocket sslsocket = (SSLSocket) sslsocketfactory.createSocket(address, port);
 			sslsocket.setEnabledCipherSuites(new String[] { "SSL_RSA_WITH_RC4_128_MD5", "SSL_DH_anon_WITH_RC4_128_MD5" });
@@ -85,11 +73,6 @@ public class Sender implements Runnable {
 			out.println(send);
 			out.close();
 			sslsocket.close();
-			
-			
-			
-			Log.e("Sendzordz",send);
-
 		} catch (IOException ie) {
 			Log.d("Skapandet av socket [2]", ie.toString());
 			SessionController.getSessionController().changeConnectionStatus(ConnectionStatus.DISCONNECTED);
@@ -98,10 +81,6 @@ public class Sender implements Runnable {
 			
 			DatabaseController.db.addBufferedMessageRow(send);
 		} 
-//		catch (SocketException e) {
-//			
-//		}
 	}
-
 }
 
