@@ -1,6 +1,7 @@
 package raddar.views;
 
 import raddar.controllers.SessionController;
+import raddar.gruppen.R;
 import raddar.models.QoSManager;
 import raddar.models.XMLFetcher;
 import android.app.ExpandableListActivity;
@@ -9,6 +10,7 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListAdapter;
@@ -24,6 +26,7 @@ public class WeatherView extends ExpandableListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
+    	requestWindowFeature(Window.FEATURE_RIGHT_ICON);
     	SessionController.titleBar(this, " - Väder");
     	mAdapter = new MyExpandableListAdapter();
         setListAdapter(mAdapter);
@@ -109,6 +112,7 @@ public class WeatherView extends ExpandableListActivity {
             textView.setLayoutParams(lp);
             // Center the text vertically
             textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+            textView.setTextSize(17);
             // Set the text starting position
             textView.setPadding(36, 0, 0, 0);
             return textView;

@@ -17,14 +17,18 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 public class ContactListView extends ListActivity implements OnClickListener {
+	private ImageView statusImage;
 	private static final int RESULT_FIRST_USER_EDIT = 5;
 	private ContactAdapter ia;
 	private ArrayList<Contact> contacts;
@@ -35,11 +39,13 @@ public class ContactListView extends ListActivity implements OnClickListener {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		SessionController.titleBar(this, " - Kontaktlista");
 		contacts = DatabaseController.db.getAllRowsAsArrays("contact");
 		// for(int i = 0;i <10;i++)
 		// contacts.add(new Contact("Peter"+i, false));
 		ia = new ContactAdapter(this, R.layout.contact_list, contacts);
+		
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
 		setListAdapter(ia);
@@ -70,6 +76,15 @@ public class ContactListView extends ListActivity implements OnClickListener {
 			if (c != null) {
 				TextView tt = (TextView) v.findViewById(R.id.label);
 				tt.setText(c.getUserName());
+				
+				if (SessionController.isOnline(c.getUserName())){
+					ImageView statusImage = (ImageView) v.findViewById(R.id.statusImage);
+					statusImage.setImageResource(R.drawable.online_circle_green);
+				}
+				else {
+					ImageView statusImage = (ImageView) v.findViewById(R.id.statusImage);
+					statusImage.setImageResource(R.drawable.online_circle_red);
+				} 
 			}
 
 			return v;
@@ -77,7 +92,7 @@ public class ContactListView extends ListActivity implements OnClickListener {
 
 
 	}
-
+	
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
@@ -133,5 +148,5 @@ public class ContactListView extends ListActivity implements OnClickListener {
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
 	}
-	
+
 }

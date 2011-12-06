@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 
@@ -16,6 +17,7 @@ public class ServiceView extends Activity implements OnClickListener{
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.services);
 		SessionController.titleBar(this, " - Externa tjänster");
 		yrButton = (ImageButton)this.findViewById(R.id.yrButton);

@@ -2,6 +2,7 @@ package tddd36.server;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.Timer;
@@ -10,9 +11,13 @@ import java.util.TimerTask;
 import raddar.enums.MessageType;
 import raddar.models.NotificationMessage;
 
+import raddar.enums.OnlineOperation;
+import raddar.models.OnlineUsersMessage;
+
 public class Associations {
 
-	private HashMap<String, InetAddress> associations = new HashMap<String, InetAddress>();
+
+	private static HashMap<String, InetAddress> associations = new HashMap<String, InetAddress>();
 	private HashMap<String, InetAddress> updatedAssociations = new HashMap<String, InetAddress>();
 
 	Associations(){
@@ -42,28 +47,34 @@ public class Associations {
 
 	/**
 	 * Lägg till en användare och tillsammans med dennes InetAddress
+	 * och broadcasta att denna nu är online.
 	 * 
 	 * @param username Användarens användarnamn
 	 * @param address Användarens InetAddress
 	 * @return Användarens gamla InetAddress, eller null om den inte hade någon tidigare
 	 */
-	public InetAddress addUser(String username, InetAddress address) {
-		updatedAssociations.put(username, address);
-		return associations.put(username, address);
+
+	public InetAddress addUser(String userName, InetAddress address) {
+		updatedAssociations.put(userName, address);
+		Sender.broadcast(new OnlineUsersMessage(OnlineOperation.ADD, userName));
+		return associations.put(userName, address);
+
 	}
 
 	/**
-	 * Lägg till en användare och tillsammans med dennes IP-adress
+	 * Lägg till en användare och tillsammans med dennes IP-adress och
+	 * broadcasta att denna nu är online
 	 * 
 	 * @param username Användarens användarnamn
 	 * @param address IP-adressen (t ex: 130.236.188.23)
 	 * @return Användarens gamla InetAddress, eller null om den inte hade någon tidigare
 	 */
-	public InetAddress adduser(String username, String address) {
+	public InetAddress adduser(String userName, String address) {
 		try {
 			// Testa skapa ett InetAddress-objekt av given adress
 			InetAddress adr = InetAddress.getByName(address);
-			return addUser(username, adr);
+			Sender.broadcast(new OnlineUsersMessage(OnlineOperation.ADD, userName));
+			return addUser(userName, adr);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 			return null;
@@ -71,14 +82,17 @@ public class Associations {
 	}
 
 	/**
-	 * Ta bort en användare från listan
+	 * Ta bort en användare från listan och broadcasta att denna nu är offline
 	 * 
-	 * @param username Användaren som ska tas bort från listan
+	 * @param userName Användaren som ska tas bort från listan
 	 * @return InetAddressen som var associerad med användaren
 	 */
-	public InetAddress removeUser(String username) {
-		updatedAssociations.remove(username);
-		return associations.remove(username);
+
+	public InetAddress removeUser(String userName) {
+		updatedAssociations.remove(userName);
+		Sender.broadcast(new OnlineUsersMessage(OnlineOperation.REMOVE, userName));
+		return associations.remove(userName);
+
 	}
 
 	/**
@@ -134,6 +148,7 @@ public class Associations {
 		return associations;
 	}
 
+
 	/**
 	 * Rapportera om ett mottaget probe-meddelande som checkar så att användaren
 	 * fortfarande är online på servern.
@@ -142,5 +157,16 @@ public class Associations {
 	 */
 	public void confirmedProbeMessage(String user, InetAddress address){
 		updatedAssociations.put(user, address);
+	}
+
+	
+	/**
+	 * Returnerar en ArrayList av Strings med alla användarnamn som är online
+	 * @return ArrayList<String> med alla användarnamnpå de som är online.
+	 */
+	public static ArrayList<String> getOnlineUserNames(){
+		ArrayList<String> onlineUserNames = new ArrayList<String>();
+		onlineUserNames.addAll(associations.keySet());
+		return onlineUserNames;
 	}
 }

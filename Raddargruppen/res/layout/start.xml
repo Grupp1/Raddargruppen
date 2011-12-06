@@ -34,7 +34,7 @@
 			android:layout_marginLeft="30dip"
 			android:layout_marginRight="30dip"
 			android:layout_marginTop="10dip"
-			android:id="@+id/usertext"
+			android:id="@+id/usertext1"
 			android:background="@drawable/rounded_edittext" android:layout_height="30dp">
 			<requestFocus></requestFocus>
 		</EditText>
@@ -56,7 +56,7 @@
 			android:layout_marginLeft="30dip"
 			android:layout_marginRight="30dip"
 			android:layout_marginTop="10dip"
-			android:id="@+id/passwordtext"
+			android:id="@+id/passwordtext1"
 			android:background="@drawable/rounded_edittext" android:layout_height="30dp"></EditText>
 		<Button
 			android:layout_gravity="right"

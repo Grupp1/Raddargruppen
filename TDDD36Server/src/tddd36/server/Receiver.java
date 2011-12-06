@@ -10,10 +10,12 @@ import java.util.ArrayList;
 
 import raddar.enums.MessageType;
 import raddar.enums.NotificationType;
+import raddar.enums.OnlineOperation;
 import raddar.enums.RequestType;
 import raddar.models.MapObjectMessage;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
+import raddar.models.OnlineUsersMessage;
 import raddar.models.RequestMessage;
 import raddar.models.TextMessage;
 
@@ -224,6 +226,13 @@ public class Receiver implements Runnable {
 		case MAP_OBJECTS:
 			ArrayList<Message> mapObjectMessages = Database.retrieveAllMapObjects();
 			new Sender(mapObjectMessages, rm.getSrcUser());
+			break;
+		case ONLINE_CONTACTS:
+			ArrayList<String> onlineUsersMessages = Associations.getOnlineUserNames();
+			for(String onlineUser: onlineUsersMessages){
+				OnlineUsersMessage onlineUsermessage  = new OnlineUsersMessage(OnlineOperation.ADD, onlineUser);
+				new Sender(onlineUsermessage, rm.getSrcUser());
+			}
 			break;
 		default:
 			System.out.println("Okänd RequestType");

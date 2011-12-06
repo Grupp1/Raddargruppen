@@ -27,6 +27,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -56,6 +57,7 @@ public class MapUI extends MapActivity implements Observer {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.maps);
 
 		SessionController.titleBar(this, " - Karta");
