@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Typeface;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +34,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainView extends Activity implements OnClickListener, Observer {
@@ -45,7 +47,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	private ImageButton sosButton;
 	private ImageButton setupButton;
 	private ImageButton logButton;
-	private ImageButton connectionButton;
+	private TextView statusText;
 	public static MapCont mapCont;
 	public static MainView theOne;
 	private Bundle extras;
@@ -92,6 +94,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 
 		String level = BatteryManager.EXTRA_LEVEL;
 		Log.d("EXTRA_LEVEL", level);
+		
 
 		//		controller = new InternalComManager();
 		//		controller.setUser(extras.get("user").toString());
@@ -103,6 +106,8 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		new SessionController(extras.get("user").toString()).addObserver(this);
 		//		new DatabaseController(this);
 		new ReciveHandler(this).addObserver(this);
+		
+		
 		
 //		try {
 //			new Sender(new RequestMessage(RequestType.MESSAGE));
@@ -148,18 +153,13 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		logButton = (ImageButton)this.findViewById(R.id.logButton);
 		logButton.setOnClickListener(this);
 		
-		connectionButton = (ImageButton) findViewById(R.id.presence);
-		connectionButton.setOnClickListener(this);
+		statusText = (TextView)this.findViewById(R.id.statusText);
+		statusText.setText("Inloggad som: " +  SessionController.getUser());
+		statusText.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC), Typeface.ITALIC);
 		
-		if (extras.get("connectionStatus").equals(ConnectionStatus.CONNECTED)){
-			connectionButton.setImageResource(R.drawable.connected);
-		}
-		else if (extras.get("connectionStatus").equals(ConnectionStatus.DISCONNECTED)){
-			connectionButton.setImageResource(R.drawable.disconnected);
-		}
-
-
-		update(SessionController.getSessionController(),ConnectionStatus.CONNECTED);
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
+		SessionController.getSessionController().changeConnectionStatus((ConnectionStatus)extras.get("connectionStatus"));
 
 	}
 
@@ -196,10 +196,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		else if(v == logButton){
 			showLogoutWindow();
 		}
-		else if (v == connectionButton){
-			Toast.makeText(getBaseContext(), extras.get("connectionStatus").toString()+", inloggad som: "
-					+SessionController.getUser(), Toast.LENGTH_LONG).show();
-		}
+		
 	}
 	private void showLogoutWindow(){
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -261,8 +258,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 							,Toast.LENGTH_LONG).show();
 
 				if(data == ConnectionStatus.CONNECTED){
-					connectionButton.setImageResource(R.drawable.connected);
-					Toast.makeText(getApplicationContext(), "Ansluten till servern, inloggad som: "+SessionController.getUser()
+					Toast.makeText(getApplicationContext(), "Ansluten till servern"
 							, Toast.LENGTH_LONG).show();
 					DatabaseController.db.clearDatabase();
 					mapCont.renewYou();
@@ -275,7 +271,6 @@ public class MainView extends Activity implements OnClickListener, Observer {
 						e.printStackTrace();
 					}
 				}else if (data == ConnectionStatus.DISCONNECTED){
-					connectionButton.setImageResource(R.drawable.disconnected);
 					Toast.makeText(getApplicationContext(), "Tappad anslutning mot servern",Toast.LENGTH_LONG).show();
 				}
 				else if (data instanceof String){

@@ -50,10 +50,9 @@ public final class R {
         public static final int smhi=0x7f020024;
         public static final int sos=0x7f020025;
         public static final int sosicon=0x7f020026;
-        public static final int test_9patch_patched=0x7f020027;
-        public static final int trafikverket=0x7f020028;
-        public static final int wordwriter=0x7f020029;
-        public static final int yr=0x7f02002a;
+        public static final int trafikverket=0x7f020027;
+        public static final int wordwriter=0x7f020028;
+        public static final int yr=0x7f020029;
     }
     public static final class id {
         public static final int Button01=0x7f07000b;
@@ -117,7 +116,6 @@ public final class R {
         public static final int passwordtext1=0x7f070054;
         public static final int power_program_radio_group=0x7f07004f;
         public static final int power_programs_textview=0x7f07004e;
-        public static final int presence=0x7f07002a;
         public static final int preview=0x7f070042;
         public static final int readMessage=0x7f07003a;
         public static final int readMessageDate=0x7f070038;
@@ -136,6 +134,7 @@ public final class R {
         public static final int sos_rensa_meddelande=0x7f070046;
         public static final int sos_send_message_button=0x7f070047;
         public static final int statusImage=0x7f070008;
+        public static final int statusText=0x7f07002a;
         public static final int subject=0x7f070040;
         public static final int text=0x7f070012;
         public static final int textView1=0x7f070001;

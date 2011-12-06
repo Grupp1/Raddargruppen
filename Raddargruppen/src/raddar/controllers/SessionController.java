@@ -4,6 +4,7 @@ package raddar.controllers;
 import raddar.enums.ConnectionStatus;
 import raddar.gruppen.R;
 import raddar.models.Contact;
+import raddar.models.QoSManager;
 import android.app.Activity;
 import android.graphics.Color;
 import android.view.Window;
@@ -60,10 +61,25 @@ public class SessionController extends Observable{
 		return user;
 	}
 
-	public void changeConnectionStatus(ConnectionStatus status){
+	public void changeConnectionStatus(final ConnectionStatus status){
 		this.connection = status;
 		setChanged();
 		notifyObservers(status);
+		QoSManager.getCurrentActivity().runOnUiThread(new Runnable(){
+			@Override
+			public void run() {
+				if (status.equals(ConnectionStatus.CONNECTED)){
+					QoSManager.getCurrentActivity().setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.connected);
+				
+				}
+				else if (status.equals(ConnectionStatus.DISCONNECTED)){
+					QoSManager.getCurrentActivity().setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.disconnected);
+				}
+				
+											
+			}
+		});
+																															
 	}
 	
 	public static SessionController getSessionController(){
@@ -83,6 +99,7 @@ public class SessionController extends Observable{
 		View titleBar = (View) title.getParent();
 		if (connection.equals(ConnectionStatus.CONNECTED)){
 			a.setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.connected);
+		
 		}
 		else if (connection.equals(ConnectionStatus.DISCONNECTED)){
 			a.setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.disconnected);
