@@ -21,6 +21,7 @@ import raddar.enums.LoginResponse;
 import raddar.enums.NotificationType;
 import raddar.enums.RequestType;
 import raddar.enums.ServerInfo;
+import android.database.SQLException;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -142,38 +143,41 @@ public class LoginManager extends Observable {
 	 * Denna metoden kollar lokalt i cachen om användaren finns sparad i cachen
 	 * och försöker i sådana fall verifiera inmatade uppgifter emot dessa.
 	 * 
-	 * @param username
+	 * @param userName
 	 *            Användarnamnet
 	 * @param password
 	 *            Lösenordet
 	 * @return true om verifieringen går bra, false annars
 	 */
-	private LoginResponse evaluateLocally(String username, String password) {
+	private LoginResponse evaluateLocally(String userName, String password) {
 		/*
 		 * Hämta användarens salt så att encrypt() kan hasha korrekt String salt
 		 * = ClientDatabaseManager.getSalt(username); password =
 		 * Encryption.encrypt(password, salt);
 		 */
-		String cachedPassword = passwordCache.get(username);
-		if (cachedPassword == null)
+		try{
+			ArrayList cachedUser = DatabaseController.db.getCachedUserRow(userName);
+			if (password.equals(cachedUser.get(1))){
+				/*
+				 * StubbornLoginThread försöker logga in mot servern med jämna
+				 * mellanrum
+				 */
+				s = new StubbornLoginThread(userName, password);
+				return LoginResponse.ACCEPTED_NO_CONNECTION;
+			}
+		}catch(Exception e){
+			Log.e("SQLException", e.toString());
 			return LoginResponse.NO_CONNECTION;
-		if (password.equals(cachedPassword)) {
-			/*
-			 * StubbornLoginThread försöker logga in mot servern med jämna
-			 * mellanrum
-			 */
-			s = new StubbornLoginThread(username, password);
-			return LoginResponse.ACCEPTED_NO_CONNECTION;
 		}
 		return LoginResponse.NO_CONNECTION;
 	}
 
-	public static String cache(String username, String password) {
-		return passwordCache.put(username, password);
+	public static void cache(String userName, String password) {
+		DatabaseController.db.chacheUser(userName, password);
 	}
 
-	public static String removeCache(String username) {
-		return passwordCache.remove(username);
+	public static void removeCache(String userName) {
+		DatabaseController.db.decacheUser(userName);
 	}
 	private void sendBufferedMessages() throws UnknownHostException{
 		//Skicka alla medelanden som buffrats och töm sedan buffern

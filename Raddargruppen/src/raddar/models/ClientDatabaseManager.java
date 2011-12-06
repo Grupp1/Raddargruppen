@@ -37,6 +37,7 @@ public class ClientDatabaseManager extends Observable {
 	private final String[] DRAFT_TABLE_ROWS = new String[] { "msgID", "destUser", "rDate", "subject", "mData"};
 	private final String[] IMAGE_MESSAGE_TABLE_ROWS = new String [] {"msgId", "srcUser", "rDate", "subject", "filePath"};
 	private final String[] BUFFERED_MESSAGE_TABLE_ROWS = new String[] {"gsonString"};
+	private final String[] CACHED_USERS_TABLE_ROWS = new String[] {"userName", "password"};
 
 
 	/**********************************************************************
@@ -79,6 +80,33 @@ public class ClientDatabaseManager extends Observable {
 		addRow(lalle);
 		addRow(borche);
 		/*addRow(mange);
+		 * 
+		 */
+		
+	/**
+	 * Adds a user and a password to the cached user table
+	 * @param userName the user
+	 * @param password the password
+	 */
+	public void chacheUser(String userName, String password){
+		ContentValues values = new ContentValues();
+		values.put("username", userName);
+		values.put("password", password);
+		try {
+			db.insert("cahce", null, values);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void decacheUser(String userName){
+		try{
+			db.delete("cachedUsers", "userName = \'" +userName + "\'", null);
+		}catch (Exception e) {
+			Log.e("DB ERROR", e.toString());
+			e.printStackTrace();
+		}
+	}
 
 	/**********************************************************************
 	 * ADDING A MESSAGE ROW TO THE DATABASE TABLE
@@ -366,6 +394,30 @@ public class ClientDatabaseManager extends Observable {
 	public void	clearTable(String table){
 		db.delete(table, null, null);
 	}
+	
+	public ArrayList getCachedUserRow(String userName){
+		ArrayList temp = new ArrayList();
+		try{
+			Cursor cursor = db.query(
+					"cachedUsers",
+					CACHED_USERS_TABLE_ROWS,
+					"userName = '" + userName +"'", 
+					null, null, null, null);
+			if(!cursor.isAfterLast()){
+				do
+				{
+					temp.add(cursor.getInt(0));
+					temp.add(cursor.getString(1));
+					temp.add(cursor.getString(2));
+				}while(cursor.moveToNext());
+			}
+			cursor.close();
+		}catch(SQLException e){
+			Log.e("DB ERROR", e.toString());
+			e.printStackTrace();
+		}
+		return temp;
+	}
 
 
 	/********************************************************************
@@ -553,6 +605,10 @@ public class ClientDatabaseManager extends Observable {
 			String bufferedmessageTableQueryString = "create table bufferedMessage (" 
 					+ "msgId integer primary key autoincrement not null," + 
 					"gsonString text)";
+			String cachedUserQueryString = "create table cachedUsers (" 
+					+ "msgId integer primary key autoincrement not null," + 
+					"userName text" +
+					"password text)";
 			
 
 			/*
@@ -569,6 +625,7 @@ public class ClientDatabaseManager extends Observable {
 			db.execSQL(outboxTableQueryString);
 			db.execSQL(bufferedmessageTableQueryString);
 			db.execSQL(draftsTableQueryString);
+			db.execSQL(cachedUserQueryString);
 		}
 
 		/**
