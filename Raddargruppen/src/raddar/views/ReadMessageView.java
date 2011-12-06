@@ -1,13 +1,16 @@
 package raddar.views;
 
 import raddar.controllers.SessionController;
+import raddar.enums.MessageType;
 import raddar.gruppen.R;
 import raddar.models.QoSManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
+import android.util.Base64;
 import android.view.Window;
 
 import android.view.View;
@@ -29,9 +32,13 @@ public class ReadMessageView extends Activity{
 		TextView readMessageSrcUser = (TextView)this.findViewById(R.id.readMessageSrcUser);
 		TextView readMessageDate = (TextView)this.findViewById(R.id.readMessageDate);
 		TextView readMessageSubject =(TextView)this.findViewById(R.id.readMessageSubject);
+
 		Button answerButton = (Button)this.findViewById(R.id.answerButton);
 
 		TextView readMessage =(TextView)this.findViewById(R.id.readMessage);
+		ImageView readMessageImage = (ImageView)this.findViewById(R.id.imageView1337);
+		readMessageImage.setImageResource(0);
+
 		readMessageSrcUser.setText(extras.get("sender").toString());
 		readMessageDate.setText(extras.get("date").toString());
 		readMessageSubject.setText(extras.get("subject").toString());
@@ -40,7 +47,7 @@ public class ReadMessageView extends Activity{
 		answerButton.setOnClickListener(new View.OnClickListener(){
 
 			public void onClick(View v) {
-				
+
 				String [] items = {extras.get("sender").toString(), "",""};
 				Intent nextIntent = new Intent(ReadMessageView.this, SendMessageView.class);
 				nextIntent.putExtra("message", items);
@@ -53,13 +60,13 @@ public class ReadMessageView extends Activity{
 
 
 
-
-		try{
+		if(extras.get("type") == MessageType.TEXT){
 			readMessage.setText("\n"+extras.get("data").toString()); //Om textbildmeddelande
+
 		}
-		catch(Exception e){
-			ImageView readMessageImage = (ImageView)this.findViewById(R.id.image); // Om bildmeddelande
-			readMessageImage.setImageBitmap((Bitmap)extras.get("image"));
+		else{
+			byte[] after = Base64.decode(extras.get("data").toString(), Base64.DEFAULT);
+			readMessageImage.setImageBitmap(BitmapFactory.decodeByteArray(after,0,after.length));
 		}
 	}
 

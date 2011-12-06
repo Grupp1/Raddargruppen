@@ -3,6 +3,7 @@ package raddar.models;
 import java.util.ArrayList;
 import java.util.Observable;
 
+import raddar.controllers.SessionController;
 import raddar.enums.MessageType;
 import android.content.ContentValues;
 import android.content.Context;
@@ -28,7 +29,7 @@ public class ClientDatabaseManager extends Observable {
 	private static final String DB_PATH = "/data/data/YOUR_PACKAGE/databases/";
 
 	// Table row constants
-	private final String[] TEXT_MESSAGE_TABLE_ROWS = new String[] { "msgId", "srcUser", "rDate", "subject", "mData" };
+	private final String[] TEXT_MESSAGE_TABLE_ROWS = new String[] { "msgId", "srcUser", "rDate", "subject", "mData","type" };
 	private final String[] CONTACT_TABLE_ROWS = new String[] { "userName","isGroup", "sipUsr", "sipPw" };
 	private final String[] SITUATION_TABLE_ROWS = new String[] { "title","description", "priority" };
 	private final String[] MAP_TABLE_ROWS = new String[] { "mapObject","class", "id" };
@@ -38,8 +39,7 @@ public class ClientDatabaseManager extends Observable {
 	private final String[] IMAGE_MESSAGE_TABLE_ROWS = new String [] {"msgId", "srcUser", "rDate", "subject", "filePath"};
 	private final String[] BUFFERED_MESSAGE_TABLE_ROWS = new String[] {"gsonString"};
 
-
-	/**********************************************************************
+	/*
 	 * CREATE OR OPEN A DATABASE SPECIFIC TO THE USER
 	 * @param context 
 	 * @param userName The name of the database is equal to the user name
@@ -85,11 +85,17 @@ public class ClientDatabaseManager extends Observable {
 	 * @param m The message that is to be added to the database
 	 */
 	public void addRow(Message m, boolean notify) {
+//		if(m.getType() == MessageType.IMAGE){
+//			setChanged();
+//			notifyObservers(m);
+//		}
+			
 		ContentValues values = new ContentValues();
 		values.put("srcUser", m.getSrcUser());
 		values.put("rDate", m.getDate());
 		values.put("subject", m.getSubject());
 		values.put("mData", m.getData());
+		values.put("type",m.getType().toString());
 		try {
 			db.insert("message", null, values);
 		} catch (Exception e) {
@@ -150,7 +156,7 @@ public class ClientDatabaseManager extends Observable {
 		values.put("destUser", m.getDestUser());
 		values.put("rDate", m.getDate());
 		values.put("subject", m.getSubject());
-		values.put("filePath", m.getFilePath());
+		values.put("filePath", "<no filepath needed>");
 		try {
 			db.insert("imageMessage", null, values);
 		} catch (Exception e) {
@@ -424,16 +430,19 @@ public class ClientDatabaseManager extends Observable {
 				do {
 					if (table.equals("message")) {
 						Message m = new TextMessage(MessageType.TEXT,
-								cursor.getString(1), DB_NAME);
+								cursor.getString(1), SessionController.getUser());
 						m.setSubject(cursor.getString(3));
 						m.setData(cursor.getString(4));
 						m.setDate(cursor.getString(2));
+						m.setType(MessageType.convert(cursor.getString(5)));
 						dataArrays.add(m);
 					} 
 					else if (table.equals("imageMessage")) {
-						Message m = new ImageMessage(MessageType.IMAGE,
+						Message m = new ImageMessage(cursor.getString(1), SessionController.getUser(),
+								 cursor.getString(3), cursor.getString(4));
+						/*Message m = new ImageMessage(MessageType.IMAGE,
 								cursor.getString(1), DB_NAME,
-								cursor.getString(4));
+								cursor.getString(4));*/ 
 						m.setSubject(cursor.getString(3));
 						dataArrays.add(m);
 					}
@@ -522,7 +531,8 @@ public class ClientDatabaseManager extends Observable {
 					"srcUser text, " +
 					"rDate integer, " +
 					"subject text, " +
-					"mData text)";
+					"mData text," +
+					"type text)";
 
 			String imageMessageTableQueryString = "create table imageMessage (" +
 					"msgId integer primary key autoincrement not null," +

@@ -9,9 +9,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import raddar.enums.MessageType;
-import raddar.models.NotificationMessage;
-
 import raddar.enums.OnlineOperation;
+import raddar.models.NotificationMessage;
 import raddar.models.OnlineUsersMessage;
 
 public class Associations {

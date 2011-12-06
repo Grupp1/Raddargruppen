@@ -10,6 +10,7 @@ import java.util.Observer;
 
 import raddar.enums.MapOperation;
 import raddar.enums.ResourceStatus;
+import raddar.gruppen.R;
 import raddar.models.GPSModel;
 import raddar.models.MapModel;
 import raddar.models.MapObject;
@@ -18,7 +19,6 @@ import raddar.models.MapObjectMessage;
 import raddar.models.You;
 import raddar.views.MainView;
 import raddar.views.MapUI;
-import raddar.gruppen.R;
 import android.location.Address;
 import android.location.Geocoder;
 import android.util.Log;

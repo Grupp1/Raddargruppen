@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import javax.net.ssl.SSLSocket;
+
 import raddar.enums.NotificationType;
 import raddar.models.MapObjectMessage;
 import raddar.models.Message;
@@ -25,7 +27,7 @@ public class LoginManager {
 	 * @param password Lösenordet
 	 * @param so Socket via kommunikationen sker
 	 */
-	public static void evaluateUser(String username, String password, Socket so) {
+	public static void evaluateUser(String username, String password, SSLSocket so) {
 		// Om användaren har loggat in med korrekt lösenord
 		PrintWriter pw;
 

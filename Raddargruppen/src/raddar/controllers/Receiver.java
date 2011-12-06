@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
+import javax.net.ssl.SSLSocket;
+
 import raddar.enums.MessageType;
 import raddar.models.Message;
 import android.content.Context;
@@ -17,12 +19,12 @@ public class Receiver implements Runnable {
 
 	private Thread thread = new Thread(this);
 	private BufferedReader in;
-	private Socket so;
+	private SSLSocket so;
 	private ReciveHandler rh;
 
 	private Context context;
 
-	public Receiver(Socket so, ReciveHandler rh, Context context) {
+	public Receiver(SSLSocket so, ReciveHandler rh, Context context) {
 		this.so = so;
 		this.rh = rh;
 		this.context = context;
@@ -42,7 +44,7 @@ public class Receiver implements Runnable {
 				Class c = Class.forName(test);
 				String temp = in.readLine();
 				m = gson.fromJson(temp, c);
-				if(!(m.getType() == MessageType.TEXT))
+				if(!(m.getType() == MessageType.TEXT||m.getType() == MessageType.IMAGE))
 					notify = false;
 				rh.newMessage(m.getType(), m,notify);
 
@@ -50,7 +52,7 @@ public class Receiver implements Runnable {
 			}
 			so.close();
 
-			if (m != null && notify) {
+			if (m != null && notify && (m.getType() == MessageType.TEXT||m.getType() == MessageType.IMAGE)) {
 				Intent intent = new Intent(context, NotificationService.class);
 				String[] message = new String[5];
 				message[0] = m.getSrcUser();

@@ -3,9 +3,12 @@ package raddar.controllers;
 
 import raddar.enums.ConnectionStatus;
 import raddar.gruppen.R;
+
+
 import raddar.models.Contact;
 import raddar.models.QoSManager;
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.view.Window;
 
@@ -93,7 +96,7 @@ public class SessionController extends Observable{
  * @param s app_name + / var man är
  */
 	public static void titleBar(Activity a, String s){
-		a.setTitle("Räddargruppen" + s);
+		a.setTitle(" Alice" + s);
 		View title = a.getWindow().findViewById(android.R.id.title);
 		View titleBar = (View) title.getParent();
 		if (connection.equals(ConnectionStatus.CONNECTED)){

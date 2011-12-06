@@ -106,7 +106,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 	private void sendMessages() {
 		String[] destUsers = (destUser.getText().toString() + ";").split(";");
 		Log.d("number of messages", destUsers.length + "");
-		for (int i = 0; i < destUsers.length; i++) {
+		for (int i = 0; i < destUsers.length-1; i++) {
 			Message m = new TextMessage(SessionController.getUser(), ""
 					+ destUsers[i]);
 			m.setSubject(subject.getText() + "");
