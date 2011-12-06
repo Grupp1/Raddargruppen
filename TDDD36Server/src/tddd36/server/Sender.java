@@ -100,7 +100,7 @@ public class Sender implements Runnable {
 			//Socket rSocket = new Socket(adr, port);
 			SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 			SSLSocket sslsocket = (SSLSocket) sslsocketfactory.createSocket(adr, port);
-			sslsocket.setEnabledCipherSuites(new String[] { "SSL_RSA_WITH_RC4_128_MD5", "SSL_DH_anon_WITH_RC4_128_MD5" });
+			sslsocket.setEnabledCipherSuites(new String[] { "SSL_DH_anon_WITH_RC4_128_MD5" });
 			SSLSession sslsession = sslsocket.getSession();
 			PrintWriter out = null;
 

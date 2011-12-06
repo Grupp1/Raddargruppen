@@ -65,7 +65,7 @@ public class LoginManager extends Observable {
 			int TIME_OUT = 5000;
 			sslsocket.connect(sockAddr, TIME_OUT);
 
-			sslsocket.setEnabledCipherSuites(new String[] { "SSL_RSA_WITH_RC4_128_MD5", "SSL_DH_anon_WITH_RC4_128_MD5" });
+			sslsocket.setEnabledCipherSuites(new String[] { "SSL_DH_anon_WITH_RC4_128_MD5" });
 			// Initiera handskakningen
 			SSLSession session = sslsocket.getSession();
 			
