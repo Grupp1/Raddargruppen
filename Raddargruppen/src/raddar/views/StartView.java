@@ -41,11 +41,12 @@ public class StartView extends Activity implements Observer {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
+		
 		String userHome = System.getProperty( "user.home" );
 		Log.d("hemma",userHome);
 		
-		System.setProperty("javax.net.ssl.keyStore","assets/kjellKey");
+		System.setProperty("javax.net.ssl.keyStore","assets/androidKey");
 	    System.setProperty("javax.net.ssl.keyStorePassword","android");
 		
 		

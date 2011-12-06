@@ -102,7 +102,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 
 		new SessionController(extras.get("user").toString()).addObserver(this);
 		//		new DatabaseController(this);
-		new ReciveHandler(this).addObserver(this);
+		//new ReciveHandler(this).addObserver(this);
 		
 //		try {
 //			new Sender(new RequestMessage(RequestType.MESSAGE));

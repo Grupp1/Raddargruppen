@@ -56,12 +56,15 @@ public class LoginManager extends Observable {
 			//nya ssl
 			SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 			SSLSocket sslsocket = (SSLSocket) sslsocketfactory.createSocket();
+			Log.d("ssl",sslsocket.getSupportedCipherSuites()[0]);
+			
 			InetAddress addr = InetAddress.getByName(ServerInfo.SERVER_IP);
 			int port = ServerInfo.SERVER_PORT;
 			SocketAddress sockAddr = new InetSocketAddress(addr, port);
 			int TIME_OUT = 5000;
 			sslsocket.connect(sockAddr, TIME_OUT);
 
+			sslsocket.setEnabledCipherSuites(new String[] { "SSL_RSA_WITH_RC4_128_MD5", "SSL_DH_anon_WITH_RC4_128_MD5" });
 			SSLSession session = sslsocket.getSession();
 			
 			/* Gamla anslutningen

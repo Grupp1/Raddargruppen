@@ -39,9 +39,20 @@ public class Server {
 			String userHome = System.getProperty( "user.home" );
             System.out.println(userHome);
 			
-            
+            System.setProperty("javax.net.ssl.keyStore","assets/serverKeystore.key");
+    	    System.setProperty("javax.net.ssl.keyStorePassword","android");
+    	    System.setProperty("javax.net.ssl.trustStore","assets/serverTrustStore");
+    	    System.setProperty("javax.net.ssl.trustStorePassword","android");
+    	    
+    	    
             SSLServerSocketFactory sslserversocketfactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
             SSLServerSocket sslserversocket = (SSLServerSocket) sslserversocketfactory.createServerSocket(port);
+            
+            sslserversocket.setEnabledCipherSuites(new String[] { "SSL_RSA_WITH_RC4_128_MD5", "SSL_DH_anon_WITH_RC4_128_MD5" });
+            String[] suites = sslserversocket.getSupportedCipherSuites();
+            
+            for (int i=0; i<suites.length; i++)
+            	System.out.println(suites[i]);
             
             System.out.println("Listening on port: " + port + "... ");
 
