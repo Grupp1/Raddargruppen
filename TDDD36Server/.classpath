@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-<<<<<<< HEAD
-	<classpathentry combineaccessrules="false" kind="src" path="/Raddargruppen"/>
-	<classpathentry kind="lib" path="//neptunus.helix.ida.liu.se/mikbe953/Downloads/mysql-connector-java-5.1.18/mysql-connector-java-5.1.18-bin.jar"/>
-	<classpathentry kind="lib" path="//neptunus.helix.ida.liu.se/mikbe953/Downloads/google-gson-1.7.1/gson-1.7.1.jar"/>
-	<classpathentry kind="lib" path="//neptunus.helix.ida.liu.se/mikbe953/Downloads/google-gson-1.7.1/gson-1.7.1-javadoc.jar"/>
-	<classpathentry kind="lib" path="//neptunus.helix.ida.liu.se/mikbe953/Downloads/google-gson-1.7.1/gson-1.7.1-sources.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-=======
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/tddd36"/>
+	<classpathentry kind="lib" path="Z:/Downloads/mysql-connector-java-3.1.14/mysql-connector-java-3.1.14-bin.jar"/>
 	<classpathentry kind="lib" path="Z:/Downloads/google-gson-1.7.1/gson-1.7.1.jar"/>
 	<classpathentry kind="lib" path="Z:/Downloads/google-gson-1.7.1/gson-1.7.1-javadoc.jar"/>
 	<classpathentry kind="lib" path="Z:/Downloads/google-gson-1.7.1/gson-1.7.1-sources.jar"/>
-	<classpathentry kind="lib" path="Z:/Downloads/mysql-connector-java-3.1.14/mysql-connector-java-3.1.14-bin.jar"/>
->>>>>>> 8eddda0bff5549be572bf6f489772e4e40d627f1
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

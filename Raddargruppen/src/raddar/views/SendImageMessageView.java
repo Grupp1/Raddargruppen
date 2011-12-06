@@ -1,14 +1,15 @@
 package raddar.views;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.Socket;
 
-import raddar.controllers.DatabaseController;
-import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
-import raddar.enums.MessageType;
+import raddar.enums.ServerInfo;
 import raddar.gruppen.R;
-import raddar.models.ImageMessage;
 import raddar.models.QoSManager;
 import android.app.Activity;
 import android.content.Intent;
@@ -34,6 +35,7 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 	private Button choiceButton;
 	private ImageView preview;
 	private String filePath;
+	private Bitmap yourSelectedImage;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -47,9 +49,10 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 		sendButton.setOnClickListener(this);
 		destUser.setOnClickListener(this);
 		destUser.setFocusable(false);
+		
+		
 
 		try {
-
 			Bundle extras = getIntent().getExtras();
 			String[] items = (String[]) extras.getCharSequenceArray("message");
 
@@ -82,7 +85,7 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 			startActivityForResult(Intent.createChooser(intent,
 					"Select Picture"), SELECT_PICTURE);
 			//öppnar galleriet där man kan välja bild att bifoga
-
+			
 		}
 		if (v.equals(sendButton)) {
 			//Undersöker om alla fält är skrivna i
@@ -103,7 +106,14 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 						}
 				 */
 			}
-			sendMessages();
+			/*
+			 * Fixa nätverkskommunikationen i en separat tråd...
+			 */
+			new Thread(new Runnable() {
+				public void run() {
+					sendMessages();
+				}
+			}).start();
 
 			Toast.makeText(getApplicationContext(), "Meddelande till "+destUser.getText().
 					toString().trim(),
@@ -116,25 +126,56 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 	}
 
 	private void sendMessages(){
-		String[] destUsers = (destUser.getText().toString()+";").split(";");
-		Log.d("number of messages",destUsers.length+"");
-		for(int i = 0; i < destUsers.length;i++){
-
-			ImageMessage m = new ImageMessage(MessageType.IMAGE, SessionController.getUser(), ""
-					+ destUsers[i], filePath);
-			m.setSubject(subject.getText() + "");
-			m.setFilePath(filePath);
+		String[] destUsers = destUser.getText().toString().split(";");
+		String sub = subject.getText().toString();
+		String from = SessionController.getUser();
+		Socket so = null;
+		
+		//for (int j=0; j < 20; j++) {
+		for(int i = 0; i < destUsers.length-1; i++){
 			try {
-				new Sender(m, InetAddress.getByName(raddar.enums.ServerInfo.SERVER_IP), raddar.enums.ServerInfo.SERVER_PORT);
-				DatabaseController.db.addImageMessageRow(m);
-				//	DatabaseController.db.addOutboxRow(m);
-				//	DatabaseController.db.deleteDraftRow(m);
+				so = new Socket(ServerInfo.SERVER_IP, ServerInfo.SERVER_IMAGE_PORT);
+				
+				File file = new File(filePath);
+				Log.d("SendImage...", "File size: " + file.length());
+				String hashcode = "" + file.hashCode();
+				Log.d("SendImage...", "Hashcode: " + hashcode);
+				byte[] b = new byte[(int) file.length()];
+				FileInputStream fis = new FileInputStream(file);
+				BufferedInputStream bis = new BufferedInputStream(fis);
 
-			} catch (UnknownHostException e) {
-				//	DatabaseController.db.addDraftRow(m);
+				BufferedOutputStream bos = new BufferedOutputStream(
+						so.getOutputStream());
+				bos.write(stringToBytes(from));
+				bos.flush();
+				bos.write(stringToBytes(destUsers[i]));
+				bos.flush();
+				bos.write(stringToBytes(sub));
+				bos.flush();
+				bos.write(stringToBytes(hashcode));
+				bos.flush();
+				bis.read(b);
+				bos.write(b);
+				
+
+				bos.flush();
+				bos.close();
+			} catch (IOException e) {
+				Log.d("SendImageMessageView.java", e.toString());
+			} finally {
+				try { so.close(); } catch (IOException e) {}
 			}
 		}
+		//}
 	}
+	
+	private byte[] stringToBytes(String str) {
+		str += "****************************************";
+		str = str.substring(0, 40);
+		return str.getBytes();
+	}
+	
+	
 	/**
 	 * Anropas när man valt en bild från galleriet eller valt en kontakt
 	 * @param requestCode 
@@ -156,11 +197,10 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 				filePath = cursor.getString(columnIndex);
 				cursor.close();
 
-				Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
+				yourSelectedImage = BitmapFactory.decodeFile(filePath);
 				preview.setImageBitmap(yourSelectedImage);
 				//bilden som ska skickas med meddelandet är yourSelectedImage
-
-
+				break;
 			case 0:
 				if(requestCode == 0){
 					Bundle extras = data.getExtras();
@@ -170,11 +210,9 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 						temp += destUsers[i]+"; ";
 					destUser.setText(temp);	
 				}
+				break;
 			}
-
-
 		}
-
 	}
 
 	@Override
@@ -183,8 +221,6 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
 	}
-
-
 } 
 
 

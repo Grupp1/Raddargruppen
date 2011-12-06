@@ -51,7 +51,8 @@ public class QoSManager {
 		lp.screenBrightness = 0.4f;
 		current.getWindow().setAttributes(lp);
 		
-		MainView.theOne.enableButtons();
+		if (current == MainView.theOne)
+			MainView.theOne.enableButtons();
 	}
 
 	/**
@@ -62,7 +63,8 @@ public class QoSManager {
 		lp.screenBrightness = 0.05f;
 		current.getWindow().setAttributes(lp);
 		
-		MainView.theOne.disableButtons();
+		if (current == MainView.theOne)
+			MainView.theOne.disableButtons();
 	}
 	
 	private static void displayToastIfChanged(int l) {

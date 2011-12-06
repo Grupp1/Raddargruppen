@@ -55,7 +55,6 @@ public class Sender implements Runnable {
 				send = message.getClass().getName()+"\r\n";
 				send +=	gson.toJson(message);	
 			}
-
 			Log.d("Send",send);
 
 			PrintWriter out = new PrintWriter(so.getOutputStream(), true);

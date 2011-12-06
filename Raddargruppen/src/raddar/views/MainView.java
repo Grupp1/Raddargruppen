@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -75,6 +76,8 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		setContentView(R.layout.main);
 
 		theOne = this;
+		
+		Log.e("HEJ", Environment.getExternalStorageDirectory().toString());
 		
 		String level = BatteryManager.EXTRA_LEVEL;
 		Log.d("EXTRA_LEVEL", level);
@@ -281,10 +284,12 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	public void enableButtons() {
 		callButton.setEnabled(true);
 		serviceButton.setEnabled(true);
+		contactButton.setEnabled(true);
 	}
 	
 	public void disableButtons() {
 		callButton.setEnabled(false);
 		serviceButton.setEnabled(false);
+		contactButton.setEnabled(false);
 	}
 }

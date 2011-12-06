@@ -8,7 +8,6 @@ import raddar.enums.ConnectionStatus;
 import raddar.enums.LoginResponse;
 import raddar.gruppen.R;
 import raddar.models.LoginManager;
-import raddar.models.QoSManager;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -46,9 +45,10 @@ public class StartView extends Activity implements Observer {
 
 		user = (EditText) this.findViewById(R.id.usertext1);
 		password = (EditText) this.findViewById(R.id.passwordtext1);
+		
 		// Endast för lättare testning
-		user.setText("danan612");
-		password.setText("raddar");
+		user.setText("Borche");
+		password.setText("hej123");
 
 		final LoginManager lm = new LoginManager();
 		lm.addObserver(this);

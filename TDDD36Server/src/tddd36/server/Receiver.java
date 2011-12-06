@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import raddar.enums.NotificationType;
+import raddar.models.ImageMessage;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
 import raddar.models.RequestMessage;
@@ -173,18 +174,13 @@ public class Receiver implements Runnable {
 		}
 
 	}
-	/*
-	 * Denna funktionen används för att läsa in en rad och filtrera bort attributtaggen
-	 * 'Content-Type: text/plain' filtreras till exempel till text/plain
-	 */
-
-	private String getAttrValue(String str) {
-		StringBuilder sb = new StringBuilder("");
-		String[] parts = str.split(" ");
-		for (int i = 1; i < parts.length; i++) 
-			sb.append(parts[i]);
-
-		return sb.toString();
-	}
-
 }
+
+
+
+
+
+
+
+
+
