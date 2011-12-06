@@ -76,7 +76,7 @@ public class SendSOSView extends Activity {
 			new Sender(sm, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
 			SOS_ALARM_IS_ACTIVE = true;
 		} catch (UnknownHostException e) {
-			Log.d("BORCHE", "startAlarm() is SendSOSView.java");
+			Log.d("SendSOS", "startAlarm() is SendSOSView.java");
 		}
 	}
 	
@@ -89,7 +89,7 @@ public class SendSOSView extends Activity {
 			new Sender(sm, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
 			SOS_ALARM_IS_ACTIVE = false;
 		} catch (UnknownHostException e) {
-			Log.d("BORCHE", "cancelAlarm() is SendSOSView.java");
+			Log.d("SendSOS", "cancelAlarm() is SendSOSView.java");
 		}
 	}
 	

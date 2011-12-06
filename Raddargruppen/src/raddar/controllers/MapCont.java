@@ -36,11 +36,6 @@ public class MapCont implements Observer, Runnable{
 	public boolean areYouFind = false;
 	private You you;
 	private Geocoder geocoder;
-	/**
-	 * En timer som notifierar controllern att kolla om anslutning till servern finns
-	 */
-	//private ConnectionTimer timer;
-	//private int updateTime = 5000;
 
 	/*
 	 * Skickar vidare operationer i en ny tråd till MapModel 
@@ -54,8 +49,6 @@ public class MapCont implements Observer, Runnable{
 	public void declareMapUI(MapUI mapUI){
 		this.mapUI = mapUI;
 		mapModel = new MapModel(mapUI);
-
-		//mapModel.addObserver(this);
 		geocoder = new Geocoder(mapUI.getBaseContext(), Locale.getDefault());
 
 		if (!thread.isAlive()){
@@ -96,12 +89,11 @@ public class MapCont implements Observer, Runnable{
 	}
 
 	public void updateObject(MapObject o,boolean sendToServer){
-		Log.d("UpdateObject","MapCont"+o.getTitle());
+		Log.d("UpdateObject","MapCont: "+o.getTitle());
 		if(mapUI!=null){
 			mapUI.drawNewMapObject(o);
 			mapModel.updateObject(o);
 			o.updateData(geocoder);
-			Log.d("HEEEEEEEEEEEEEEEEEEEEEEEEEJ", "HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEJ");
 		}
 		if(sendToServer){
 			Gson gson = new Gson();
@@ -133,6 +125,15 @@ public class MapCont implements Observer, Runnable{
 		}
 	}
 
+	public boolean animateTo(GeoPoint point){
+		try{
+			mapUI.controller.animateTo(point);
+			return true;
+		}catch(NullPointerException ne){
+			return false;
+		}
+	}
+	
 	public void removeObject(MapObject o,boolean notify){
 		Log.d("RemoveObject", "MapCont:"+o.getTitle());
 		if(mapModel != null){
