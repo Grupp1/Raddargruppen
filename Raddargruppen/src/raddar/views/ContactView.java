@@ -1,7 +1,12 @@
 package raddar.views;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Observable;
+import java.util.Observer;
 
 import raddar.controllers.DatabaseController;
+import raddar.controllers.SessionController;
 import raddar.gruppen.R;
 import raddar.models.Contact;
 import raddar.models.QoSManager;
@@ -11,6 +16,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -20,8 +26,8 @@ import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class ContactView extends ListActivity implements OnClickListener{
-	
+public class ContactView extends ListActivity implements OnClickListener, Observer{
+
 	private ContactAdapter ia;
 	private ArrayList<Contact> contacts;
 	private ArrayList selected;
@@ -29,10 +35,19 @@ public class ContactView extends ListActivity implements OnClickListener{
 
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
+		SessionController.titleBar(this, " - Kontaktlista");
+		DatabaseController.db.addObserver(this);
 		contacts = DatabaseController.db.getAllRowsAsArrays("contact");
+		Collections.sort(contacts,new Comparator<Contact>(){
+			public int compare(Contact object1, Contact object2) {
+				return object1.getUserName().compareToIgnoreCase(object2.getUserName());
+			}
+
+		});
 		selected = new ArrayList<String>();
-	//	for(int i = 0;i <10;i++)
-	//		contacts.add(new Contact("Peter"+i, false));
+		//	for(int i = 0;i <10;i++)
+		//		contacts.add(new Contact("Peter"+i, false));
 		ia = new ContactAdapter(this, R.layout.contact,contacts,selected);
 
 		ListView lv = getListView();
@@ -98,11 +113,27 @@ public class ContactView extends ListActivity implements OnClickListener{
 			return v;
 		}
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
 	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		DatabaseController.db.deleteObserver(this);
+	}
+	public void update(Observable observable, final Object data) {
+		if(data instanceof Contact){
+			runOnUiThread(new Runnable(){
+				public void run() {
+					contacts.add((Contact)data);
+					ia.notifyDataSetChanged();					
+				}
+			});
+		}
+	}
 }
+

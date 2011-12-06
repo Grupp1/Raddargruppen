@@ -1,11 +1,16 @@
 package raddar.views;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Observable;
+import java.util.Observer;
 
 import raddar.controllers.DatabaseController;
+import raddar.controllers.SessionController;
 import raddar.gruppen.R;
 import raddar.models.Contact;
-import android.app.AlertDialog;
+import raddar.models.QoSManager;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -14,18 +19,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-public class CallContactListView extends ListActivity{
+public class CallContactListView extends ListActivity implements Observer{
 
 	private static final int RESULT_FIRST_USER_EDIT = 5;
 	private ContactAdapter ia;
@@ -37,15 +39,24 @@ public class CallContactListView extends ListActivity{
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
+		SessionController.titleBar(this, " - Samtal");
 
-		contacts = DatabaseController.db.getAllRowsAsArrays("contact");
-		
+		//contacts = DatabaseController.db.getAllRowsAsArrays("contact");
+		contacts = SessionController.getOnlineContacts();
+		DatabaseController.db.addObserver(this);
+		/*Collections.sort(contacts,new Comparator<Contact>(){
+			public int compare(Contact object1, Contact object2) {
+				return object1.getUserName().compareToIgnoreCase(object2.getUserName());
+			}
+
+		});*/
 		ia = new ContactAdapter(this, R.layout.call_contact_list, contacts);
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
 		setListAdapter(ia);
 		lv.setOnItemClickListener(new OnItemClickListener() {
-			@Override
+
 			/**
 			 * lv är satt som en onItemClickListener
 			 * Snabbt klick på en kontakt, ringer direkt
@@ -54,6 +65,7 @@ public class CallContactListView extends ListActivity{
 				Intent nextIntent = new Intent(CallContactListView.this,CallView.class);
 				nextIntent.putExtra("sip","sip:" + contacts.get(position).getUserName()   
 						+ "@ekiga.net" );
+				nextIntent.putExtra("dstUser", contacts.get(position).getUserName());
 				startActivityForResult(nextIntent,9);
 			}
 		});
@@ -70,13 +82,15 @@ public class CallContactListView extends ListActivity{
 		}
 
 		public View getView(int pos, View convertView, ViewGroup parent) {
+			//TODO Programmet ritar nu ut alla kontaktr utan att fylla i namnen. Det ska inte ens rita ut dem!
+			
 			View v = convertView;
 			final Contact c = contacts.get(pos);
 			if (v == null) {
 				LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				v = vi.inflate(R.layout.call_contact_list, null);
 			}
-			if (c != null) {
+			if ((c != null) /* && SessionController.isOnline(c.getUserName())*/) {
 				TextView tt = (TextView) v.findViewById(R.id.label);
 				tt.setText(c.getUserName());
 			}
@@ -85,10 +99,31 @@ public class CallContactListView extends ListActivity{
 		}
 
 
+
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		DatabaseController.db.deleteObserver(this);
 	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
+	}
 
-
+	public void update(Observable observable, final Object data) {
+		if(data instanceof Contact){
+			runOnUiThread(new Runnable(){
+				public void run() {
+					contacts.add((Contact)data);
+					ia.notifyDataSetChanged();					
+				}
+			});
+		}
+	}
 }
 
 

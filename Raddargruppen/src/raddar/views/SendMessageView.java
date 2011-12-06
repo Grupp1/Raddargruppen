@@ -2,6 +2,8 @@ package raddar.views;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import raddar.controllers.DatabaseController;
 import raddar.controllers.Sender;
@@ -11,12 +13,11 @@ import raddar.models.Message;
 import raddar.models.QoSManager;
 import raddar.models.TextMessage;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,44 +39,61 @@ public class SendMessageView extends Activity implements OnClickListener {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.send_message);
-		destUser = (EditText) this.findViewById(R.id.destUser);
-		subject = (EditText) this.findViewById(R.id.subject);
-		messageData = (EditText) this.findViewById(R.id.messageData);
-		sendButton = (Button) this.findViewById(R.id.sendButton);
-		sendButton.setOnClickListener(this);
-		destUser.setOnClickListener(this);
-		destUser.setFocusable(false);
+		SessionController.titleBar(this, " - Nytt textmeddelande");
+		
+		try {
+
+			Bundle extras = getIntent().getExtras();
+			String[] items = (String[]) extras.getCharSequenceArray("message");
+
+			destUser = (EditText) this.findViewById(R.id.destUser);
+			subject = (EditText) this.findViewById(R.id.subject);
+			messageData = (EditText) this.findViewById(R.id.messageData);
+
+			destUser.setText(items[0].toString());
+			subject.setText(items[1].toString());
+			messageData.setText(items[2].toString());
+			sendButton = (Button) this.findViewById(R.id.sendButton);
+			sendButton.setOnClickListener(this);
+			destUser.setOnClickListener(this);
+			destUser.setFocusable(false);
+
+		} catch (Exception e) {
+
+			Log.d("Ej outbox", e.toString());
+
+			try{
+				Bundle extras = getIntent().getExtras();
+				String destMapUser = extras.getString("map");
+
+				Log.d("Map", e.toString());
+				destUser = (EditText) this.findViewById(R.id.destUser);
+				subject = (EditText) this.findViewById(R.id.subject);
+				messageData = (EditText) this.findViewById(R.id.messageData);
+
+				destUser.setText(destMapUser);
+
+				sendButton = (Button) this.findViewById(R.id.sendButton);
+				sendButton.setOnClickListener(this);
+				destUser.setOnClickListener(this);
+				destUser.setFocusable(false);
 
 
-				try {
+			} catch (Exception c){
 
-					Bundle extras = getIntent().getExtras();
-					String[] items = (String[]) extras.getCharSequenceArray("message");
+				Log.d("SendMessageView", c.toString());
+				destUser = (EditText) this.findViewById(R.id.destUser);
+				subject = (EditText) this.findViewById(R.id.subject);
+				messageData = (EditText) this.findViewById(R.id.messageData);
+				sendButton = (Button) this.findViewById(R.id.sendButton);
+				sendButton.setOnClickListener(this);
+				destUser.setOnClickListener(this);
+				destUser.setFocusable(false);
 
-					destUser = (EditText) this.findViewById(R.id.destUser);
-					subject = (EditText) this.findViewById(R.id.subject);
-					messageData = (EditText) this.findViewById(R.id.messageData);
-
-					destUser.setText(items[0].toString());
-					subject.setText(items[1].toString());
-					messageData.setText(items[2].toString());
-					sendButton = (Button) this.findViewById(R.id.sendButton);
-					sendButton.setOnClickListener(this);
-					destUser.setOnClickListener(this);
-
-				} catch (Exception e) {
-
-					Log.d("SendMessageView", e.toString());
-					destUser = (EditText) this.findViewById(R.id.destUser);
-					subject = (EditText) this.findViewById(R.id.subject);
-					messageData = (EditText) this.findViewById(R.id.messageData);
-					sendButton = (Button) this.findViewById(R.id.sendButton);
-					sendButton.setOnClickListener(this);
-					destUser.setOnClickListener(this);
-
-				}
+			}
+		}
 	}
 
 	public void onClick(View v) {
@@ -92,6 +110,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 				return;
 			}
 			sendMessages();
+
 			Toast.makeText(getApplicationContext(), "Meddelande till "+destUser.getText().
 					toString().trim(),
 					Toast.LENGTH_SHORT).show();
@@ -100,7 +119,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 			Intent nextIntent = new Intent(SendMessageView.this, ContactView.class);
 			startActivityForResult(nextIntent,0);
 
-		} else{
+		}else{
 			onBackPressed();
 			Intent nextIntent = new Intent(SendMessageView.this,
 					ContactView.class);
@@ -118,6 +137,8 @@ public class SendMessageView extends Activity implements OnClickListener {
 					+ destUsers[i]);
 			m.setSubject(subject.getText() + "");
 			m.setData(messageData.getText() + "");
+			m.setDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+			Log.d("Datum sendMessages", m.getDate().toString());
 			try {
 				new Sender(m,
 						InetAddress
@@ -172,7 +193,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 
 
 
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();

@@ -1,8 +1,11 @@
 package raddar.views;
 
+import raddar.controllers.SessionController;
 import raddar.gruppen.R;
+import raddar.models.QoSManager;
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.Window;
 import android.widget.TextView;
 
 /**
@@ -16,8 +19,9 @@ public class SentMessageView extends Activity{
 	public void onCreate(Bundle savedInstanceState){
 
 		super.onCreate(savedInstanceState);
-
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.sent_message);
+		SessionController.titleBar(this, " - Utkorg");
 		Bundle extras = getIntent().getExtras();
 		TextView sentMessageDestUser = (TextView)this.findViewById(R.id.sentMessageDestUser);
 		TextView sentMessageDate = (TextView)this.findViewById(R.id.sentMessageDate);
@@ -29,5 +33,10 @@ public class SentMessageView extends Activity{
 		sentMessageSubject.setText(extras.get("subject").toString());
 		sentMessage.setText("\n"+extras.get("data").toString());
 	}
-
+	@Override
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
+	}
 }

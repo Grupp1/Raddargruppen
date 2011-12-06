@@ -5,11 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
+import javax.net.ssl.SSLSocket;
+
 import raddar.enums.MessageType;
-import raddar.enums.SOSType;
-import raddar.models.MapObject;
 import raddar.models.Message;
-import raddar.models.SOSMessage;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -20,12 +19,12 @@ public class Receiver implements Runnable {
 
 	private Thread thread = new Thread(this);
 	private BufferedReader in;
-	private Socket so;
+	private SSLSocket so;
 	private ReciveHandler rh;
 
 	private Context context;
 
-	public Receiver(Socket so, ReciveHandler rh, Context context) {
+	public Receiver(SSLSocket so, ReciveHandler rh, Context context) {
 		this.so = so;
 		this.rh = rh;
 		this.context = context;
@@ -39,12 +38,13 @@ public class Receiver implements Runnable {
 			String test = in.readLine();
 			boolean notify = true;
 			Message m = null;
+			Gson gson = new Gson();
 			while (test != null) {
+				Log.d("RECIVEER",test);
 				Class c = Class.forName(test);
 				String temp = in.readLine();
-				m = new Gson().fromJson(temp, c);
-				Log.d("RECEIVE",m.toString());
-				if(m.getType() == MessageType.REQUEST||(m.getType() == MessageType.MAPOBJECT))
+				m = gson.fromJson(temp, c);
+				if(!(m.getType() == MessageType.TEXT))
 					notify = false;
 				rh.newMessage(m.getType(), m,notify);
 
@@ -54,10 +54,17 @@ public class Receiver implements Runnable {
 
 			if (m != null && notify) {
 				Intent intent = new Intent(context, NotificationService.class);
-				context.startService(intent.putExtra("msg", m.getSubject()));
+				String[] message = new String[5];
+				message[0] = m.getSrcUser();
+				message[1] = m.getSubject();
+				message[2] = m.getData();
+				message[3] = m.getDate();
+				message[4] = m.getType().toString();
+				context.startService(intent.putExtra("msg", message));
 			}
 		} catch (IOException ie) {
-			ie.printStackTrace();
+			Log.d("Receiver", "IOException");
+			//ie.printStackTrace();
 		} catch (ArrayIndexOutOfBoundsException e) {
 			Log.d("Undersök", "ArrayIndexOutOfBounds i receiver");
 		} catch (ClassNotFoundException e) {

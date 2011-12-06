@@ -3,9 +3,11 @@ package raddar.views;
 import java.util.ArrayList;
 
 import raddar.controllers.DatabaseController;
+import raddar.controllers.SessionController;
 import raddar.enums.MessageType;
 import raddar.gruppen.R;
 import raddar.models.Message;
+import raddar.models.QoSManager;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -31,11 +34,10 @@ public class DraftView extends ListActivity {
 	private DraftAdapter ia;
 	private ArrayList<Message> drafts;
 	
-	
-	
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
+		SessionController.titleBar(this, " - Utkast");
 		drafts = DatabaseController.db.getAllRowsAsArrays("drafts");
 
 		ia = new DraftAdapter(this, R.layout.row,drafts);
@@ -53,8 +55,6 @@ public class DraftView extends ListActivity {
 				nextIntent.putExtra("date", drafts.get(position).getDate());
 				nextIntent.putExtra("type", drafts.get(position).getType());
 				
-				
-				
 				Message m = drafts.get(position);
 				String [] items = {m.getDestUser().toString(), m.getSubject().toString(), m.getData().toString()};
 				for(int i=0; i<items.length; i++){
@@ -62,7 +62,6 @@ public class DraftView extends ListActivity {
 				}
 				nextIntent.putExtra("message", items);
 				startActivity(nextIntent);
-
 			}
 		});
 	}
@@ -94,7 +93,7 @@ public class DraftView extends ListActivity {
 				TextView bt = (TextView) v.findViewById(R.id.bottomtext);
 				ImageView iv = (ImageView) v.findViewById(R.id.icon);
 				if(m.getType() == MessageType.TEXT)
-					iv.setImageResource(R.drawable.magnus);
+					iv.setImageResource(R.drawable.wordwriter);
 				if (tt != null) 
 					tt.setText("Mottagare: "+m.getDestUser());                            
 				if(bt != null)
@@ -102,6 +101,11 @@ public class DraftView extends ListActivity {
 			}			
 			return v;
 		}
+	}@Override
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
 	}
 }
 

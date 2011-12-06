@@ -1,22 +1,36 @@
 package raddar.controllers;
 
 import java.io.IOException;
-import java.net.ServerSocket;
+import java.net.UnknownHostException;
 import java.util.Observable;
+
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.SSLSocket;
 
 import raddar.enums.ConnectionStatus;
 import raddar.enums.MessageType;
+import raddar.enums.ResourceStatus;
 import raddar.enums.ServerInfo;
+import raddar.gruppen.R;
 import raddar.models.ContactMessage;
 import raddar.models.ImageMessage;
 import raddar.models.MapObject;
 import raddar.models.MapObjectMessage;
 import raddar.models.Message;
+import raddar.models.NotificationMessage;
+import raddar.models.OnlineUsersMessage;
+import raddar.models.QoSManager;
+import raddar.models.SOSMessage;
+import raddar.models.You;
 import raddar.views.MainView;
-import android.app.Activity;
+import raddar.views.MapUI;
+import raddar.views.StartView;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
+import android.content.Intent;
 import android.util.Log;
 
 public class ReciveHandler extends Observable implements Runnable {
@@ -36,12 +50,15 @@ public class ReciveHandler extends Observable implements Runnable {
 	public void run() {
 		try {
 			// Skapa en ServerSocket för att lyssna på inkommande meddelanden
-			ServerSocket so = new ServerSocket(ServerInfo.SERVER_PORT);
-
+			//ServerSocket so = new ServerSocket(ServerInfo.SERVER_PORT);
+			SSLServerSocketFactory sslserversocketfactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+			SSLServerSocket sslserversocket = (SSLServerSocket) sslserversocketfactory.createServerSocket(ServerInfo.SERVER_PORT);
+			sslserversocket.setEnabledCipherSuites(new String[] { "SSL_RSA_WITH_RC4_128_MD5", "SSL_DH_anon_WITH_RC4_128_MD5" });
+			
 			while (true) {
 				// När ett inkommande meddelande tas emot skapa en ny Receiver
 				// som körs i en egen tråd
-				new Receiver(so.accept(), this, context);
+				new Receiver((SSLSocket) sslserversocket.accept(), this, context);
 				notifyObservers(ConnectionStatus.CONNECTED);
 			}
 		} catch (IOException ie) {
@@ -60,12 +77,31 @@ public class ReciveHandler extends Observable implements Runnable {
 	 * @param notify true if we should notify the user
 	 */
 	public void newMessage(MessageType mt, final Message m, boolean notify) {
-		if (mt == MessageType.TEXT) {
+		if (mt == MessageType.PROBE){
+			Log.d("PROBE", "POBE");
+			NotificationMessage mess = new NotificationMessage(SessionController.getUser(), null);
+			mess.setType(MessageType.PROBE);
+			try {
+				new Sender(mess);
+			} catch (UnknownHostException e) {
+				Log.d("Probe Sender", "Kunde inte svara servern");
+			}
+			// Hur ska klienten tolka att vi inte har kontakt med servern?
+			// notify(ConnectionStatus.DISSCONNECT);
+		}
+		else if (mt == MessageType.TEXT) {
 			DatabaseController.db.addRow(m, notify);
+
 		} else if (mt == MessageType.SOS) {
-			((Activity) context).runOnUiThread(new Runnable() {
+			//((Activity) context).runOnUiThread(new Runnable() {
+			QoSManager.getCurrentActivity().runOnUiThread(new Runnable() {
 				public void run() {
-					AlertDialog.Builder alert = new AlertDialog.Builder(context);
+					You you = new You(((SOSMessage)m).getPoint(), m.getSrcUser()+" positition",m.getData(),R.drawable.circle_green,
+							ResourceStatus.BUSY);
+					Log.e("NEW SOS",((SOSMessage)m).getPoint()+"");
+					Log.e("NEW SOS",you.getPoint()+"");
+					MainView.mapCont.updateObject(you, false);
+					AlertDialog.Builder alert = new AlertDialog.Builder(QoSManager.getCurrentActivity());
 
 					alert.setTitle("SOS");
 					alert.setMessage(m.getData());
@@ -74,11 +110,16 @@ public class ReciveHandler extends Observable implements Runnable {
 							new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,
 								int whichButton) {
-							// Gå till kartan
+
+							// Gå till kartan¨
+							Intent intent = new Intent(QoSManager.getCurrentActivity(),MapUI.class);
+							intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+							QoSManager.getCurrentActivity().startActivity(intent);
+							((SOSMessage)m).getPoint();
 						}
 					});
 
-					alert.setNegativeButton("Gör inget",
+					alert.setNegativeButton("OK",
 							new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,
 								int whichButton) {
@@ -97,16 +138,56 @@ public class ReciveHandler extends Observable implements Runnable {
 
 		}else if (mt == MessageType.MAPOBJECT) {
 			MapObject mo = ((MapObjectMessage)m).toMapObject();
-			//			if(MainView.mapCont.getMapUI() != null){
-			//				Log.d("Här", "Här");
-			MainView.mapCont.add(mo,false);
-			//			}else{
-			//				Log.d("Där", "Där");
-			//			DatabaseController.db.addRow(mo,false);
-			//			}
+			switch(((MapObjectMessage)m).getMapOperation()){
+			case ADD:
+				MainView.mapCont.add(mo,false);
+				break;
+			case REMOVE:
+				MainView.mapCont.removeObject(mo, false);
+				break;
+			case UPDATE:
+				MainView.mapCont.updateObject(mo,false);
+				break;
+			default:
+
+			}
 		}
 		else if(mt == MessageType.CONTACT){
 			DatabaseController.db.addRow(((ContactMessage)m).toContact());
+		}
+		else if(mt == MessageType.ONLINE_USERS){
+			switch(((OnlineUsersMessage) m).getOnlineOperation()){
+			case ADD:
+				SessionController.addOnlineUser(((OnlineUsersMessage)m).getUserName());
+				Log.d("ONLINE_USER TRUE", ((OnlineUsersMessage)m).getUserName());
+				break;
+			case REMOVE:
+				SessionController.removeOnlineUser(((OnlineUsersMessage)m).getUserName());
+				Log.d("ONLINE_USER FALSE", ((OnlineUsersMessage)m).getUserName());
+
+				break;
+			default:
+				break;
+			}
+		}
+		else if(mt == MessageType.NOTIFICATION){
+			Log.e("LOGOUT","OTHER USER HAS LOGGED IN ON ANOTHER DEVICE");
+			QoSManager.getCurrentActivity().runOnUiThread(new Runnable() {
+				public void run() {
+					AlertDialog.Builder alert = new AlertDialog.Builder(QoSManager.getCurrentActivity());
+
+					alert.setTitle("Forcerad utloggning");
+					alert.setMessage(m.getData());
+					alert.setOnCancelListener(new OnCancelListener(){
+						public void onCancel(DialogInterface dialog) {
+							Intent intent = new Intent(QoSManager.getCurrentActivity(),StartView.class);
+							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+							QoSManager.getCurrentActivity().startActivity(intent);
+						}
+					});
+					alert.show();
+				}
+			});
 		}
 
 	}

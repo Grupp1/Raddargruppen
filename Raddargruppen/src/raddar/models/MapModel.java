@@ -1,30 +1,28 @@
 package raddar.models;
 
 import java.util.List;
-import java.util.Locale;
-import java.util.Observable;
 
-import raddar.controllers.MapCont;
+import raddar.controllers.SessionController;
 import raddar.views.MapUI;
+import raddar.gruppen.R;
 import android.graphics.drawable.Drawable;
-import android.location.Geocoder;
 import android.util.Log;
 
 import com.google.android.maps.Overlay;
 
-public class MapModel extends Observable {
+public class MapModel {
 
 	private List<Overlay> mapOverlays;
 	private Drawable d;
 
-	private MapObjectList fireList;
-	private MapObjectList fireTruckList;
 	private MapObjectList situationList;
 	private MapObjectList resourceList;
 	private MapObjectList youList;
+	private MapObjectList otherList;
+	private MapObjectList sosList;
 
 	private MapUI mapUI;
-	
+
 	/*
 	 * I MapModel sker alla uppdateringar av kartan. Här finns MapObjectLists för alla olika typer av situationer och resurser.
 	 */
@@ -38,61 +36,54 @@ public class MapModel extends Observable {
 	/*
 	 * add lägger till ett MapObject i rätt MapObjectList 
 	 */
-	
+
 	public void add(MapObject o){
+//		if(o instanceof You&&((You) o).isSOS()){
+//			o.setIcon(R.drawable.circle_red);
+//		}
+		
+
+//			if(((You) o).isSOS()){
+//				Log.d("soslist", o.getAddedBy());
+//				if(sosList == null){
+//					sosList = new MapObjectList(d, mapUI);
+//				}
+//				sosList.addOverlay(o);
+//			}
+
+		getList(o).addMapObject(o);
+	}
+
+	public MapObjectList getList(MapObject o){
+		if(!o.getId().equals(SessionController.getUser()) && o instanceof You){
+			o.setIcon(R.drawable.circle_yellow);
+
+		}
 		d = mapUI.getResources().getDrawable(o.getIcon());
-		setChanged();
-		if (o instanceof Fire){
-			if (fireList == null){
-				fireList = new MapObjectList(d, mapUI);
+	
+		if(o instanceof You){
+			if(o.getId().equals(SessionController.getUser())){
+				if(youList == null){
+					youList = new MapObjectList(d, mapUI);
+				}
+				return youList;
+			}else{
+				if(otherList == null){
+					otherList = new MapObjectList(d, mapUI);
+				}
+				return otherList;
 			}
-			fireList.addOverlay(o);
-			notifyObservers(fireList);
-		}
-		else if(o instanceof FireTruck){
-			if(fireTruckList == null){
-				fireTruckList = new MapObjectList(d, mapUI);
-			}
-			fireTruckList.addOverlay(o);
-			notifyObservers(fireTruckList);
-		}
-		else if(o instanceof You){
-			if(youList == null){
-				youList = new MapObjectList(d, mapUI);
-			}
-			youList.addOverlay(o);
-			notifyObservers(youList);
 		}
 		else if(o instanceof Situation){
 			if(situationList == null){
 				situationList = new MapObjectList(d, mapUI);
 			}
-			situationList.addOverlay(o);
-			notifyObservers(situationList);
+			return situationList;
 		}
 		else if(o instanceof Resource){
 			if(resourceList == null){
 				resourceList = new MapObjectList(d, mapUI);
 			}
-			resourceList.addOverlay(o);
-			notifyObservers(resourceList);
-		}		
-	}
-	
-	public MapObjectList getList(MapObject mo){
-		if (mo instanceof Fire){
-			return fireList;
-		}
-		else if(mo instanceof FireTruck){
-			return fireTruckList;
-		}
-		else if(mo instanceof You){
-			return youList;
-		}
-		else if(mo instanceof Situation){
-			return situationList;
-		}
-		else if(mo instanceof Resource){
 			return resourceList;
 		}
 		return null;
@@ -100,34 +91,13 @@ public class MapModel extends Observable {
 	/*
 	 * updateObject(MapObject) uppdaterar den MapObjectList MapObject ligger i
 	 */
-	
+
 	public void updateObject(MapObject o){
-		setChanged();
-		o.updateData(new Geocoder(mapUI.getBaseContext(), Locale.getDefault()));
-		updateUI(o);
+		getList(o).addUpdateMapObject(o);
 	}
 
 	public void removeObject(MapObject o){
-		setChanged();
-		updateUI(o);
-	}
-	
-	public void updateUI(MapObject o){
-		if (o instanceof Fire){
-			notifyObservers(fireList);
-		}
-		else if(o instanceof FireTruck){
-			notifyObservers(fireTruckList);
-		}
-		else if(o instanceof You){
-			notifyObservers(youList);
-		}
-		else if(o instanceof Situation){
-			notifyObservers(situationList);
-		}
-		else if(o instanceof Resource){
-			notifyObservers(resourceList);
-		}
+		getList(o).removeMapObject(o);
 	}
 
 	public List<Overlay> getMapOverlays() {
@@ -138,4 +108,12 @@ public class MapModel extends Observable {
 		this.mapOverlays = mapOverlays;
 	}
 
+	public void sendMessage(String user){
+		mapUI.sendMessage(user);
+	}
+	
+	public void callUser(String user){
+		mapUI.callUser(user);
+	}
+	
 }

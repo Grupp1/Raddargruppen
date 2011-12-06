@@ -5,13 +5,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
-import java.net.Socket;
 import java.util.ArrayList;
 
+import javax.net.ssl.SSLSocket;
+
+import raddar.enums.MessageType;
 import raddar.enums.NotificationType;
-import raddar.models.ImageMessage;
+import raddar.enums.OnlineOperation;
+import raddar.enums.RequestType;
+import raddar.models.MapObjectMessage;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
+import raddar.models.OnlineUsersMessage;
 import raddar.models.RequestMessage;
 import raddar.models.TextMessage;
 
@@ -32,11 +37,15 @@ import com.google.gson.Gson;
 public class Receiver implements Runnable {
 
 	private Thread clientThread = new Thread(this);
-
-	private Socket so;
+	
+	//Gamla inlogg
+	//private Socket so;
 	private BufferedReader in;
+	
+	//Nya ssl
+	private SSLSocket so;
 
-	public Receiver(Socket clientSocket) {
+	public Receiver(SSLSocket clientSocket) {
 		so = clientSocket;
 		clientThread.start();
 	}
@@ -44,45 +53,57 @@ public class Receiver implements Runnable {
 	@Override
 	public void run() {
 		try {
-			// För att läsa inkommande data från klienten
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
 			Class c= null ;
 			try {
-				c = Class.forName(in.readLine());
+				String inmatning = in.readLine();
+				System.out.println(inmatning);
+				c = Class.forName(inmatning);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
-
 			String temp = in.readLine();
 			System.out.println(temp);
-			Object o = new Gson().fromJson(temp, c);
-			// if message
-			if (o instanceof Message){
-				Message m = (Message) o;
-				// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
-				// meddelandet som klienten har skickat blir inläst på korrekt sätt
-				switch (m.getType()) {
-				case SOS:
-					broadcast(m);
-				case NOTIFICATION:
-					handleNotification((NotificationMessage) m);
-					break;
-				case TEXT:
-					Database.storeTextMessage((TextMessage) m);
-					new Sender(m, m.getDestUser());
-					break;
-				case IMAGE:
-					new Sender(m, m.getDestUser());
-					break;
-				case REQUEST:
-					handleRequest((RequestMessage) m);
-					break;
-				default:
-					System.out.println("Received message has unknown type. Discarding... ");
-				}
+			Message m = new Gson().fromJson(temp, c);
+
+			if(!Server.onlineUsers.isUserOnline(m.getSrcUser()) &&
+					(m.getType() != MessageType.NOTIFICATION && !(m.getType() == MessageType.REQUEST &&
+					((RequestMessage)m).getRequestType() == RequestType.SALT))){
+				System.out.println("Not online");
+				NotificationMessage nm = (new NotificationMessage("Server", NotificationType.DISCONNECT));
+				nm.setData("Du är inte inloggad mot servern. Var vänlig logga in igen.");
+				LoginManager.logoutUser(m.getSrcUser());
+				new Sender(nm, so.getInetAddress()); 
+				return;
 			}
-			//			
-			//	so.close();
+
+			switch (m.getType()) {
+			case PROBE:
+				Server.onlineUsers.confirmedProbeMessage(m.getSrcUser(), so.getInetAddress());
+				break;
+			case SOS:
+				broadcast(m);
+				break;
+			case NOTIFICATION:
+				handleNotification((NotificationMessage) m);
+				break;
+			case TEXT:
+				Database.storeTextMessage((TextMessage) m);
+				new Sender(m, m.getDestUser());
+				break;
+			case IMAGE:
+				new Sender(m, m.getDestUser());
+				break;
+			case REQUEST:
+				handleRequest((RequestMessage) m);
+				break;
+			case MAPOBJECT:
+				handleMapObjectMessage((MapObjectMessage) m);
+				broadcast(m);
+				break;
+			default:
+				System.out.println("Received message has unknown type. Discarding... ");
+			}
 		} catch (IOException ie) {
 			ie.printStackTrace();
 		}
@@ -104,7 +125,8 @@ public class Receiver implements Runnable {
 			break;
 		case DISCONNECT:
 			// Behandla logoutförsöket
-			LoginManager.logoutUser(nm.getSrcUser());
+			if(so.getInetAddress().equals(Server.onlineUsers.getUserAddress(nm.getSrcUser())))
+				LoginManager.logoutUser(nm.getSrcUser());
 			break;
 		default:
 			// Här hamnar vi om något gått fel i formatteringen eller inläsandet av meddelandet
@@ -122,6 +144,28 @@ public class Receiver implements Runnable {
 			new Sender(m, adr, 4043);
 		}
 
+	}
+	
+	private void handleMapObjectMessage(MapObjectMessage mo){
+		switch(mo.getMapOperation()){
+		case ADD:
+			System.out.println("handleMapObjectMessage ADD");
+			if(Database.addMapObject(mo))
+				broadcast(mo);
+			break;
+		case REMOVE:
+			System.out.println("handleMapObjectMessage REMOVE");
+			broadcast(mo);
+			Database.removeMapObject(mo.getId());
+			break;
+		case UPDATE:
+			System.out.println("handleMapObjectMessage UPDATE");
+			broadcast(mo);
+			Database.updateMapObject(mo);
+			break;
+		default:
+			System.out.println("Okänd MapOperation");
+		}	
 	}
 
 	/**
@@ -167,12 +211,20 @@ public class Receiver implements Runnable {
 			contactMessage.add(0,rm);
 			new Sender(contactMessage, rm.getSrcUser());
 			break;
-			
-			
+		case MAP_OBJECTS:
+			ArrayList<Message> mapObjectMessages = Database.retrieveAllMapObjects();
+			new Sender(mapObjectMessages, rm.getSrcUser());
+			break;
+		case ONLINE_CONTACTS:
+			ArrayList<String> onlineUsersMessages = Associations.getOnlineUserNames();
+			for(String onlineUser: onlineUsersMessages){
+				OnlineUsersMessage onlineUsermessage  = new OnlineUsersMessage(OnlineOperation.ADD, onlineUser);
+				new Sender(onlineUsermessage, rm.getSrcUser());
+			}
+			break;
 		default:
 			System.out.println("Okänd RequestType");
 		}
-
 	}
 }
 

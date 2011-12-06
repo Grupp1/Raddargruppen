@@ -22,6 +22,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -39,7 +40,9 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.send_image_message);
+		SessionController.titleBar(this, " - Nytt bildmeddelande");
 		destUser = (EditText) this.findViewById(R.id.destUser);
 		subject = (EditText) this.findViewById(R.id.subject);
 		sendButton = (Button) this.findViewById(R.id.sendButton);
@@ -134,7 +137,7 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 		//for (int j=0; j < 20; j++) {
 		for(int i = 0; i < destUsers.length-1; i++){
 			try {
-				so = new Socket(ServerInfo.SERVER_IP, ServerInfo.SERVER_IMAGE_PORT);
+				so = new Socket(ServerInfo.SERVER_IP, ServerInfo.SERVER_PORT);
 				
 				File file = new File(filePath);
 				Log.d("SendImage...", "File size: " + file.length());

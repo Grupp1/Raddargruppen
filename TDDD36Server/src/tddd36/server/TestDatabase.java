@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 	        try {
 	            con = DriverManager.getConnection(url, user, password);
 	            st = con.createStatement();
-	        	rs = st.executeQuery("SELECT * FROM users WHERE userName = \'Alice\';");
+	        	rs = st.executeQuery("SELECT * version();");
 
 	            if (rs.next()) {
 	                System.out.println(rs.getString(3));

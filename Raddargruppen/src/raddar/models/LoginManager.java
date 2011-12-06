@@ -6,12 +6,22 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.net.SocketAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
 
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+
+import raddar.controllers.DatabaseController;
+import raddar.controllers.Sender;
+import raddar.controllers.SessionController;
+import raddar.enums.ConnectionStatus;
 import raddar.enums.LoginResponse;
+import raddar.enums.MessageType;
 import raddar.enums.NotificationType;
 import raddar.enums.RequestType;
 import raddar.enums.ServerInfo;
@@ -41,23 +51,27 @@ public class LoginManager extends Observable {
 	 *            Lösenordet
 	 * @return true om verifieringen går bra, false annars
 	 */
-	public void evaluate(String username, String password) {
+	public void evaluate(String username, String password, boolean firstLogIn) {
 		try {
-			// Skapa socket som används för att skicka NotificationMessage
-			Socket so = new Socket();
-			// Socket so = new
-			// Socket(InetAddress.getByName(ServerInfo.SERVER_IP),
-			// ServerInfo.SERVER_PORT);
+			
+			//nya ssl
+			SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+			SSLSocket sslsocket = (SSLSocket) sslsocketfactory.createSocket();
+			Log.d("ssl",sslsocket.getSupportedCipherSuites()[0]);
+			
 			InetAddress addr = InetAddress.getByName(ServerInfo.SERVER_IP);
 			int port = ServerInfo.SERVER_PORT;
 			SocketAddress sockAddr = new InetSocketAddress(addr, port);
-
 			int TIME_OUT = 5000;
-			so.connect(sockAddr, TIME_OUT);
+			sslsocket.connect(sockAddr, TIME_OUT);
 
-			PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
+			sslsocket.setEnabledCipherSuites(new String[] { "SSL_RSA_WITH_RC4_128_MD5", "SSL_DH_anon_WITH_RC4_128_MD5" });
+			// Initiera handskakningen
+			SSLSession session = sslsocket.getSession();
+			
+			PrintWriter pw = new PrintWriter(sslsocket.getOutputStream(), true);
 			BufferedReader br = new BufferedReader(new InputStreamReader(
-					so.getInputStream()));
+					sslsocket.getInputStream()));
 
 			RequestMessage rm = new RequestMessage(RequestType.SALT);
 			rm.setSrcUser(username);
@@ -79,7 +93,6 @@ public class LoginManager extends Observable {
 			send = nm.getClass().getName() + "\r\n";
 			gg = new Gson().toJson(nm);
 			send += gg;
-			Log.d("Gson Test", gg.toString());
 
 			// Skicka det saltade och krypterade lösenordet
 			pw.println(send);
@@ -90,14 +103,24 @@ public class LoginManager extends Observable {
 			// Stäng ner strömmar och socket
 			pw.close();
 			br.close();
-			so.close();
+			sslsocket.close();
 			
 			if (response.equals("OK")) {
+				SessionController.setPassword(password);
+				SessionController.setUserName(username);
+				if(SessionController.getSessionController()!=null)
+					SessionController.getSessionController().changeConnectionStatus(ConnectionStatus.CONNECTED);
 				logIn = LoginResponse.ACCEPTED;
+				sendBufferedMessages();
 				s = null;
 			}
-			else if(response.equals("USER_ALREADY_EXIST")){
+			else if(response.equals("OK_FORCE_LOGOUT")){
+				SessionController.setPassword(password);
+				SessionController.setUserName(username);
+				if(SessionController.getSessionController()!=null)
+					SessionController.getSessionController().changeConnectionStatus(ConnectionStatus.CONNECTED);
 				logIn = LoginResponse.USER_ALREADY_LOGGED_IN;
+				sendBufferedMessages();
 				s = null;
 			}
 		} catch (IOException e) {
@@ -105,10 +128,18 @@ public class LoginManager extends Observable {
 			// Om servern inte kan nås, kolla om vi har en försökande tråd redan
 			// ...har vi en försökande tråd innebär det att vi redan är inloggade lokalt
 			// och då returnerar vi här, annars loggar vi in lokalt
-			if (s == null)
+			if(!firstLogIn && s==null){
+				s = new StubbornLoginThread(username, password);
+				Log.d("LoginManager", "LULZ 3");
+				return;
+			}
+			else if (s == null)
 				logIn = evaluateLocally(username, password);
 			else
 				return;
+		}
+		if(debugMode){
+			logIn = LoginResponse.ACCEPTED_NO_CONNECTION;
 		}
 		setChanged();
 		notifyObservers(logIn);
@@ -151,6 +182,18 @@ public class LoginManager extends Observable {
 	public static String removeCache(String username) {
 		return passwordCache.remove(username);
 	}
+	private void sendBufferedMessages() throws UnknownHostException{
+		//Skicka alla medelanden som buffrats och töm sedan buffern
+		ArrayList<String> bufferedMessages = new ArrayList<String>();
+		bufferedMessages = DatabaseController.db.getAllRowsAsArrays("bufferedMessage");
+		if(bufferedMessages != null){
+			for(String gsonString: bufferedMessages){
+				new Sender(gsonString);
+				Log.d("GSONSTRING",gsonString);
+				DatabaseController.db.deleteBufferedMesageRow(gsonString);
+			}
+		}
+	}
 
 	/*
 	 * Privat klass som försöker att logga in emot servern med jämna mellanrum
@@ -171,11 +214,11 @@ public class LoginManager extends Observable {
 				try {
 					if (s == null)
 						break;
-					evaluate(username, password);
+					evaluate(username, password,false);
 					if (s == null)
 						break;
 					// Vänta två minuter mellan varje försök
-					Thread.sleep(1000 * 10);
+					Thread.sleep(5000 * 10);
 
 				} catch (InterruptedException e) {
 					Log.d("LoginManager.java", "evaluateLocally FAILADE!!");

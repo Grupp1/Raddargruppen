@@ -1,11 +1,13 @@
 package raddar.views;
 
+import raddar.controllers.SessionController;
 import raddar.gruppen.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -14,8 +16,9 @@ public class DraftMessageView extends Activity {
 	public void onCreate(Bundle savedInstanceState){
 
 		super.onCreate(savedInstanceState);
-
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.draft_message);
+		SessionController.titleBar(this, " - Utkast");
 		final Bundle extras = getIntent().getExtras();
 		TextView draftMessageDestUser = (TextView)this.findViewById(R.id.draftMessageDestUser);
 		TextView draftMessageDate = (TextView)this.findViewById(R.id.draftMessageDate);
@@ -41,8 +44,6 @@ public class DraftMessageView extends Activity {
 				 
 				finish();
 				
-//				Toast.makeText(getApplicationContext(), "Knappen funkar! ",
-//						Toast.LENGTH_LONG).show();	
 			}
 		});
 		

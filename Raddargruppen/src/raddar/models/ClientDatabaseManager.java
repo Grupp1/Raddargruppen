@@ -5,7 +5,6 @@ import java.util.Observable;
 
 import raddar.controllers.SessionController;
 import raddar.enums.MessageType;
-import raddar.enums.SituationPriority;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -15,7 +14,6 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.google.android.maps.GeoPoint;
 import com.google.gson.Gson;
 
 public class ClientDatabaseManager extends Observable {
@@ -39,7 +37,7 @@ public class ClientDatabaseManager extends Observable {
 	private final String[] OUTBOX_TABLE_ROWS = new String[] { "msgID", "destUser", "rDate", "subject", "mData"};
 	private final String[] DRAFT_TABLE_ROWS = new String[] { "msgID", "destUser", "rDate", "subject", "mData"};
 	private final String[] IMAGE_MESSAGE_TABLE_ROWS = new String [] {"msgId", "srcUser", "rDate", "subject", "filePath"};
-
+	private final String[] BUFFERED_MESSAGE_TABLE_ROWS = new String[] {"gsonString"};
 
 
 	/**********************************************************************
@@ -47,6 +45,7 @@ public class ClientDatabaseManager extends Observable {
 	 * @param context 
 	 * @param userName The name of the database is equal to the user name
 	 */
+
 	public ClientDatabaseManager(Context context) {
 		this.context = context;
 		this.DB_NAME = "client_database";
@@ -55,18 +54,21 @@ public class ClientDatabaseManager extends Observable {
 
 		clearDatabase();
 	}
-		// TEST KOD ANVÄNDS FÖR ATT TESTA KONTAKTLISTAN
-		/*
-		 * addRow(new Contact("Alice",false)); addRow(new
-		 * Contact("Borche",false)); addRow(new Contact("Daniel",false));
-		 */
+	// TEST KOD ANVÄNDS FÖR ATT TESTA KONTAKTLISTAN
+	/*
+	 * addRow(new Contact("Alice",false)); addRow(new
+	 * Contact("Borche",false)); addRow(new Contact("Daniel",false));
+	 */
 
-		// TEST KOD FÖR MAP
-		//addRow(new Fire(new GeoPoint(58395730, 15573080), "Här brinner det!", SituationPriority.HIGH));
+	// TEST KOD FÖR MAP
+	//addRow(new Fire(new GeoPoint(58395730, 15573080), "Här brinner det!", SituationPriority.HIGH));
 
 		//TEST KOD FÖR SAMTAL
 		//addSipProfile( user, String password);
-		/*Contact einar = new Contact("Einar", false, "marcuseinar", "einar");
+		Contact einar = new Contact("Einar", false, "marcuseinar", "einar");
+	//TEST KOD FÖR SAMTAL
+	//addSipProfile( user, String password);
+	/*Contact einar = new Contact("Einar", false, "marcuseinar", "einar");
 		Contact danan = new Contact("danan612", false, "danan612", "raddar");
 		Contact lalle = new Contact("lalle", false, "lalle", "lalle");
 		Contact alice = new Contact("Alice",false,null,null);
@@ -78,10 +80,6 @@ public class ClientDatabaseManager extends Observable {
 		addRow(lalle);
 		addRow(borche);
 		/*addRow(mange);
-		
-
-	
-	
 
 	/**********************************************************************
 	 * ADDING A MESSAGE ROW TO THE DATABASE TABLE
@@ -96,7 +94,6 @@ public class ClientDatabaseManager extends Observable {
 		try {
 			db.insert("message", null, values);
 		} catch (Exception e) {
-			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
 		if(notify) {
@@ -107,15 +104,15 @@ public class ClientDatabaseManager extends Observable {
 
 	/**********************************************************************
 	 * 
-	 *
 	 * Messages to be addad to the outbox
 	 * @param m The message that is to be added to the database
 	 */
 	public void addOutboxRow(Message m){
 		ContentValues values = new ContentValues();
 		values.put("destUser", m.getDestUser());
-		Log.e("destUser", m.getDestUser().toString());
+		Log.e("destUser addOutboxRow", m.getDestUser().toString());
 		values.put("rDate", m.getDate());
+		Log.e("rDate addOutboxRow", m.getDestUser().toString());
 		values.put("subject", m.getSubject());
 		values.put("mData", m.getData());
 		try {
@@ -126,6 +123,21 @@ public class ClientDatabaseManager extends Observable {
 		}
 		setChanged();
 		notifyObservers(m);			
+	}
+	/**********************************************************************
+	 * Adds messages that couldn't be sent at the time to a buffer that is sent when connection with the server is reestablished
+	 * @param m the message that was to be sent.
+	 */
+	public void addBufferedMessageRow(String gsonString){
+		ContentValues values = new ContentValues();
+		values.put("gsonString", gsonString);
+		try {
+			db.insert("bufferedMessage", null, values);
+		} catch (Exception e) {
+			Log.e("DB ERROR", e.toString());
+			e.printStackTrace();
+		}
+		setChanged();
 	}
 
 	/**********************************************************************
@@ -149,7 +161,7 @@ public class ClientDatabaseManager extends Observable {
 		setChanged();
 		notifyObservers(m);			
 	}
-
+	
 	/**********************************************************************
 	 * ADDING A CONTACT ROW IN THE DATABASE TABLE
 	 *
@@ -189,8 +201,8 @@ public class ClientDatabaseManager extends Observable {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
-//		setChanged();
-//		notifyObservers(c);
+		setChanged();
+		notifyObservers(c);
 	}
 
 	/**********************************************************************
@@ -269,6 +281,26 @@ public class ClientDatabaseManager extends Observable {
 			e.printStackTrace();
 		}
 	}
+	
+	/**********************************************************************
+	 * UPDATING A ROW IN THE MAPOBJECT TABLE
+	 * 
+	 * @param c 
+	 * @param 
+	 */
+	public void updateRow(MapObject o) {
+		ContentValues values = new ContentValues();
+		values.put("mapObject", new Gson().toJson(o));
+		values.put("class", o.getClass().getName());
+		try {
+			db.update("map", values,
+					"id = '" + o.getId() + "'", null);
+		} catch (Exception e) {
+			Log.e("DB Error", e.toString());
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Closes the database
 	 */
@@ -279,9 +311,8 @@ public class ClientDatabaseManager extends Observable {
 		db.delete("message", null, null);
 		db.delete("map", null, null);
 		db.delete("contact", null, null);
-		
+
 	}
-	
 
 	/********************************************************************
 	 * DELETING A ROW IN THE DRAFT TABLE
@@ -300,6 +331,16 @@ public class ClientDatabaseManager extends Observable {
 		//		setChanged();
 		//		notifyObservers(m);
 	}
+	
+	public void deleteBufferedMesageRow(String gsonString){
+		try{
+			db.delete("bufferedMessage", "gsonString = \'" + gsonString + "\'", null);
+		}catch (Exception e) {
+			Log.e("DB ERROR", e.toString());
+			e.printStackTrace();
+		}
+		
+	}
 
 	/********************************************************************
 	 * 
@@ -309,6 +350,8 @@ public class ClientDatabaseManager extends Observable {
 
 	public void deleteRow(MapObject mo) {
 		try {
+			if(mo ==null)
+				Log.d("CLIENTDATABASE","REMOVE");
 			db.delete("map", "id = '" +mo.getId()+"'", null);
 		} catch (Exception e) {
 			Log.e("DB ERROR", e.toString());
@@ -316,6 +359,13 @@ public class ClientDatabaseManager extends Observable {
 		}
 		setChanged();
 		notifyObservers(mo);
+	}
+	/********************************************************************
+	 * Clears an entire table of all rows
+	 * @param table the table that is to be cleared
+	 */
+	public void	clearTable(String table){
+		db.delete(table, null, null);
 	}
 
 
@@ -331,6 +381,7 @@ public class ClientDatabaseManager extends Observable {
 		// generella fallet.
 		ArrayList dataArrays = new ArrayList();
 		Cursor cursor = null;
+		Log.e("TABLE",table);
 		try {
 			// ask the database object to create the cursor.
 			if(table.equals("message")){
@@ -364,6 +415,10 @@ public class ClientDatabaseManager extends Observable {
 						MAP_TABLE_ROWS,
 						null, null, null, null, null);
 			}
+			else if(table.equals("bufferedMessage")){
+				cursor = db.query("bufferedMessage", BUFFERED_MESSAGE_TABLE_ROWS,
+						null, null, null, null, null);
+			}
 			cursor.moveToFirst();
 			// If it is a message table
 			if (!cursor.isAfterLast()) {
@@ -373,11 +428,15 @@ public class ClientDatabaseManager extends Observable {
 								cursor.getString(1), SessionController.getUser());
 						m.setSubject(cursor.getString(3));
 						m.setData(cursor.getString(4));
+						m.setDate(cursor.getString(2));
 						dataArrays.add(m);
 					} 
 					else if (table.equals("imageMessage")) {
 						Message m = new ImageMessage(cursor.getString(1), SessionController.getUser(),
 								 cursor.getString(3), cursor.getString(4));
+						/*Message m = new ImageMessage(MessageType.IMAGE,
+								cursor.getString(1), DB_NAME,
+								cursor.getString(4));*/ 
 						m.setSubject(cursor.getString(3));
 						dataArrays.add(m);
 					}
@@ -387,18 +446,18 @@ public class ClientDatabaseManager extends Observable {
 					}
 					else if(table.equals("outbox")){
 						Message m = new TextMessage(MessageType.TEXT, 
-								cursor.getString(1), 
-								DB_NAME,  
+								DB_NAME, cursor.getString(1),
 								cursor.getString(4));
 						m.setSubject(cursor.getString(3));
+						m.setDate(cursor.getString(2));
 						dataArrays.add(m);
 					}
 					else if(table.equals("drafts")){
 						Message m = new TextMessage(MessageType.TEXT, 
-								cursor.getString(1), 
-								DB_NAME,  
+								DB_NAME, cursor.getString(1),
 								cursor.getString(4));
 						m.setSubject(cursor.getString(3));
+						m.setDate(cursor.getString(2));
 						dataArrays.add(m);
 					}
 					else if (table.equals("map")) {
@@ -411,6 +470,11 @@ public class ClientDatabaseManager extends Observable {
 						}
 						MapObject mo = gson.fromJson(cursor.getString(0), c);
 						dataArrays.add(mo);
+					}
+					else if (table.equals("bufferedMessage")){
+						Log.e("cursor burzor",cursor.getString(0));
+						String gsonString = cursor.getString(0);
+						dataArrays.add(gsonString);
 					}
 				}
 				// move the cursor's pointer up one position.
@@ -469,7 +533,7 @@ public class ClientDatabaseManager extends Observable {
 					"rDate integer, " +
 					"subject text, " +
 					"filePath text)";
-			
+
 			String mapTableQueryString = "create table map (" +
 					"mapObject text," +
 					"class text," +
@@ -482,13 +546,17 @@ public class ClientDatabaseManager extends Observable {
 					"subject text," +
 					"mData text)";
 
-			String draftTableQueryString = "create table drafts (" 
+			String draftsTableQueryString = "create table drafts (" 
 					+ "msgId integer primary key autoincrement not null," + 
 					"destUser text," +
 					"rDate integer," +
 					"subject text," +
 					"mData text)";
-
+			Log.d("CustomSQLiteOpenHelper","Creating table \'bufferedMessage\'");
+			String bufferedmessageTableQueryString = "create table bufferedMessage (" 
+					+ "msgId integer primary key autoincrement not null," + 
+					"gsonString text)";
+			
 
 			/*
 			 * String newTableQueryString = "create table " + TABLE_NAME + " ("
@@ -502,7 +570,8 @@ public class ClientDatabaseManager extends Observable {
 			db.execSQL(messageTableQueryString);
 			db.execSQL(imageMessageTableQueryString);
 			db.execSQL(outboxTableQueryString);
-			db.execSQL(draftTableQueryString);
+			db.execSQL(bufferedmessageTableQueryString);
+			db.execSQL(draftsTableQueryString);
 		}
 
 		/**

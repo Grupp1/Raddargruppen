@@ -3,9 +3,11 @@ package raddar.views;
 import java.util.ArrayList;
 
 import raddar.controllers.DatabaseController;
+import raddar.controllers.SessionController;
 import raddar.enums.MessageType;
 import raddar.gruppen.R;
 import raddar.models.Message;
+import raddar.models.QoSManager;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -39,6 +42,8 @@ public class OutBoxView extends ListActivity {
 
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
+		SessionController.titleBar(this, " - Utkorg");
 
 		temp = DatabaseController.db.getAllRowsAsArrays("outbox");
 		int size = temp.size();
@@ -53,6 +58,7 @@ public class OutBoxView extends ListActivity {
 		}else{
 			outbox = (ArrayList<Message>) temp.clone(); 
 		}
+		
 		ia = new OutboxAdapter(this, R.layout.row,outbox);
 		setListAdapter(ia);
 		ListView lv = getListView();
@@ -63,10 +69,11 @@ public class OutBoxView extends ListActivity {
 					int position, long id) {
 				Intent nextIntent = new Intent(OutBoxView.this, SentMessageView.class);
 				nextIntent.putExtra("reciever",outbox.get(position).getDestUser());
-				Log.e("Dest user", outbox.get(position).getDestUser());
+				Log.e("destuser OutBoxView", outbox.get(position).getDestUser());
 				nextIntent.putExtra("subject",outbox.get(position).getSubject());
 				nextIntent.putExtra("data",outbox.get(position).getData());
 				nextIntent.putExtra("date", outbox.get(position).getDate());
+				Log.e("Datum OutBoxView", outbox.get(position).getDate().toString());
 				nextIntent.putExtra("type", outbox.get(position).getType());
 				startActivity(nextIntent);
 
@@ -102,7 +109,7 @@ public class OutBoxView extends ListActivity {
 				TextView bt = (TextView) v.findViewById(R.id.bottomtext);
 				ImageView iv = (ImageView) v.findViewById(R.id.icon);
 				if(m.getType() == MessageType.TEXT)
-					iv.setImageResource(R.drawable.magnus);
+					iv.setImageResource(R.drawable.wordwriter);
 				if (tt != null) 
 					tt.setText("Mottagare: "+m.getDestUser());                            
 				if(bt != null)
@@ -110,6 +117,12 @@ public class OutBoxView extends ListActivity {
 			}			
 			return v;
 		}
+		
+	}	@Override
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
 	}
 
 

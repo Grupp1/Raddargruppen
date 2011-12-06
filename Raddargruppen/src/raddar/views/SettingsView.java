@@ -1,5 +1,6 @@
 package raddar.views;
 
+import raddar.controllers.SessionController;
 import raddar.gruppen.R;
 import raddar.models.QoSManager;
 import android.app.Activity;
@@ -7,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -23,8 +25,9 @@ public class SettingsView extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.settings);
-
+		SessionController.titleBar(this, " - Inställningar");
 		normal = (RadioButton) findViewById(R.id.normal_power_radio_button);
 		low = (RadioButton) findViewById(R.id.low_power_radio_button);
 		automatic = (RadioButton) findViewById(R.id.automatic_power_radio_button);
@@ -33,7 +36,6 @@ public class SettingsView extends Activity {
 		rg.check(index);
 
 		OnClickListener ocl = new OnClickListener() {
-			@Override
 			public void onClick(View v) {
 				if (v == normal) {
 					unregisterBatteryReceiver();

@@ -30,17 +30,17 @@ public class XMLFetcher extends DefaultHandler {
 	private WeatherBlock wb;
 
 	/**
-	 * En lista som håller reda på väderinformationen vi läser in från yr.no
+	 * En lista som hÃ¥ller reda pÃ¥ vÃ¤derinformationen vi lÃ¤ser in frÃ¥n yr.no
 	 */
 	public LinkedList<WeatherDay> list = new LinkedList<WeatherDay>();
 	
 	/**
-	 * Denna sträng ska representera klockslaget då solen går upp idag
+	 * Denna strÃ¤ng ska representera klockslaget dÃ¥ solen gÃ¥r upp idag
 	 */
 	public String sunrise = "";
 	
 	/**
-	 * Denna sträng ska representera klockslaget då solen går ner idag
+	 * Denna strÃ¤ng ska representera klockslaget dÃ¥ solen gÃ¥r ner idag
 	 */
 	public String sunset = "";
 
@@ -80,9 +80,9 @@ public class XMLFetcher extends DefaultHandler {
 	}
 
 	/**
-	 * Metod som anropas varje gång XML-parsen stöter på en ny tagg
-	 * @param uri används inte
-	 * @param localName används inte
+	 * Metod som anropas varje gÃ¥ng XML-parsen stÃ¶ter pÃ¥ en ny tagg
+	 * @param uri anvÃ¤nds inte
+	 * @param localName anvÃ¤nds inte
 	 * @param qName taggens namn
 	 * @param attributes taggens attribut
 	 * @throws SAXException
@@ -124,14 +124,14 @@ public class XMLFetcher extends DefaultHandler {
 		}
 		if (qName.equals("temperature")) {
 			String value = attributes.getValue("value");
-			wb.temp = value + "˚C";
+			wb.temp = value + " " +"̊ C,"; 
 		}
 	}
 
 	/**
-	 * Metod som anropas när en sluttagg stöts på i XML-parsern
-	 * @param uri används inte
-	 * @param localName används inte
+	 * Metod som anropas nÃ¤r en sluttagg stÃ¶ts pÃ¥ i XML-parsern
+	 * @param uri anvÃ¤nds inte
+	 * @param localName anvÃ¤nds inte
 	 * @param qName taggens namn
 	 * @throws SAXException
 	 */

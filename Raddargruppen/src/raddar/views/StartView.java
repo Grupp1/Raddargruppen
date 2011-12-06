@@ -3,6 +3,8 @@ package raddar.views;
 import java.util.Observable;
 import java.util.Observer;
 
+import raddar.controllers.DatabaseController;
+import raddar.controllers.SessionController;
 import raddar.controllers.SipController;
 import raddar.enums.ConnectionStatus;
 import raddar.enums.LoginResponse;
@@ -12,7 +14,9 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,12 +27,13 @@ public class StartView extends Activity implements Observer {
 	private Button loginButton;
 	private EditText user;
 	private EditText password;
+	
 	/**
 	 * The progressbar that is shown when the client is attempting to log in
 	 */
 	private ProgressDialog dialog;
 	private boolean local = false;
-
+	
 	/**
 	 * Called when the activity is first created. Starts a new thread to log on
 	 * when the user presses a button
@@ -36,7 +41,16 @@ public class StartView extends Activity implements Observer {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.start);
+		
+		SessionController.titleBar(this, " - Logga in");
+		this.deleteDatabase("client_database");
+		new DatabaseController(this);
+
+		System.setProperty("javax.net.ssl.keyStore","assets/androidKey");
+	    System.setProperty("javax.net.ssl.keyStorePassword","android");
+		
 		// Lite hårdkodade testanvändare att testa med
 		LoginManager.cache("Borche", "hej123");
 		LoginManager.cache("Danne", "raddar");
@@ -46,7 +60,6 @@ public class StartView extends Activity implements Observer {
 		user = (EditText) this.findViewById(R.id.usertext1);
 		password = (EditText) this.findViewById(R.id.passwordtext1);
 		
-		// Endast för lättare testning
 		user.setText("Borche");
 		password.setText("hej123");
 
@@ -69,28 +82,27 @@ public class StartView extends Activity implements Observer {
 				//startActivity(nextIntent);
 				loginButton.setEnabled(false);
 				dialog.show();
-
+				
 				Thread s = new Thread(new Runnable(){ 
 					public void run() {
 						lm.evaluate(user.getText().toString(),
-								password.getText().toString());
+								password.getText().toString(),true);
 					}
 				});
 				s.start();
 			}
 		});
-
 	}
+	
 	public void onRestart() {
 		super.onRestart();
 		finish();
 	}
-
+	
 	/**
 	 * Called when the login manager is done checking if our password is correct
 	 */
 	public void update(Observable observable, final Object data) {
-
 		runOnUiThread(new Runnable() {
 			public void run() {
 				if ((LoginResponse) data == LoginResponse.ACCEPTED) {
@@ -99,9 +111,7 @@ public class StartView extends Activity implements Observer {
 								MainView.class);
 						nextIntent.putExtra("user", user.getText().toString());
 						nextIntent.putExtra("connectionStatus", ConnectionStatus.CONNECTED);
-						
 						startActivity(nextIntent);
-						
 					}
 					Toast.makeText(StartView.this,
 							"Ansluten till servern",
@@ -125,13 +135,24 @@ public class StartView extends Activity implements Observer {
 					startActivity(nextIntent);
 				}
 				else if((LoginResponse) data == LoginResponse.USER_ALREADY_LOGGED_IN){
-					Toast.makeText(StartView.this, "Användaren är redan inloggad på servern",
+					Toast.makeText(StartView.this, "Användaren är redan inloggad på servern, loggar ut denne",
 							Toast.LENGTH_LONG).show();
+					Intent nextIntent = new Intent(StartView.this,
+							MainView.class);
+					nextIntent.putExtra("user", user.getText().toString());
+					nextIntent.putExtra("connectionStatus", ConnectionStatus.CONNECTED);
+					startActivity(nextIntent);
 				}
 				loginButton.setEnabled(true);
 				dialog.cancel();
 			}
 		});
-
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		DatabaseController.db.clearDatabase();
+		DatabaseController.db.close();
 	}
 }

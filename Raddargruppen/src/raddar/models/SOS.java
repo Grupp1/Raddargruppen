@@ -10,7 +10,5 @@ public class SOS extends Situation {
 	public SOS(GeoPoint point, String snippet) {
 		super(point, "SOS", snippet, R.drawable.sosicon, SituationPriority.HIGH);
 	}
-
-	
 	
 }
