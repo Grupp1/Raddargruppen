@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
@@ -77,10 +78,13 @@ public class Sender implements Runnable {
 			//nya ssl varianten
 			SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 			SSLSocket sslsocket = (SSLSocket) sslsocketfactory.createSocket(address, port);
+			SSLSession session = sslsocket.getSession();
+			
 			PrintWriter out = new PrintWriter(sslsocket.getOutputStream(), true);
 			out.println(send);
-			sslsocket.close();
 			out.close();
+			sslsocket.close();
+			
 			
 			
 			Log.e("Sendzordz",send);

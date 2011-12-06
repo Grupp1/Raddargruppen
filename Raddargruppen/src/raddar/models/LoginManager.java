@@ -6,13 +6,13 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
 
+import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
@@ -55,8 +55,14 @@ public class LoginManager extends Observable {
 			
 			//nya ssl
 			SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-			SSLSocket sslsocket = (SSLSocket) sslsocketfactory.createSocket(ServerInfo.SERVER_IP, ServerInfo.SERVER_PORT);
-		
+			SSLSocket sslsocket = (SSLSocket) sslsocketfactory.createSocket();
+			InetAddress addr = InetAddress.getByName(ServerInfo.SERVER_IP);
+			int port = ServerInfo.SERVER_PORT;
+			SocketAddress sockAddr = new InetSocketAddress(addr, port);
+			int TIME_OUT = 5000;
+			sslsocket.connect(sockAddr, TIME_OUT);
+
+			SSLSession session = sslsocket.getSession();
 			
 			/* Gamla anslutningen
 			 
@@ -71,7 +77,7 @@ public class LoginManager extends Observable {
 			SocketAddress sockAddr = new InetSocketAddress(addr, port);
 			int TIME_OUT = 5000;
 			so.connect(sockAddr, TIME_OUT);
-<<<<<<< HEAD
+
 
 			*/
 			

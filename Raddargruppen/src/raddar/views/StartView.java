@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -32,7 +33,7 @@ public class StartView extends Activity implements Observer {
 	 */
 	private ProgressDialog dialog;
 	private boolean local = false;
-
+	
 	/**
 	 * Called when the activity is first created. Starts a new thread to log on
 	 * when the user presses a button
@@ -41,6 +42,18 @@ public class StartView extends Activity implements Observer {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		String userHome = System.getProperty( "user.home" );
+		Log.d("hemma",userHome);
+		
+		System.setProperty("javax.net.ssl.keyStore","assets/kjellKey");
+	    System.setProperty("javax.net.ssl.keyStorePassword","android");
+		
+		
+		//System.setProperty("javax.net.ssl.trustStore","clientTrustStore.key");
+		//System.setProperty("javax.net.ssl.trustStorePassword","android");
+		
+		
+		
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.start);
 		SessionController.titleBar(this, " - Logga in");
@@ -57,10 +70,11 @@ public class StartView extends Activity implements Observer {
 
 		user = (EditText) this.findViewById(R.id.usertext1);
 		password = (EditText) this.findViewById(R.id.passwordtext1);
+		
+		
 		// Endast för lättare testning
-
-		user.setText("danan612");
-		password.setText("raddar");
+		//user.setText("danan612");
+		//password.setText("raddar");
 
 		final LoginManager lm = new LoginManager();
 		lm.addObserver(this);

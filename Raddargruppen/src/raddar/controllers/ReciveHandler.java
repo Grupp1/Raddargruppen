@@ -5,6 +5,10 @@ import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.util.Observable;
 
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.SSLSocket;
+
 import raddar.enums.ConnectionStatus;
 import raddar.enums.MessageType;
 import raddar.enums.ResourceStatus;
@@ -47,12 +51,14 @@ public class ReciveHandler extends Observable implements Runnable {
 	public void run() {
 		try {
 			// Skapa en ServerSocket för att lyssna på inkommande meddelanden
-			ServerSocket so = new ServerSocket(ServerInfo.SERVER_PORT);
-
+			//ServerSocket so = new ServerSocket(ServerInfo.SERVER_PORT);
+			SSLServerSocketFactory sslserversocketfactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+			SSLServerSocket sslserversocket = (SSLServerSocket) sslserversocketfactory.createServerSocket(ServerInfo.SERVER_PORT);
+			
 			while (true) {
 				// När ett inkommande meddelande tas emot skapa en ny Receiver
 				// som körs i en egen tråd
-				new Receiver(so.accept(), this, context);
+				new Receiver((SSLSocket) sslserversocket.accept(), this, context);
 				notifyObservers(ConnectionStatus.CONNECTED);
 			}
 		} catch (IOException ie) {

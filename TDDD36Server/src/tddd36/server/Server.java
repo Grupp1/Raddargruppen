@@ -61,10 +61,6 @@ public class Server {
 	}
 	
 	public static void main(String[] args) {
-		//System.out.println(Database.getSalt("Alice"));
-		
 		new Server();
-		
-		//Database.addUser("magkj501", "magkj501", 'u', "users");
 	}	
 }
