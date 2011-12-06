@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -32,7 +33,7 @@ public class StartView extends Activity implements Observer {
 	 */
 	private ProgressDialog dialog;
 	private boolean local = false;
-
+	
 	/**
 	 * Called when the activity is first created. Starts a new thread to log on
 	 * when the user presses a button
@@ -40,27 +41,29 @@ public class StartView extends Activity implements Observer {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.start);
+		
 		SessionController.titleBar(this, " - Logga in");
-
 		this.deleteDatabase("client_database");
 		new DatabaseController(this);
 
+		System.setProperty("javax.net.ssl.keyStore","assets/androidKey");
+	    System.setProperty("javax.net.ssl.keyStorePassword","android");
+		
 		// Lite hårdkodade testanvändare att testa med
 		LoginManager.cache("Borche", "hej123");
 		LoginManager.cache("Danne", "raddar");
 		LoginManager.cache("Alice", "longshot");
 		LoginManager.cache("danan612","raddar");
 
-
 		user = (EditText) this.findViewById(R.id.usertext1);
 		password = (EditText) this.findViewById(R.id.passwordtext1);
+		
 		// Endast för lättare testning
-
 		user.setText("danan612");
 		password.setText("raddar");
+
 
 		final LoginManager lm = new LoginManager();
 		lm.addObserver(this);
@@ -81,7 +84,6 @@ public class StartView extends Activity implements Observer {
 				//startActivity(nextIntent);
 				loginButton.setEnabled(false);
 				dialog.show();
-
 				
 				Thread s = new Thread(new Runnable(){ 
 					public void run() {
@@ -92,18 +94,17 @@ public class StartView extends Activity implements Observer {
 				s.start();
 			}
 		});
-
 	}
+	
 	public void onRestart() {
 		super.onRestart();
 		finish();
 	}
-
+	
 	/**
 	 * Called when the login manager is done checking if our password is correct
 	 */
 	public void update(Observable observable, final Object data) {
-
 		runOnUiThread(new Runnable() {
 			public void run() {
 				if ((LoginResponse) data == LoginResponse.ACCEPTED) {
@@ -113,7 +114,6 @@ public class StartView extends Activity implements Observer {
 						nextIntent.putExtra("user", user.getText().toString());
 						nextIntent.putExtra("connectionStatus", ConnectionStatus.CONNECTED);
 						startActivity(nextIntent);
-						
 					}
 					Toast.makeText(StartView.this,
 							"Ansluten till servern",
@@ -149,8 +149,8 @@ public class StartView extends Activity implements Observer {
 				dialog.cancel();
 			}
 		});
-
 	}
+	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();

@@ -3,9 +3,12 @@ package raddar.controllers;
 
 import raddar.enums.ConnectionStatus;
 import raddar.gruppen.R;
+
+
 import raddar.models.Contact;
 import raddar.models.QoSManager;
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.view.Window;
 
@@ -66,7 +69,6 @@ public class SessionController extends Observable{
 		setChanged();
 		notifyObservers(status);
 		QoSManager.getCurrentActivity().runOnUiThread(new Runnable(){
-			@Override
 			public void run() {
 				if (status.equals(ConnectionStatus.CONNECTED)){
 					QoSManager.getCurrentActivity().setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.connected);

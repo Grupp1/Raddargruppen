@@ -1,9 +1,12 @@
 package raddar.controllers;
 
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.util.Observable;
+
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.SSLSocket;
 
 import raddar.enums.ConnectionStatus;
 import raddar.enums.MessageType;
@@ -16,9 +19,9 @@ import raddar.models.MapObject;
 import raddar.models.MapObjectMessage;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
+import raddar.models.OnlineUsersMessage;
 import raddar.models.QoSManager;
 import raddar.models.SOSMessage;
-import raddar.models.OnlineUsersMessage;
 import raddar.models.You;
 import raddar.views.MainView;
 import raddar.views.MapUI;
@@ -28,6 +31,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
 
 public class ReciveHandler extends Observable implements Runnable {
@@ -47,12 +52,15 @@ public class ReciveHandler extends Observable implements Runnable {
 	public void run() {
 		try {
 			// Skapa en ServerSocket för att lyssna på inkommande meddelanden
-			ServerSocket so = new ServerSocket(ServerInfo.SERVER_PORT);
-
+			//ServerSocket so = new ServerSocket(ServerInfo.SERVER_PORT);
+			SSLServerSocketFactory sslserversocketfactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+			SSLServerSocket sslserversocket = (SSLServerSocket) sslserversocketfactory.createServerSocket(ServerInfo.SERVER_PORT);
+			sslserversocket.setEnabledCipherSuites(new String[] { "SSL_DH_anon_WITH_RC4_128_MD5" });
+			
 			while (true) {
 				// När ett inkommande meddelande tas emot skapa en ny Receiver
 				// som körs i en egen tråd
-				new Receiver(so.accept(), this, context);
+				new Receiver((SSLSocket) sslserversocket.accept(), this, context);
 				notifyObservers(ConnectionStatus.CONNECTED);
 			}
 		} catch (IOException ie) {
@@ -71,6 +79,7 @@ public class ReciveHandler extends Observable implements Runnable {
 	 * @param notify true if we should notify the user
 	 */
 	public void newMessage(MessageType mt, final Message m, boolean notify) {
+		
 		if (mt == MessageType.PROBE){
 			Log.d("PROBE", "POBE");
 			NotificationMessage mess = new NotificationMessage(SessionController.getUser(), null);
@@ -83,9 +92,8 @@ public class ReciveHandler extends Observable implements Runnable {
 			// Hur ska klienten tolka att vi inte har kontakt med servern?
 			// notify(ConnectionStatus.DISSCONNECT);
 		}
-		else if (mt == MessageType.TEXT) {
+		else if (mt == MessageType.TEXT||mt == MessageType.IMAGE) {
 			DatabaseController.db.addRow(m, notify);
-			
 		} else if (mt == MessageType.SOS) {
 			//((Activity) context).runOnUiThread(new Runnable() {
 			QoSManager.getCurrentActivity().runOnUiThread(new Runnable() {
@@ -104,12 +112,12 @@ public class ReciveHandler extends Observable implements Runnable {
 							new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,
 								int whichButton) {
-							
+
 							// Gå till kartan¨
-						Intent intent = new Intent(QoSManager.getCurrentActivity(),MapUI.class);
-						intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-						QoSManager.getCurrentActivity().startActivity(intent);
-						((SOSMessage)m).getPoint();
+							Intent intent = new Intent(QoSManager.getCurrentActivity(),MapUI.class);
+							intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+							QoSManager.getCurrentActivity().startActivity(intent);
+							((SOSMessage)m).getPoint();
 						}
 					});
 
@@ -125,11 +133,6 @@ public class ReciveHandler extends Observable implements Runnable {
 				}
 
 			});
-		} else if (mt == MessageType.IMAGE) {
-			ImageMessage im = (ImageMessage) m;
-			DatabaseController.db.addImageMessageRow(im);
-
-
 		}else if (mt == MessageType.MAPOBJECT) {
 			MapObject mo = ((MapObjectMessage)m).toMapObject();
 			switch(((MapObjectMessage)m).getMapOperation()){
@@ -137,14 +140,7 @@ public class ReciveHandler extends Observable implements Runnable {
 				MainView.mapCont.add(mo,false);
 				break;
 			case REMOVE:
-				Log.d("REMOVE", "SWITCH");
-				// MapObject är inte med i meddelandet.. endast id skickas idag....
-				if(mo==null){
-					Log.d("REMOVE", "IF");
-				}else{
-					Log.d("REMOVE", "ELSE");
-					MainView.mapCont.removeObject(mo, false);
-				}
+				MainView.mapCont.removeObject(mo, false);
 				break;
 			case UPDATE:
 				MainView.mapCont.updateObject(mo,false);
@@ -178,7 +174,7 @@ public class ReciveHandler extends Observable implements Runnable {
 					AlertDialog.Builder alert = new AlertDialog.Builder(QoSManager.getCurrentActivity());
 
 					alert.setTitle("Forcerad utloggning");
-					alert.setMessage("En annan klient har loggat in på denna användare. Du kommer nu att loggas ut.");
+					alert.setMessage(m.getData());
 					alert.setOnCancelListener(new OnCancelListener(){
 						public void onCancel(DialogInterface dialog) {
 							Intent intent = new Intent(QoSManager.getCurrentActivity(),StartView.class);
@@ -186,7 +182,6 @@ public class ReciveHandler extends Observable implements Runnable {
 							QoSManager.getCurrentActivity().startActivity(intent);
 						}
 					});
-
 					alert.show();
 				}
 			});

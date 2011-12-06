@@ -4,6 +4,8 @@ import java.net.UnknownHostException;
 import java.util.Observable;
 import java.util.Observer;
 
+import com.google.gson.Gson;
+
 import raddar.controllers.DatabaseController;
 import raddar.controllers.MapCont;
 import raddar.controllers.ReciveHandler;
@@ -11,9 +13,11 @@ import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
 import raddar.controllers.SipController;
 import raddar.enums.ConnectionStatus;
+import raddar.enums.MapOperation;
 import raddar.enums.NotificationType;
 import raddar.enums.RequestType;
 import raddar.gruppen.R;
+import raddar.models.MapObjectMessage;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
 import raddar.models.QoSManager;
@@ -29,6 +33,7 @@ import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.os.BatteryManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -75,6 +80,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.main);
+		
 		SessionController.titleBar(this, " ");
 		extras = getIntent().getExtras();
 		theOne = this;
@@ -83,51 +89,10 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		/**
 		 * Initierar kartans controller för att kunna få gps koordinaterna för sin position
 		 */
-		Log.d("MAINVIEW",new SessionController(extras.get("user").toString())+" ");
-		new SessionController(extras.get("user").toString());
+		new SessionController(extras.get("user").toString()).addObserver(this);
 		mapCont = new MapCont(MainView.this);
-
-
-
 		new SipController(this);
 		new ReciveHandler(this).addObserver(this);
-
-		String level = BatteryManager.EXTRA_LEVEL;
-		Log.d("EXTRA_LEVEL", level);
-		
-
-		//		controller = new InternalComManager();
-		//		controller.setUser(extras.get("user").toString());
-		//		db = new ClientDatabaseManager(this,controller.getUser());
-
-		//		//TEMPORÄRT MÅSTE FIXAS
-		//		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
-
-		new SessionController(extras.get("user").toString()).addObserver(this);
-		//		new DatabaseController(this);
-		new ReciveHandler(this).addObserver(this);
-		
-		
-		
-//		try {
-//			new Sender(new RequestMessage(RequestType.MESSAGE));
-//			new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
-//			new Sender(new RequestMessage(RequestType.CONTACTS));
-//			new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
-//		} catch (UnknownHostException e) {
-//			e.printStackTrace();
-//		}
-		try {
-			new Sender(new RequestMessage(RequestType.MESSAGE));
-			new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
-			DatabaseController.db.clearTable("contact");
-			new Sender(new RequestMessage(RequestType.CONTACTS));
-			new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
-			new Sender(new RequestMessage(RequestType.ONLINE_CONTACTS));
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-
 
 		callButton = (ImageButton)this.findViewById(R.id.callButton);
 		callButton.setOnClickListener(this);
@@ -153,14 +118,15 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		logButton = (ImageButton)this.findViewById(R.id.logButton);
 		logButton.setOnClickListener(this);
 		
+
 		statusText = (TextView)this.findViewById(R.id.statusText);
+		
 		statusText.setText("Inloggad som: " +  SessionController.getUser());
 		statusText.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC), Typeface.ITALIC);
 		
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
 		SessionController.getSessionController().changeConnectionStatus((ConnectionStatus)extras.get("connectionStatus"));
-
 	}
 
 	public void onClick(View v) {
@@ -232,6 +198,17 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		// Notifiera servern att vi går offline
 		NotificationMessage nm = new NotificationMessage(SessionController.getUser(), 
 				NotificationType.DISCONNECT);
+		
+		//TESTTESTETSTETTST
+//		Gson gson = new Gson();
+//		try{
+//			MapObjectMessage mom = new MapObjectMessage(gson.toJson(mapCont.getYou()),
+//					(mapCont.getYou()).getClass().getName(),mapCont.getYou().getId(),MapOperation.UPDATE);
+//			new Sender(mom);
+//		}
+//		catch (UnknownHostException e) {
+//		}
+		
 		try {
 			// Skicka meddelandet
 			new Sender(nm);		
@@ -252,12 +229,14 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	public void update(Observable observable, final Object data) {
 		runOnUiThread(new Runnable(){
 			public void run(){
+				Log.d("STATUS","NUSÅ "+data.toString());
 				if(data != null && data instanceof Message)
 					Toast.makeText(getApplicationContext(), "Meddelande från "+
 							((Message)data).getSrcUser()
 							,Toast.LENGTH_LONG).show();
 
 				if(data == ConnectionStatus.CONNECTED){
+					Log.d("STATUS","CONNECTED");
 					Toast.makeText(getApplicationContext(), "Ansluten till servern"
 							, Toast.LENGTH_LONG).show();
 					DatabaseController.db.clearDatabase();
@@ -265,12 +244,16 @@ public class MainView extends Activity implements OnClickListener, Observer {
 					try {
 						new Sender(new RequestMessage(RequestType.MESSAGE));
 						new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
+						DatabaseController.db.clearTable("contact");
 						new Sender(new RequestMessage(RequestType.CONTACTS));
 						new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
+						new Sender(new RequestMessage(RequestType.ONLINE_CONTACTS));
 					} catch (UnknownHostException e) {
 						e.printStackTrace();
 					}
+					
 				}else if (data == ConnectionStatus.DISCONNECTED){
+					Log.d("STATUS","DISCONNECTED");
 					Toast.makeText(getApplicationContext(), "Tappad anslutning mot servern",Toast.LENGTH_LONG).show();
 				}
 				else if (data instanceof String){
@@ -305,10 +288,12 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	public void enableButtons() {
 		callButton.setEnabled(true);
 		serviceButton.setEnabled(true);
+		contactButton.setEnabled(true);
 	}
 
 	public void disableButtons() {
 		callButton.setEnabled(false);
 		serviceButton.setEnabled(false);
+		contactButton.setEnabled(false);
 	}
 }

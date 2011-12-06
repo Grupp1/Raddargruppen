@@ -1,15 +1,14 @@
 package raddar.views;
 
-import java.net.InetAddress;
+import java.io.ByteArrayOutputStream;
 import java.net.UnknownHostException;
 
-import raddar.controllers.DatabaseController;
 import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
 import raddar.enums.MessageType;
-import raddar.models.ImageMessage;
-import raddar.models.QoSManager;
 import raddar.gruppen.R;
+import raddar.models.QoSManager;
+import raddar.models.TextMessage;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -18,10 +17,12 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
+import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -35,6 +36,10 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 	private Button choiceButton;
 	private ImageView preview;
 	private String filePath;
+	private Bitmap bitmap;
+	private String before;
+	
+	private Bitmap yourSelectedImage;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -50,9 +55,10 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 		sendButton.setOnClickListener(this);
 		destUser.setOnClickListener(this);
 		destUser.setFocusable(false);
+		
+		
 
 		try {
-
 			Bundle extras = getIntent().getExtras();
 			String[] items = (String[]) extras.getCharSequenceArray("message");
 
@@ -74,7 +80,14 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 			sendButton.setOnClickListener(this);
 			destUser.setOnClickListener(this);
 		}
-
+//		if(SessionController.testBitmap != null)
+//			preview.setImageBitmap(SessionController.testBitmap);
+		
+		preview.setDrawingCacheEnabled(true);
+		preview.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED), 
+	            MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+		preview.layout(0, 0, preview.getMeasuredWidth(), preview.getMeasuredHeight()); 
+		preview.buildDrawingCache(true);
 	}
 
 	public void onClick(View v) {
@@ -85,9 +98,10 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 			startActivityForResult(Intent.createChooser(intent,
 					"Select Picture"), SELECT_PICTURE);
 			//öppnar galleriet där man kan välja bild att bifoga
-
+			
 		}
 		if (v.equals(sendButton)) {
+			
 			//Undersöker om alla fält är skrivna i
 			//TODO: gör nogrannare undersökning
 			String[] temp = new String[2];
@@ -98,7 +112,9 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 					|| temp[1].equals("")) { 
 				Toast.makeText(getApplicationContext(), "Fyll i alla fält",
 						Toast.LENGTH_SHORT).show();
+
 				return;
+			
 				/*if (om bild inte är tillagd){
 				Toast.makeText(getApplicationContext(), "Välj en bild",
 						Toast.LENGTH_SHORT).show();
@@ -106,7 +122,14 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 						}
 				 */
 			}
-			sendMessages();
+			/*
+			 * Fixa nätverkskommunikationen i en separat tråd...
+			 */
+			new Thread(new Runnable() {
+				public void run() {
+					sendMessages();
+				}
+			}).start();
 
 			Toast.makeText(getApplicationContext(), "Meddelande till "+destUser.getText().
 					toString().trim(),
@@ -120,24 +143,36 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 
 	private void sendMessages(){
 		String[] destUsers = (destUser.getText().toString()+";").split(";");
-		Log.d("number of messages",destUsers.length+"");
-		for(int i = 0; i < destUsers.length;i++){
-
-			ImageMessage m = new ImageMessage(MessageType.IMAGE, SessionController.getUser(), ""
-					+ destUsers[i], filePath);
+		bitmap = preview.getDrawingCache();
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+		byte[] imageBytes = stream.toByteArray();
+		before = Base64.encodeToString(imageBytes,Base64.DEFAULT);
+		
+		for(int i = 0; i < destUsers.length-1;i++){
+			Log.d("IMAGE",destUsers[i]);
+			TextMessage m = new TextMessage(MessageType.IMAGE, SessionController.getUser(), destUsers[i], before);
 			m.setSubject(subject.getText() + "");
-			m.setFilePath(filePath);
 			try {
-				new Sender(m, InetAddress.getByName(raddar.enums.ServerInfo.SERVER_IP), raddar.enums.ServerInfo.SERVER_PORT);
-				DatabaseController.db.addImageMessageRow(m);
-				//	DatabaseController.db.addOutboxRow(m);
-				//	DatabaseController.db.deleteDraftRow(m);
+				new Sender(m);
+				//DatabaseController.db.addImageMessageRow(m);
+				//DatabaseController.db.addOutboxRow(m);
+				//DatabaseController.db.deleteDraftRow(m);
 
 			} catch (UnknownHostException e) {
 				//	DatabaseController.db.addDraftRow(m);
+
 			}
 		}
 	}
+	
+	private byte[] stringToBytes(String str) {
+		str += "****************************************";
+		str = str.substring(0, 40);
+		return str.getBytes();
+	}
+	
+	
 	/**
 	 * Anropas när man valt en bild från galleriet eller valt en kontakt
 	 * @param requestCode 
@@ -159,11 +194,10 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 				filePath = cursor.getString(columnIndex);
 				cursor.close();
 
-				Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
+				yourSelectedImage = BitmapFactory.decodeFile(filePath);
 				preview.setImageBitmap(yourSelectedImage);
 				//bilden som ska skickas med meddelandet är yourSelectedImage
-
-
+				break;
 			case 0:
 				if(requestCode == 0){
 					Bundle extras = data.getExtras();
@@ -173,11 +207,9 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 						temp += destUsers[i]+"; ";
 					destUser.setText(temp);	
 				}
+				break;
 			}
-
-
 		}
-
 	}
 
 	@Override
@@ -186,8 +218,6 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
 	}
-
-
 } 
 
 

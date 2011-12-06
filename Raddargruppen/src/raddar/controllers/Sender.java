@@ -7,6 +7,10 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+
 import raddar.enums.ConnectionStatus;
 import raddar.enums.ServerInfo;
 import raddar.models.LoginManager;
@@ -58,14 +62,17 @@ public class Sender implements Runnable {
 			send = message.getClass().getName()+"\r\n";
 			send +=	gson.toJson(message);	
 		}
-		Log.d("Sending", "Sending: "+send);
 		try {
-			Socket so = new Socket(address, port);
-			so.setSoTimeout(5000);
-			PrintWriter out = new PrintWriter(so.getOutputStream(), true);
+			SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+			SSLSocket sslsocket = (SSLSocket) sslsocketfactory.createSocket(address, port);
+			sslsocket.setEnabledCipherSuites(new String[] { "SSL_DH_anon_WITH_RC4_128_MD5" });
+			SSLSession session = sslsocket.getSession();
+			
+			PrintWriter out = new PrintWriter(sslsocket.getOutputStream(), true);
+			
 			out.println(send);
-			so.close();
 			out.close();
+			sslsocket.close();
 		} catch (IOException ie) {
 			Log.d("Skapandet av socket [2]", ie.toString());
 			SessionController.getSessionController().changeConnectionStatus(ConnectionStatus.DISCONNECTED);
@@ -74,10 +81,6 @@ public class Sender implements Runnable {
 			
 			DatabaseController.db.addBufferedMessageRow(send);
 		} 
-//		catch (SocketException e) {
-//			
-//		}
 	}
-
 }
 

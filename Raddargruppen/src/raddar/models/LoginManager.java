@@ -6,18 +6,22 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
 
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+
 import raddar.controllers.DatabaseController;
 import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
 import raddar.enums.ConnectionStatus;
 import raddar.enums.LoginResponse;
+import raddar.enums.MessageType;
 import raddar.enums.NotificationType;
 import raddar.enums.RequestType;
 import raddar.enums.ServerInfo;
@@ -49,21 +53,25 @@ public class LoginManager extends Observable {
 	 */
 	public void evaluate(String username, String password, boolean firstLogIn) {
 		try {
-			// Skapa socket som används för att skicka NotificationMessage
-			Socket so = new Socket();
-			// Socket so = new
-			// Socket(InetAddress.getByName(ServerInfo.SERVER_IP),
-			// ServerInfo.SERVER_PORT);
-			Log.d("LoginManager", "LULZ 1");
+			
+			//nya ssl
+			SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+			SSLSocket sslsocket = (SSLSocket) sslsocketfactory.createSocket();
+			Log.d("ssl",sslsocket.getSupportedCipherSuites()[0]);
+			
 			InetAddress addr = InetAddress.getByName(ServerInfo.SERVER_IP);
 			int port = ServerInfo.SERVER_PORT;
 			SocketAddress sockAddr = new InetSocketAddress(addr, port);
 			int TIME_OUT = 5000;
-			so.connect(sockAddr, TIME_OUT);
-			Log.d("LoginManager", "LULZ 2");
-			PrintWriter pw = new PrintWriter(so.getOutputStream(), true);
+			sslsocket.connect(sockAddr, TIME_OUT);
+
+			sslsocket.setEnabledCipherSuites(new String[] { "SSL_DH_anon_WITH_RC4_128_MD5" });
+			// Initiera handskakningen
+			SSLSession session = sslsocket.getSession();
+			
+			PrintWriter pw = new PrintWriter(sslsocket.getOutputStream(), true);
 			BufferedReader br = new BufferedReader(new InputStreamReader(
-					so.getInputStream()));
+					sslsocket.getInputStream()));
 
 			RequestMessage rm = new RequestMessage(RequestType.SALT);
 			rm.setSrcUser(username);
@@ -95,14 +103,13 @@ public class LoginManager extends Observable {
 			// Stäng ner strömmar och socket
 			pw.close();
 			br.close();
-			so.close();
-
+			sslsocket.close();
+			
 			if (response.equals("OK")) {
 				SessionController.setPassword(password);
 				SessionController.setUserName(username);
 				if(SessionController.getSessionController()!=null)
 					SessionController.getSessionController().changeConnectionStatus(ConnectionStatus.CONNECTED);
-
 				logIn = LoginResponse.ACCEPTED;
 				sendBufferedMessages();
 				s = null;
