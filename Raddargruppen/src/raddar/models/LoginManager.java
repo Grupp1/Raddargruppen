@@ -174,6 +174,7 @@ public class LoginManager extends Observable {
 
 	public static void cache(String userName, String password) {
 		DatabaseController.db.chacheUser(userName, password);
+		Log.d("CACHELINO", "--------------------------------------------------------------");
 	}
 
 	public static void removeCache(String userName) {

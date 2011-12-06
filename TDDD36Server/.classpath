@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-<<<<<<< HEAD
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-=======
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Raddargruppen"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
->>>>>>> e75c5d4f1fe2ce85996eb175fa64548e2b5d9d3e
-	<classpathentry kind="lib" path="Z:/Downloads/mysql-connector-java-5.1.18/mysql-connector-java-5.1.18-bin.jar"/>
 	<classpathentry kind="lib" path="//neptunus.helix.ida.liu.se/marei265/Downloads/google-gson-2.0/gson-2.0.jar"/>
 	<classpathentry kind="lib" path="//neptunus.helix.ida.liu.se/marei265/Downloads/google-gson-2.0/gson-2.0-javadoc.jar"/>
 	<classpathentry kind="lib" path="//neptunus.helix.ida.liu.se/marei265/Downloads/google-gson-2.0/gson-2.0-sources.jar"/>
+	<classpathentry kind="lib" path="//neptunus.helix.ida.liu.se/marei265/Downloads/mysql-connector-java-5.1.18/mysql-connector-java-5.1.18-bin.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Raddargruppen"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

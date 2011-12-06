@@ -93,7 +93,7 @@ public class ClientDatabaseManager extends Observable {
 		values.put("username", userName);
 		values.put("password", password);
 		try {
-			db.insert("cahce", null, values);
+			db.insert("cachedUsers", null, values);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -398,17 +398,23 @@ public class ClientDatabaseManager extends Observable {
 	public ArrayList getCachedUserRow(String userName){
 		ArrayList temp = new ArrayList();
 		try{
+			
 			Cursor cursor = db.query(
 					"cachedUsers",
 					CACHED_USERS_TABLE_ROWS,
-					"userName = '" + userName +"'", 
-					null, null, null, null);
+					"userName = '" + userName + "'",
+					null, null, null, null, null
+			);
+			Log.e("CURSOR1", "BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			cursor.moveToFirst();
+			Log.e("CURSOR32", "BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 			if(!cursor.isAfterLast()){
+				Log.e("CURSORZ", "BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 				do
 				{
-					temp.add(cursor.getInt(0));
+					temp.add(cursor.getString(0));
+					Log.e("temp", cursor.getString(0));
 					temp.add(cursor.getString(1));
-					temp.add(cursor.getString(2));
 				}while(cursor.moveToNext());
 			}
 			cursor.close();
@@ -416,6 +422,7 @@ public class ClientDatabaseManager extends Observable {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
+		
 		return temp;
 	}
 
@@ -605,9 +612,9 @@ public class ClientDatabaseManager extends Observable {
 			String bufferedmessageTableQueryString = "create table bufferedMessage (" 
 					+ "msgId integer primary key autoincrement not null," + 
 					"gsonString text)";
-			String cachedUserQueryString = "create table cachedUsers (" 
-					+ "msgId integer primary key autoincrement not null," + 
-					"userName text" +
+			Log.e("DATABASE!", "CREATING TABLE CACHEDUSERS");
+			String cachedUserQueryString = "create table cachedUsers (" +
+					"userName text," +
 					"password text)";
 			
 

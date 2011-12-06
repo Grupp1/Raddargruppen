@@ -40,6 +40,7 @@ public class StartView extends Activity implements Observer {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.deleteDatabase("client_database");
+		deleteDatabase("client_database");
 		setContentView(R.layout.start);
 		//SessionController.titleBar(this, " - Logga in");
 		new DatabaseController(this);
