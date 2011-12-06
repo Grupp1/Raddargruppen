@@ -53,7 +53,7 @@ public class ReciveHandler extends Observable implements Runnable {
 			//ServerSocket so = new ServerSocket(ServerInfo.SERVER_PORT);
 			SSLServerSocketFactory sslserversocketfactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
 			SSLServerSocket sslserversocket = (SSLServerSocket) sslserversocketfactory.createServerSocket(ServerInfo.SERVER_PORT);
-			sslserversocket.setEnabledCipherSuites(new String[] { "SSL_RSA_WITH_RC4_128_MD5", "SSL_DH_anon_WITH_RC4_128_MD5" });
+			sslserversocket.setEnabledCipherSuites(new String[] { "SSL_DH_anon_WITH_RC4_128_MD5" });
 			
 			while (true) {
 				// När ett inkommande meddelande tas emot skapa en ny Receiver
