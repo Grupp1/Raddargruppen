@@ -3,6 +3,7 @@ package raddar.models;
 import java.util.ArrayList;
 import java.util.Observable;
 
+import raddar.controllers.SessionController;
 import raddar.enums.MessageType;
 import android.content.ContentValues;
 import android.content.Context;
@@ -155,7 +156,7 @@ public class ClientDatabaseManager extends Observable {
 		values.put("destUser", m.getDestUser());
 		values.put("rDate", m.getDate());
 		values.put("subject", m.getSubject());
-		values.put("filePath", m.getFilePath());
+		values.put("filePath", "<no filepath needed>");
 		try {
 			db.insert("imageMessage", null, values);
 		} catch (Exception e) {
@@ -429,7 +430,7 @@ public class ClientDatabaseManager extends Observable {
 				do {
 					if (table.equals("message")) {
 						Message m = new TextMessage(MessageType.TEXT,
-								cursor.getString(1), DB_NAME);
+								cursor.getString(1), SessionController.getUser());
 						m.setSubject(cursor.getString(3));
 						m.setData(cursor.getString(4));
 						m.setDate(cursor.getString(2));
@@ -437,9 +438,11 @@ public class ClientDatabaseManager extends Observable {
 						dataArrays.add(m);
 					} 
 					else if (table.equals("imageMessage")) {
-						Message m = new ImageMessage(MessageType.IMAGE,
+						Message m = new ImageMessage(cursor.getString(1), SessionController.getUser(),
+								 cursor.getString(3), cursor.getString(4));
+						/*Message m = new ImageMessage(MessageType.IMAGE,
 								cursor.getString(1), DB_NAME,
-								cursor.getString(4));
+								cursor.getString(4));*/ 
 						m.setSubject(cursor.getString(3));
 						dataArrays.add(m);
 					}

@@ -1,17 +1,14 @@
 package raddar.views;
 
 import java.io.ByteArrayOutputStream;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import raddar.controllers.DatabaseController;
 import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
 import raddar.enums.MessageType;
-import raddar.models.ImageMessage;
+import raddar.gruppen.R;
 import raddar.models.QoSManager;
 import raddar.models.TextMessage;
-import raddar.gruppen.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -24,8 +21,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.View.MeasureSpec;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -42,6 +39,8 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 	private Bitmap bitmap;
 	private String before;
 	
+	private Bitmap yourSelectedImage;
+
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
@@ -56,9 +55,10 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 		sendButton.setOnClickListener(this);
 		destUser.setOnClickListener(this);
 		destUser.setFocusable(false);
+		
+		
 
 		try {
-
 			Bundle extras = getIntent().getExtras();
 			String[] items = (String[]) extras.getCharSequenceArray("message");
 
@@ -122,7 +122,14 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 						}
 				 */
 			}
-			sendMessages();
+			/*
+			 * Fixa nätverkskommunikationen i en separat tråd...
+			 */
+			new Thread(new Runnable() {
+				public void run() {
+					sendMessages();
+				}
+			}).start();
 
 			Toast.makeText(getApplicationContext(), "Meddelande till "+destUser.getText().
 					toString().trim(),
@@ -154,9 +161,18 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 
 			} catch (UnknownHostException e) {
 				//	DatabaseController.db.addDraftRow(m);
+
 			}
 		}
 	}
+	
+	private byte[] stringToBytes(String str) {
+		str += "****************************************";
+		str = str.substring(0, 40);
+		return str.getBytes();
+	}
+	
+	
 	/**
 	 * Anropas när man valt en bild från galleriet eller valt en kontakt
 	 * @param requestCode 
@@ -178,11 +194,10 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 				filePath = cursor.getString(columnIndex);
 				cursor.close();
 
-				Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
+				yourSelectedImage = BitmapFactory.decodeFile(filePath);
 				preview.setImageBitmap(yourSelectedImage);
 				//bilden som ska skickas med meddelandet är yourSelectedImage
-
-
+				break;
 			case 0:
 				if(requestCode == 0){
 					Bundle extras = data.getExtras();
@@ -192,11 +207,9 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 						temp += destUsers[i]+"; ";
 					destUser.setText(temp);	
 				}
+				break;
 			}
-
-
 		}
-
 	}
 
 	@Override
@@ -205,8 +218,6 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
 	}
-
-
 } 
 
 

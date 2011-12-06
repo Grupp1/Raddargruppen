@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.Scanner;
 
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.SSLSocket;
+
 public class Server {
 
 
@@ -28,17 +32,19 @@ public class Server {
 
 	private void startServer() {
 		try {
-
-			ServerSocket so = new ServerSocket(port);
-
-
-
-			System.out.println("Listening on port: " + port + "... ");
+            System.setProperty("javax.net.ssl.keyStore","assets/serverKeystore.key");
+    	    System.setProperty("javax.net.ssl.keyStorePassword","android");
+    	    System.setProperty("javax.net.ssl.trustStore","assets/serverTrustStore");
+    	    System.setProperty("javax.net.ssl.trustStorePassword","android");
+    	    
+            SSLServerSocketFactory sslserversocketfactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+            SSLServerSocket sslserversocket = (SSLServerSocket) sslserversocketfactory.createServerSocket(port);
+            sslserversocket.setEnabledCipherSuites(new String[] { "SSL_DH_anon_WITH_RC4_128_MD5" });
+            
+            System.out.println("Listening on port: " + port + "... ");
 
 			while (true) 
-				// Acceptera en inkommande klient och skapa en ny Receiver 
-				// som hanterar klienten i en egen tråd
-				new Receiver(so.accept());
+				new Receiver((SSLSocket) sslserversocket.accept());
 
 		} catch (IOException ie) {
 			ie.printStackTrace();
@@ -46,8 +52,8 @@ public class Server {
 	}
 
 	public static void main(String[] args) {
-		//System.out.println(Database.getSalt("Alice"));
-		new Thread(new Runnable(){
+		new Server();
+		/*new Thread(new Runnable(){
 			@Override
 			public void run() {
 				Scanner in = new Scanner(System.in);
@@ -55,9 +61,6 @@ public class Server {
 					LoginManager.logoutUser(in.next());
 				}
 			}
-		}).start();
-		new Server();
-
-		//Database.addUser("magkj501", "magkj501", 'u', "users");
+		}).start();*/
 	}	
 }

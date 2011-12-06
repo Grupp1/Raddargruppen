@@ -5,8 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
-import java.net.Socket;
 import java.util.ArrayList;
+
+import javax.net.ssl.SSLSocket;
 
 import raddar.enums.MessageType;
 import raddar.enums.NotificationType;
@@ -36,11 +37,15 @@ import com.google.gson.Gson;
 public class Receiver implements Runnable {
 
 	private Thread clientThread = new Thread(this);
-
-	private Socket so;
+	
+	//Gamla inlogg
+	//private Socket so;
 	private BufferedReader in;
+	
+	//Nya ssl
+	private SSLSocket so;
 
-	public Receiver(Socket clientSocket) {
+	public Receiver(SSLSocket clientSocket) {
 		so = clientSocket;
 		clientThread.start();
 	}
@@ -48,8 +53,6 @@ public class Receiver implements Runnable {
 	@Override
 	public void run() {
 		try {
-			
-			// För att läsa inkommande data från klienten
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
 			Class c= null ;
 			try {
@@ -59,10 +62,8 @@ public class Receiver implements Runnable {
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
-
 			String temp = in.readLine();
 			System.out.println(temp);
-
 			Message m = new Gson().fromJson(temp, c);
 
 			//Det den här if-satsen gör ät att undersöka om användaren som skickade meddelandet är online.
@@ -86,6 +87,7 @@ public class Receiver implements Runnable {
 			// if message
 			// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
 			// meddelandet som klienten har skickat blir inläst på korrekt sätt
+
 			switch (m.getType()) {
 			case PROBE:
 				Server.onlineUsers.confirmedProbeMessage(m.getSrcUser(), so.getInetAddress());
@@ -113,10 +115,7 @@ public class Receiver implements Runnable {
 				break;
 			default:
 				System.out.println("Received message has unknown type. Discarding... ");
-
 			}
-			//			
-			//	so.close();
 		} catch (IOException ie) {
 			ie.printStackTrace();
 		}
@@ -238,6 +237,14 @@ public class Receiver implements Runnable {
 		default:
 			System.out.println("Okänd RequestType");
 		}
-
 	}
 }
+
+
+
+
+
+
+
+
+

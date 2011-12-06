@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
+import javax.net.ssl.SSLSocket;
+
 import raddar.enums.MessageType;
 import raddar.models.Message;
 import android.content.Context;
@@ -17,12 +19,12 @@ public class Receiver implements Runnable {
 
 	private Thread thread = new Thread(this);
 	private BufferedReader in;
-	private Socket so;
+	private SSLSocket so;
 	private ReciveHandler rh;
 
 	private Context context;
 
-	public Receiver(Socket so, ReciveHandler rh, Context context) {
+	public Receiver(SSLSocket so, ReciveHandler rh, Context context) {
 		this.so = so;
 		this.rh = rh;
 		this.context = context;
