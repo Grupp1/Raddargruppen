@@ -1,11 +1,16 @@
 package raddar.controllers;
 
 
-import java.util.Observable;
-
 import raddar.enums.ConnectionStatus;
+import raddar.gruppen.R;
+import raddar.models.Contact;
+import raddar.models.QoSManager;
 import android.app.Activity;
 import android.graphics.Color;
+import android.view.Window;
+
+import java.util.Observable;
+
 import android.view.View;
 import java.util.ArrayList;
 
@@ -20,9 +25,10 @@ public class SessionController extends Observable{
 		
 	private static ArrayList<String> onlineUsers = new ArrayList<String>();
 
-
+	public static String password;
 	private static String user;
 	private static ConnectionStatus connection = ConnectionStatus.DISCONNECTED;
+
 	private static SessionController sessionController;
 	private static String userName;
 	 static String getUserName() {
@@ -38,7 +44,7 @@ public class SessionController extends Observable{
 		SessionController.password = password;
 	}
 
-	public static String password;
+	
 	/**
 	 * Create new session on the client
 	 * @param user The user whom is the owner of the session
@@ -55,10 +61,24 @@ public class SessionController extends Observable{
 		return user;
 	}
 
-	public void changeConnectionStatus(ConnectionStatus status){
+	public void changeConnectionStatus(final ConnectionStatus status){
 		this.connection = status;
 		setChanged();
 		notifyObservers(status);
+		QoSManager.getCurrentActivity().runOnUiThread(new Runnable(){
+			public void run() {
+				if (status.equals(ConnectionStatus.CONNECTED)){
+					QoSManager.getCurrentActivity().setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.connected);
+				
+				}
+				else if (status.equals(ConnectionStatus.DISCONNECTED)){
+					QoSManager.getCurrentActivity().setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.disconnected);
+				}
+				
+											
+			}
+		});
+																															
 	}
 	
 	public static SessionController getSessionController(){
@@ -76,6 +96,14 @@ public class SessionController extends Observable{
 		a.setTitle("Räddargruppen" + s);
 		View title = a.getWindow().findViewById(android.R.id.title);
 		View titleBar = (View) title.getParent();
+		if (connection.equals(ConnectionStatus.CONNECTED)){
+			a.setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.connected);
+		
+		}
+		else if (connection.equals(ConnectionStatus.DISCONNECTED)){
+			a.setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.disconnected);
+		}
+
 		titleBar.setBackgroundColor(Color.rgb(48,128,20));
 		
 	}
@@ -85,7 +113,15 @@ public class SessionController extends Observable{
 		this.onlineUsers = onlineUsers;
 	}
 	
-	public ArrayList getOnlineUsers(){
+	public static ArrayList<Contact> getOnlineContacts(){
+		ArrayList<Contact> temp = new ArrayList<Contact>();
+		for(String s: onlineUsers){
+			temp.add(new Contact(s,false));
+		}
+		return temp;
+	}
+	
+	public static ArrayList getOnlineUsers(){
 		return onlineUsers;
 	}
 	
@@ -96,6 +132,10 @@ public class SessionController extends Observable{
 	
 	public static void removeOnlineUser(String userName){
 		onlineUsers.remove(userName);
+	}
+	
+	public static boolean isOnline(String userName){
+		return onlineUsers.contains(userName);
 	}
 
 

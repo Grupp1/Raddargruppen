@@ -20,11 +20,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -54,6 +57,7 @@ public class MapUI extends MapActivity implements Observer {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.maps);
 
 		SessionController.titleBar(this, " - Karta");
@@ -73,7 +77,7 @@ public class MapUI extends MapActivity implements Observer {
 		/**
 		 * Random locations
 		 */
-		
+
 		myLocation = new GeoPoint(0,0);
 		liu = new GeoPoint(58395730, 15573080);
 		sthlmLocation = new GeoPoint(59357290, 17960050);
@@ -91,7 +95,7 @@ public class MapUI extends MapActivity implements Observer {
 		//		Drawable d = getResources().getIdentifier(null, null, null);
 
 	}
-	
+
 
 	@Override
 	protected void onStart() {
@@ -164,25 +168,11 @@ public class MapUI extends MapActivity implements Observer {
 		private int prioritet;
 		private int status;
 		private MapObject o = null;
-
-		public Touchy(Context context){
-			this.context = context;
-		}
-
-		public boolean onTouchEvent(MotionEvent e, MapView m) {
-			int holdTime = 750;
-			if(e.getAction() == MotionEvent.ACTION_DOWN){
-				start = e.getEventTime();
-				touchedX = (int) e.getX();
-				touchedY = (int) e.getY();
-				touchedPoint = mapView.getProjection().fromPixels(touchedX, touchedY);				
-			}
-			if(e.getAction() == MotionEvent.ACTION_UP){
-				stop = e.getEventTime();
-			}
-
-			if(stop - start > holdTime){
-
+		private Handler handler = new Handler();
+		private Runnable showMenu = new Runnable() {
+			public void run() {
+				Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+				vib.vibrate(100);
 				AlertDialog.Builder builder = new AlertDialog.Builder(context);
 				builder.setTitle("Placera");
 
@@ -200,14 +190,14 @@ public class MapUI extends MapActivity implements Observer {
 
 
 						alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-							
-							public void onClick(DialogInterface dialog, int whichButton) {
+
+							public void onClick(DialogInterface dialog, int whichButton) { 
 								value = input.getText().toString();
-								
+
 								/*
 								 * Om situation sätt prioritet
 								 */
-								
+
 								if(Touchy.this.item == 0){
 									MainView.mapCont.add(o = new Situation(touchedPoint, "Situation", value, R.drawable.situation, SituationPriority.NORMAL),true);
 
@@ -216,29 +206,29 @@ public class MapUI extends MapActivity implements Observer {
 
 									builder.setSingleChoiceItems(prio, -1, new DialogInterface.OnClickListener() {
 										public void onClick(DialogInterface dialog, int item) {
-											
+
 											prioritet = item;
-											
+
 										}
 									});
 
 									builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 										public void onClick(DialogInterface dialog, int whichButton) {
 
-											
+
 											if(Touchy.this.prioritet == 0){
-												
+
 												((Situation) o).setPriority(SituationPriority.HIGH);
 												MainView.mapCont.updateObject(o,true);
 											}
 											if(Touchy.this.prioritet == 1){
-												
-												
+
+
 												((Situation) o).setPriority(SituationPriority.NORMAL);
 												MainView.mapCont.updateObject(o,true);
 											}
 											if(Touchy.this.prioritet == 2){
-												
+
 												((Situation) o).setPriority(SituationPriority.LOW);
 												MainView.mapCont.updateObject(o,true);
 											}
@@ -246,7 +236,7 @@ public class MapUI extends MapActivity implements Observer {
 
 										}
 									});
-									
+
 									builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 										public void onClick(DialogInterface dialog, int whichButton) {
 
@@ -260,7 +250,7 @@ public class MapUI extends MapActivity implements Observer {
 								/*
 								 * Om resurs, sätt prioritet
 								 */
-								
+
 								if(Touchy.this.item == 1){
 									MainView.mapCont.add(o = new Resource(touchedPoint, "Resurs", value, R.drawable.resource, ResourceStatus.BUSY),true);
 
@@ -271,7 +261,7 @@ public class MapUI extends MapActivity implements Observer {
 										public void onClick(DialogInterface dialog, int item) {
 
 											status = item;
-											
+
 										}
 									});
 
@@ -279,7 +269,7 @@ public class MapUI extends MapActivity implements Observer {
 										public void onClick(DialogInterface dialog, int whichButton) {
 
 											status = whichButton;
-											
+
 											if(Touchy.this.status == 0){
 												((Resource) o).setStatus(ResourceStatus.FREE);
 												MainView.mapCont.updateObject(o,true);
@@ -334,11 +324,35 @@ public class MapUI extends MapActivity implements Observer {
 					}
 				});
 				 */
-
 				alert.show();
-				return true;
 			}
+		};
+		public Touchy(Context context){
+			this.context = context;
+		}
+
+		public boolean onTouchEvent(MotionEvent e, MapView m) {
+			int holdTime = 750;
+			if(e.getAction() == MotionEvent.ACTION_DOWN){
+				start = e.getEventTime();
+				touchedX = (int) e.getX();
+				touchedY = (int) e.getY();
+				touchedPoint = mapView.getProjection().fromPixels(touchedX, touchedY);
+				handler.postDelayed(showMenu, holdTime);
+			}
+			if(e.getAction() == MotionEvent.ACTION_UP){
+				handler.removeCallbacks(showMenu);
+			}
+			if (e.getAction() == MotionEvent.ACTION_MOVE) {
+				int x2 = (int) e.getX();
+				int y2 = (int) e.getY();
+				if ((Math.abs(touchedX - x2) > 15) || (Math.abs(touchedY - y2) > 15)) {
+					handler.removeCallbacks(showMenu);
+				}
+			}
+
 			return false;
+
 		}
 	}
 
@@ -356,29 +370,17 @@ public class MapUI extends MapActivity implements Observer {
 	}
 
 	public void drawNewMapObject(final MapObject mo){
-		MapObjectList list = MainView.mapCont.getList(mo);
-		if(list == null){
-			return;
-		}
-
-		if (!mapOverlays.contains(list)){
-			mapOverlays.add((MapObjectList) list);
-		}
-		else{
-			mapOverlays.set(mapOverlays.indexOf(list), list);
-		}
 		runOnUiThread(new Runnable(){
 			public void run() {
 				MapObjectList list = MainView.mapCont.getList(mo);
-				if(list == null){
-					Log.d("MAPUI", "fyufdyfdjyuyudrtufr");
-					return;
+
+				for(int i = 0; i < list.size();i++){
+					Log.d("LISTAN", ((MapObject) list.getItem(i)).getId());
 				}
-				
 				if (!mapOverlays.contains(list)){
-					Log.d("MAPUI", "if");
 					mapOverlays.add((MapObjectList) list);
 				}
+
 				else{
 					Log.d("MAPUI", "else");
 					mapOverlays.set(mapOverlays.indexOf(list), list);
@@ -424,7 +426,6 @@ public class MapUI extends MapActivity implements Observer {
 		//använd mapView.invalidate() om du kör i UI tråden
 	}
 
-	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.mapmenu, menu);
@@ -437,7 +438,6 @@ public class MapUI extends MapActivity implements Observer {
 	//		return true;
 	//	}
 
-	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
 		switch (item.getItemId()) {

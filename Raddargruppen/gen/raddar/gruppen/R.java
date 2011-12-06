@@ -112,7 +112,6 @@ public final class R {
         public static final int linearLayoutSetup=0x7f07002c;
         public static final int linearLayoutSos=0x7f07002e;
         public static final int logButton=0x7f070031;
-        public static final int loginImage=0x7f07000b;
         public static final int low_power_radio_button=0x7f070059;
         public static final int mapButton=0x7f070027;
         public static final int mapview=0x7f070033;
@@ -127,7 +126,6 @@ public final class R {
         public static final int passwordtext1=0x7f07005c;
         public static final int power_program_radio_group=0x7f070057;
         public static final int power_programs_textview=0x7f070056;
-        public static final int presence=0x7f070032;
         public static final int preview=0x7f07004a;
         public static final int readMessage=0x7f070042;
         public static final int readMessageDate=0x7f070040;
@@ -145,6 +143,8 @@ public final class R {
         public static final int sos_meddelande_textview=0x7f07004c;
         public static final int sos_rensa_meddelande=0x7f07004e;
         public static final int sos_send_message_button=0x7f07004f;
+        public static final int statusImage=0x7f07000b;
+        public static final int statusText=0x7f070032;
         public static final int subject=0x7f070048;
         public static final int text=0x7f070015;
         public static final int textView1=0x7f070001;

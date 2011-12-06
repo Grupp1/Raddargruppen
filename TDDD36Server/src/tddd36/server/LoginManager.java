@@ -41,7 +41,9 @@ public class LoginManager {
 						pw.close();
 						return;
 					}else{
-						new Sender(new NotificationMessage("Server", NotificationType.DISCONNECT), username);
+						NotificationMessage nm = (new NotificationMessage("Server", NotificationType.DISCONNECT));
+						nm.setData("En annan klient har loggat in på denna användare. Du kommer nu att loggas ut.");
+						new Sender(nm, username);
 						pw.println("OK_FORCE_LOGOUT");
 						Server.onlineUsers.removeUser(username);
 					}
@@ -80,12 +82,13 @@ public class LoginManager {
 	public static void logoutUser(String username) {
 		if(username==null) return;
 		MapObjectMessage mom = Database.getMapObject(username);
+		InetAddress a = Server.onlineUsers.removeUser(username);
 		if(mom != null){
 			Database.removeMapObject(username);
 			broadcast(mom);
 		}
 		System.out.println(username+" logout");
-		InetAddress a = Server.onlineUsers.removeUser(username);
+		
 		// Kolla om användaren redan är utloggad
 		if (a == null)
 			System.out.println(username + " har loggat ut ");
@@ -94,9 +97,7 @@ public class LoginManager {
 			System.out.println(username + " har loggat ut (" + a.getHostAddress() + ") ");
 	}
 	private static void broadcast(Message m) {
-		InetAddress srcAdr = Server.onlineUsers.getUserAddress(m.getSrcUser());
 		for (InetAddress adr: Server.onlineUsers.getAllAssociations().values()){
-			if(adr == srcAdr) continue;
 			new Sender(m, adr, 4043);
 		}
 
