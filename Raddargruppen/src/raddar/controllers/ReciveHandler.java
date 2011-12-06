@@ -28,6 +28,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
 
 public class ReciveHandler extends Observable implements Runnable {
@@ -71,6 +73,7 @@ public class ReciveHandler extends Observable implements Runnable {
 	 * @param notify true if we should notify the user
 	 */
 	public void newMessage(MessageType mt, final Message m, boolean notify) {
+		
 		if (mt == MessageType.PROBE){
 			Log.d("PROBE", "POBE");
 			NotificationMessage mess = new NotificationMessage(SessionController.getUser(), null);
@@ -83,9 +86,8 @@ public class ReciveHandler extends Observable implements Runnable {
 			// Hur ska klienten tolka att vi inte har kontakt med servern?
 			// notify(ConnectionStatus.DISSCONNECT);
 		}
-		else if (mt == MessageType.TEXT) {
+		else if (mt == MessageType.TEXT||mt == MessageType.IMAGE) {
 			DatabaseController.db.addRow(m, notify);
-
 		} else if (mt == MessageType.SOS) {
 			//((Activity) context).runOnUiThread(new Runnable() {
 			QoSManager.getCurrentActivity().runOnUiThread(new Runnable() {
@@ -125,11 +127,6 @@ public class ReciveHandler extends Observable implements Runnable {
 				}
 
 			});
-		} else if (mt == MessageType.IMAGE) {
-			ImageMessage im = (ImageMessage) m;
-			DatabaseController.db.addImageMessageRow(im);
-
-
 		}else if (mt == MessageType.MAPOBJECT) {
 			MapObject mo = ((MapObjectMessage)m).toMapObject();
 			switch(((MapObjectMessage)m).getMapOperation()){

@@ -6,6 +6,7 @@ import raddar.gruppen.R;
 import raddar.models.Contact;
 import raddar.models.QoSManager;
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.view.Window;
 

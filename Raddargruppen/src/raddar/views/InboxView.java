@@ -7,8 +7,10 @@ import java.util.Observer;
 import raddar.controllers.DatabaseController;
 import raddar.controllers.SessionController;
 import raddar.enums.MessageType;
+import raddar.models.ImageMessage;
 import raddar.models.Message;
 import raddar.models.QoSManager;
+import raddar.models.TextMessage;
 import raddar.gruppen.R;
 import android.app.ListActivity;
 import android.content.Context;
@@ -97,6 +99,8 @@ public class InboxView extends ListActivity implements Observer{
 	}
 	
 	public void update(final Observable observable, final Object data) {
+		if(!(data instanceof TextMessage))
+			return;
 		runOnUiThread(new Runnable(){
 			public void run(){
 				textInbox.add((Message) data);
@@ -133,8 +137,9 @@ public class InboxView extends ListActivity implements Observer{
 				ImageView iv = (ImageView)v.findViewById(R.id.icon);
 				if(m.getType() == MessageType.TEXT)
 					iv.setImageResource(R.drawable.wordwriter);
-				if(m.getType() == MessageType.IMAGE)
+				if(m.getType() == MessageType.IMAGE){
 					iv.setImageResource(R.drawable.picturewriter);
+				}
 				if (tt != null) 
 					tt.setText("Avsändare: "+m.getSrcUser());                            
 				if(bt != null)

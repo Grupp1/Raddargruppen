@@ -1,5 +1,6 @@
 package raddar.views;
 
+import java.io.ByteArrayOutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -9,6 +10,7 @@ import raddar.controllers.SessionController;
 import raddar.enums.MessageType;
 import raddar.models.ImageMessage;
 import raddar.models.QoSManager;
+import raddar.models.TextMessage;
 import raddar.gruppen.R;
 import android.app.Activity;
 import android.content.Intent;
@@ -18,8 +20,10 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.view.View.MeasureSpec;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -35,7 +39,9 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 	private Button choiceButton;
 	private ImageView preview;
 	private String filePath;
-
+	private Bitmap bitmap;
+	private String before;
+	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
@@ -74,7 +80,14 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 			sendButton.setOnClickListener(this);
 			destUser.setOnClickListener(this);
 		}
-
+//		if(SessionController.testBitmap != null)
+//			preview.setImageBitmap(SessionController.testBitmap);
+		
+		preview.setDrawingCacheEnabled(true);
+		preview.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED), 
+	            MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+		preview.layout(0, 0, preview.getMeasuredWidth(), preview.getMeasuredHeight()); 
+		preview.buildDrawingCache(true);
 	}
 
 	public void onClick(View v) {
@@ -85,9 +98,10 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 			startActivityForResult(Intent.createChooser(intent,
 					"Select Picture"), SELECT_PICTURE);
 			//öppnar galleriet där man kan välja bild att bifoga
-
+			
 		}
 		if (v.equals(sendButton)) {
+			
 			//Undersöker om alla fält är skrivna i
 			//TODO: gör nogrannare undersökning
 			String[] temp = new String[2];
@@ -98,7 +112,9 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 					|| temp[1].equals("")) { 
 				Toast.makeText(getApplicationContext(), "Fyll i alla fält",
 						Toast.LENGTH_SHORT).show();
+
 				return;
+			
 				/*if (om bild inte är tillagd){
 				Toast.makeText(getApplicationContext(), "Välj en bild",
 						Toast.LENGTH_SHORT).show();
@@ -120,18 +136,21 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 
 	private void sendMessages(){
 		String[] destUsers = (destUser.getText().toString()+";").split(";");
-		Log.d("number of messages",destUsers.length+"");
-		for(int i = 0; i < destUsers.length;i++){
-
-			ImageMessage m = new ImageMessage(MessageType.IMAGE, SessionController.getUser(), ""
-					+ destUsers[i], filePath);
+		bitmap = preview.getDrawingCache();
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+		byte[] imageBytes = stream.toByteArray();
+		before = Base64.encodeToString(imageBytes,Base64.DEFAULT);
+		
+		for(int i = 0; i < destUsers.length-1;i++){
+			Log.d("IMAGE",destUsers[i]);
+			TextMessage m = new TextMessage(MessageType.IMAGE, SessionController.getUser(), destUsers[i], before);
 			m.setSubject(subject.getText() + "");
-			m.setFilePath(filePath);
 			try {
-				new Sender(m, InetAddress.getByName(raddar.enums.ServerInfo.SERVER_IP), raddar.enums.ServerInfo.SERVER_PORT);
-				DatabaseController.db.addImageMessageRow(m);
-				//	DatabaseController.db.addOutboxRow(m);
-				//	DatabaseController.db.deleteDraftRow(m);
+				new Sender(m);
+				//DatabaseController.db.addImageMessageRow(m);
+				//DatabaseController.db.addOutboxRow(m);
+				//DatabaseController.db.deleteDraftRow(m);
 
 			} catch (UnknownHostException e) {
 				//	DatabaseController.db.addDraftRow(m);

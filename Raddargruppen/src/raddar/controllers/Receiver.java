@@ -42,7 +42,7 @@ public class Receiver implements Runnable {
 				Class c = Class.forName(test);
 				String temp = in.readLine();
 				m = gson.fromJson(temp, c);
-				if(!(m.getType() == MessageType.TEXT))
+				if(!(m.getType() == MessageType.TEXT||m.getType() == MessageType.IMAGE))
 					notify = false;
 				rh.newMessage(m.getType(), m,notify);
 
@@ -50,7 +50,7 @@ public class Receiver implements Runnable {
 			}
 			so.close();
 
-			if (m != null && notify) {
+			if (m != null && notify && (m.getType() == MessageType.TEXT||m.getType() == MessageType.IMAGE)) {
 				Intent intent = new Intent(context, NotificationService.class);
 				String[] message = new String[5];
 				message[0] = m.getSrcUser();
