@@ -27,11 +27,13 @@
 		android:layout_height="wrap_content"
 		android:layout_width="match_parent">
 		<ImageView
-			android:src="@drawable/online_circle_green"
-			android:layout_height="wrap_content"
-			android:layout_width="wrap_content"
-			android:id="@+id/statusImage"
-			android:layout_gravity="right" android:layout_marginRight="5dip" android:layout_marginTop="5dip"></ImageView>
+	android:src="@drawable/online_circle_green"
+	android:layout_height="wrap_content"
+	android:layout_width="wrap_content"
+	android:id="@+id/statusImage"
+	android:layout_gravity="right"
+	android:layout_marginRight="5dip"
+	android:layout_marginTop="5dip"></ImageView>
 
 	</LinearLayout>
 
