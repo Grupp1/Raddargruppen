@@ -104,7 +104,7 @@ public class LoginManager extends Observable {
 					SessionController.getSessionController().changeConnectionStatus(ConnectionStatus.CONNECTED);
 
 				logIn = LoginResponse.ACCEPTED;
-				cache(userName, password);
+				cache(userName, password, salt);
 				sendBufferedMessages();
 				s = null;
 			}
@@ -156,8 +156,9 @@ public class LoginManager extends Observable {
 		 * Encryption.encrypt(password, salt);
 		 */
 		try{
-			ArrayList cachedUser = DatabaseController.db.getCachedUserRow(userName);
-			Log.d("Passwords", "Lösenorden: " + password + " " + cachedUser.get(1) );
+			ArrayList<String> cachedUser = DatabaseController.db.getCachedUserRow(userName);
+			String salt = cachedUser.get(2);
+			password = Encryption.encrypt(password, salt);
 			if (password.equals(cachedUser.get(1))){
 				/*
 				 * StubbornLoginThread försöker logga in mot servern med jämna
@@ -173,8 +174,8 @@ public class LoginManager extends Observable {
 		return LoginResponse.NO_CONNECTION;
 	}
 
-	public static void cache(String userName, String password) {
-		DatabaseController.db.chacheUser(userName, password);
+	public static void cache(String userName, String password, String salt) {
+		DatabaseController.db.chacheUser(userName, password, salt);
 	}
 
 	public static void removeCache(String userName) {

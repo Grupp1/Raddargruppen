@@ -51,10 +51,6 @@ public class StartView extends Activity implements Observer {
 		//LoginManager.cache("Danne", "raddar");
 		//LoginManager.cache("Alice", "longshot");
 		//LoginManager.cache("danan612","raddar");
-		this.deleteDatabase("client_database");
-		LoginManager.cache("lalle", "lalle");
-		DatabaseController.db.clearTable("cachedUsers");
-
 		user = (EditText) this.findViewById(R.id.usertext1);
 		password = (EditText) this.findViewById(R.id.passwordtext1);
 		// Endast för lättare testning

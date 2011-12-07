@@ -37,7 +37,7 @@ public class ClientDatabaseManager extends Observable {
 	private final String[] DRAFT_TABLE_ROWS = new String[] { "msgID", "destUser", "rDate", "subject", "mData"};
 	private final String[] IMAGE_MESSAGE_TABLE_ROWS = new String [] {"msgId", "srcUser", "rDate", "subject", "filePath"};
 	private final String[] BUFFERED_MESSAGE_TABLE_ROWS = new String[] {"gsonString"};
-	private final String[] CACHED_USERS_TABLE_ROWS = new String[] {"userName", "password"};
+	private final String[] CACHED_USERS_TABLE_ROWS = new String[] {"userName", "password", "salt"};
 
 
 	/**********************************************************************
@@ -87,22 +87,20 @@ public class ClientDatabaseManager extends Observable {
 	 * @param userName the user
 	 * @param password the password
 	 */
-	public void chacheUser(String userName, String password){
+	public void chacheUser(String userName, String password, String salt){
 		
 		ContentValues values = new ContentValues();
-		Log.d("cacheUser","Lägger in användarnamn i values");
 		values.put("userName", userName);
-		Log.d("values.put(\"userName\", userName)", values.getAsString("userName"));
-		Log.d("cacheUser","Lägger in lösenord i values");
 		values.put("password", password);
-		Log.d("values.put(\"password\", password)", values.getAsString("password"));
+		values.put("salt", salt);
 		try {
-			Log.d("cacheUser","Lägger in values i db");
+			decacheUser(userName);
 			db.insert("cachedUsers", null, values);
 		} catch (Exception e) {
 			e.printStackTrace();
 			Log.e("Exception", e.toString());
 		}
+		
 		setChanged();
 	}
 	
@@ -409,28 +407,29 @@ public class ClientDatabaseManager extends Observable {
 	 * @return
 	 */
 	public ArrayList<String> getCachedUserRow(String userName){
+		Log.d("USERNAME", userName);
 		ArrayList<String> temp = new ArrayList<String>();
-		Cursor cursor;
+		Cursor cur = null;
 		try{
-			cursor = db.query(
-					"cachedUsers",
-					CACHED_USERS_TABLE_ROWS,
-					null, null, null, null, null);
-			cursor.moveToFirst();
-		//	if (!cursor.isAfterLast()){
-				do
-				{
-					if(userName.equals(cursor.getString(0)))
-						Log.e("Kommer jag hit?", "ja");
-					temp.add(cursor.getString(0));
-					temp.add(cursor.getString(1));
-				}while(cursor.moveToNext());
-		//	}
-			cursor.close();
+			cur = db.query("cachedUsers", CACHED_USERS_TABLE_ROWS , "userName = \'" +userName +"\'", null, null, null, null);
+			
+			cur.moveToFirst();
+			Log.d("Cursor size", ""+cur.getCount());
+			do{
+				if(cur.getString(0).equals(userName)){
+					
+					temp.add(cur.getString(0));
+					temp.add(cur.getString(1));
+					temp.add(cur.getString(2));
+					return temp;
+				}
+			}while(cur.moveToNext());
+		
 		}catch(SQLException e){
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
+		cur.close();
 		return temp;
 	}
 
@@ -616,14 +615,13 @@ public class ClientDatabaseManager extends Observable {
 					"rDate integer," +
 					"subject text," +
 					"mData text)";
-			Log.d("CustomSQLiteOpenHelper","Creating table \'bufferedMessage\'");
 			String bufferedmessageTableQueryString = "create table bufferedMessage (" 
 					+ "msgId integer primary key autoincrement not null," + 
 					"gsonString text)";
-			Log.e("DATABASE!", "CREATING TABLE CACHEDUSERS");
 			String cachedUserQueryString = "create table cachedUsers (" +
 					"userName text," +
-					"password text)";
+					"password text," +
+					"salt)";
 			
 
 			/*
