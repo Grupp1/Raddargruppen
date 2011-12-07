@@ -82,21 +82,28 @@ public class ClientDatabaseManager extends Observable {
 		/*addRow(mange);
 		 * 
 		 */
-		
 	/**
 	 * Adds a user and a password to the cached user table
 	 * @param userName the user
 	 * @param password the password
 	 */
 	public void chacheUser(String userName, String password){
+		
 		ContentValues values = new ContentValues();
-		values.put("username", userName);
+		Log.d("cacheUser","Lägger in användarnamn i values");
+		values.put("userName", userName);
+		Log.d("values.put(\"userName\", userName)", values.getAsString("userName"));
+		Log.d("cacheUser","Lägger in lösenord i values");
 		values.put("password", password);
+		Log.d("values.put(\"password\", password)", values.getAsString("password"));
 		try {
+			Log.d("cacheUser","Lägger in values i db");
 			db.insert("cachedUsers", null, values);
 		} catch (Exception e) {
 			e.printStackTrace();
+			Log.e("Exception", e.toString());
 		}
+		setChanged();
 	}
 	
 	public void decacheUser(String userName){
@@ -395,34 +402,35 @@ public class ClientDatabaseManager extends Observable {
 		db.delete(table, null, null);
 	}
 	
-	public ArrayList getCachedUserRow(String userName){
-		ArrayList temp = new ArrayList();
+	
+	/**
+	 * Returnerar en ArrayList<String> med användare och lösenord från chachedUsers databasen
+	 * @param userName användarnamnet som ska returneras
+	 * @return
+	 */
+	public ArrayList<String> getCachedUserRow(String userName){
+		ArrayList<String> temp = new ArrayList<String>();
+		Cursor cursor;
 		try{
-			
-			Cursor cursor = db.query(
+			cursor = db.query(
 					"cachedUsers",
 					CACHED_USERS_TABLE_ROWS,
-					"userName = '" + userName + "'",
-					null, null, null, null, null
-			);
-			Log.e("CURSOR1", "BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+					null, null, null, null, null);
 			cursor.moveToFirst();
-			Log.e("CURSOR32", "BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-			if(!cursor.isAfterLast()){
-				Log.e("CURSORZ", "BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+		//	if (!cursor.isAfterLast()){
 				do
 				{
+					if(userName.equals(cursor.getString(0)))
+						Log.e("Kommer jag hit?", "ja");
 					temp.add(cursor.getString(0));
-					Log.e("temp", cursor.getString(0));
 					temp.add(cursor.getString(1));
 				}while(cursor.moveToNext());
-			}
+		//	}
 			cursor.close();
 		}catch(SQLException e){
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
-		
 		return temp;
 	}
 

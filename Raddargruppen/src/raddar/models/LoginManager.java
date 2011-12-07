@@ -43,13 +43,13 @@ public class LoginManager extends Observable {
 	 * försöker verifiera med servern. Om klienten inte får kontakt med servern
 	 * så kollar den lokalt i cachen om det finns någon entry sparad.
 	 * 
-	 * @param username
+	 * @param userName
 	 *            Användarnamnet
 	 * @param password
 	 *            Lösenordet
 	 * @return true om verifieringen går bra, false annars
 	 */
-	public void evaluate(String username, String password, boolean firstLogIn) {
+	public void evaluate(String userName, String password, boolean firstLogIn) {
 		try {
 			// Skapa socket som används för att skicka NotificationMessage
 			Socket so = new Socket();
@@ -66,7 +66,7 @@ public class LoginManager extends Observable {
 					so.getInputStream()));
 
 			RequestMessage rm = new RequestMessage(RequestType.SALT);
-			rm.setSrcUser(username);
+			rm.setSrcUser(userName);
 			String send = rm.getClass().getName() + "\r\n";
 			String gg = new Gson().toJson(rm);
 			send += gg;
@@ -80,7 +80,7 @@ public class LoginManager extends Observable {
 			password = Encryption.encrypt(password, salt);
 
 			// Skapa msg med användarnamn och krypterat lösenord
-			NotificationMessage nm = new NotificationMessage(username,
+			NotificationMessage nm = new NotificationMessage(userName,
 					NotificationType.CONNECT, password);
 			send = nm.getClass().getName() + "\r\n";
 			gg = new Gson().toJson(nm);
@@ -99,17 +99,18 @@ public class LoginManager extends Observable {
 
 			if (response.equals("OK")) {
 				SessionController.setPassword(password);
-				SessionController.setUserName(username);
+				SessionController.setUserName(userName);
 				if(SessionController.getSessionController()!=null)
 					SessionController.getSessionController().changeConnectionStatus(ConnectionStatus.CONNECTED);
 
 				logIn = LoginResponse.ACCEPTED;
+				cache(userName, password);
 				sendBufferedMessages();
 				s = null;
 			}
 			else if(response.equals("OK_FORCE_LOGOUT")){
 				SessionController.setPassword(password);
-				SessionController.setUserName(username);
+				SessionController.setUserName(userName);
 				if(SessionController.getSessionController()!=null)
 					SessionController.getSessionController().changeConnectionStatus(ConnectionStatus.CONNECTED);
 				logIn = LoginResponse.USER_ALREADY_LOGGED_IN;
@@ -122,12 +123,12 @@ public class LoginManager extends Observable {
 			// ...har vi en försökande tråd innebär det att vi redan är inloggade lokalt
 			// och då returnerar vi här, annars loggar vi in lokalt
 			if(!firstLogIn && s==null){
-				s = new StubbornLoginThread(username, password);
+				s = new StubbornLoginThread(userName, password);
 				Log.d("LoginManager", "LULZ 3");
 				return;
 			}
 			else if (s == null)
-				logIn = evaluateLocally(username, password);
+				logIn = evaluateLocally(userName, password);
 			else
 				return;
 		}
@@ -156,6 +157,7 @@ public class LoginManager extends Observable {
 		 */
 		try{
 			ArrayList cachedUser = DatabaseController.db.getCachedUserRow(userName);
+			Log.d("Passwords", "Lösenorden: " + password + " " + cachedUser.get(1) );
 			if (password.equals(cachedUser.get(1))){
 				/*
 				 * StubbornLoginThread försöker logga in mot servern med jämna
@@ -173,7 +175,6 @@ public class LoginManager extends Observable {
 
 	public static void cache(String userName, String password) {
 		DatabaseController.db.chacheUser(userName, password);
-		Log.d("CACHELINO", "--------------------------------------------------------------");
 	}
 
 	public static void removeCache(String userName) {

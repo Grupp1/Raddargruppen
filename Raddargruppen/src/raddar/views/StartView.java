@@ -40,28 +40,28 @@ public class StartView extends Activity implements Observer {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.deleteDatabase("client_database");
-
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.start);
 		SessionController.titleBar(this, " - Logga in");
 
-		this.deleteDatabase("client_database");
 		new DatabaseController(this);
 
 		// Lite hårdkodade testanvändare att testa med
-		LoginManager.cache("Borche", "hej123");
-		LoginManager.cache("Danne", "raddar");
-		LoginManager.cache("Alice", "longshot");
-		LoginManager.cache("danan612","raddar");
-
+		//LoginManager.cache("Borche", "hej123");
+		//LoginManager.cache("Danne", "raddar");
+		//LoginManager.cache("Alice", "longshot");
+		//LoginManager.cache("danan612","raddar");
+		this.deleteDatabase("client_database");
+		LoginManager.cache("lalle", "lalle");
+		DatabaseController.db.clearTable("cachedUsers");
 
 		user = (EditText) this.findViewById(R.id.usertext1);
 		password = (EditText) this.findViewById(R.id.passwordtext1);
 		// Endast för lättare testning
-
+		
 		user.setText("lalle");
 		password.setText("lalle");
+		
 
 		final LoginManager lm = new LoginManager();
 		lm.addObserver(this);

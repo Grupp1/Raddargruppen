@@ -157,9 +157,9 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		logButton = (ImageButton)this.findViewById(R.id.logButton);
 		logButton.setOnClickListener(this);
 		
-		statusText = (TextView)this.findViewById(R.id.statusText);
-		statusText.setText("Inloggad som: " +  SessionController.getUser());
-		statusText.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC), Typeface.ITALIC);
+		//statusText = (TextView)this.findViewById(R.id.statusText);
+		//statusText.setText("Inloggad som: " +  SessionController.getUser());
+		//statusText.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC), Typeface.ITALIC);
 		
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
