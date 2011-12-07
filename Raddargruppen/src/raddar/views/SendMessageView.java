@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,73 +40,66 @@ public class SendMessageView extends Activity implements OnClickListener {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.send_message);
 		SessionController.titleBar(this, " - Nytt textmeddelande");
 
+		destUser = (EditText) this.findViewById(R.id.destUser);
+		subject = (EditText) this.findViewById(R.id.subject);
+		messageData = (EditText) this.findViewById(R.id.messageData);
+		sendButton = (Button) this.findViewById(R.id.sendButton);
+
+		Bundle extras = getIntent().getExtras();
 		try {
-			
-			// Utkast
-			
-			Bundle extras = getIntent().getExtras();
+
+			//Utkast
+
 			String[] items = (String[]) extras.getCharSequenceArray("message");
 
-			isDraft = extras.getBoolean("isDraft");
+			//isDraft = extras.getBoolean("isDraft");
 
-			destUser = (EditText) this.findViewById(R.id.destUser);
-			subject = (EditText) this.findViewById(R.id.subject);
-			messageData = (EditText) this.findViewById(R.id.messageData);
+			isDraft = true;
+
+			Log.d("destUser draft", items[0].toString());
 
 			destUser.setText(items[0].toString());
 			subject.setText(items[1].toString());
 			messageData.setText(items[2].toString());
-			sendButton = (Button) this.findViewById(R.id.sendButton);
-			sendButton.setOnClickListener(this);
-			destUser.setOnClickListener(this);
-			destUser.setFocusable(false);
 
 		} catch (Exception e) {
+			Log.d("SendMessageView", "message:"+e.toString());
 
 			try{
-				
-				// Kartan
-				
-				Bundle extras = getIntent().getExtras();
-				String destMapUser = extras.getString("map");
-				
-				isDraft = false;
 
-				Log.d("Map", e.toString());
-				destUser = (EditText) this.findViewById(R.id.destUser);
-				subject = (EditText) this.findViewById(R.id.subject);
-				messageData = (EditText) this.findViewById(R.id.messageData);
+				// Kartan
+
+				String destMapUser = extras.getString("map");
+
+				isDraft = false;
 
 				destUser.setText(destMapUser);
 
-				sendButton = (Button) this.findViewById(R.id.sendButton);
-				sendButton.setOnClickListener(this);
-				destUser.setOnClickListener(this);
-				destUser.setFocusable(false);
-
-
 			} catch (Exception c){
-				
+
 				// Skicka meddelande
 
 				isDraft = false;
-				
+
 				Log.d("SendMessageView", c.toString());
 				destUser = (EditText) this.findViewById(R.id.destUser);
 				subject = (EditText) this.findViewById(R.id.subject);
 				messageData = (EditText) this.findViewById(R.id.messageData);
 				sendButton = (Button) this.findViewById(R.id.sendButton);
-				sendButton.setOnClickListener(this);
-				destUser.setOnClickListener(this);
-				destUser.setFocusable(false);
 
 			}
 		}
+
+		sendButton.setOnClickListener(this);
+		destUser.setOnClickListener(this);
+		destUser.setFocusable(false);
+
 	}
+
 
 	public void onClick(View v) {
 		if (v.equals(sendButton)) {
@@ -143,7 +137,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 	private void sendMessages() {
 		String[] destUsers = (destUser.getText().toString() + ";").split(";");
 		Log.d("number of messages", destUsers.length + "");
-		for (int i = 0; i < destUsers.length; i++) {
+		for (int i = 0; i < destUsers.length-1; i++) {
 			Message m = new TextMessage(SessionController.getUser(), ""
 					+ destUsers[i]);
 			m.setSubject(subject.getText() + "");
@@ -174,7 +168,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 			if(!isDraft){
 				Log.d("isDraft",m.getDestUser().toString());
 				DatabaseController.db.addDraftRow(m);	
-				
+
 			}
 		}
 

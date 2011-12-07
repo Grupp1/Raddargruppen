@@ -140,7 +140,7 @@ public class Database {
 			ResultSet rs = st.executeQuery("SELECT * FROM map_objects WHERE map_id = \'"+id+ "\';");
 			if(rs.next())
 				return new MapObjectMessage(rs.getString(3), rs.getString(2), rs.getString(4),
-					MapOperation.REMOVE,"");
+						MapOperation.REMOVE,"");
 		} catch (SQLException ex) {
 			System.out.println("Fel syntax i MySQL-queryn i getMapObject(). "+ex);
 		}
@@ -410,30 +410,7 @@ public class Database {
 		}
 	}
 
-	/**
-	 * Hämta alla textmeddelanden från en specifik avsändare
-	 * 
-	 * @param username Avsändaren
-	 * @return En ArrayList med alla textmeddelanden från username
-	 */
-	public static ArrayList<TextMessage> retrieveAllTextMessagesFrom(String username) {
-		ArrayList<TextMessage> list = new ArrayList<TextMessage>();
-		try {
-			Statement st = openConnection();
-			ResultSet rs = st.executeQuery("SELECT * FROM messages WHERE fromUser = \'" + username + "\';");
 
-			while (rs.next()) { 
-				TextMessage tm = new TextMessage(MessageType.TEXT, rs.getString(3), rs.getString(4));
-				tm.setDate(rs.getString(5));
-				tm.setSubject(rs.getString(6));
-				tm.setMessage(rs.getString(7));
-				list.add(tm);
-			}
-		} catch (SQLException ex) {
-			System.out.println("Fel syntax i MySQL-queryn i getAllTextMessagesFrom(). ");
-		}
-		return list;
-	}
 	/**
 	 * Hämta buffrade meddelanden till en viss mottagare
 	 * @param username Mottagarens användarnamn
@@ -446,7 +423,7 @@ public class Database {
 			ResultSet rs = st.executeQuery("SELECT * FROM bufferedmessages WHERE toUser = \'" + username + "\';");
 
 			while (rs.next()) { 
-				TextMessage tm = new TextMessage(MessageType.TEXT, rs.getString(3), rs.getString(4));
+				TextMessage tm = new TextMessage(MessageType.convert(rs.getString(2)), rs.getString(3), rs.getString(4));
 				tm.setDate(rs.getString(5));
 				tm.setSubject(rs.getString(6));
 				tm.setMessage(rs.getString(7));
@@ -470,9 +447,8 @@ public class Database {
 		try {
 			Statement st = openConnection();
 			ResultSet rs = st.executeQuery("SELECT * FROM messages WHERE toUser = \'" + username + "\';");
-
 			while (rs.next()) { 
-				TextMessage tm = new TextMessage(MessageType.TEXT, rs.getString(3), rs.getString(4));
+				TextMessage tm = new TextMessage(MessageType.convert(rs.getString(2)), rs.getString(3), rs.getString(4));
 				tm.setDate(rs.getString(5));
 				tm.setSubject(rs.getString(6));
 				tm.setMessage(rs.getString(7));
@@ -481,6 +457,7 @@ public class Database {
 		} catch (SQLException ex) {
 			System.out.println("Fel syntax i MySQL-queryn i getAllTextMessagesTo(). ");
 		}
+		System.out.println(list.size());
 		return list;
 	}
 

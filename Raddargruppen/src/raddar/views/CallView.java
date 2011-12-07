@@ -16,6 +16,7 @@ import android.net.sip.SipProfile;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -44,6 +45,7 @@ public class CallView extends Activity implements OnClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.walkietalkie);
 		SessionController.titleBar(this, " - Samtal");
 		Bundle extras = getIntent().getExtras();

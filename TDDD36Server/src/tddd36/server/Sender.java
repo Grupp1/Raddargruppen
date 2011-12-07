@@ -6,6 +6,10 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+
 import raddar.models.Message;
 import raddar.models.TextMessage;
 
@@ -57,12 +61,25 @@ public class Sender implements Runnable {
 	}
 
 	
+	/**
+	 * Skickar ett meddeladne till alla som är online.
+	 * @param m meddeladnen som ska skickas.
+	 */
+	public static void broadcast(Message m) {
+		for (InetAddress adr: Server.onlineUsers.getAllAssociations().values()){
+			//if(adr == srcAdr) continue; //Behövs inte i sender?
+			new Sender(m, adr, 4043);
+		}
+
+	}
+	
 	public Sender(ArrayList<Message> list, InetAddress toUser){
 		this.messages = list;
 		adr = toUser;
 		port = 4043;
 		thread.start();
 	}
+
 
 	@Override
 	public void run() {
@@ -80,7 +97,11 @@ public class Sender implements Runnable {
 				return;
 			}
 			// Skapa en socket för att kunna skicka meddelandet till mottagaren
-			Socket rSocket = new Socket(adr, port);
+			//Socket rSocket = new Socket(adr, port);
+			SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+			SSLSocket sslsocket = (SSLSocket) sslsocketfactory.createSocket(adr, port);
+			sslsocket.setEnabledCipherSuites(new String[] { "SSL_DH_anon_WITH_RC4_128_MD5" });
+			SSLSession sslsession = sslsocket.getSession();
 			PrintWriter out = null;
 
 			if(messages!=null){
@@ -88,7 +109,7 @@ public class Sender implements Runnable {
 					Gson gson = new Gson();
 					String send = o.getClass().getName()+"\r\n";
 					send +=	gson.toJson(o);
-					out = new PrintWriter(rSocket.getOutputStream(), true);
+					out = new PrintWriter(sslsocket.getOutputStream(), true);
 					out.println(send);
 				}
 			}
@@ -98,7 +119,7 @@ public class Sender implements Runnable {
 			//+ messages.get(0).getDestUser());
 			if(out != null)
 				out.close();
-			rSocket.close();
+			sslsocket.close();
 
 		} catch (IOException e) {
 

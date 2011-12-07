@@ -22,7 +22,6 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
 	private Context mContext;
 	private EditText input;
-	//private String value;
 	private MapObject item;
 	private int whichItem;
 
@@ -113,9 +112,6 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 		}
 
-
-
-
 		/*
 		 * Ta bort från kartan. Går ej att ta bort sig själv
 		 */
@@ -142,39 +138,35 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 					alertDialog.setNegativeButton("Nej", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int whichButton) {
+						
 						}
 					});
 					alertDialog.show();
 				}
 			});
-		}else{
-
-			alert.setButton2("Ring/Skicka meddelande", new DialogInterface.OnClickListener() {
+		}
+	
+		// Ringa och skicka meddelande till instanser av You som inte är dig själv
+		if (item instanceof You && !(item.getId().equals(SessionController.getUser()))){
+			alert.setButton("Ring", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
-
-					AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
-
-					alertDialog.setTitle("Vill du ringa eller skicka meddelande?");
-
-					AlertDialog alert = alertDialog.create();
-
-					alert.setButton("Ring", new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int whichButton) {
-							MainView.mapCont.callUser(item.getAddedBy());
-
-						}
-					});
-					alert.setButton2("Skicka meddelande", new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int whichButton) {
-							MainView.mapCont.sendMessage(item.getAddedBy());
-
-						}
-					});
-					alert.show();
-
+					MainView.mapCont.callUser(item.getAddedBy());
+				}
+			});
+			alert.setButton2("Skicka bildmeddelande", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					MainView.mapCont.sendImageMessage(item.getAddedBy());
+				}
+			});
+			alert.setButton3("Skicka textmeddelande", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					MainView.mapCont.sendTextMessage(item.getAddedBy());
 				}
 			});
 		}
+		
+		
+		
 		//		/*
 		//		 * Ändra prioritet på situation på kartan
 		//		 */
@@ -290,11 +282,23 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 				});
 			}
 			alert.show();
-
+		}
+			
+			return true;
 
 		}
 
-		return true;
+	
+			
+
+	public void addMapObject(MapObject o){
+		String oId = o.getId();
+		for(OverlayItem mo:mOverlays){
+			if(((MapObject)mo).getId().equals(oId))
+				return;;
+		}
+		mOverlays.add(o);
+		populate();
 	}
 
 	public void removeMapObject(final MapObject o) {
@@ -302,15 +306,14 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 			public void run() {
 				Log.d("MAPOBJECTLIST", "REMOVE");
 				String oId = o.getId();
-				for(OverlayItem mo:mOverlays){
-					if(((MapObject)mo).getId().equals(oId)){
-						Log.d("MAPOBJECTLIST","REMOVE  "+mOverlays.remove(mo));
-						setLastFocusedIndex(-1);
-						populate();
-						Log.d("MAPOBJECTLIST", "REMOVE "+mo.getTitle());
+				for(int i = 0; i < mOverlays.size(); i++){
+					if(((MapObject)mOverlays.get(i)).getId().equals(oId)){
+						Log.d("MAPOBJECTLIST","REMOVE  "+mOverlays.remove(mOverlays.remove(i)));
 						return;
 					}
 				}
+				setLastFocusedIndex(-1);
+				populate();
 			}
 		});
 	}

@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,6 +37,7 @@ public class SendSOSView extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.send_sos_message);
 		SessionController.titleBar(this, " - Skicka SOS-meddelande");
 
@@ -67,27 +69,33 @@ public class SendSOSView extends Activity {
 	
 	private void startAlarm() {
 		txt = et.getText().toString();
-		GeoPoint point = MainView.mapCont.getYou().getPoint();
-		SOSMessage sm = new SOSMessage(txt, SessionController.getUser(), SOSType.ALARM,
-				point.getLatitudeE6(),point.getLongitudeE6());
+		MainView.mapCont.getYou().setSOS(true);
+		SOSMessage sm = new SOSMessage(txt, SessionController.getUser(),
+				MainView.mapCont.getYou().getPoint().getLatitudeE6(),
+				MainView.mapCont.getYou().getPoint().getLatitudeE6(),
+				SOSType.ALARM, MainView.mapCont.getYou().getStatus(),
+				MainView.mapCont.getYou().isSOS());
 		try {
 			new Sender(sm, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
 			SOS_ALARM_IS_ACTIVE = true;
 		} catch (UnknownHostException e) {
-			Log.d("BORCHE", "startAlarm() is SendSOSView.java");
+			Log.d("SendSOS", "startAlarm() is SendSOSView.java");
 		}
 	}
 	
 	private void cancelAlarm() {
 		txt = "";
-		GeoPoint point = MainView.mapCont.getYou().getPoint();
-		SOSMessage sm = new SOSMessage(SessionController.getUser(),"", SOSType.CANCEL_ALARM,
-				point.getLatitudeE6(),point.getLongitudeE6());
+		MainView.mapCont.getYou().setSOS(false);
+		SOSMessage sm = new SOSMessage(txt, SessionController.getUser(),
+				MainView.mapCont.getYou().getPoint().getLatitudeE6(),
+				MainView.mapCont.getYou().getPoint().getLatitudeE6(),
+				SOSType.ALARM, MainView.mapCont.getYou().getStatus(),
+				MainView.mapCont.getYou().isSOS());
 		try {
 			new Sender(sm, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
 			SOS_ALARM_IS_ACTIVE = false;
 		} catch (UnknownHostException e) {
-			Log.d("BORCHE", "cancelAlarm() is SendSOSView.java");
+			Log.d("SendSOS", "cancelAlarm() is SendSOSView.java");
 		}
 	}
 	

@@ -10,6 +10,7 @@ import java.util.Observer;
 
 import raddar.enums.MapOperation;
 import raddar.enums.ResourceStatus;
+import raddar.gruppen.R;
 import raddar.models.GPSModel;
 import raddar.models.MapModel;
 import raddar.models.MapObject;
@@ -18,7 +19,6 @@ import raddar.models.MapObjectMessage;
 import raddar.models.You;
 import raddar.views.MainView;
 import raddar.views.MapUI;
-import raddar.gruppen.R;
 import android.location.Address;
 import android.location.Geocoder;
 import android.util.Log;
@@ -36,11 +36,6 @@ public class MapCont implements Observer, Runnable{
 	public boolean areYouFind = false;
 	private You you;
 	private Geocoder geocoder;
-	/**
-	 * En timer som notifierar controllern att kolla om anslutning till servern finns
-	 */
-	//private ConnectionTimer timer;
-	//private int updateTime = 5000;
 
 	/*
 	 * Skickar vidare operationer i en ny tråd till MapModel 
@@ -54,8 +49,6 @@ public class MapCont implements Observer, Runnable{
 	public void declareMapUI(MapUI mapUI){
 		this.mapUI = mapUI;
 		mapModel = new MapModel(mapUI);
-
-		//mapModel.addObserver(this);
 		geocoder = new Geocoder(mapUI.getBaseContext(), Locale.getDefault());
 
 		if (!thread.isAlive()){
@@ -65,8 +58,8 @@ public class MapCont implements Observer, Runnable{
 	}
 	public MapObjectList getList(MapObject mo){
 		Log.d("GET MAP OBJECT LIST",""+mo.getTitle());
-		if(mapModel==null)
-			return null;
+//		if(mapModel==null)
+//			return null;
 		return mapModel.getList(mo);
 	}
 
@@ -96,12 +89,11 @@ public class MapCont implements Observer, Runnable{
 	}
 
 	public void updateObject(MapObject o,boolean sendToServer){
-		Log.d("UpdateObject","MapCont"+o.getTitle());
+		Log.d("UpdateObject","MapCont: "+o.getTitle());
 		if(mapUI!=null){
-			mapUI.drawNewMapObject(o);
 			mapModel.updateObject(o);
 			o.updateData(geocoder);
-			Log.d("HEEEEEEEEEEEEEEEEEEEEEEEEEJ", "HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEJ");
+			mapUI.drawNewMapObject(o);
 		}
 		if(sendToServer){
 			Gson gson = new Gson();
@@ -133,14 +125,21 @@ public class MapCont implements Observer, Runnable{
 		}
 	}
 
+	public boolean animateTo(GeoPoint point){
+		try{
+			mapUI.controller.animateTo(point);
+			return true;
+		}catch(NullPointerException ne){
+			return false;
+		}
+	}
+	
 	public void removeObject(MapObject o,boolean notify){
 		Log.d("RemoveObject", "MapCont:"+o.getTitle());
 		if(mapModel != null){
 			mapModel.removeObject(o);
-			if(!notify){
-				mapUI.drawNewMapObject(o);
-			}else{
-				mapUI.drawNewMapObject(o);
+			mapUI.drawNewMapObject(o);
+			if(notify){
 				Gson gson = new Gson();
 				try{
 					MapObjectMessage mom = new MapObjectMessage(gson.toJson(o),
@@ -149,7 +148,6 @@ public class MapCont implements Observer, Runnable{
 				}
 				catch (UnknownHostException e) {
 				}
-
 			}
 		}
 		DatabaseController.db.deleteRow(o);
@@ -205,12 +203,16 @@ public class MapCont implements Observer, Runnable{
 		return display;
 	}
 	
-	public void sendMessage(String user){
-		mapModel.sendMessage(user);
+	public void sendTextMessage(String user){
+		mapUI.sendTextMessage(user);
+	}
+	
+	public void sendImageMessage(String user){
+		mapUI.sendImageMessage(user);
 	}
 	
 	public void callUser(String user){
-		mapModel.callUser(user);
+		mapUI.callUser(user);
 	}
 
 	public void renewYou() {

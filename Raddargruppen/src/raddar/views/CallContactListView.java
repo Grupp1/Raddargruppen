@@ -15,10 +15,12 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -37,16 +39,18 @@ public class CallContactListView extends ListActivity implements Observer{
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		SessionController.titleBar(this, " - Samtal");
 
-		contacts = DatabaseController.db.getAllRowsAsArrays("contact");
+		//contacts = DatabaseController.db.getAllRowsAsArrays("contact");
+		contacts = SessionController.getOnlineContacts();
 		DatabaseController.db.addObserver(this);
-		Collections.sort(contacts,new Comparator<Contact>(){
+		/*Collections.sort(contacts,new Comparator<Contact>(){
 			public int compare(Contact object1, Contact object2) {
 				return object1.getUserName().compareToIgnoreCase(object2.getUserName());
 			}
 
-		});
+		});*/
 		ia = new ContactAdapter(this, R.layout.call_contact_list, contacts);
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
@@ -78,13 +82,15 @@ public class CallContactListView extends ListActivity implements Observer{
 		}
 
 		public View getView(int pos, View convertView, ViewGroup parent) {
+			//TODO Programmet ritar nu ut alla kontaktr utan att fylla i namnen. Det ska inte ens rita ut dem!
+			
 			View v = convertView;
 			final Contact c = contacts.get(pos);
 			if (v == null) {
 				LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				v = vi.inflate(R.layout.call_contact_list, null);
 			}
-			if (c != null) {
+			if ((c != null) /* && SessionController.isOnline(c.getUserName())*/) {
 				TextView tt = (TextView) v.findViewById(R.id.label);
 				tt.setText(c.getUserName());
 			}

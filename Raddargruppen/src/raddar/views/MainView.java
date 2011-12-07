@@ -26,12 +26,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Typeface;
 import android.os.BatteryManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainView extends Activity implements OnClickListener, Observer {
@@ -44,7 +48,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	private ImageButton sosButton;
 	private ImageButton setupButton;
 	private ImageButton logButton;
-	private ImageButton connectionButton;
+	private TextView statusText;
 	public static MapCont mapCont;
 	public static MainView theOne;
 	private Bundle extras;
@@ -70,7 +74,9 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.main);
+		
 		SessionController.titleBar(this, " ");
 		extras = getIntent().getExtras();
 		theOne = this;
@@ -79,14 +85,14 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		/**
 		 * Initierar kartans controller för att kunna få gps koordinaterna för sin position
 		 */
-		Log.d("MAINVIEW",new SessionController(extras.get("user").toString())+" ");
-		new SessionController(extras.get("user").toString());
-		//new SipController(this);
+		new SessionController(extras.get("user").toString()).addObserver(this);
 		mapCont = new MapCont(MainView.this);
+		new SipController(this);
 		new ReciveHandler(this).addObserver(this);
 
 		String level = BatteryManager.EXTRA_LEVEL;
 		Log.d("EXTRA_LEVEL", level);
+		
 
 		//		controller = new InternalComManager();
 		//		controller.setUser(extras.get("user").toString());
@@ -98,6 +104,18 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		new SessionController(extras.get("user").toString()).addObserver(this);
 		//		new DatabaseController(this);
 		new ReciveHandler(this).addObserver(this);
+		
+		
+		
+//		try {
+//			new Sender(new RequestMessage(RequestType.MESSAGE));
+//			new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
+//			new Sender(new RequestMessage(RequestType.CONTACTS));
+//			new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
+//		} catch (UnknownHostException e) {
+//			e.printStackTrace();
+//		}
+		
 
 
 		callButton = (ImageButton)this.findViewById(R.id.callButton);
@@ -123,16 +141,16 @@ public class MainView extends Activity implements OnClickListener, Observer {
 
 		logButton = (ImageButton)this.findViewById(R.id.logButton);
 		logButton.setOnClickListener(this);
+		
 
-		connectionButton = (ImageButton) findViewById(R.id.presence);
-		connectionButton.setOnClickListener(this);
-		if (extras.get("connectionStatus").equals(ConnectionStatus.CONNECTED)){
-			connectionButton.setImageResource(R.drawable.connected);
-		}
-		else if (extras.get("connectionStatus").equals(ConnectionStatus.DISCONNECTED)){
-			connectionButton.setImageResource(R.drawable.disconnected);
-		}
-		update(SessionController.getSessionController(),ConnectionStatus.CONNECTED);
+		statusText = (TextView)this.findViewById(R.id.statusText);
+		
+		statusText.setText("Inloggad som: " +  SessionController.getUser());
+		statusText.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC), Typeface.ITALIC);
+		
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
+		SessionController.getSessionController().changeConnectionStatus((ConnectionStatus)extras.get("connectionStatus"));
 	}
 
 	public void onClick(View v) {
@@ -168,10 +186,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		else if(v == logButton){
 			showLogoutWindow();
 		}
-		else if (v == connectionButton){
-			Toast.makeText(getBaseContext(), extras.get("connectionStatus").toString()+", inloggad som: "
-					+SessionController.getUser(), Toast.LENGTH_LONG).show();
-		}
+		
 	}
 	private void showLogoutWindow(){
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -201,12 +216,22 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		Log.d("koaz","KOAZ");
 		SessionController.getSessionController().deleteObserver(this);
 		SipController.onClose();
 		// Notifiera servern att vi går offline
 		NotificationMessage nm = new NotificationMessage(SessionController.getUser(), 
 				NotificationType.DISCONNECT);
+		
+		//TESTTESTETSTETTST
+//		Gson gson = new Gson();
+//		try{
+//			MapObjectMessage mom = new MapObjectMessage(gson.toJson(mapCont.getYou()),
+//					(mapCont.getYou()).getClass().getName(),mapCont.getYou().getId(),MapOperation.UPDATE);
+//			new Sender(mom);
+//		}
+//		catch (UnknownHostException e) {
+//		}
+		
 		try {
 			// Skicka meddelandet
 			new Sender(nm);		
@@ -227,27 +252,31 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	public void update(Observable observable, final Object data) {
 		runOnUiThread(new Runnable(){
 			public void run(){
+				Log.d("STATUS","NUSÅ "+data.toString());
 				if(data != null && data instanceof Message)
 					Toast.makeText(getApplicationContext(), "Meddelande från "+
 							((Message)data).getSrcUser()
 							,Toast.LENGTH_LONG).show();
 
 				if(data == ConnectionStatus.CONNECTED){
-					connectionButton.setImageResource(R.drawable.connected);
-					Toast.makeText(getApplicationContext(), "Ansluten till servern, inloggad som: "+SessionController.getUser()
+					Log.d("STATUS","CONNECTED");
+					Toast.makeText(getApplicationContext(), "Ansluten till servern"
 							, Toast.LENGTH_LONG).show();
 					DatabaseController.db.clearDatabase();
 					mapCont.renewYou();
 					try {
 						new Sender(new RequestMessage(RequestType.MESSAGE));
 						new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
+						DatabaseController.db.clearTable("contact");
 						new Sender(new RequestMessage(RequestType.CONTACTS));
 						new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
+						new Sender(new RequestMessage(RequestType.ONLINE_CONTACTS));
 					} catch (UnknownHostException e) {
 						e.printStackTrace();
 					}
+					
 				}else if (data == ConnectionStatus.DISCONNECTED){
-					connectionButton.setImageResource(R.drawable.disconnected);
+					Log.d("STATUS","DISCONNECTED");
 					Toast.makeText(getApplicationContext(), "Tappad anslutning mot servern",Toast.LENGTH_LONG).show();
 				}
 				else if (data instanceof String){
@@ -282,10 +311,12 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	public void enableButtons() {
 		callButton.setEnabled(true);
 		serviceButton.setEnabled(true);
+		contactButton.setEnabled(true);
 	}
 
 	public void disableButtons() {
 		callButton.setEnabled(false);
 		serviceButton.setEnabled(false);
+		contactButton.setEnabled(false);
 	}
 }
