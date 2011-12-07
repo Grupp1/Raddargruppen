@@ -3,7 +3,6 @@ package tddd36.server;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
-import java.net.Socket;
 import java.util.ArrayList;
 
 import javax.net.ssl.SSLSession;

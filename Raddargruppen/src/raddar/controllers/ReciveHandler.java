@@ -52,15 +52,15 @@ public class ReciveHandler extends Observable implements Runnable {
 	 */
 	public void run() {
 		try {
-			// Skapa en ServerSocket för att lyssna på inkommande meddelanden
+			// Skapa en ServerSocket fï¿½r att lyssna pï¿½ inkommande meddelanden
 			//ServerSocket so = new ServerSocket(ServerInfo.SERVER_PORT);
 			SSLServerSocketFactory sslserversocketfactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
 			SSLServerSocket sslserversocket = (SSLServerSocket) sslserversocketfactory.createServerSocket(ServerInfo.SERVER_PORT);
 			sslserversocket.setEnabledCipherSuites(new String[] { "SSL_DH_anon_WITH_RC4_128_MD5" });
 			
 			while (true) {
-				// När ett inkommande meddelande tas emot skapa en ny Receiver
-				// som körs i en egen tråd
+				// Nï¿½r ett inkommande meddelande tas emot skapa en ny Receiver
+				// som kï¿½rs i en egen trï¿½d
 				new Receiver((SSLSocket) sslserversocket.accept(), this, context);
 				notifyObservers(ConnectionStatus.CONNECTED);
 			}
@@ -94,7 +94,7 @@ public class ReciveHandler extends Observable implements Runnable {
 			// notify(ConnectionStatus.DISSCONNECT);
 		}
 		else if (mt == MessageType.TEXT||mt == MessageType.IMAGE) {
-			DatabaseController.db.addRow(m, notify);
+			DatabaseController.db.addRow(m);
 		} else if (mt == MessageType.SOS) {
 			//((Activity) context).runOnUiThread(new Runnable() {
 			QoSManager.getCurrentActivity().runOnUiThread(new Runnable() {
@@ -109,14 +109,14 @@ public class ReciveHandler extends Observable implements Runnable {
 						Log.d("SOS", "add: "+m.getSrcUser());
 						AlertDialog.Builder alert = new AlertDialog.Builder(QoSManager.getCurrentActivity());
 
-						alert.setTitle("SOS-meddelande från: "+m.getSrcUser());
+						alert.setTitle("SOS-meddelande frï¿½n: "+m.getSrcUser());
 						alert.setMessage(m.getData());
 
-						alert.setPositiveButton("Gå till kartan",
+						alert.setPositiveButton("Gï¿½ till kartan",
 								new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
-								// Gå till kartan
+								// Gï¿½ till kartan
 								Intent intent = new Intent(QoSManager.getCurrentActivity(),MapUI.class);
 								intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 								QoSManager.getCurrentActivity().startActivity(intent);
@@ -165,7 +165,8 @@ public class ReciveHandler extends Observable implements Runnable {
 		}
 		else if(mt == MessageType.CONTACT){
 			if(((ContactMessage)m).getContact().equals(SessionController.getUser())){
-				return;
+				//TAGIT BORT RETURN FÃ–R LÃ„TTARE TEST
+				//return;
 			}
 			DatabaseController.db.addRow(((ContactMessage)m).toContact());
 		}
@@ -173,11 +174,11 @@ public class ReciveHandler extends Observable implements Runnable {
 			if(!((OnlineUsersMessage)m).getUserName().equals(SessionController.getUser())){
 				switch(((OnlineUsersMessage) m).getOnlineOperation()){
 				case ADD:
-					SessionController.addOnlineUser(((OnlineUsersMessage)m).getUserName());
+					SessionController.getSessionController().addOnlineUser(((OnlineUsersMessage)m).getUserName());
 					Log.d("ONLINE_USER TRUE", ((OnlineUsersMessage)m).getUserName());
 					break;
 				case REMOVE:
-					SessionController.removeOnlineUser(((OnlineUsersMessage)m).getUserName());
+					SessionController.getSessionController().removeOnlineUser(((OnlineUsersMessage)m).getUserName());
 					Log.d("ONLINE_USER FALSE", ((OnlineUsersMessage)m).getUserName());
 					break;
 				default:

@@ -15,28 +15,28 @@ import raddar.models.NotificationMessage;
 public class LoginManager {
 
 	/**
-	 * Verifiera att en användare som försöker logga in har skrivit in rätt
-	 * användarnamn och rätt lösenord. Om inloggningsuppgifterna är giltiga
-	 * så läggs användaren med dess IP-adress till i Serverns lista över
+	 * Verifiera att en anvï¿½ndare som fï¿½rsï¿½ker logga in har skrivit in rï¿½tt
+	 * anvï¿½ndarnamn och rï¿½tt lï¿½senord. Om inloggningsuppgifterna ï¿½r giltiga
+	 * sï¿½ lï¿½ggs anvï¿½ndaren med dess IP-adress till i Serverns lista ï¿½ver
 	 * associerade IP-adresser och ett "OK" skickas tillbaka till klienten.
 	 * 
 	 * Annars associeras ingenting och ett "NOT OK" skickas tillbaka till 
 	 * klienten.
 	 * 
-	 * @param username Användarnamnet
-	 * @param password Lösenordet
+	 * @param username Anvï¿½ndarnamnet
+	 * @param password Lï¿½senordet
 	 * @param so Socket via kommunikationen sker
 	 */
 	public static void evaluateUser(String username, String password, SSLSocket so) {
-		// Om användaren har loggat in med korrekt lösenord
+		// Om anvï¿½ndaren har loggat in med korrekt lï¿½senord
 		PrintWriter pw;
 
 		if (Database.evalutateUser(username, password)) {
 			try {
-				// Skapa utströmmen till klienten
+				// Skapa utstrï¿½mmen till klienten
 				pw = new PrintWriter(so.getOutputStream(), true);
 				if(Server.onlineUsers.getUserAddress(username)!=null){
-					System.out.println(username+" har försökt logga in, men är redan inloggad på ip-adressen "
+					System.out.println(username+" har fï¿½rsï¿½kt logga in, men ï¿½r redan inloggad pï¿½ ip-adressen "
 							+ Server.onlineUsers.getUserAddress(username));
 					if(Server.onlineUsers.getUserAddress(username).equals(so.getInetAddress())){
 						pw.println("OK");
@@ -44,27 +44,28 @@ public class LoginManager {
 						return;
 					}else{
 						NotificationMessage nm = (new NotificationMessage("Server", NotificationType.DISCONNECT));
-						nm.setData("En annan klient har loggat in på denna användare. Du kommer nu att loggas ut.");
+						nm.setData("En annan klient har loggat in pï¿½ denna anvï¿½ndare. Du kommer nu att loggas ut.");
 						new Sender(nm, username);
 						pw.println("OK_FORCE_LOGOUT");
 						Server.onlineUsers.removeUser(username);
 					}
 				}else{
-					// Svara med att det är OK
+					// Svara med att det ï¿½r OK
 					pw.println("OK");
 				}
 				pw.close();
 				System.out.println(username + " har loggat in (" + so.getInetAddress().getHostAddress() + ") ");
-
-				// Lägg till användaren i listan över inloggade användare
+				
+				// Lï¿½gg till anvï¿½ndaren i listan ï¿½ver inloggade anvï¿½ndare
 
 				Server.onlineUsers.addUser(username, so.getInetAddress());
+				System.out.println("AnvÃ¤ndare online: "+Server.onlineUsers.onlineUsers());
 			} catch (IOException e) {
 				System.out.println("Could not respond with \"OK\" to client attempting to Log in. Socket error? ");
 				e.printStackTrace();
 			}
-		} else {	// Här hamnar vi när användarnanm eller lösenord är fel
-			System.out.println("Ogiltigt användarnamn eller lösenord. ");
+		} else {	// Hï¿½r hamnar vi nï¿½r anvï¿½ndarnanm eller lï¿½senord ï¿½r fel
+			System.out.println("Ogiltigt anvï¿½ndarnamn eller lï¿½senord. ");
 			try {
 				pw = new PrintWriter(so.getOutputStream(), true);
 				pw.println("NOT OK");
@@ -77,9 +78,9 @@ public class LoginManager {
 	}
 
 	/**
-	 * Logga ut en användare och avassociera dennes IP-adress
+	 * Logga ut en anvï¿½ndare och avassociera dennes IP-adress
 	 * 
-	 * @param username Användaren som ska loggas ut
+	 * @param username Anvï¿½ndaren som ska loggas ut
 	 */
 	public static void logoutUser(String username) {
 		if(username==null) return;
@@ -91,7 +92,7 @@ public class LoginManager {
 		}
 		System.out.println(username+" logout");
 		
-		// Kolla om användaren redan är utloggad
+		// Kolla om anvï¿½ndaren redan ï¿½r utloggad
 		if (a == null)
 			System.out.println(username + " har loggat ut ");
 		// ...annars loggar vi ut denne.

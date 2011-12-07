@@ -1,6 +1,10 @@
 package raddar.views;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Observable;
+import java.util.Observer;
 
 import raddar.controllers.DatabaseController;
 import raddar.controllers.SessionController;
@@ -27,7 +31,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class ContactListView extends ListActivity implements OnClickListener {
+public class ContactListView extends ListActivity implements OnClickListener,Observer {
 	private ImageView statusImage;
 	private static final int RESULT_FIRST_USER_EDIT = 5;
 	private ContactAdapter ia;
@@ -42,10 +46,13 @@ public class ContactListView extends ListActivity implements OnClickListener {
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		SessionController.titleBar(this, " - Kontaktlista");
 		contacts = DatabaseController.db.getAllRowsAsArrays("contact");
-		// for(int i = 0;i <10;i++)
-		// contacts.add(new Contact("Peter"+i, false));
+		DatabaseController.db.addObserver(this);
 		ia = new ContactAdapter(this, R.layout.contact_list, contacts);
-		
+		Collections.sort(contacts,new Comparator<Contact>(){
+			public int compare(Contact object1, Contact object2) {
+				return object1.getUserName().compareToIgnoreCase(object2.getUserName());
+			}
+		});
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
 		setListAdapter(ia);
@@ -149,4 +156,19 @@ public class ContactListView extends ListActivity implements OnClickListener {
 		QoSManager.setPowerMode();
 	}
 
+	public void update(Observable observable,final Object data) {
+		if(data instanceof Contact){
+			runOnUiThread(new Runnable(){
+				public void run() {
+					contacts.add((Contact)data);
+					Collections.sort(contacts,new Comparator<Contact>(){
+						public int compare(Contact object1, Contact object2) {
+							return object1.getUserName().compareToIgnoreCase(object2.getUserName());
+						}
+					});
+					ia.notifyDataSetChanged();	
+				}
+			});
+		}
+	}
 }
