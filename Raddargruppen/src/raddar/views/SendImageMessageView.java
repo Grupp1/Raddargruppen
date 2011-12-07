@@ -56,30 +56,24 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 		destUser.setOnClickListener(this);
 		destUser.setFocusable(false);
 		
-		
 
+		Bundle extras = getIntent().getExtras();
 		try {
-			Bundle extras = getIntent().getExtras();
 			String[] items = (String[]) extras.getCharSequenceArray("message");
-
-			destUser = (EditText) this.findViewById(R.id.destUser);
-			subject = (EditText) this.findViewById(R.id.subject);
-
 			destUser.setText(items[0].toString());
 			subject.setText(items[1].toString());
-			sendButton = (Button) this.findViewById(R.id.sendButton);
-			sendButton.setOnClickListener(this);
-			destUser.setOnClickListener(this);
-
-		} catch (Exception e) {
-
-			Log.d("SendMessageView", e.toString());
-			destUser = (EditText) this.findViewById(R.id.destUser);
-			subject = (EditText) this.findViewById(R.id.subject);
-			sendButton = (Button) this.findViewById(R.id.sendButton);
-			sendButton.setOnClickListener(this);
-			destUser.setOnClickListener(this);
+		} catch (Exception e){
+			Log.d("SendImageMessageView", "message:"+e.toString());
 		}
+		
+		try{
+			String destMapUser = extras.getString("map");
+			destUser.setText(destMapUser);
+		}catch (Exception e){
+			Log.d("SendImageMessageView", "map:"+e.toString());
+		}
+		destUser.setOnClickListener(this);
+
 //		if(SessionController.testBitmap != null)
 //			preview.setImageBitmap(SessionController.testBitmap);
 		

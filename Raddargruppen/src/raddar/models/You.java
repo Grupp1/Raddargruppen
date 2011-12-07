@@ -20,6 +20,6 @@ public class You extends Resource {
 		this.isSOS = isSOS;
 	}
 	public boolean isSOS(){
-		return isSOS();
+		return isSOS;
 	}
 }

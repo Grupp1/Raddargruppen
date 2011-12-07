@@ -55,22 +55,34 @@ public class MapModel {
 	}
 
 	public MapObjectList getList(MapObject o){
-		if(!o.getId().equals(SessionController.getUser()) && o instanceof You){
-			o.setIcon(R.drawable.circle_yellow);
-
+		if(o instanceof You){
+			if(!o.getId().equals(SessionController.getUser())){
+				o.setIcon(R.drawable.circle_yellow);
+				Log.d("SOS", "getList if");
+			}else if(((You)o).isSOS()){
+				o.setIcon(R.drawable.circle_red);
+				Log.d("SOS", "getList else");
+			}
 		}
 		d = mapUI.getResources().getDrawable(o.getIcon());
-	
 		if(o instanceof You){
 			if(o.getId().equals(SessionController.getUser())){
 				if(youList == null){
 					youList = new MapObjectList(d, mapUI);
 				}
+				Log.d("SOS", "mapmodel: youList");
 				return youList;
+			}else if(((You)o).isSOS()){
+				if(sosList == null){
+					sosList = new MapObjectList(d, mapUI);
+				}
+				Log.d("SOS", "mapmodel: sosList");
+				return sosList;
 			}else{
 				if(otherList == null){
 					otherList = new MapObjectList(d, mapUI);
 				}
+				Log.d("SOS", "mapmodel: otherList");
 				return otherList;
 			}
 		}
@@ -106,14 +118,6 @@ public class MapModel {
 
 	public void setMapOverlays(List<Overlay> mapOverlays) {
 		this.mapOverlays = mapOverlays;
-	}
-
-	public void sendMessage(String user){
-		mapUI.sendMessage(user);
-	}
-	
-	public void callUser(String user){
-		mapUI.callUser(user);
 	}
 	
 }

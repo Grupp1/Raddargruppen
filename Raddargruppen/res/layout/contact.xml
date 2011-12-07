@@ -8,12 +8,17 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:id="@+id/label"
-		android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
+		android:textAppearance="?android:attr/textAppearanceLarge" android:layout_marginLeft="5dip" android:layout_marginTop="10dip"></TextView>
 	<CheckBox
 		android:id="@+id/check"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginLeft="4px"
-		android:layout_marginRight="10px"
-		android:layout_alignParentRight="true"></CheckBox>
+		android:layout_alignParentRight="true" android:layout_marginLeft="10dip" android:layout_marginRight="5dip"></CheckBox>
+	<ImageView
+	android:src="@drawable/online_circle_green"
+	android:layout_height="wrap_content"
+	android:layout_width="wrap_content"
+	android:id="@+id/statusImage"
+	android:layout_alignParentTop="true"
+	android:layout_toLeftOf="@+id/check" android:layout_marginTop="8dip"></ImageView>
 </RelativeLayout>

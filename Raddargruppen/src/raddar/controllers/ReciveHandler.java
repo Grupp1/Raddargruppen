@@ -11,6 +11,7 @@ import javax.net.ssl.SSLSocket;
 import raddar.enums.ConnectionStatus;
 import raddar.enums.MessageType;
 import raddar.enums.ResourceStatus;
+import raddar.enums.SOSType;
 import raddar.enums.ServerInfo;
 import raddar.gruppen.R;
 import raddar.models.ContactMessage;
@@ -66,7 +67,7 @@ public class ReciveHandler extends Observable implements Runnable {
 		} catch (IOException ie) {
 			notifyObservers(ConnectionStatus.DISCONNECTED);
 			Log.d("ReciveHandler",
-					"Kunde inte ta emot meddelande, disconnected");
+			"Kunde inte ta emot meddelande, disconnected");
 			// ie.printStackTrace();
 		}
 
@@ -98,38 +99,51 @@ public class ReciveHandler extends Observable implements Runnable {
 			//((Activity) context).runOnUiThread(new Runnable() {
 			QoSManager.getCurrentActivity().runOnUiThread(new Runnable() {
 				public void run() {
-					You you = new You(((SOSMessage)m).getPoint(), m.getSrcUser()+" positition",m.getData(),R.drawable.circle_green,
-							ResourceStatus.BUSY);
-					Log.e("NEW SOS",((SOSMessage)m).getPoint()+"");
-					Log.e("NEW SOS",you.getPoint()+"");
-					MainView.mapCont.updateObject(you, false);
-					AlertDialog.Builder alert = new AlertDialog.Builder(QoSManager.getCurrentActivity());
+					if(((SOSMessage)m).getSOSType() == SOSType.ALARM){
+						final You you = new You(((SOSMessage)m).getPoint(), ((SOSMessage)m).getSrcUser(), "",
+								R.drawable.circle_green, ((SOSMessage)m).getStatus());
+						you.setSOS(false);
+						MainView.mapCont.removeObject(you, false);
+						you.setSOS(true);
+						MainView.mapCont.add(you, false);
+						Log.d("SOS", "add: "+m.getSrcUser());
+						AlertDialog.Builder alert = new AlertDialog.Builder(QoSManager.getCurrentActivity());
 
-					alert.setTitle("SOS");
-					alert.setMessage(m.getData());
+						alert.setTitle("SOS-meddelande från: "+m.getSrcUser());
+						alert.setMessage(m.getData());
 
-					alert.setPositiveButton("Gå till kartan",
-							new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog,
-								int whichButton) {
+						alert.setPositiveButton("Gå till kartan",
+								new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+								// Gå till kartan
+								Intent intent = new Intent(QoSManager.getCurrentActivity(),MapUI.class);
+								intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+								QoSManager.getCurrentActivity().startActivity(intent);
+								MainView.mapCont.animateTo(you.getPoint());
+							}
+						});
 
-							// Gå till kartan¨
-							Intent intent = new Intent(QoSManager.getCurrentActivity(),MapUI.class);
-							intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-							QoSManager.getCurrentActivity().startActivity(intent);
-							((SOSMessage)m).getPoint();
-						}
-					});
+						alert.setNegativeButton("OK",
+								new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+								dialog.cancel();
+							}
+						});
 
-					alert.setNegativeButton("OK",
-							new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog,
-								int whichButton) {
-							dialog.cancel();
-						}
-					});
+						alert.show();
+					}else{
+						final You you = new You(((SOSMessage)m).getPoint(), ((SOSMessage)m).getSrcUser(), "",
+								R.drawable.circle_green, ((SOSMessage)m).getStatus());
+						you.setSOS(false);
+						MainView.mapCont.removeObject(you, false);
+						you.setSOS(true);
+						MainView.mapCont.add(you, false);
+						Log.d("SOS", "cancel_sos: "+m.getSrcUser());
+						MainView.mapCont.updateObject(you, false);
+					}
 
-					alert.show();
 				}
 
 			});
@@ -150,21 +164,25 @@ public class ReciveHandler extends Observable implements Runnable {
 			}
 		}
 		else if(mt == MessageType.CONTACT){
+			if(((ContactMessage)m).getContact().equals(SessionController.getUser())){
+				return;
+			}
 			DatabaseController.db.addRow(((ContactMessage)m).toContact());
 		}
 		else if(mt == MessageType.ONLINE_USERS){
-			switch(((OnlineUsersMessage) m).getOnlineOperation()){
-			case ADD:
-				SessionController.addOnlineUser(((OnlineUsersMessage)m).getUserName());
-				Log.d("ONLINE_USER TRUE", ((OnlineUsersMessage)m).getUserName());
-				break;
-			case REMOVE:
-				SessionController.removeOnlineUser(((OnlineUsersMessage)m).getUserName());
-				Log.d("ONLINE_USER FALSE", ((OnlineUsersMessage)m).getUserName());
-
-				break;
-			default:
-				break;
+			if(!((OnlineUsersMessage)m).getUserName().equals(SessionController.getUser())){
+				switch(((OnlineUsersMessage) m).getOnlineOperation()){
+				case ADD:
+					SessionController.addOnlineUser(((OnlineUsersMessage)m).getUserName());
+					Log.d("ONLINE_USER TRUE", ((OnlineUsersMessage)m).getUserName());
+					break;
+				case REMOVE:
+					SessionController.removeOnlineUser(((OnlineUsersMessage)m).getUserName());
+					Log.d("ONLINE_USER FALSE", ((OnlineUsersMessage)m).getUserName());
+					break;
+				default:
+					break;
+				}
 			}
 		}
 		else if(mt == MessageType.NOTIFICATION){

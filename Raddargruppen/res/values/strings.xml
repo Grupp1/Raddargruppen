@@ -58,7 +58,7 @@
 	<string name="automatic_power">Automatisk</string>
 
 	<string name="power_programs">Strömlägen</string>
-	<string name="application_name">Räddargruppen</string>
+	<string name="application_name">Alice</string>
 
 	<string name="start">0x7f030018</string>
 </resources>

@@ -139,10 +139,16 @@ public class MapUI extends MapActivity implements Observer {
 		return false;
 	}
 
-	public void sendMessage(String user){
-		//Bundle extras = getIntent().getExtras();
+	public void sendTextMessage(String user){
 		Intent nextIntent = new Intent(MapUI.this,
 				SendMessageView.class);
+		nextIntent.putExtra("map", user);
+		startActivity(nextIntent);
+	}
+	
+	public void sendImageMessage(String user){
+		Intent nextIntent = new Intent(MapUI.this,
+				SendImageMessageView.class);
 		nextIntent.putExtra("map", user);
 		startActivity(nextIntent);
 	}
@@ -151,6 +157,7 @@ public class MapUI extends MapActivity implements Observer {
 		Intent nextIntent = new Intent(MapUI.this,
 				CallView.class);
 		nextIntent.putExtra("sip", "sip:" + user + "@ekiga.net");
+		nextIntent.putExtra("dstUser", user);
 		startActivity(nextIntent);
 	}
 
@@ -190,7 +197,6 @@ public class MapUI extends MapActivity implements Observer {
 
 
 						alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-
 							public void onClick(DialogInterface dialog, int whichButton) { 
 								value = input.getText().toString();
 
@@ -199,41 +205,32 @@ public class MapUI extends MapActivity implements Observer {
 								 */
 
 								if(Touchy.this.item == 0){
-									MainView.mapCont.add(o = new Situation(touchedPoint, "Situation", value, R.drawable.situation, SituationPriority.NORMAL),true);
-
 									AlertDialog.Builder builder = new AlertDialog.Builder(context);
 									builder.setTitle("Välj prioritet");
-
 									builder.setSingleChoiceItems(prio, -1, new DialogInterface.OnClickListener() {
 										public void onClick(DialogInterface dialog, int item) {
-
 											prioritet = item;
-
 										}
 									});
 
 									builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 										public void onClick(DialogInterface dialog, int whichButton) {
-
-
+											SituationPriority prio = SituationPriority.NORMAL;
 											if(Touchy.this.prioritet == 0){
-
-												((Situation) o).setPriority(SituationPriority.HIGH);
-												MainView.mapCont.updateObject(o,true);
+												prio = SituationPriority.HIGH;
 											}
 											if(Touchy.this.prioritet == 1){
-
-
-												((Situation) o).setPriority(SituationPriority.NORMAL);
-												MainView.mapCont.updateObject(o,true);
+												prio = SituationPriority.NORMAL;
 											}
 											if(Touchy.this.prioritet == 2){
-
-												((Situation) o).setPriority(SituationPriority.LOW);
-												MainView.mapCont.updateObject(o,true);
+												prio = SituationPriority.LOW;
 											}
-
-
+											o = new Situation(touchedPoint, "Situation", value,
+													R.drawable.situation, prio);
+											o.updateData(geocoder);
+											MainView.mapCont.add(o, true);
+											Toast.makeText(getApplicationContext(), items[Touchy.this.item]+" utplacerad",
+													Toast.LENGTH_LONG).show();
 										}
 									});
 
@@ -242,44 +239,40 @@ public class MapUI extends MapActivity implements Observer {
 
 										}
 									});
-
 									builder.show();
-
 								}
 
+								
+								
 								/*
 								 * Om resurs, sätt prioritet
 								 */
 
 								if(Touchy.this.item == 1){
-									MainView.mapCont.add(o = new Resource(touchedPoint, "Resurs", value, R.drawable.resource, ResourceStatus.BUSY),true);
-
 									AlertDialog.Builder builder = new AlertDialog.Builder(context);
 									builder.setTitle("Välj status");
-
 									builder.setSingleChoiceItems(stat, -1, new DialogInterface.OnClickListener() {
 										public void onClick(DialogInterface dialog, int item) {
-
 											status = item;
-
 										}
 									});
 
 									builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 										public void onClick(DialogInterface dialog, int whichButton) {
-
 											status = whichButton;
-
+											ResourceStatus status = ResourceStatus.FREE;
 											if(Touchy.this.status == 0){
-												((Resource) o).setStatus(ResourceStatus.FREE);
-												MainView.mapCont.updateObject(o,true);
+												status = ResourceStatus.FREE;
 											}
 											if(Touchy.this.status == 1){
-												((Resource) o).setStatus(ResourceStatus.BUSY);
-												MainView.mapCont.updateObject(o,true);
+												status = ResourceStatus.BUSY;
 											}
-
-
+											o = new Resource(touchedPoint, "Resurs", value,
+													R.drawable.resource, status);
+											o.updateData(geocoder);
+											MainView.mapCont.add(o, true);
+											Toast.makeText(getApplicationContext(), items[Touchy.this.item]+" utplacerad",
+													Toast.LENGTH_LONG).show();
 										}
 									});
 
@@ -292,10 +285,6 @@ public class MapUI extends MapActivity implements Observer {
 									builder.show();
 
 								}
-								o.updateData(geocoder);;
-								Toast.makeText(getApplicationContext(), items[Touchy.this.item]+" utplacerad", Toast.LENGTH_LONG).show();
-
-
 							}
 						});
 						alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

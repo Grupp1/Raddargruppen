@@ -4,8 +4,6 @@ import java.net.UnknownHostException;
 import java.util.Observable;
 import java.util.Observer;
 
-import com.google.gson.Gson;
-
 import raddar.controllers.DatabaseController;
 import raddar.controllers.MapCont;
 import raddar.controllers.ReciveHandler;
@@ -13,11 +11,9 @@ import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
 import raddar.controllers.SipController;
 import raddar.enums.ConnectionStatus;
-import raddar.enums.MapOperation;
 import raddar.enums.NotificationType;
 import raddar.enums.RequestType;
 import raddar.gruppen.R;
-import raddar.models.MapObjectMessage;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
 import raddar.models.QoSManager;
@@ -36,8 +32,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -93,6 +89,34 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		mapCont = new MapCont(MainView.this);
 		new SipController(this);
 		new ReciveHandler(this).addObserver(this);
+
+		String level = BatteryManager.EXTRA_LEVEL;
+		Log.d("EXTRA_LEVEL", level);
+		
+
+		//		controller = new InternalComManager();
+		//		controller.setUser(extras.get("user").toString());
+		//		db = new ClientDatabaseManager(this,controller.getUser());
+
+		//		//TEMPORÄRT MÅSTE FIXAS
+		//		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
+
+		new SessionController(extras.get("user").toString()).addObserver(this);
+		//		new DatabaseController(this);
+		new ReciveHandler(this).addObserver(this);
+		
+		
+		
+//		try {
+//			new Sender(new RequestMessage(RequestType.MESSAGE));
+//			new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
+//			new Sender(new RequestMessage(RequestType.CONTACTS));
+//			new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
+//		} catch (UnknownHostException e) {
+//			e.printStackTrace();
+//		}
+		
+
 
 		callButton = (ImageButton)this.findViewById(R.id.callButton);
 		callButton.setOnClickListener(this);
@@ -192,7 +216,6 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		Log.d("koaz","KOAZ");
 		SessionController.getSessionController().deleteObserver(this);
 		SipController.onClose();
 		// Notifiera servern att vi går offline
