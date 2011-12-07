@@ -122,8 +122,6 @@ public class ClientDatabaseManager extends Observable {
 	}
 
 	/**********************************************************************
-<<<<<<< HEAD
-=======
 	 * ADDING A IMAGEMESSAGE ROW TO THE DATABASETABLE
 	 *
 	 * Messages to be added to the imageMessage database
@@ -146,7 +144,6 @@ public class ClientDatabaseManager extends Observable {
 	}
 	
 	/**********************************************************************
->>>>>>> 5208187355deabbe9fefb667253fd87a52e6d7c9
 	 * ADDING A CONTACT ROW IN THE DATABASE TABLE
 	 *
 	 * Messages to be addad to drafts
@@ -313,8 +310,8 @@ public class ClientDatabaseManager extends Observable {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
-//		setChanged();
-//		notifyObservers(m);
+		setChanged();
+		notifyObservers(m);
 	}
 
 	/********************************************************************

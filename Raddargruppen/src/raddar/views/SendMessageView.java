@@ -56,13 +56,11 @@ public class SendMessageView extends Activity implements OnClickListener {
 
 			String[] items = (String[]) extras.getCharSequenceArray("message");
 
-			//isDraft = extras.getBoolean("isDraft");
-
-			isDraft = true;
+			isDraft = extras.getBoolean("isDraft");
 
 			Log.d("destUser draft", items[0].toString());
 
-			destUser.setText(items[0].toString());
+			destUser.setText(items[0].toString()+";");
 			subject.setText(items[1].toString());
 			messageData.setText(items[2].toString());
 
@@ -135,9 +133,11 @@ public class SendMessageView extends Activity implements OnClickListener {
 	}
 
 	private void sendMessages() {
+		
+		Log.d("SendMessages", "Överhuvudtaget??");
 		String[] destUsers = (destUser.getText().toString() + ";").split(";");
 		Log.d("number of messages", destUsers.length + "");
-		for (int i = 0; i < destUsers.length-1; i++) {
+		for (int i = 0; i < destUsers.length; i++) {
 			Message m = new TextMessage(SessionController.getUser(), ""
 					+ destUsers[i]);
 			m.setSubject(subject.getText() + "");
@@ -148,10 +148,13 @@ public class SendMessageView extends Activity implements OnClickListener {
 						InetAddress
 						.getByName(raddar.enums.ServerInfo.SERVER_IP),
 						raddar.enums.ServerInfo.SERVER_PORT);
+				
+				Log.d("SendMessages", "try!!");
 				DatabaseController.db.addOutboxRow(m);
 				DatabaseController.db.deleteDraftRow(m);
 
 			} catch (UnknownHostException e) {
+				Log.d("SendMessages", "catch!!");
 				DatabaseController.db.addDraftRow(m);
 			}
 		}
@@ -160,7 +163,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 	public void onBackPressed() {
 		String[] destUsers = (destUser.getText().toString() + ";").split(";");
 		Log.d("number of messages", destUsers.length + "");
-		for (int i = 0; i < destUsers.length; i++) {
+		for (int i = 0; i < destUsers.length-1; i++) {
 			Message m = new TextMessage(SessionController.getUser(), ""
 					+ destUsers[i]);
 			m.setSubject(subject.getText() + "");
@@ -168,7 +171,6 @@ public class SendMessageView extends Activity implements OnClickListener {
 			if(!isDraft){
 				Log.d("isDraft",m.getDestUser().toString());
 				DatabaseController.db.addDraftRow(m);	
-
 			}
 		}
 

@@ -24,6 +24,7 @@ public class DraftMessageView extends Activity {
 		TextView draftMessageDate = (TextView)this.findViewById(R.id.draftMessageDate);
 		TextView draftMessageSubject =(TextView)this.findViewById(R.id.draftMessageSubject);
 		Button editDraftButton = (Button)this.findViewById(R.id.editDraftButton);
+		
 
 		TextView draftMessage =(TextView)this.findViewById(R.id.draftMessage);
 		draftMessageDestUser.setText(extras.get("reciever").toString());

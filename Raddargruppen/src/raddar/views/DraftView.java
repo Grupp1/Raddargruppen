@@ -1,8 +1,6 @@
 package raddar.views;
 
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 
 import raddar.controllers.DatabaseController;
 import raddar.controllers.SessionController;
@@ -32,7 +30,7 @@ import android.widget.TextView;
  *
  */
 
-public class DraftView extends ListActivity implements Observer {
+public class DraftView extends ListActivity{
 	private DraftAdapter ia;
 	private ArrayList<Message> drafts;
 	
@@ -113,13 +111,5 @@ public class DraftView extends ListActivity implements Observer {
 		QoSManager.setPowerMode();
 	}
 	
-	
-	public void update(Observable observable, Object data) {
-		runOnUiThread(new Runnable(){
-			public void run(){
-				// Ska uppdatera Draftview så att meddelande tas bort så fort det skickats
-			}
-		});
-	}
 }
 
