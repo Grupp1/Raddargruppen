@@ -9,10 +9,8 @@ import java.util.ArrayList;
 
 import javax.net.ssl.SSLSocket;
 
-import raddar.enums.MessageType;
 import raddar.enums.NotificationType;
 import raddar.enums.OnlineOperation;
-import raddar.enums.RequestType;
 import raddar.models.MapObjectMessage;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
@@ -37,11 +35,11 @@ import com.google.gson.Gson;
 public class Receiver implements Runnable {
 
 	private Thread clientThread = new Thread(this);
-	
+
 	//Gamla inlogg
 	//private Socket so;
 	private BufferedReader in;
-	
+
 	//Nya ssl
 	private SSLSocket so;
 
@@ -57,33 +55,33 @@ public class Receiver implements Runnable {
 			Class c= null ;
 			try {
 				String inmatning = in.readLine();
-				System.out.println(inmatning);
+				//System.out.println(inmatning);
 				c = Class.forName(inmatning);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
 			String temp = in.readLine();
-			System.out.println(temp);
+			//System.out.println(temp);
 			Message m = new Gson().fromJson(temp, c);
 
 			//Det den här if-satsen gör ät att undersöka om användaren som skickade meddelandet är online.
 			//Om han inte är det måste är det enda meddelandena har får skicka notifications och requesta salt.
 			//Om han gör mågot annat loggas han ut.
-//			if(!Server.onlineUsers.isUserOnline(m.getSrcUser()) &&
-//					(m.getType() != MessageType.NOTIFICATION && !(m.getType() == MessageType.REQUEST &&
-//					((RequestMessage)m).getRequestType() == RequestType.SALT))){
-//				System.out.println("Not online");
-//				NotificationMessage nm = (new NotificationMessage("Server", NotificationType.DISCONNECT));
-//				nm.setData("Du är inte inloggad mot servern. Var vänlig logga in igen.");
-//				LoginManager.logoutUser(m.getSrcUser());
-//				new Sender(nm, so.getInetAddress()); 
-//				return;
-//			}
-			
-//			if(Server.onlineUsers.isUserOnline(m.getSrcUser())){
-//					so.close();
-//				return;
-//			}
+			//			if(!Server.onlineUsers.isUserOnline(m.getSrcUser()) &&
+			//					(m.getType() != MessageType.NOTIFICATION && !(m.getType() == MessageType.REQUEST &&
+			//					((RequestMessage)m).getRequestType() == RequestType.SALT))){
+			//				System.out.println("Not online");
+			//				NotificationMessage nm = (new NotificationMessage("Server", NotificationType.DISCONNECT));
+			//				nm.setData("Du är inte inloggad mot servern. Var vänlig logga in igen.");
+			//				LoginManager.logoutUser(m.getSrcUser());
+			//				new Sender(nm, so.getInetAddress()); 
+			//				return;
+			//			}
+
+			//			if(Server.onlineUsers.isUserOnline(m.getSrcUser())){
+			//					so.close();
+			//				return;
+			//			}
 			// if message
 			// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
 			// meddelandet som klienten har skickat blir inläst på korrekt sätt
@@ -157,23 +155,21 @@ public class Receiver implements Runnable {
 		}
 
 	}
-	
+
 	private void handleMapObjectMessage(MapObjectMessage mo){
 		switch(mo.getMapOperation()){
 		case ADD:
-			System.out.println("handleMapObjectMessage ADD");
+			//System.out.println("handleMapObjectMessage ADD");
 			if(Database.addMapObject(mo))
-				broadcast(mo);
-			break;
+				break;
 		case REMOVE:
-			System.out.println("handleMapObjectMessage REMOVE");
-			broadcast(mo);
+			//System.out.println("handleMapObjectMessage REMOVE");
 			Database.removeMapObject(mo.getId());
 			break;
 		case UPDATE:
-			System.out.println("handleMapObjectMessage UPDATE");
-			broadcast(mo);
-			Database.updateMapObject(mo);
+		case ALARM_ON:
+		case ALARM_OFF:
+		Database.updateMapObject(mo);
 			break;
 		default:
 			System.out.println("Okänd MapOperation");

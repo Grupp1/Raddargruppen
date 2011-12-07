@@ -50,7 +50,6 @@ public class MapUI extends MapActivity implements Observer {
 	private GeoPoint touchedPoint, liu, myLocation, sthlmLocation;
 	private List<Overlay> mapOverlays;
 	private Touchy touchy;
-	public boolean follow;
 	private Toast toast;
 	private Geocoder geocoder;	
 
@@ -91,20 +90,24 @@ public class MapUI extends MapActivity implements Observer {
 
 		controller.animateTo(sthlmLocation);
 		controller.setZoom(8);
-
-		//		Drawable d = getResources().getIdentifier(null, null, null);
-
+		
 	}
 
 
 	@Override
 	protected void onStart() {
-		if(MainView.mapCont.areYouFind){
-			follow = true;
+		super.onStart();
+		Bundle extras = getIntent().getExtras();
+		if(extras != null && extras.containsKey("lat")&& extras.containsKey("lon")){
+			MainView.mapCont.follow = false;
+			controller.animateTo(new GeoPoint(extras.getInt("lat"),extras.getInt("lon")));
+			controller.setZoom(18);
+		}
+		else if(MainView.mapCont.areYouFind){
+			MainView.mapCont.follow = true;
 			controller.animateTo(MainView.mapCont.getYou().getPoint());
 			controller.setZoom(15);
 		}
-		super.onStart();
 	}
 
 	@Override
@@ -118,8 +121,8 @@ public class MapUI extends MapActivity implements Observer {
 
 	@Override
 	protected void onPause() {
-		compass.disableCompass();
 		super.onPause();
+		compass.disableCompass();
 		MainView.mapCont.gps.getLocationManager().removeUpdates(MainView.mapCont.gps);
 	}
 
@@ -362,7 +365,7 @@ public class MapUI extends MapActivity implements Observer {
 		runOnUiThread(new Runnable(){
 			public void run() {
 				MapObjectList list = MainView.mapCont.getList(mo);
-
+				Log.d("LISTAN", mo.getTitle()+" "+list.size());
 				for(int i = 0; i < list.size();i++){
 					Log.d("LISTAN", ((MapObject) list.getItem(i)).getId());
 				}
@@ -439,13 +442,13 @@ public class MapUI extends MapActivity implements Observer {
 			}
 			return true;
 		case R.id.follow:
-			if (follow){
-				follow = false;
+			if (MainView.mapCont.follow){
+				MainView.mapCont.follow = false;
 			}
 			else{
-				follow = true;
+				MainView.mapCont.follow = true;
 			}
-			toast = Toast.makeText(getBaseContext(), "Följ efter: " +follow, Toast.LENGTH_LONG);
+			toast = Toast.makeText(getBaseContext(), "Följ efter: " +MainView.mapCont.follow, Toast.LENGTH_LONG);
 			toast.show();
 			return true;
 		case R.id.myLocation:

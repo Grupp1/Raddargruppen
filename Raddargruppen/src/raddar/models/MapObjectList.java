@@ -304,16 +304,15 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 	public void removeMapObject(final MapObject o) {
 		((Activity)mContext).runOnUiThread(new Runnable(){
 			public void run() {
-				Log.d("MAPOBJECTLIST", "REMOVE");
 				String oId = o.getId();
 				for(int i = 0; i < mOverlays.size(); i++){
 					if(((MapObject)mOverlays.get(i)).getId().equals(oId)){
 						Log.d("MAPOBJECTLIST","REMOVE  "+mOverlays.remove(mOverlays.remove(i)));
+						setLastFocusedIndex(-1);
+						populate();
 						return;
 					}
 				}
-				setLastFocusedIndex(-1);
-				populate();
 			}
 		});
 	}

@@ -19,35 +19,42 @@ import com.google.android.maps.GeoPoint;
  */
 public class SOSMessage extends Message {
 	
-	private SOSType SOSType;
 	private int lat, lon;
 	private ResourceStatus status;
-	private boolean isSOS;
-
-
+	private SOSType SOSType;
+	private boolean SOS;
+	
 	/**
-	 * Skapa ett SOS-meddelande med avsändare
-	 * @param msg Meddelandet
-	 * @param you Användaren
-	 * @param st SOS-typen, alarm eller cancel
+	 * Klassen används för att skicka SOS-meddelanden mellan klienter
+	 * 
+	 * @param fromUser Meddelandets avsändare
+	 * @param lat Objektets latitud
+	 * @param lon Objektets longitud
+	 * @param title Objektets titel, kan hämtas via getSubject()
+	 * @param snippet Meddelandets text(beskrivning), hämtas via getData()
+	 * @param st SOSType, ALARM eller CANCEL
+	 * @param status Objektets status
+	 * @param SOS true om objektet har anropat SOS
 	 */
-	public SOSMessage(String msg, String fromUser, int lat, int lon, SOSType st, ResourceStatus status, boolean isSOS){
-		this.data = msg;
+	public SOSMessage(String fromUser, int lat, int lon, String title, String snippet,
+			SOSType st, ResourceStatus status, boolean SOS){
 		this.fromUser = fromUser;
-		this.type = MessageType.SOS;
-		this.SOSType = st;
 		this.lat = lat;
 		this.lon = lon;
-		this.isSOS = isSOS;
+		this.subject = title;
+		this.data = snippet;
+		this.SOSType = st;
 		this.status = status;
+		this.SOS = SOS;
+		this.type = MessageType.SOS;
+	}
+	
+	public boolean isSOS(){
+		return SOS;
 	}
 	
 	public GeoPoint getPoint(){
 		return new GeoPoint(lat, lon);
-	}
-	
-	public boolean isSOS(){
-		return isSOS;
 	}
 
 	public ResourceStatus getStatus() {
@@ -62,9 +69,5 @@ public class SOSMessage extends Message {
 
 	public SOSType getSOSType() {
 		return SOSType;
-	}
-
-	public void setSOSType(SOSType sOSType) {
-		SOSType = sOSType;
 	}
 }

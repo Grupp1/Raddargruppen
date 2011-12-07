@@ -5,8 +5,10 @@ import java.net.UnknownHostException;
 
 import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
+import raddar.enums.MapOperation;
 import raddar.enums.SOSType;
 import raddar.enums.ServerInfo;
+import raddar.models.MapObjectMessage;
 import raddar.models.QoSManager;
 import raddar.models.SOSMessage;
 import raddar.gruppen.R;
@@ -21,6 +23,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.android.maps.GeoPoint;
+import com.google.gson.Gson;
 
 public class SendSOSView extends Activity {
 	
@@ -33,6 +36,7 @@ public class SendSOSView extends Activity {
 	private Button button;
 	private Button clear;
 	private EditText et;
+	private String savedSnippet;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -68,15 +72,17 @@ public class SendSOSView extends Activity {
 	}
 	
 	private void startAlarm() {
+		savedSnippet = MainView.mapCont.getYou().getSnippet();
 		txt = et.getText().toString();
 		MainView.mapCont.getYou().setSOS(true);
-		SOSMessage sm = new SOSMessage(txt, SessionController.getUser(),
-				MainView.mapCont.getYou().getPoint().getLatitudeE6(),
-				MainView.mapCont.getYou().getPoint().getLatitudeE6(),
-				SOSType.ALARM, MainView.mapCont.getYou().getStatus(),
-				MainView.mapCont.getYou().isSOS());
+		MainView.mapCont.getYou().setSnippet(txt);
+		MainView.mapCont.getYou().setTitle(SessionController.getUser()+", ALARM");
+		Gson gson = new Gson();
+		MapObjectMessage mo = new MapObjectMessage(gson.toJson(MainView.mapCont.getYou()),
+				(MainView.mapCont.getYou()).getClass().getName(),MainView.mapCont.getYou().getId(),
+				MapOperation.ALARM_ON);
 		try {
-			new Sender(sm, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
+			new Sender(mo, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
 			SOS_ALARM_IS_ACTIVE = true;
 		} catch (UnknownHostException e) {
 			Log.d("SendSOS", "startAlarm() is SendSOSView.java");
@@ -86,13 +92,15 @@ public class SendSOSView extends Activity {
 	private void cancelAlarm() {
 		txt = "";
 		MainView.mapCont.getYou().setSOS(false);
-		SOSMessage sm = new SOSMessage(txt, SessionController.getUser(),
-				MainView.mapCont.getYou().getPoint().getLatitudeE6(),
-				MainView.mapCont.getYou().getPoint().getLatitudeE6(),
-				SOSType.ALARM, MainView.mapCont.getYou().getStatus(),
-				MainView.mapCont.getYou().isSOS());
+		MainView.mapCont.getYou().setSnippet(savedSnippet);
+		MainView.mapCont.getYou().setTitle(SessionController.getUser());
+		Gson gson = new Gson();
+		MapObjectMessage mo = new MapObjectMessage(gson.toJson(MainView.mapCont.getYou()),
+				(MainView.mapCont.getYou()).getClass().getName(),MainView.mapCont.getYou().getId(),
+				MapOperation.ALARM_OFF);
+		
 		try {
-			new Sender(sm, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
+			new Sender(mo, InetAddress.getByName(ServerInfo.SERVER_IP), ServerInfo.SERVER_PORT);
 			SOS_ALARM_IS_ACTIVE = false;
 		} catch (UnknownHostException e) {
 			Log.d("SendSOS", "cancelAlarm() is SendSOSView.java");

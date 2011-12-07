@@ -10,12 +10,9 @@ import javax.net.ssl.SSLSocket;
 
 import raddar.enums.ConnectionStatus;
 import raddar.enums.MessageType;
-import raddar.enums.ResourceStatus;
 import raddar.enums.SOSType;
 import raddar.enums.ServerInfo;
-import raddar.gruppen.R;
 import raddar.models.ContactMessage;
-import raddar.models.ImageMessage;
 import raddar.models.MapObject;
 import raddar.models.MapObjectMessage;
 import raddar.models.Message;
@@ -32,8 +29,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
 import android.util.Log;
 
 public class ReciveHandler extends Observable implements Runnable {
@@ -57,7 +52,7 @@ public class ReciveHandler extends Observable implements Runnable {
 			SSLServerSocketFactory sslserversocketfactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
 			SSLServerSocket sslserversocket = (SSLServerSocket) sslserversocketfactory.createServerSocket(ServerInfo.SERVER_PORT);
 			sslserversocket.setEnabledCipherSuites(new String[] { "SSL_DH_anon_WITH_RC4_128_MD5" });
-			
+
 			while (true) {
 				// När ett inkommande meddelande tas emot skapa en ny Receiver
 				// som körs i en egen tråd
@@ -80,7 +75,7 @@ public class ReciveHandler extends Observable implements Runnable {
 	 * @param notify true if we should notify the user
 	 */
 	public void newMessage(MessageType mt, final Message m, boolean notify) {
-		
+
 		if (mt == MessageType.PROBE){
 			Log.d("PROBE", "POBE");
 			NotificationMessage mess = new NotificationMessage(SessionController.getUser(), null);
@@ -95,32 +90,39 @@ public class ReciveHandler extends Observable implements Runnable {
 		}
 		else if (mt == MessageType.TEXT||mt == MessageType.IMAGE) {
 			DatabaseController.db.addRow(m, notify);
-		} else if (mt == MessageType.SOS) {
+		}
+		// SOS-alarm
+		else if (mt == MessageType.SOS) {
 			//((Activity) context).runOnUiThread(new Runnable() {
 			QoSManager.getCurrentActivity().runOnUiThread(new Runnable() {
 				public void run() {
+					SOSMessage sm = (SOSMessage)m;
 					if(((SOSMessage)m).getSOSType() == SOSType.ALARM){
-						final You you = new You(((SOSMessage)m).getPoint(), ((SOSMessage)m).getSrcUser(), "",
-								R.drawable.circle_green, ((SOSMessage)m).getStatus());
-						you.setSOS(false);
-						MainView.mapCont.removeObject(you, false);
-						you.setSOS(true);
-						MainView.mapCont.add(you, false);
-						Log.d("SOS", "add: "+m.getSrcUser());
+						// Tar bort användaren från otherList
+						MainView.mapCont.removeObject(new You(null, sm.getSrcUser(), null,
+								null, sm.isSOS(), sm.getSrcUser()), false);
+
+						// Lägger till i sosList
+						final You sos = new You(sm.getPoint(), sm.getSubject(), sm.getData(),
+								sm.getStatus(), sm.isSOS(), sm.getSrcUser());
+						MainView.mapCont.add(sos, false);
+
 						AlertDialog.Builder alert = new AlertDialog.Builder(QoSManager.getCurrentActivity());
 
-						alert.setTitle("SOS-meddelande från: "+m.getSrcUser());
-						alert.setMessage(m.getData());
+						alert.setTitle("SOS-meddelande från: "+sm.getSrcUser());
+						alert.setMessage(sm.getData());
 
-						alert.setPositiveButton("Gå till kartan",
+						alert.setPositiveButton("Visa position",
 								new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
 								// Gå till kartan
 								Intent intent = new Intent(QoSManager.getCurrentActivity(),MapUI.class);
 								intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+								intent.putExtra("lat", sos.getPoint().getLatitudeE6());
+								intent.putExtra("lon", sos.getPoint().getLongitudeE6());
 								QoSManager.getCurrentActivity().startActivity(intent);
-								MainView.mapCont.animateTo(you.getPoint());
+								MainView.mapCont.animateTo(sos.getPoint());
 							}
 						});
 
@@ -133,22 +135,25 @@ public class ReciveHandler extends Observable implements Runnable {
 						});
 
 						alert.show();
-					}else{
-						final You you = new You(((SOSMessage)m).getPoint(), ((SOSMessage)m).getSrcUser(), "",
-								R.drawable.circle_green, ((SOSMessage)m).getStatus());
-						you.setSOS(false);
-						MainView.mapCont.removeObject(you, false);
-						you.setSOS(true);
+					}
+					else{ // ((SOSMessage)m).getSOSType() == SOSType.CANCEL_ALARM)
+
+						// Tar bort användaren från sosList
+						MainView.mapCont.removeObject(new You(null, sm.getSrcUser(), null,
+								null, sm.isSOS(), sm.getSrcUser()), false);
+
+						// Lägger till i otherList
+						You you = new You(sm.getPoint(), sm.getSubject(), sm.getData(),
+								sm.getStatus(), sm.isSOS(), sm.getSrcUser());
 						MainView.mapCont.add(you, false);
-						Log.d("SOS", "cancel_sos: "+m.getSrcUser());
-						MainView.mapCont.updateObject(you, false);
+
 					}
 
 				}
 
 			});
 		}else if (mt == MessageType.MAPOBJECT) {
-			MapObject mo = ((MapObjectMessage)m).toMapObject();
+			final MapObject mo = ((MapObjectMessage)m).toMapObject();
 			switch(((MapObjectMessage)m).getMapOperation()){
 			case ADD:
 				MainView.mapCont.add(mo,false);
@@ -159,51 +164,107 @@ public class ReciveHandler extends Observable implements Runnable {
 			case UPDATE:
 				MainView.mapCont.updateObject(mo,false);
 				break;
-			default:
+			case ALARM_ON:
+				QoSManager.getCurrentActivity().runOnUiThread(new Runnable() {
+					public void run() {
+						// Tar bort användaren från otherList
+						((You)mo).setSOS(false);
+						MainView.mapCont.removeObject(mo, false);
 
-			}
-		}
-		else if(mt == MessageType.CONTACT){
-			if(((ContactMessage)m).getContact().equals(SessionController.getUser())){
-				return;
-			}
-			DatabaseController.db.addRow(((ContactMessage)m).toContact());
-		}
-		else if(mt == MessageType.ONLINE_USERS){
-			if(!((OnlineUsersMessage)m).getUserName().equals(SessionController.getUser())){
-				switch(((OnlineUsersMessage) m).getOnlineOperation()){
-				case ADD:
-					SessionController.addOnlineUser(((OnlineUsersMessage)m).getUserName());
-					Log.d("ONLINE_USER TRUE", ((OnlineUsersMessage)m).getUserName());
-					break;
-				case REMOVE:
-					SessionController.removeOnlineUser(((OnlineUsersMessage)m).getUserName());
-					Log.d("ONLINE_USER FALSE", ((OnlineUsersMessage)m).getUserName());
-					break;
-				default:
-					break;
-				}
-			}
-		}
-		else if(mt == MessageType.NOTIFICATION){
-			Log.e("LOGOUT","OTHER USER HAS LOGGED IN ON ANOTHER DEVICE");
+						// Lägger till i sosList
+						((You)mo).setSOS(true);
+						MainView.mapCont.add(mo, false);
+
+						AlertDialog.Builder alert = new AlertDialog.Builder(QoSManager.getCurrentActivity());
+
+						alert.setTitle("SOS-meddelande från: "+m.getSrcUser());
+						alert.setMessage(mo.getSnippet());
+
+						alert.setPositiveButton("Visa position",
+								new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+								// Gå till kartan
+								Intent intent = new Intent(QoSManager.getCurrentActivity(),MapUI.class);
+								intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+								intent.putExtra("lat", mo.getPoint().getLatitudeE6());
+								intent.putExtra("lon", mo.getPoint().getLongitudeE6());
+								QoSManager.getCurrentActivity().startActivity(intent);
+								MainView.mapCont.animateTo(mo.getPoint());
+								MainView.mapCont.follow = false;
+							}
+						});
+
+						alert.setNegativeButton("OK",
+								new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+								dialog.cancel();
+							}
+						});
+
+						alert.show();
+					}
+				});
+			break;
+		case ALARM_OFF:
 			QoSManager.getCurrentActivity().runOnUiThread(new Runnable() {
 				public void run() {
-					AlertDialog.Builder alert = new AlertDialog.Builder(QoSManager.getCurrentActivity());
+						// Tar bort användaren från sosList
+						((You)mo).setSOS(true);
+						MainView.mapCont.removeObject(mo, false);
 
-					alert.setTitle("Forcerad utloggning");
-					alert.setMessage(m.getData());
-					alert.setOnCancelListener(new OnCancelListener(){
-						public void onCancel(DialogInterface dialog) {
-							Intent intent = new Intent(QoSManager.getCurrentActivity(),StartView.class);
-							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-							QoSManager.getCurrentActivity().startActivity(intent);
-						}
-					});
-					alert.show();
+						// Lägger till i otherList
+						((You)mo).setSOS(false);
+						MainView.mapCont.add(mo, false);
 				}
 			});
-		}
+			break;
+		default:
 
+		}
 	}
+	else if(mt == MessageType.CONTACT){
+		if(((ContactMessage)m).getContact().equals(SessionController.getUser())){
+			return;
+		}
+		DatabaseController.db.addRow(((ContactMessage)m).toContact());
+	}
+	else if(mt == MessageType.ONLINE_USERS){
+		if(!((OnlineUsersMessage)m).getUserName().equals(SessionController.getUser())){
+			switch(((OnlineUsersMessage) m).getOnlineOperation()){
+			case ADD:
+				SessionController.addOnlineUser(((OnlineUsersMessage)m).getUserName());
+				Log.d("ONLINE_USER TRUE", ((OnlineUsersMessage)m).getUserName());
+				break;
+			case REMOVE:
+				SessionController.removeOnlineUser(((OnlineUsersMessage)m).getUserName());
+				Log.d("ONLINE_USER FALSE", ((OnlineUsersMessage)m).getUserName());
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	else if(mt == MessageType.NOTIFICATION){
+		Log.e("LOGOUT","OTHER USER HAS LOGGED IN ON ANOTHER DEVICE");
+		QoSManager.getCurrentActivity().runOnUiThread(new Runnable() {
+			public void run() {
+				AlertDialog.Builder alert = new AlertDialog.Builder(QoSManager.getCurrentActivity());
+
+				alert.setTitle("Forcerad utloggning");
+				alert.setMessage(m.getData());
+				alert.setOnCancelListener(new OnCancelListener(){
+					public void onCancel(DialogInterface dialog) {
+						Intent intent = new Intent(QoSManager.getCurrentActivity(),StartView.class);
+						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						QoSManager.getCurrentActivity().startActivity(intent);
+					}
+				});
+				alert.show();
+			}
+		});
+	}
+
+}
 }

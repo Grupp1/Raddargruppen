@@ -457,7 +457,6 @@ public class Database {
 		} catch (SQLException ex) {
 			System.out.println("Fel syntax i MySQL-queryn i getAllTextMessagesTo(). ");
 		}
-		System.out.println(list.size());
 		return list;
 	}
 
