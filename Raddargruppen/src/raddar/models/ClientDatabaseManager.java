@@ -53,19 +53,19 @@ public class ClientDatabaseManager extends Observable {
 
 		clearDatabase();
 	}
-	// TEST KOD ANVÄNDS FÖR ATT TESTA KONTAKTLISTAN
+	// TEST KOD ANVï¿½NDS Fï¿½R ATT TESTA KONTAKTLISTAN
 	/*
 	 * addRow(new Contact("Alice",false)); addRow(new
 	 * Contact("Borche",false)); addRow(new Contact("Daniel",false));
 	 */
 
-	// TEST KOD FÖR MAP
-	//addRow(new Fire(new GeoPoint(58395730, 15573080), "Här brinner det!", SituationPriority.HIGH));
+	// TEST KOD Fï¿½R MAP
+	//addRow(new Fire(new GeoPoint(58395730, 15573080), "Hï¿½r brinner det!", SituationPriority.HIGH));
 
-		//TEST KOD FÖR SAMTAL
-		//addSipProfile( user, String password);
-		Contact einar = new Contact("Einar", false, "marcuseinar", "einar");
-	//TEST KOD FÖR SAMTAL
+	//TEST KOD Fï¿½R SAMTAL
+	//addSipProfile( user, String password);
+	Contact einar = new Contact("Einar", false, "marcuseinar", "einar");
+	//TEST KOD Fï¿½R SAMTAL
 	//addSipProfile( user, String password);
 	/*Contact einar = new Contact("Einar", false, "marcuseinar", "einar");
 		Contact danan = new Contact("danan612", false, "danan612", "raddar");
@@ -84,12 +84,8 @@ public class ClientDatabaseManager extends Observable {
 	 * ADDING A MESSAGE ROW TO THE DATABASE TABLE
 	 * @param m The message that is to be added to the database
 	 */
-	public void addRow(Message m, boolean notify) {
-//		if(m.getType() == MessageType.IMAGE){
-//			setChanged();
-//			notifyObservers(m);
-//		}
-			
+	public void addRow(Message m) {
+
 		ContentValues values = new ContentValues();
 		values.put("srcUser", m.getSrcUser());
 		values.put("rDate", m.getDate());
@@ -101,10 +97,8 @@ public class ClientDatabaseManager extends Observable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if(notify) {
-			setChanged();
-			notifyObservers(m);
-		}
+		setChanged();
+		notifyObservers(m);
 	}
 
 	/**********************************************************************
@@ -166,7 +160,7 @@ public class ClientDatabaseManager extends Observable {
 		setChanged();
 		notifyObservers(m);			
 	}
-	
+
 	/**********************************************************************
 	 * ADDING A CONTACT ROW IN THE DATABASE TABLE
 	 *
@@ -286,7 +280,7 @@ public class ClientDatabaseManager extends Observable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**********************************************************************
 	 * UPDATING A ROW IN THE MAPOBJECT TABLE
 	 * 
@@ -336,7 +330,7 @@ public class ClientDatabaseManager extends Observable {
 		//		setChanged();
 		//		notifyObservers(m);
 	}
-	
+
 	public void deleteBufferedMesageRow(String gsonString){
 		try{
 			db.delete("bufferedMessage", "gsonString = \'" + gsonString + "\'", null);
@@ -344,7 +338,7 @@ public class ClientDatabaseManager extends Observable {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	/********************************************************************
@@ -381,8 +375,8 @@ public class ClientDatabaseManager extends Observable {
 	 * @return an ArrayList that contains all rows in a table. Each row in itself is an ArrayList that contains each collumn of a row.
 	 */
 	public ArrayList getAllRowsAsArrays(String table) {
-		// TODO gör så denna funktion fungerar med alla databastabeller
-		// TODO kom inte på något bra sätt för att få det att fungera i det
+		// TODO gï¿½r sï¿½ denna funktion fungerar med alla databastabeller
+		// TODO kom inte pï¿½ nï¿½got bra sï¿½tt fï¿½r att fï¿½ det att fungera i det
 		// generella fallet.
 		ArrayList dataArrays = new ArrayList();
 		Cursor cursor = null;
@@ -439,7 +433,7 @@ public class ClientDatabaseManager extends Observable {
 					} 
 					else if (table.equals("imageMessage")) {
 						Message m = new ImageMessage(cursor.getString(1), SessionController.getUser(),
-								 cursor.getString(3), cursor.getString(4));
+								cursor.getString(3), cursor.getString(4));
 						/*Message m = new ImageMessage(MessageType.IMAGE,
 								cursor.getString(1), DB_NAME,
 								cursor.getString(4));*/ 
@@ -563,7 +557,7 @@ public class ClientDatabaseManager extends Observable {
 			String bufferedmessageTableQueryString = "create table bufferedMessage (" 
 					+ "msgId integer primary key autoincrement not null," + 
 					"gsonString text)";
-			
+
 
 			/*
 			 * String newTableQueryString = "create table " + TABLE_NAME + " ("

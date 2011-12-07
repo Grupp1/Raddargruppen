@@ -36,20 +36,20 @@ public class LoginManager extends Observable {
 	private StubbornLoginThread s = null;
 	private LoginResponse logIn = LoginResponse.NO_SUCH_USER_OR_PASSWORD;
 	/**
-	 * Hårdkoda denna boolean true om klienten inte ska kontakta servern för inloggning
+	 * Hï¿½rdkoda denna boolean true om klienten inte ska kontakta servern fï¿½r inloggning
 	 */
 	public boolean debugMode = false;
 
 	/**
-	 * Verifierar att username och password är giltiga. Denna metoden kommer att
-	 * försöker verifiera med servern. Om klienten inte får kontakt med servern
-	 * så kollar den lokalt i cachen om det finns någon entry sparad.
+	 * Verifierar att username och password ï¿½r giltiga. Denna metoden kommer att
+	 * fï¿½rsï¿½ker verifiera med servern. Om klienten inte fï¿½r kontakt med servern
+	 * sï¿½ kollar den lokalt i cachen om det finns nï¿½gon entry sparad.
 	 * 
 	 * @param username
-	 *            Användarnamnet
+	 *            Anvï¿½ndarnamnet
 	 * @param password
-	 *            Lösenordet
-	 * @return true om verifieringen går bra, false annars
+	 *            Lï¿½senordet
+	 * @return true om verifieringen gï¿½r bra, false annars
 	 */
 	public void evaluate(String username, String password, boolean firstLogIn) {
 		try {
@@ -81,26 +81,26 @@ public class LoginManager extends Observable {
 			// Skicka SALT-request
 			pw.println(send);
 
-			// Läs in salt från server
+			// Lï¿½s in salt frï¿½n server
 			String salt = br.readLine();
 
-			// Använd saltet vi fick för att salta och kryptera lösenordet
+			// Anvï¿½nd saltet vi fick fï¿½r att salta och kryptera lï¿½senordet
 			password = Encryption.encrypt(password, salt);
 
-			// Skapa msg med användarnamn och krypterat lösenord
+			// Skapa msg med anvï¿½ndarnamn och krypterat lï¿½senord
 			NotificationMessage nm = new NotificationMessage(username,
 					NotificationType.CONNECT, password);
 			send = nm.getClass().getName() + "\r\n";
 			gg = new Gson().toJson(nm);
 			send += gg;
 
-			// Skicka det saltade och krypterade lösenordet
+			// Skicka det saltade och krypterade lï¿½senordet
 			pw.println(send);
 
-			// Läs in ett svar från servern via SAMMA socket
+			// Lï¿½s in ett svar frï¿½n servern via SAMMA socket
 			String response = br.readLine();
 
-			// Stäng ner strömmar och socket
+			// Stï¿½ng ner strï¿½mmar och socket
 			pw.close();
 			br.close();
 			sslsocket.close();
@@ -125,9 +125,9 @@ public class LoginManager extends Observable {
 			}
 		} catch (IOException e) {
 			Log.d("NotificationMessage", "Server connection failed");
-			// Om servern inte kan nås, kolla om vi har en försökande tråd redan
-			// ...har vi en försökande tråd innebär det att vi redan är inloggade lokalt
-			// och då returnerar vi här, annars loggar vi in lokalt
+			// Om servern inte kan nï¿½s, kolla om vi har en fï¿½rsï¿½kande trï¿½d redan
+			// ...har vi en fï¿½rsï¿½kande trï¿½d innebï¿½r det att vi redan ï¿½r inloggade lokalt
+			// och dï¿½ returnerar vi hï¿½r, annars loggar vi in lokalt
 			if(!firstLogIn && s==null){
 				s = new StubbornLoginThread(username, password);
 				Log.d("LoginManager", "LULZ 3");
@@ -146,18 +146,18 @@ public class LoginManager extends Observable {
 	}
 
 	/**
-	 * Denna metoden kollar lokalt i cachen om användaren finns sparad i cachen
-	 * och försöker i sådana fall verifiera inmatade uppgifter emot dessa.
+	 * Denna metoden kollar lokalt i cachen om anvï¿½ndaren finns sparad i cachen
+	 * och fï¿½rsï¿½ker i sï¿½dana fall verifiera inmatade uppgifter emot dessa.
 	 * 
 	 * @param username
-	 *            Användarnamnet
+	 *            Anvï¿½ndarnamnet
 	 * @param password
-	 *            Lösenordet
-	 * @return true om verifieringen går bra, false annars
+	 *            Lï¿½senordet
+	 * @return true om verifieringen gï¿½r bra, false annars
 	 */
 	private LoginResponse evaluateLocally(String username, String password) {
 		/*
-		 * Hämta användarens salt så att encrypt() kan hasha korrekt String salt
+		 * Hï¿½mta anvï¿½ndarens salt sï¿½ att encrypt() kan hasha korrekt String salt
 		 * = ClientDatabaseManager.getSalt(username); password =
 		 * Encryption.encrypt(password, salt);
 		 */
@@ -166,7 +166,7 @@ public class LoginManager extends Observable {
 			return LoginResponse.NO_CONNECTION;
 		if (password.equals(cachedPassword)) {
 			/*
-			 * StubbornLoginThread försöker logga in mot servern med jämna
+			 * StubbornLoginThread fï¿½rsï¿½ker logga in mot servern med jï¿½mna
 			 * mellanrum
 			 */
 			s = new StubbornLoginThread(username, password);
@@ -183,7 +183,7 @@ public class LoginManager extends Observable {
 		return passwordCache.remove(username);
 	}
 	private void sendBufferedMessages() throws UnknownHostException{
-		//Skicka alla medelanden som buffrats och töm sedan buffern
+		//Skicka alla medelanden som buffrats och tï¿½m sedan buffern
 		ArrayList<String> bufferedMessages = new ArrayList<String>();
 		bufferedMessages = DatabaseController.db.getAllRowsAsArrays("bufferedMessage");
 		if(bufferedMessages != null){
@@ -196,7 +196,7 @@ public class LoginManager extends Observable {
 	}
 
 	/*
-	 * Privat klass som försöker att logga in emot servern med jämna mellanrum
+	 * Privat klass som fï¿½rsï¿½ker att logga in emot servern med jï¿½mna mellanrum
 	 */
 	private class StubbornLoginThread implements Runnable {
 
@@ -217,8 +217,8 @@ public class LoginManager extends Observable {
 					evaluate(username, password,false);
 					if (s == null)
 						break;
-					// Vänta två minuter mellan varje försök
-					Thread.sleep(5000 * 10);
+					// Vï¿½nta tvï¿½ minuter mellan varje fï¿½rsï¿½k
+					Thread.sleep(100000);
 
 				} catch (InterruptedException e) {
 					Log.d("LoginManager.java", "evaluateLocally FAILADE!!");

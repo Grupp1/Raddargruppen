@@ -19,10 +19,10 @@ import raddar.models.TextMessage;
 
 
 /**
- * -- ANVÄNDARGRÄNSSNITT MOT DATABASEN --
+ * -- ANVï¿½NDARGRï¿½NSSNITT MOT DATABASEN --
  * 
- * Metoderna i denna klass ska användas när man behöver komma åt MySQL-databasen på servern.
- * Skriv inte egna queries för att accessa databasen. 
+ * Metoderna i denna klass ska anvï¿½ndas nï¿½r man behï¿½ver komma ï¿½t MySQL-databasen pï¿½ servern.
+ * Skriv inte egna queries fï¿½r att accessa databasen. 
  * 
  * @author kjeka190, andbo265
  *
@@ -34,7 +34,7 @@ public class Database {
 	private static String dbpassword = "tddd36_proj1_17a8";
 
 	/*
-	 * Privat metod för att enkelt kunna ansluta till databasen.
+	 * Privat metod fï¿½r att enkelt kunna ansluta till databasen.
 	 */
 	private static Statement openConnection() {
 		try {
@@ -45,18 +45,18 @@ public class Database {
 		} catch (SQLException ex) {
 			System.out.println("Kunde inte ansluta till databasen. Kollat Library efter JDBC Plugin? ");
 		} catch (ClassNotFoundException e) {
-			System.out.println("Fel i i Class.forname()-anropet, kollat så att GSON grejerna finns i Library?");
+			System.out.println("Fel i i Class.forname()-anropet, kollat sï¿½ att GSON grejerna finns i Library?");
 		}
 		return null;
 	}
 
 	/**
-	 * Skicka in användarnamn och lösenord för att se om det stämmer med vad
+	 * Skicka in anvï¿½ndarnamn och lï¿½senord fï¿½r att se om det stï¿½mmer med vad
 	 * som finns registrerat i databasen. 
 	 * 
-	 * @param username Användarnamnet
-	 * @param password Lösenordet
-	 * @return true om lösenorden stämmer överens, false annars
+	 * @param username Anvï¿½ndarnamnet
+	 * @param password Lï¿½senordet
+	 * @return true om lï¿½senorden stï¿½mmer ï¿½verens, false annars
 	 */
 	public static boolean evalutateUser(String username, String password) {
 		try {
@@ -65,10 +65,10 @@ public class Database {
 
 			if (rs.next()) {
 				if (password == null) {
-					System.out.println("Lösenordet får inte vara null (Database.java). ");
+					System.out.println("Lï¿½senordet fï¿½r inte vara null (Database.java). ");
 					return false;
 				}
-				// Jämför input lösenordet med det lagrade lösenordet (båda är krypterade)
+				// Jï¿½mfï¿½r input lï¿½senordet med det lagrade lï¿½senordet (bï¿½da ï¿½r krypterade)
 				if (password.equals(rs.getString("password"))) {
 					return true;
 				}
@@ -80,20 +80,20 @@ public class Database {
 	}
 
 	/**
-	 * Lägg till en godkänd användare med lösenord, användarnivå och användargrupp
+	 * Lï¿½gg till en godkï¿½nd anvï¿½ndare med lï¿½senord, anvï¿½ndarnivï¿½ och anvï¿½ndargrupp
 	 * i databasen
 	 * 
-	 * @param username Användarnamnet
-	 * @param password Användarens lösenord
-	 * @param level Användarens behörighetsnivå
-	 * @param group Användarens grupp
+	 * @param username Anvï¿½ndarnamnet
+	 * @param password Anvï¿½ndarens lï¿½senord
+	 * @param level Anvï¿½ndarens behï¿½righetsnivï¿½
+	 * @param group Anvï¿½ndarens grupp
 	 */
 	public static void addUser(String username, String password, char level,
 			String group) {
 		try {
-			// Skapa ett nytt salt för denna användaren
+			// Skapa ett nytt salt fï¿½r denna anvï¿½ndaren
 			String salt = Encryption.newSalt();
-			// Salta och hasha lösenordet innan det läggs in i databasen
+			// Salta och hasha lï¿½senordet innan det lï¿½ggs in i databasen
 			password = Encryption.encrypt(password, salt);
 			Statement st = openConnection();
 			st.executeUpdate("INSERT INTO users VALUES (idusers, \'" + 
@@ -148,9 +148,9 @@ public class Database {
 	}
 
 	/**
-	 * Hämta en användares salt
-	 * @param username Användaren
-	 * @return Användarens salt
+	 * Hï¿½mta en anvï¿½ndares salt
+	 * @param username Anvï¿½ndaren
+	 * @return Anvï¿½ndarens salt
 	 */
 	public static String getSalt(String username) {
 		try {
@@ -166,10 +166,10 @@ public class Database {
 	}
 
 	/**
-	 * Hämtar en användares krypterade lösenord. Denna metoden finns endast för att vi ska kunna
-	 * lagra det krypterade lösenordet på klienten. Annars behövs inte denna (ska inte behövas...)
-	 * @param username Användaren
-	 * @return Användarens krypterade lösenord
+	 * Hï¿½mtar en anvï¿½ndares krypterade lï¿½senord. Denna metoden finns endast fï¿½r att vi ska kunna
+	 * lagra det krypterade lï¿½senordet pï¿½ klienten. Annars behï¿½vs inte denna (ska inte behï¿½vas...)
+	 * @param username Anvï¿½ndaren
+	 * @return Anvï¿½ndarens krypterade lï¿½senord
 	 */
 	public static String getEncryptedPassword(String username) {
 		try {
@@ -185,10 +185,10 @@ public class Database {
 	}
 
 	/**
-	 * Hämta en användares behörighetsnivå
+	 * Hï¿½mta en anvï¿½ndares behï¿½righetsnivï¿½
 	 *  
-	 * @param username Användaren vars behörighetsnivå vi vill hämta
-	 * @return Användarens behörighetsnivå, eller null om användaren inte finns
+	 * @param username Anvï¿½ndaren vars behï¿½righetsnivï¿½ vi vill hï¿½mta
+	 * @return Anvï¿½ndarens behï¿½righetsnivï¿½, eller null om anvï¿½ndaren inte finns
 	 */
 	public static String getUserLevel(String username) {
 		try {
@@ -204,10 +204,10 @@ public class Database {
 	}
 
 	/**
-	 * Hämta en användarens användargrupp
+	 * Hï¿½mta en anvï¿½ndarens anvï¿½ndargrupp
 	 * 	
-	 * @param username Användaren
-	 * @return Användarens grupp, eller null om användaren inte finns
+	 * @param username Anvï¿½ndaren
+	 * @return Anvï¿½ndarens grupp, eller null om anvï¿½ndaren inte finns
 	 */
 	public static String getUserGroup(String username) {
 		try {
@@ -223,10 +223,10 @@ public class Database {
 	}
 
 	/**
-	 * Hämta en användarens ID-nummer
+	 * Hï¿½mta en anvï¿½ndarens ID-nummer
 	 * 
-	 * @param username Användaren vars ID-nummer vi vill hämta
-	 * @return Användarens ID-nummer, eller 0 om användaren inte finns
+	 * @param username Anvï¿½ndaren vars ID-nummer vi vill hï¿½mta
+	 * @return Anvï¿½ndarens ID-nummer, eller 0 om anvï¿½ndaren inte finns
 	 */
 	public static int getUserID(String username) {
 		try {
@@ -242,10 +242,10 @@ public class Database {
 	}
 
 	/**
-	 * Hämta användarnamnet som ett ID-nummer hör till
+	 * Hï¿½mta anvï¿½ndarnamnet som ett ID-nummer hï¿½r till
 	 * 
-	 * @param ID ID-numret som användarnamnet är kopplat till
-	 * @return Användarnamnet som är kopplat till ID-numret, eller null om ID-numret är ogiltigt/inte finns
+	 * @param ID ID-numret som anvï¿½ndarnamnet ï¿½r kopplat till
+	 * @return Anvï¿½ndarnamnet som ï¿½r kopplat till ID-numret, eller null om ID-numret ï¿½r ogiltigt/inte finns
 	 */
 	public static String getUserName(int ID) {
 		try {
@@ -260,8 +260,8 @@ public class Database {
 		return null;
 	}
 	/**
-	 * Tar bort meddelande från buffern
-	 * @param toUser användaren vilkens meddelande skall tas bort
+	 * Tar bort meddelande frï¿½n buffern
+	 * @param toUser anvï¿½ndaren vilkens meddelande skall tas bort
 	 */
 	public static void deleteFromBuffer(String toUser){
 		try{
@@ -273,8 +273,8 @@ public class Database {
 		}
 	}
 	/**
-	 * Tar bort meddelande från messages databasem
-	 * @param tm Meddelanden då vill ta bort
+	 * Tar bort meddelande frï¿½n messages databasem
+	 * @param tm Meddelanden dï¿½ vill ta bort
 	 */	
 	public static void deleteFromTextMessages(TextMessage tm){
 		try{
@@ -289,9 +289,9 @@ public class Database {
 	}
 
 	/**
-	 * Hämta alla registrerade användare i en arraylist<string>
-	 * (Vet inte om den här funktionen behövs egentligen men vet inte om den används så låter den va)
-	 * @return En ArrayList med alla registrerade användare
+	 * Hï¿½mta alla registrerade anvï¿½ndare i en arraylist<string>
+	 * (Vet inte om den hï¿½r funktionen behï¿½vs egentligen men vet inte om den anvï¿½nds sï¿½ lï¿½ter den va)
+	 * @return En ArrayList med alla registrerade anvï¿½ndare
 	 */
 
 	public static ArrayList<String> getAllUsers() {
@@ -310,9 +310,9 @@ public class Database {
 	}
 
 	/**
-	 * Hämta alla registrerade användare från databasen på servern
+	 * Hï¿½mta alla registrerade anvï¿½ndare frï¿½n databasen pï¿½ servern
 	 * 
-	 * @return En ArrayList med alla registrerade användare som messages
+	 * @return En ArrayList med alla registrerade anvï¿½ndare som messages
 	 */
 
 	public static ArrayList<Message> retrieveAllUsers() {
@@ -332,10 +332,10 @@ public class Database {
 
 
 	/**
-	 * Hämta alla användare i en viss grupp
+	 * Hï¿½mta alla anvï¿½ndare i en viss grupp
 	 * 
 	 * @param group Gruppen
-	 * @return En ArrayList med alla användare i group
+	 * @return En ArrayList med alla anvï¿½ndare i group
 	 */
 	public static ArrayList<String> getAllUsersInGroup(String group) {
 		ArrayList<String> list = new ArrayList<String>();
@@ -353,10 +353,10 @@ public class Database {
 	}
 
 	/**
-	 * Hämta alla användare med en viss användarnivå
+	 * Hï¿½mta alla anvï¿½ndare med en viss anvï¿½ndarnivï¿½
 	 * 
-	 * @param level Användarnivån
-	 * @return En ArrayList med alla användare med användarnivån level
+	 * @param level Anvï¿½ndarnivï¿½n
+	 * @return En ArrayList med alla anvï¿½ndare med anvï¿½ndarnivï¿½n level
 	 */
 	public static ArrayList<String> getAllUsersWithUserLevel(String level) {
 		ArrayList<String> list = new ArrayList<String>();
@@ -393,7 +393,7 @@ public class Database {
 		}
 	}
 	/**
-	 * Lagrar ett Message i en buffer som tömms när en användare loggar in
+	 * Lagrar ett Message i en buffer som tï¿½mms nï¿½r en anvï¿½ndare loggar in
 	 * @param mes
 	 */
 	public static void storeIntoBuffer(Message mes) {
@@ -412,8 +412,8 @@ public class Database {
 
 
 	/**
-	 * Hämta buffrade meddelanden till en viss mottagare
-	 * @param username Mottagarens användarnamn
+	 * Hï¿½mta buffrade meddelanden till en viss mottagare
+	 * @param username Mottagarens anvï¿½ndarnamn
 	 * @return En arraylist med alla meddelanden till en person
 	 */
 	public static ArrayList<Message> retrieveAllBufferedMessagesTo(String username) {
@@ -437,7 +437,7 @@ public class Database {
 	}
 
 	/**
-	 * Hämta alla textmeddelanden till en viss mottagare
+	 * Hï¿½mta alla textmeddelanden till en viss mottagare
 	 * 
 	 * @param username Mottagaren
 	 * @return En ArrayList med alla textmeddelanden till username
@@ -457,12 +457,11 @@ public class Database {
 		} catch (SQLException ex) {
 			System.out.println("Fel syntax i MySQL-queryn i getAllTextMessagesTo(). ");
 		}
-		System.out.println(list.size());
 		return list;
 	}
 
 	/**
-	 * Hämta alla textmeddelanden i databasen
+	 * Hï¿½mta alla textmeddelanden i databasen
 	 * 
 	 * @return En ArrayList med alla textmeddelanden i databasen
 	 */
@@ -487,10 +486,10 @@ public class Database {
 
 
 	/**
-	 * Hämta alla textmeddelanden som har skickats en specifik dag 
+	 * Hï¿½mta alla textmeddelanden som har skickats en specifik dag 
 	 * 
 	 * @param day En specifik dag i detta formatet: yyyy-mm-dd
-	 * @return En ArrayList med alla textmeddelanden som skickats på day
+	 * @return En ArrayList med alla textmeddelanden som skickats pï¿½ day
 	 */
 	public static ArrayList<Message> retrieveAllTextMessagesOnDay(String date) {
 		ArrayList<Message> list = new ArrayList<Message>();

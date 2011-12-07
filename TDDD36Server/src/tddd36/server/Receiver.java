@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import javax.net.ssl.SSLSocket;
 
+import raddar.enums.MapOperation;
 import raddar.enums.MessageType;
 import raddar.enums.NotificationType;
 import raddar.enums.OnlineOperation;
@@ -24,8 +25,8 @@ import com.google.gson.Gson;
 
 
 /**
- * Denna klass bör användas för att ta emot ett godtyckligt meddelande.
- * Skapa en instans av denna t ex när accept() (i klassen ServerSocket)
+ * Denna klass bï¿½r anvï¿½ndas fï¿½r att ta emot ett godtyckligt meddelande.
+ * Skapa en instans av denna t ex nï¿½r accept() (i klassen ServerSocket)
  * returnerar en instans av klassen Socket och skicka den returnerade
  * socketen som argument till denna klassen
  * 
@@ -37,11 +38,11 @@ import com.google.gson.Gson;
 public class Receiver implements Runnable {
 
 	private Thread clientThread = new Thread(this);
-	
+
 	//Gamla inlogg
 	//private Socket so;
 	private BufferedReader in;
-	
+
 	//Nya ssl
 	private SSLSocket so;
 
@@ -56,39 +57,34 @@ public class Receiver implements Runnable {
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
 			Class c= null ;
 			try {
-				String inmatning = in.readLine();
-				System.out.println(inmatning);
-				c = Class.forName(inmatning);
+				c = Class.forName(in.readLine());
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
-			String temp = in.readLine();
-			System.out.println(temp);
-			Message m = new Gson().fromJson(temp, c);
+			Message m = new Gson().fromJson(in.readLine(), c);
+			MessageType mt = m.getType();
+			if(mt!=MessageType.PROBE){
+				System.out.println();
+				System.out.println("Messagetype: "+mt.toString());
+			}
+			//Det den hï¿½r if-satsen gï¿½r ï¿½t att undersï¿½ka om anvï¿½ndaren som skickade meddelandet ï¿½r online.
+			//Om han inte ï¿½r det mï¿½ste ï¿½r det enda meddelandena har fï¿½r skicka notifications och requesta salt.
+			//Om han gï¿½r mï¿½got annat loggas han ut.
+			if(!Server.onlineUsers.isUserOnline(m.getSrcUser()) &&
+					(m.getType() != MessageType.NOTIFICATION && !(m.getType() == MessageType.REQUEST &&
+					((RequestMessage)m).getRequestType() == RequestType.SALT))){
+				System.out.println("Not online");
+				NotificationMessage nm = (new NotificationMessage("Server", NotificationType.DISCONNECT));
+				nm.setData("Du ï¿½r inte inloggad mot servern. Var vï¿½nlig logga in igen.");
+				LoginManager.logoutUser(m.getSrcUser());
+				new Sender(nm, so.getInetAddress()); 
+				return;
+			}
 
-			//Det den här if-satsen gör ät att undersöka om användaren som skickade meddelandet är online.
-			//Om han inte är det måste är det enda meddelandena har får skicka notifications och requesta salt.
-			//Om han gör mågot annat loggas han ut.
-//			if(!Server.onlineUsers.isUserOnline(m.getSrcUser()) &&
-//					(m.getType() != MessageType.NOTIFICATION && !(m.getType() == MessageType.REQUEST &&
-//					((RequestMessage)m).getRequestType() == RequestType.SALT))){
-//				System.out.println("Not online");
-//				NotificationMessage nm = (new NotificationMessage("Server", NotificationType.DISCONNECT));
-//				nm.setData("Du är inte inloggad mot servern. Var vänlig logga in igen.");
-//				LoginManager.logoutUser(m.getSrcUser());
-//				new Sender(nm, so.getInetAddress()); 
-//				return;
-//			}
-			
-//			if(Server.onlineUsers.isUserOnline(m.getSrcUser())){
-//					so.close();
-//				return;
-//			}
-			// if message
-			// Kontroll-sats som, beroende på vilken typ som lästs in, ser till att resterande del av
-			// meddelandet som klienten har skickat blir inläst på korrekt sätt
+			// Kontroll-sats som, beroende pï¿½ vilken typ som lï¿½sts in, ser till att resterande del av
+			// meddelandet som klienten har skickat blir inlï¿½st pï¿½ korrekt sï¿½tt
 
-			switch (m.getType()) {
+			switch (mt) {
 			case PROBE:
 				Server.onlineUsers.confirmedProbeMessage(m.getSrcUser(), so.getInetAddress());
 				break;
@@ -123,25 +119,26 @@ public class Receiver implements Runnable {
 	}
 
 	/*
-	 * I denna metoden associerar och avassocierar vi användare med IP-addresser
-	 * Klienterna bör skicka ett NotificationMessage av typen CONNECT när de loggar
-	 * online, samt ett NotificationMessage av typen DISCONNECT när de loggar off.
+	 * I denna metoden associerar och avassocierar vi anvï¿½ndare med IP-addresser
+	 * Klienterna bï¿½r skicka ett NotificationMessage av typen CONNECT nï¿½r de loggar
+	 * online, samt ett NotificationMessage av typen DISCONNECT nï¿½r de loggar off.
 	 */
 	private void handleNotification(NotificationMessage nm) {
-		// Kolla vilken sorts notification vi har att göra med
+		// Kolla vilken sorts notification vi har att gï¿½ra med
 		NotificationType nt = nm.getNotification();
+		System.out.println("Notificationtype: "+nt);
 		switch (nt) {
 		case CONNECT:
-			// Behandla loginförsöket
+			// Behandla loginfï¿½rsï¿½ket
 			LoginManager.evaluateUser(nm.getSrcUser(), nm.getPassword(), so);
 			break;
 		case DISCONNECT:
-			// Behandla logoutförsöket
+			// Behandla logoutfï¿½rsï¿½ket
 			if(so.getInetAddress().equals(Server.onlineUsers.getUserAddress(nm.getSrcUser())))
 				LoginManager.logoutUser(nm.getSrcUser());
 			break;
 		default:
-			// Här hamnar vi om något gått fel i formatteringen eller inläsandet av meddelandet
+			// Hï¿½r hamnar vi om nï¿½got gï¿½tt fel i formatteringen eller inlï¿½sandet av meddelandet
 			System.out.println("Unknown NotificationType... ");
 		}
 	}
@@ -157,9 +154,11 @@ public class Receiver implements Runnable {
 		}
 
 	}
-	
+
 	private void handleMapObjectMessage(MapObjectMessage mo){
-		switch(mo.getMapOperation()){
+		MapOperation mapO = mo.getMapOperation();
+		System.out.println("MapOperation: ");
+		switch(mapO){
 		case ADD:
 			System.out.println("handleMapObjectMessage ADD");
 			if(Database.addMapObject(mo))
@@ -176,7 +175,7 @@ public class Receiver implements Runnable {
 			Database.updateMapObject(mo);
 			break;
 		default:
-			System.out.println("Okänd MapOperation");
+			System.out.println("Okï¿½nd MapOperation");
 		}	
 	}
 
@@ -185,6 +184,8 @@ public class Receiver implements Runnable {
 	 * @param rm The recived requestMessage
 	 */
 	private void handleRequest(RequestMessage rm){
+		RequestType rt = rm.getRequestType();
+		System.out.println("RequestType: "+rt);
 		switch(rm.getRequestType()){
 		case MESSAGE:
 			ArrayList<Message> messages = Database.retrieveAllTextMessagesTo(rm.getSrcUser());
@@ -192,11 +193,11 @@ public class Receiver implements Runnable {
 			new Sender(messages,rm.getSrcUser());
 			break;
 		case BUFFERED_MESSAGE:
-			ArrayList<Message> list = Database.retrieveAllBufferedMessagesTo(rm.getSrcUser());
-			for(Message m: list){
+			ArrayList<Message> buffered = Database.retrieveAllBufferedMessagesTo(rm.getSrcUser());
+			for(Message m: buffered){
 				Database.storeTextMessage((TextMessage)m);
 			}
-			new Sender(list,rm.getSrcUser());
+			new Sender(buffered,rm.getSrcUser());
 			Database.deleteFromBuffer(rm.getSrcUser());
 			break;
 		case SALT:
@@ -218,7 +219,7 @@ public class Receiver implements Runnable {
 			}
 			break;
 		case CONTACTS:
-			//svarar på request om att hämta alla kontakter som arraylist<message> 
+			//svarar pï¿½ request om att hï¿½mta alla kontakter som arraylist<message> 
 			ArrayList<Message> contactMessage = Database.retrieveAllUsers();
 			contactMessage.add(0,rm);
 			new Sender(contactMessage, rm.getSrcUser());
@@ -234,8 +235,20 @@ public class Receiver implements Runnable {
 				new Sender(onlineUsermessage, rm.getSrcUser());
 			}
 			break;
+		case NEW_LOGIN:
+			ArrayList<Message> list =  Database.retrieveAllTextMessagesTo(rm.getSrcUser());
+			list.addAll(Database.retrieveAllBufferedMessagesTo(rm.getSrcUser()));
+			list.addAll(Database.retrieveAllUsers());
+			list.addAll(Database.retrieveAllMapObjects());
+			ArrayList<String> temp1 = Associations.getOnlineUserNames();
+			ArrayList<OnlineUsersMessage> temp2 = new ArrayList<OnlineUsersMessage>();
+			for(String onlineUser: temp1){
+				temp2.add(new OnlineUsersMessage(OnlineOperation.ADD, onlineUser));
+			}
+			new Sender(list, rm.getSrcUser());
+			break;
 		default:
-			System.out.println("Okänd RequestType");
+			System.out.println("Okï¿½nd RequestType");
 		}
 	}
 }
