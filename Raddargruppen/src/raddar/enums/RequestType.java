@@ -1,6 +1,6 @@
 package raddar.enums;
 
-	/**De olika typerna klienten kan requesta när den startar
+	/**De olika typerna klienten kan requesta nï¿½r den startar
 	 * 
 	 */
 public enum RequestType {
@@ -9,5 +9,6 @@ public enum RequestType {
 	SALT,
 	CONTACTS,
 	MAP_OBJECTS,
-	ONLINE_CONTACTS;
+	ONLINE_CONTACTS,
+	NEW_LOGIN;
 }

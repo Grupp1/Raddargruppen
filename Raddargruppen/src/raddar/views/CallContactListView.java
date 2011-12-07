@@ -42,15 +42,13 @@ public class CallContactListView extends ListActivity implements Observer{
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		SessionController.titleBar(this, " - Samtal");
 
-		//contacts = DatabaseController.db.getAllRowsAsArrays("contact");
 		contacts = SessionController.getOnlineContacts();
-		DatabaseController.db.addObserver(this);
-		/*Collections.sort(contacts,new Comparator<Contact>(){
+		SessionController.getSessionController().addObserver(this);
+		Collections.sort(contacts,new Comparator<Contact>(){
 			public int compare(Contact object1, Contact object2) {
 				return object1.getUserName().compareToIgnoreCase(object2.getUserName());
 			}
-
-		});*/
+		});
 		ia = new ContactAdapter(this, R.layout.call_contact_list, contacts);
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
@@ -58,8 +56,8 @@ public class CallContactListView extends ListActivity implements Observer{
 		lv.setOnItemClickListener(new OnItemClickListener() {
 
 			/**
-			 * lv är satt som en onItemClickListener
-			 * Snabbt klick på en kontakt, ringer direkt
+			 * lv ï¿½r satt som en onItemClickListener
+			 * Snabbt klick pï¿½ en kontakt, ringer direkt
 			 */
 			public void onItemClick(AdapterView<?> a, View v, int position, long id) {
 				Intent nextIntent = new Intent(CallContactListView.this,CallView.class);
@@ -119,6 +117,11 @@ public class CallContactListView extends ListActivity implements Observer{
 			runOnUiThread(new Runnable(){
 				public void run() {
 					contacts.add((Contact)data);
+					Collections.sort(contacts,new Comparator<Contact>(){
+						public int compare(Contact object1, Contact object2) {
+							return object1.getUserName().compareToIgnoreCase(object2.getUserName());
+						}
+					});
 					ia.notifyDataSetChanged();					
 				}
 			});

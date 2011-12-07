@@ -53,6 +53,7 @@ public class Receiver implements Runnable {
 			so.close();
 
 			if (m != null && notify && (m.getType() == MessageType.TEXT||m.getType() == MessageType.IMAGE)) {
+				SessionController.newToast("Meddelande frÃ¥n "+(m).getSrcUser());
 				Intent intent = new Intent(context, NotificationService.class);
 				String[] message = new String[5];
 				message[0] = m.getSrcUser();
@@ -66,7 +67,7 @@ public class Receiver implements Runnable {
 			Log.d("Receiver", "IOException");
 			//ie.printStackTrace();
 		} catch (ArrayIndexOutOfBoundsException e) {
-			Log.d("Undersök", "ArrayIndexOutOfBounds i receiver");
+			Log.d("Undersï¿½k", "ArrayIndexOutOfBounds i receiver");
 		} catch (ClassNotFoundException e) {
 			Log.e("ClassnotFoundException", e.toString());
 			return;

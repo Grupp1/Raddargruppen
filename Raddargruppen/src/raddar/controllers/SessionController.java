@@ -80,6 +80,11 @@ public class SessionController extends Observable{
 																															
 	}
 	
+	public static void newToast(String data){
+		sessionController.setChanged();
+		sessionController.notifyObservers(data);
+	}
+	
 	public static SessionController getSessionController(){
 		return sessionController;
 	}
@@ -87,9 +92,9 @@ public class SessionController extends Observable{
 		return connection;
 	}
 /**
- * Sätter utseendet på titleBar
- * @param a activity som den anropas från
- * @param s app_name + / var man är
+ * Sï¿½tter utseendet pï¿½ titleBar
+ * @param a activity som den anropas frï¿½n
+ * @param s app_name + / var man ï¿½r
  */
 	public static void titleBar(Activity a, String s){
 		a.setTitle(" Alice" + s);
@@ -124,12 +129,14 @@ public class SessionController extends Observable{
 		return onlineUsers;
 	}
 	
-	public static void addOnlineUser(String userName){
+	public void addOnlineUser(String userName){
 		if(!onlineUsers.contains(userName));
 			onlineUsers.add(userName);
+		setChanged();
+		notifyObservers(new Contact(userName,false));
 	}
 	
-	public static void removeOnlineUser(String userName){
+	public void removeOnlineUser(String userName){
 		onlineUsers.remove(userName);
 	}
 	
