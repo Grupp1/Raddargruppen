@@ -14,6 +14,7 @@ import raddar.models.MapObjectList;
 import raddar.models.QoSManager;
 import raddar.models.Resource;
 import raddar.models.Situation;
+import raddar.models.You;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -365,10 +366,6 @@ public class MapUI extends MapActivity implements Observer {
 		runOnUiThread(new Runnable(){
 			public void run() {
 				MapObjectList list = MainView.mapCont.getList(mo);
-				Log.d("LISTAN", mo.getTitle()+" "+list.size());
-				for(int i = 0; i < list.size();i++){
-					Log.d("LISTAN", ((MapObject) list.getItem(i)).getId());
-				}
 				if (!mapOverlays.contains(list)){
 					mapOverlays.add((MapObjectList) list);
 				}
@@ -378,9 +375,15 @@ public class MapUI extends MapActivity implements Observer {
 					mapOverlays.set(mapOverlays.indexOf(list), list);
 				}
 
-				if(!mo.getId().equals(SessionController.getUser())){
-					toast = Toast.makeText(getBaseContext(), "Objekt tillagt: "+mo.getTitle()
-							+"Skapad av: "+mo.getAddedBy(), Toast.LENGTH_LONG);
+				if(!mo.getAddedBy().equals(SessionController.getUser())){
+					String txt = "";
+					if(mo instanceof You){
+						txt = mo.getAddedBy()+" har gått online";
+					}
+					else{
+						txt = "Objekt tillagt: "+mo.getTitle()+", Skapad av: "+mo.getAddedBy();
+					}
+					toast = Toast.makeText(getBaseContext(), txt, Toast.LENGTH_LONG);
 					toast.show();
 				}
 				mapView.invalidate();

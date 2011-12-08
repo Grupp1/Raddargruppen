@@ -1,7 +1,6 @@
 package raddar.views;
 
 import raddar.controllers.SessionController;
-import raddar.gruppen.R;
 import raddar.models.QoSManager;
 import raddar.models.XMLFetcher;
 import android.app.ExpandableListActivity;

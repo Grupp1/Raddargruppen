@@ -3,7 +3,6 @@ package raddar.controllers;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.Socket;
 
 import javax.net.ssl.SSLSocket;
 
@@ -53,7 +52,7 @@ public class Receiver implements Runnable {
 			so.close();
 
 			if (m != null && notify && (m.getType() == MessageType.TEXT||m.getType() == MessageType.IMAGE)) {
-				SessionController.newToast("Meddelande frÃ¥n "+(m).getSrcUser());
+				SessionController.newToast("Meddelande från "+(m).getSrcUser());
 				Intent intent = new Intent(context, NotificationService.class);
 				String[] message = new String[5];
 				message[0] = m.getSrcUser();
