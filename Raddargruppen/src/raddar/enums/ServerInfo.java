@@ -23,6 +23,10 @@ public class ServerInfo {
 	//public static final String SERVER_IP = "130.236.188.138"; // lalles pc 11:11
 	//public static final String SERVER_IP = "130.236.188.132"; //Einars pc 11:5
 	//public static final String SERVER_IP = "130.236.227.204";
+
+	//public static final String SERVER_IP = "130.236.188.138"; // lalles pc 11:11
+	//public static final String SERVER_IP = "130.236.188.132"; // Einars pc 11:5
+
 	//public static final String SERVER_IP = "marsix.ida.liu.se"; //IdAS server
 
 

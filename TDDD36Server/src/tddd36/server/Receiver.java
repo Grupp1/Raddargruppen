@@ -62,6 +62,7 @@ public class Receiver implements Runnable {
 				e.printStackTrace();
 			}
 			Message m = new Gson().fromJson(in.readLine(), c);
+			
 			MessageType mt = m.getType();
 			if(mt!=MessageType.PROBE){
 				System.out.println();
@@ -76,7 +77,7 @@ public class Receiver implements Runnable {
 				System.out.println("Not online");
 				NotificationMessage nm = (new NotificationMessage("Server", NotificationType.DISCONNECT));
 				nm.setData("Du �r inte inloggad mot servern. Var v�nlig logga in igen.");
-				LoginManager.logoutUser(m.getSrcUser());
+				//LoginManager.logoutUser(m.getSrcUser());
 				new Sender(nm, so.getInetAddress()); 
 				return;
 			}
