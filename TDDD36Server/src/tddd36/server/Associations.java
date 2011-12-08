@@ -33,7 +33,9 @@ public class Associations {
 				// Skickar ut nya probes
 				if(onlineUsers()>0){
 					Set<String> keys = associations.keySet();
+					//System.out.println("Användare online: " +keys.size());
 					for (String key: keys){
+						//System.out.println("Online: "+key+", "+associations.get(key));
 						NotificationMessage m = new NotificationMessage("server", null);
 						m.setType(MessageType.PROBE);
 						new Sender(m,associations.get(key));

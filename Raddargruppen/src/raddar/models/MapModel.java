@@ -3,8 +3,8 @@ package raddar.models;
 import java.util.List;
 
 import raddar.controllers.SessionController;
-import raddar.views.MapUI;
 import raddar.gruppen.R;
+import raddar.views.MapUI;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
@@ -38,51 +38,52 @@ public class MapModel {
 	 */
 
 	public void add(MapObject o){
-//		if(o instanceof You&&((You) o).isSOS()){
-//			o.setIcon(R.drawable.circle_red);
-//		}
-		
+		//		if(o instanceof You&&((You) o).isSOS()){
+		//			o.setIcon(R.drawable.circle_red);
+		//		}
 
-//			if(((You) o).isSOS()){
-//				Log.d("soslist", o.getAddedBy());
-//				if(sosList == null){
-//					sosList = new MapObjectList(d, mapUI);
-//				}
-//				sosList.addOverlay(o);
-//			}
 
+		//			if(((You) o).isSOS()){
+		//				Log.d("soslist", o.getAddedBy());
+		//				if(sosList == null){
+		//					sosList = new MapObjectList(d, mapUI);
+		//				}
+		//				sosList.addOverlay(o);
+		//			}
+		Log.d("SOSALARM", "Add:");
 		getList(o).addMapObject(o);
 	}
 
 	public MapObjectList getList(MapObject o){
-		if(o instanceof You){
-			if(!o.getId().equals(SessionController.getUser())){
-				o.setIcon(R.drawable.circle_yellow);
-				Log.d("SOS", "getList if");
-			}else if(((You)o).isSOS()){
-				o.setIcon(R.drawable.circle_red);
-				Log.d("SOS", "getList else");
-			}
+		// Om sätter personer som inte är sos och inte du till gula
+		if(o instanceof You && !(SessionController.getUser().equals(o.getId()))
+				&& !((You)o).isSOS()){
+			o.setIcon(R.drawable.circle_yellow);
 		}
 		d = mapUI.getResources().getDrawable(o.getIcon());
 		if(o instanceof You){
-			if(o.getId().equals(SessionController.getUser())){
-				if(youList == null){
-					youList = new MapObjectList(d, mapUI);
-				}
-				Log.d("SOS", "mapmodel: youList");
-				return youList;
-			}else if(((You)o).isSOS()){
+			if(((You)o).isSOS()){
 				if(sosList == null){
+					Log.d("SOSALARM", "ID:"+o.getId()+" isSOS:"+((You)o).isSOS()+" Lista: sosList");
+					d = mapUI.getResources().getDrawable(R.drawable.sosicon);
 					sosList = new MapObjectList(d, mapUI);
 				}
-				Log.d("SOS", "mapmodel: sosList");
 				return sosList;
-			}else{
+			}
+			else if(o.getId().equals(SessionController.getUser())){
+				if(youList == null){
+					Log.d("SOSALARM", "ID:"+o.getId()+" isSOS:"+((You)o).isSOS()+" Lista: youList");
+					d = mapUI.getResources().getDrawable(R.drawable.circle_green);
+					youList = new MapObjectList(d, mapUI);
+				}
+				return youList;
+			}
+			else{
 				if(otherList == null){
+					Log.d("SOSALARM", "ID:"+o.getId()+" isSOS:"+((You)o).isSOS()+" Lista: otherList");
+					d = mapUI.getResources().getDrawable(R.drawable.circle_yellow);
 					otherList = new MapObjectList(d, mapUI);
 				}
-				Log.d("SOS", "mapmodel: otherList");
 				return otherList;
 			}
 		}
@@ -109,6 +110,7 @@ public class MapModel {
 	}
 
 	public void removeObject(MapObject o){
+		Log.d("SOSALARM", "Remove:");
 		getList(o).removeMapObject(o);
 	}
 
@@ -119,5 +121,5 @@ public class MapModel {
 	public void setMapOverlays(List<Overlay> mapOverlays) {
 		this.mapOverlays = mapOverlays;
 	}
-	
+
 }

@@ -14,11 +14,11 @@ import raddar.models.QoSManager;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -46,17 +46,11 @@ public class StartView extends Activity implements Observer {
 		setContentView(R.layout.start);
 		
 		SessionController.titleBar(this, " - Logga in");
-		this.deleteDatabase("client_database");
 		new DatabaseController(this);
 
 		System.setProperty("javax.net.ssl.keyStore","assets/androidKey");
 	    System.setProperty("javax.net.ssl.keyStorePassword","android");
 		
-		// Lite h�rdkodade testanv�ndare att testa med
-		LoginManager.cache("Borche", "hej123");
-		LoginManager.cache("Danne", "raddar");
-		LoginManager.cache("Alice", "longshot");
-		LoginManager.cache("danan612","raddar");
 
 		user = (EditText) this.findViewById(R.id.usertext1);
 		password = (EditText) this.findViewById(R.id.passwordtext1);
@@ -151,6 +145,11 @@ public class StartView extends Activity implements Observer {
 				dialog.cancel();
 			}
 		});
+	}
+	
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
 	}
 	
 	@Override

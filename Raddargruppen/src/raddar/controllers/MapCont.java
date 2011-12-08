@@ -10,7 +10,6 @@ import java.util.Observer;
 
 import raddar.enums.MapOperation;
 import raddar.enums.ResourceStatus;
-import raddar.gruppen.R;
 import raddar.models.GPSModel;
 import raddar.models.MapModel;
 import raddar.models.MapObject;
@@ -29,6 +28,7 @@ import com.google.gson.Gson;
 public class MapCont implements Observer, Runnable{
 
 	private MapModel mapModel;
+	public boolean follow = false;
 	public static GPSModel gps;
 	private Thread thread = new Thread(this);
 	//private ArrayList<MapObject>  olist;
@@ -54,7 +54,6 @@ public class MapCont implements Observer, Runnable{
 		if (!thread.isAlive()){
 			run();
 		}
-		//	DatabaseController.db.addObserver(mapUI);
 	}
 	public MapObjectList getList(MapObject mo){
 		Log.d("GET MAP OBJECT LIST",""+mo.getTitle());
@@ -71,8 +70,8 @@ public class MapCont implements Observer, Runnable{
 		Log.d("AddObject", "MapCont:"+o.getTitle());
 		if(mapUI != null){
 			mapModel.add(o);
-			mapUI.drawNewMapObject(o);
 			o.updateData(geocoder);
+			mapUI.drawNewMapObject(o);
 		}
 		if(sendToServer){
 			Gson gson = new Gson();
@@ -118,7 +117,7 @@ public class MapCont implements Observer, Runnable{
 				olist.add(you);
 			mapUI.controller.animateTo(you.getPoint());
 			mapUI.controller.setZoom(13);
-			mapUI.follow = true;
+			follow = true;
 		}
 		for(int i = 0; i < olist.size();i++){
 			MapObject o = olist.get(i);
@@ -167,18 +166,19 @@ public class MapCont implements Observer, Runnable{
 			if (!areYouFind){
 				areYouFind = true;
 				Log.d("YOU", o.toString());
-				you = new You((GeoPoint)data, SessionController.getUser()+" position", "Här är "+SessionController.getUser(),
-						R.drawable.circle_green, ResourceStatus.FREE);
+
+				you = new You((GeoPoint)data, SessionController.getUser(), "Här är"+SessionController.getUser(),
+						ResourceStatus.FREE, false);
 				add(you,true);		// karta
 			}
 			else{
+				you.setPoint((GeoPoint)data);
 				updateObject(you,true);
 			}
-			you.setPoint((GeoPoint)data);	
 
 			if (mapUI != null){
 				mapUI.drawNewMapObject(you);
-				if(mapUI.follow){
+				if(follow){
 					mapUI.controller.animateTo(you.getPoint());
 				}
 			}
@@ -219,14 +219,12 @@ public class MapCont implements Observer, Runnable{
 
 	public void renewYou() {
 		if (you!=null){
-			//olist.remove(you);
-			you = new You((GeoPoint)you.getPoint(), SessionController.getUser()+" position", "H�r �r "+SessionController.getUser(),
-					R.drawable.circle_green, ResourceStatus.FREE);
-			//olist.add(you); // databas
+			you = new You(you.getPoint(), you.getTitle(), you.getSnippet(),
+					you.getStatus(), you.isSOS());
 			updateObject(you,true);		// karta
 			if (mapUI != null){
 				mapUI.drawNewMapObject(you);
-				if(mapUI.follow){
+				if(follow){
 					mapUI.controller.animateTo(you.getPoint());
 				}
 			}

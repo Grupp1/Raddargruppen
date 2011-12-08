@@ -14,7 +14,6 @@ import raddar.enums.ConnectionStatus;
 import raddar.enums.NotificationType;
 import raddar.enums.RequestType;
 import raddar.gruppen.R;
-import raddar.models.Message;
 import raddar.models.NotificationMessage;
 import raddar.models.QoSManager;
 import raddar.models.RequestMessage;
@@ -29,7 +28,6 @@ import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.os.BatteryManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -291,7 +289,6 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	@Override
 	public void onPause() {
 		super.onPause();
-		//unregisterReceiver(mBatteryInfoReceiver);
 	}
 
 	public void enableButtons() {

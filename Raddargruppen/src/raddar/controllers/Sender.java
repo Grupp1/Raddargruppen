@@ -30,6 +30,7 @@ public class Sender implements Runnable {
 	private Message message;
 	// MapObject som ska skickas
 	private String send;
+	private final static LoginManager lm = new LoginManager();
 
 	private Sender(InetAddress address, int port){
 		this.address = address;
@@ -48,7 +49,7 @@ public class Sender implements Runnable {
 		this.address = InetAddress.getByName(ServerInfo.SERVER_IP);
 		thread.start();
 	}
-	
+
 	public Sender(String send) throws UnknownHostException{
 		this.send = send;
 		this.port = ServerInfo.SERVER_PORT;
@@ -63,21 +64,27 @@ public class Sender implements Runnable {
 			send +=	gson.toJson(message);	
 		}
 		try {
+			if(SessionController.getConnectionStatus()== ConnectionStatus.DISCONNECTED){
+				DatabaseController.db.addBufferedMessageRow(send);
+				return;
+			}	
 			SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 			SSLSocket sslsocket = (SSLSocket) sslsocketfactory.createSocket(address, port);
 			sslsocket.setEnabledCipherSuites(new String[] { "SSL_DH_anon_WITH_RC4_128_MD5" });
 			SSLSession session = sslsocket.getSession();
-			
+
 			PrintWriter out = new PrintWriter(sslsocket.getOutputStream(), true);
-			
-			out.println(send);
+			if(SessionController.getConnectionStatus()== ConnectionStatus.CONNECTED){
+				out.println(send);
+			}
 			out.close();
 			sslsocket.close();
 		} catch (IOException ie) {
 			Log.d("Skapandet av socket [2]", ie.toString());
 			SessionController.getSessionController().changeConnectionStatus(ConnectionStatus.DISCONNECTED);
-			LoginManager lm = new LoginManager();
-			lm.evaluate(SessionController.getUserName(), SessionController.getPassword(),false);
+			//BÖR ÄNDRAS ASAP
+			if(!lm.isRunningStubornLoginThread())
+				lm.evaluate(SessionController.getUserName(), SessionController.getPassword(),false);
 			
 			DatabaseController.db.addBufferedMessageRow(send);
 		} 

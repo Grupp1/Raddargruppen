@@ -10,19 +10,14 @@ import javax.net.ssl.SSLSocket;
 
 import raddar.enums.ConnectionStatus;
 import raddar.enums.MessageType;
-import raddar.enums.ResourceStatus;
-import raddar.enums.SOSType;
 import raddar.enums.ServerInfo;
-import raddar.gruppen.R;
 import raddar.models.ContactMessage;
-import raddar.models.ImageMessage;
 import raddar.models.MapObject;
 import raddar.models.MapObjectMessage;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
 import raddar.models.OnlineUsersMessage;
 import raddar.models.QoSManager;
-import raddar.models.SOSMessage;
 import raddar.models.You;
 import raddar.views.MainView;
 import raddar.views.MapUI;
@@ -33,8 +28,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
 import android.util.Log;
 
 public class ReciveHandler extends Observable implements Runnable {
@@ -58,7 +51,7 @@ public class ReciveHandler extends Observable implements Runnable {
 			SSLServerSocketFactory sslserversocketfactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
 			SSLServerSocket sslserversocket = (SSLServerSocket) sslserversocketfactory.createServerSocket(ServerInfo.SERVER_PORT);
 			sslserversocket.setEnabledCipherSuites(new String[] { "SSL_DH_anon_WITH_RC4_128_MD5" });
-			
+
 			while (true) {
 				// Nï¿½r ett inkommande meddelande tas emot skapa en ny Receiver
 				// som kï¿½rs i en egen trï¿½d
@@ -81,7 +74,7 @@ public class ReciveHandler extends Observable implements Runnable {
 	 * @param notify true if we should notify the user
 	 */
 	public void newMessage(MessageType mt, final Message m, boolean notify) {
-		
+
 		if (mt == MessageType.PROBE){
 			Log.d("PROBE", "POBE");
 			NotificationMessage mess = new NotificationMessage(SessionController.getUser(), null);
@@ -96,32 +89,47 @@ public class ReciveHandler extends Observable implements Runnable {
 		}
 		else if (mt == MessageType.TEXT||mt == MessageType.IMAGE) {
 			DatabaseController.db.addRow(m);
-		} else if (mt == MessageType.SOS) {
-			//((Activity) context).runOnUiThread(new Runnable() {
-			QoSManager.getCurrentActivity().runOnUiThread(new Runnable() {
-				public void run() {
-					if(((SOSMessage)m).getSOSType() == SOSType.ALARM){
-						final You you = new You(((SOSMessage)m).getPoint(), ((SOSMessage)m).getSrcUser(), "",
-								R.drawable.circle_green, ((SOSMessage)m).getStatus());
-						you.setSOS(false);
-						MainView.mapCont.removeObject(you, false);
-						you.setSOS(true);
-						MainView.mapCont.add(you, false);
-						Log.d("SOS", "add: "+m.getSrcUser());
+		}
+		else if (mt == MessageType.MAPOBJECT) {
+			final MapObject mo = ((MapObjectMessage)m).toMapObject();
+			switch(((MapObjectMessage)m).getMapOperation()){
+			case ADD:
+				MainView.mapCont.add(mo,false);
+				break;
+			case REMOVE:
+				MainView.mapCont.removeObject(mo, false);
+				break;
+			case UPDATE:
+				MainView.mapCont.updateObject(mo,false);
+				break;
+			case ALARM_ON:
+				QoSManager.getCurrentActivity().runOnUiThread(new Runnable() {
+					public void run() {
+						// Tar bort användaren från otherList
+						((You)mo).setSOS(false);
+						MainView.mapCont.removeObject(mo, false);
+
+						// Lägger till i sosList
+						((You)mo).setSOS(true);
+						MainView.mapCont.add(mo, false);
+
 						AlertDialog.Builder alert = new AlertDialog.Builder(QoSManager.getCurrentActivity());
 
-						alert.setTitle("SOS-meddelande frï¿½n: "+m.getSrcUser());
-						alert.setMessage(m.getData());
+						alert.setTitle("SOS-meddelande från: "+m.getSrcUser());
+						alert.setMessage(mo.getSnippet());
 
-						alert.setPositiveButton("Gï¿½ till kartan",
+						alert.setPositiveButton("Visa position",
 								new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
-								// Gï¿½ till kartan
+								// Gå till kartan
 								Intent intent = new Intent(QoSManager.getCurrentActivity(),MapUI.class);
 								intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+								intent.putExtra("lat", mo.getPoint().getLatitudeE6());
+								intent.putExtra("lon", mo.getPoint().getLongitudeE6());
 								QoSManager.getCurrentActivity().startActivity(intent);
-								MainView.mapCont.animateTo(you.getPoint());
+								MainView.mapCont.animateTo(mo.getPoint());
+								MainView.mapCont.follow = false;
 							}
 						});
 
@@ -134,42 +142,21 @@ public class ReciveHandler extends Observable implements Runnable {
 						});
 
 						alert.show();
-					}else{
-						final You you = new You(((SOSMessage)m).getPoint(), ((SOSMessage)m).getSrcUser(), "",
-								R.drawable.circle_green, ((SOSMessage)m).getStatus());
-						you.setSOS(false);
-						MainView.mapCont.removeObject(you, false);
-						you.setSOS(true);
-						MainView.mapCont.add(you, false);
-						Log.d("SOS", "cancel_sos: "+m.getSrcUser());
-						MainView.mapCont.updateObject(you, false);
 					}
-
-				}
-
-			});
-		}else if (mt == MessageType.MAPOBJECT) {
-			MapObject mo = ((MapObjectMessage)m).toMapObject();
-			switch(((MapObjectMessage)m).getMapOperation()){
-			case ADD:
-				MainView.mapCont.add(mo,false);
+				});
 				break;
-			case REMOVE:
+			case ALARM_OFF:
+				// Tar bort användaren från sosList
+				((You)mo).setSOS(true);
 				MainView.mapCont.removeObject(mo, false);
-				break;
-			case UPDATE:
-				MainView.mapCont.updateObject(mo,false);
+
+				// Lägger till i otherList
+				((You)mo).setSOS(false);
+				MainView.mapCont.add(mo, false);
 				break;
 			default:
-
+				break;
 			}
-		}
-		else if(mt == MessageType.CONTACT){
-			if(((ContactMessage)m).getContact().equals(SessionController.getUser())){
-				//TAGIT BORT RETURN FÃ–R LÃ„TTARE TEST
-				//return;
-			}
-			DatabaseController.db.addRow(((ContactMessage)m).toContact());
 		}
 		else if(mt == MessageType.ONLINE_USERS){
 			if(!((OnlineUsersMessage)m).getUserName().equals(SessionController.getUser())){
@@ -187,6 +174,15 @@ public class ReciveHandler extends Observable implements Runnable {
 				}
 			}
 		}
+
+		else if(mt == MessageType.CONTACT){
+			if(((ContactMessage)m).getContact().equals(SessionController.getUser())){
+				// Bortkommenterad för lättare testning
+				//return;
+			}
+			DatabaseController.db.addRow(((ContactMessage)m).toContact());
+		}
+		
 		else if(mt == MessageType.NOTIFICATION){
 			Log.e("LOGOUT","OTHER USER HAS LOGGED IN ON ANOTHER DEVICE");
 			final Activity current = QoSManager.getCurrentActivity();

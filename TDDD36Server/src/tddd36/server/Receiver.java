@@ -64,6 +64,7 @@ public class Receiver implements Runnable {
 				e.printStackTrace();
 			}
 			Message m = new Gson().fromJson(in.readLine(), c);
+			
 			MessageType mt = m.getType();
 			if(mt!=MessageType.PROBE){
 				System.out.println();
@@ -77,8 +78,8 @@ public class Receiver implements Runnable {
 					((RequestMessage)m).getRequestType() == RequestType.SALT))){
 				System.out.println("Not online");
 				NotificationMessage nm = (new NotificationMessage("Server", NotificationType.DISCONNECT));
-				nm.setData("Du �r inte inloggad mot servern. Var v�nlig logga in igen.");
-				new Sender(nm, so.getInetAddress()); 
+				nm.setData("Du är inte inloggad mot servern. Var v�nlig logga in igen.");
+				new Sender(nm, so.getInetAddress());
 				return;
 			}
 
@@ -161,19 +162,17 @@ public class Receiver implements Runnable {
 		System.out.println("MapOperation: ");
 		switch(mapO){
 		case ADD:
-			System.out.println("handleMapObjectMessage ADD");
+			//System.out.println("handleMapObjectMessage ADD");
 			if(Database.addMapObject(mo))
-				broadcast(mo);
-			break;
+				break;
 		case REMOVE:
-			System.out.println("handleMapObjectMessage REMOVE");
-			broadcast(mo);
+			//System.out.println("handleMapObjectMessage REMOVE");
 			Database.removeMapObject(mo.getId());
 			break;
 		case UPDATE:
-			System.out.println("handleMapObjectMessage UPDATE");
-			broadcast(mo);
-			Database.updateMapObject(mo);
+		case ALARM_ON:
+		case ALARM_OFF:
+		Database.updateMapObject(mo);
 			break;
 		default:
 			System.out.println("Ok�nd MapOperation");
