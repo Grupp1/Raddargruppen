@@ -14,6 +14,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -38,8 +39,9 @@ public class ContactView extends ListActivity implements OnClickListener, Observ
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		SessionController.titleBar(this, " - Kontaktlista");
-		DatabaseController.db.addObserver(this);
+		
 		contacts = DatabaseController.db.getAllRowsAsArrays("contact");
+		DatabaseController.db.addObserver(this);
 		Collections.sort(contacts,new Comparator<Contact>(){
 			public int compare(Contact object1, Contact object2) {
 				return object1.getUserName().compareToIgnoreCase(object2.getUserName());
@@ -140,6 +142,13 @@ public class ContactView extends ListActivity implements OnClickListener, Observ
 			runOnUiThread(new Runnable(){
 				public void run() {
 					contacts.add((Contact)data);
+					Log.d("FAN","FAN");
+					Collections.sort(contacts,new Comparator<Contact>(){
+						public int compare(Contact object1, Contact object2) {
+							return object1.getUserName().compareToIgnoreCase(object2.getUserName());
+						}
+
+					});
 					ia.notifyDataSetChanged();					
 				}
 			});

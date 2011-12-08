@@ -38,6 +38,7 @@ public class ClientDatabaseManager extends Observable {
 	private final String[] DRAFT_TABLE_ROWS = new String[] { "msgID", "destUser", "rDate", "subject", "mData"};
 	private final String[] IMAGE_MESSAGE_TABLE_ROWS = new String [] {"msgId", "srcUser", "rDate", "subject", "filePath"};
 	private final String[] BUFFERED_MESSAGE_TABLE_ROWS = new String[] {"gsonString"};
+	private final String[] CACHED_USERS_TABLE_ROWS = new String[] {"userName", "password", "salt"};
 
 	/*
 	 * CREATE OR OPEN A DATABASE SPECIFIC TO THE USER
@@ -53,19 +54,19 @@ public class ClientDatabaseManager extends Observable {
 
 		clearDatabase();
 	}
-	// TEST KOD ANVÄNDS FÖR ATT TESTA KONTAKTLISTAN
+	// TEST KOD ANVï¿½NDS Fï¿½R ATT TESTA KONTAKTLISTAN
 	/*
 	 * addRow(new Contact("Alice",false)); addRow(new
 	 * Contact("Borche",false)); addRow(new Contact("Daniel",false));
 	 */
 
-	// TEST KOD FÖR MAP
-	//addRow(new Fire(new GeoPoint(58395730, 15573080), "Här brinner det!", SituationPriority.HIGH));
+	// TEST KOD Fï¿½R MAP
+	//addRow(new Fire(new GeoPoint(58395730, 15573080), "Hï¿½r brinner det!", SituationPriority.HIGH));
 
-		//TEST KOD FÖR SAMTAL
-		//addSipProfile( user, String password);
-		Contact einar = new Contact("Einar", false, "marcuseinar", "einar");
-	//TEST KOD FÖR SAMTAL
+	//TEST KOD Fï¿½R SAMTAL
+	//addSipProfile( user, String password);
+	Contact einar = new Contact("Einar", false, "marcuseinar", "einar");
+	//TEST KOD Fï¿½R SAMTAL
 	//addSipProfile( user, String password);
 	/*Contact einar = new Contact("Einar", false, "marcuseinar", "einar");
 		Contact danan = new Contact("danan612", false, "danan612", "raddar");
@@ -79,17 +80,45 @@ public class ClientDatabaseManager extends Observable {
 		addRow(lalle);
 		addRow(borche);
 		/*addRow(mange);
+		 * 
+		 */
+	/**
+	 * Adds a user and a password to the cached user table
+	 * @param userName the user
+	 * @param password the password
+	 */
+	public void chacheUser(String userName, String password, String salt){
+		
+		ContentValues values = new ContentValues();
+		values.put("userName", userName);
+		values.put("password", password);
+		values.put("salt", salt);
+		try {
+			decacheUser(userName);
+			db.insert("cachedUsers", null, values);
+		} catch (Exception e) {
+			e.printStackTrace();
+			Log.e("Exception", e.toString());
+		}
+		
+		setChanged();
+	}
+	
+	public void decacheUser(String userName){
+		try{
+			db.delete("cachedUsers", "userName = \'" +userName + "\'", null);
+		}catch (Exception e) {
+			Log.e("DB ERROR", e.toString());
+			e.printStackTrace();
+		}
+	}
 
 	/**********************************************************************
 	 * ADDING A MESSAGE ROW TO THE DATABASE TABLE
 	 * @param m The message that is to be added to the database
 	 */
-	public void addRow(Message m, boolean notify) {
-//		if(m.getType() == MessageType.IMAGE){
-//			setChanged();
-//			notifyObservers(m);
-//		}
-			
+	public void addRow(Message m) {
+
 		ContentValues values = new ContentValues();
 		values.put("srcUser", m.getSrcUser());
 		values.put("rDate", m.getDate());
@@ -101,10 +130,8 @@ public class ClientDatabaseManager extends Observable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if(notify) {
-			setChanged();
-			notifyObservers(m);
-		}
+		setChanged();
+		notifyObservers(m);
 	}
 
 	/**********************************************************************
@@ -166,7 +193,7 @@ public class ClientDatabaseManager extends Observable {
 		setChanged();
 		notifyObservers(m);			
 	}
-	
+
 	/**********************************************************************
 	 * ADDING A CONTACT ROW IN THE DATABASE TABLE
 	 *
@@ -286,7 +313,7 @@ public class ClientDatabaseManager extends Observable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**********************************************************************
 	 * UPDATING A ROW IN THE MAPOBJECT TABLE
 	 * 
@@ -336,7 +363,7 @@ public class ClientDatabaseManager extends Observable {
 		//		setChanged();
 		//		notifyObservers(m);
 	}
-	
+
 	public void deleteBufferedMesageRow(String gsonString){
 		try{
 			db.delete("bufferedMessage", "gsonString = \'" + gsonString + "\'", null);
@@ -344,7 +371,7 @@ public class ClientDatabaseManager extends Observable {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	/********************************************************************
@@ -372,6 +399,39 @@ public class ClientDatabaseManager extends Observable {
 	public void	clearTable(String table){
 		db.delete(table, null, null);
 	}
+	
+	
+	/**
+	 * Returnerar en ArrayList<String> med användare och lösenord från chachedUsers databasen
+	 * @param userName användarnamnet som ska returneras
+	 * @return
+	 */
+	public ArrayList<String> getCachedUserRow(String userName){
+		Log.d("USERNAME", userName);
+		ArrayList<String> temp = new ArrayList<String>();
+		Cursor cur = null;
+		try{
+			cur = db.query("cachedUsers", CACHED_USERS_TABLE_ROWS , "userName = \'" +userName +"\'", null, null, null, null);
+			
+			cur.moveToFirst();
+			Log.d("Cursor size", ""+cur.getCount());
+			do{
+				if(cur.getString(0).equals(userName)){
+					
+					temp.add(cur.getString(0));
+					temp.add(cur.getString(1));
+					temp.add(cur.getString(2));
+					return temp;
+				}
+			}while(cur.moveToNext());
+		
+		}catch(SQLException e){
+			Log.e("DB ERROR", e.toString());
+			e.printStackTrace();
+		}
+		cur.close();
+		return temp;
+	}
 
 
 	/********************************************************************
@@ -381,8 +441,8 @@ public class ClientDatabaseManager extends Observable {
 	 * @return an ArrayList that contains all rows in a table. Each row in itself is an ArrayList that contains each collumn of a row.
 	 */
 	public ArrayList getAllRowsAsArrays(String table) {
-		// TODO gör så denna funktion fungerar med alla databastabeller
-		// TODO kom inte på något bra sätt för att få det att fungera i det
+		// TODO gï¿½r sï¿½ denna funktion fungerar med alla databastabeller
+		// TODO kom inte pï¿½ nï¿½got bra sï¿½tt fï¿½r att fï¿½ det att fungera i det
 		// generella fallet.
 		ArrayList dataArrays = new ArrayList();
 		Cursor cursor = null;
@@ -439,7 +499,7 @@ public class ClientDatabaseManager extends Observable {
 					} 
 					else if (table.equals("imageMessage")) {
 						Message m = new ImageMessage(cursor.getString(1), SessionController.getUser(),
-								 cursor.getString(3), cursor.getString(4));
+								cursor.getString(3), cursor.getString(4));
 						/*Message m = new ImageMessage(MessageType.IMAGE,
 								cursor.getString(1), DB_NAME,
 								cursor.getString(4));*/ 
@@ -559,12 +619,15 @@ public class ClientDatabaseManager extends Observable {
 					"rDate integer," +
 					"subject text," +
 					"mData text)";
-			Log.d("CustomSQLiteOpenHelper","Creating table \'bufferedMessage\'");
 			String bufferedmessageTableQueryString = "create table bufferedMessage (" 
 					+ "msgId integer primary key autoincrement not null," + 
 					"gsonString text)";
-			
 
+			String cachedUserQueryString = "create table cachedUsers (" +
+					"userName text," +
+					"password text," +
+					"salt)";
+			
 			/*
 			 * String newTableQueryString = "create table " + TABLE_NAME + " ("
 			 * + TABLE_ROW_ID + " integer primary key autoincrement not null," +
@@ -579,6 +642,7 @@ public class ClientDatabaseManager extends Observable {
 			db.execSQL(outboxTableQueryString);
 			db.execSQL(bufferedmessageTableQueryString);
 			db.execSQL(draftsTableQueryString);
+			db.execSQL(cachedUserQueryString);
 		}
 
 		/**

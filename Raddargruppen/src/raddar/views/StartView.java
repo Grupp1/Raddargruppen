@@ -10,9 +10,11 @@ import raddar.enums.ConnectionStatus;
 import raddar.enums.LoginResponse;
 import raddar.gruppen.R;
 import raddar.models.LoginManager;
+import raddar.models.QoSManager;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -44,26 +46,19 @@ public class StartView extends Activity implements Observer {
 		setContentView(R.layout.start);
 		
 		SessionController.titleBar(this, " - Logga in");
-		this.deleteDatabase("client_database");
 		new DatabaseController(this);
 
 		System.setProperty("javax.net.ssl.keyStore","assets/androidKey");
 	    System.setProperty("javax.net.ssl.keyStorePassword","android");
 		
-		// Lite hårdkodade testanvändare att testa med
-		LoginManager.cache("Borche", "hej123");
-		LoginManager.cache("Danne", "raddar");
-		LoginManager.cache("Alice", "longshot");
-		LoginManager.cache("danan612","raddar");
-
 		user = (EditText) this.findViewById(R.id.usertext1);
 		password = (EditText) this.findViewById(R.id.passwordtext1);
 		
 		// Endast för lättare testning
-		user.setText("danan612");
-		password.setText("raddar");
-
-
+		
+		user.setText("lalle");
+		password.setText("lalle");
+		
 		final LoginManager lm = new LoginManager();
 		lm.addObserver(this);
 		dialog = new ProgressDialog(this);
@@ -148,6 +143,11 @@ public class StartView extends Activity implements Observer {
 				dialog.cancel();
 			}
 		});
+	}
+	
+	public void onResume() {
+		super.onResume();
+		QoSManager.setCurrentActivity(this);
 	}
 	
 	@Override

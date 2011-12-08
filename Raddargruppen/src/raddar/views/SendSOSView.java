@@ -6,23 +6,20 @@ import java.net.UnknownHostException;
 import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
 import raddar.enums.MapOperation;
-import raddar.enums.SOSType;
 import raddar.enums.ServerInfo;
+import raddar.gruppen.R;
 import raddar.models.MapObjectMessage;
 import raddar.models.QoSManager;
-import raddar.models.SOSMessage;
-import raddar.gruppen.R;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.android.maps.GeoPoint;
 import com.google.gson.Gson;
 
 public class SendSOSView extends Activity {

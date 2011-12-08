@@ -14,7 +14,6 @@ import raddar.enums.ConnectionStatus;
 import raddar.enums.NotificationType;
 import raddar.enums.RequestType;
 import raddar.gruppen.R;
-import raddar.models.Message;
 import raddar.models.NotificationMessage;
 import raddar.models.QoSManager;
 import raddar.models.RequestMessage;
@@ -53,7 +52,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	private Bundle extras;
 
 	/*
-	 * Lyssnar efter ändringar hos batterinivån
+	 * Lyssnar efter ï¿½ndringar hos batterinivï¿½n
 	 */
 	public BroadcastReceiver mBatteryInfoReceiver = new BroadcastReceiver() {
 		@Override
@@ -82,7 +81,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 
 		DatabaseController.db.addObserver(this);
 		/**
-		 * Initierar kartans controller för att kunna få gps koordinaterna för sin position
+		 * Initierar kartans controller fï¿½r att kunna fï¿½ gps koordinaterna fï¿½r sin position
 		 */
 		new SessionController(extras.get("user").toString()).addObserver(this);
 		mapCont = new MapCont(MainView.this);
@@ -97,7 +96,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		//		controller.setUser(extras.get("user").toString());
 		//		db = new ClientDatabaseManager(this,controller.getUser());
 
-		//		//TEMPORÄRT MÅSTE FIXAS
+		//		//TEMPORï¿½RT Mï¿½STE FIXAS
 		//		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
 
 		new SessionController(extras.get("user").toString()).addObserver(this);
@@ -189,7 +188,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	}
 	private void showLogoutWindow(){
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("Är du säker på att du vill logga ut?")
+		builder.setMessage("ï¿½r du sï¿½ker pï¿½ att du vill logga ut?")
 		.setCancelable(false)
 		.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
 
@@ -217,19 +216,9 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		super.onDestroy();
 		SessionController.getSessionController().deleteObserver(this);
 		SipController.onClose();
-		// Notifiera servern att vi går offline
+		// Notifiera servern att vi gï¿½r offline
 		NotificationMessage nm = new NotificationMessage(SessionController.getUser(), 
 				NotificationType.DISCONNECT);
-		
-		//TESTTESTETSTETTST
-//		Gson gson = new Gson();
-//		try{
-//			MapObjectMessage mom = new MapObjectMessage(gson.toJson(mapCont.getYou()),
-//					(mapCont.getYou()).getClass().getName(),mapCont.getYou().getId(),MapOperation.UPDATE);
-//			new Sender(mom);
-//		}
-//		catch (UnknownHostException e) {
-//		}
 		
 		try {
 			// Skicka meddelandet
@@ -239,8 +228,8 @@ public class MainView extends Activity implements OnClickListener, Observer {
 			Log.d("NotificationMessage", "Disconnect failed");
 		}
 
-		/* Om applikationen stängs ner tar vi bort notifikationer i 
-		   notifikationsfältet längst upp på telefonens skärm */
+		/* Om applikationen stï¿½ngs ner tar vi bort notifikationer i 
+		   notifikationsfï¿½ltet lï¿½ngst upp pï¿½ telefonens skï¿½rm */
 		NotificationManager mNtf = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		mNtf.cancelAll();
 		if (SettingsView.powerIsAutomatic())
@@ -251,12 +240,6 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	public void update(Observable observable, final Object data) {
 		runOnUiThread(new Runnable(){
 			public void run(){
-				Log.d("STATUS","NUSÅ "+data.toString());
-				if(data != null && data instanceof Message)
-					Toast.makeText(getApplicationContext(), "Meddelande från "+
-							((Message)data).getSrcUser()
-							,Toast.LENGTH_LONG).show();
-
 				if(data == ConnectionStatus.CONNECTED){
 					Log.d("STATUS","CONNECTED");
 					Toast.makeText(getApplicationContext(), "Ansluten till servern"
@@ -264,12 +247,13 @@ public class MainView extends Activity implements OnClickListener, Observer {
 					DatabaseController.db.clearDatabase();
 					mapCont.renewYou();
 					try {
-						new Sender(new RequestMessage(RequestType.MESSAGE));
-						new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
-						DatabaseController.db.clearTable("contact");
-						new Sender(new RequestMessage(RequestType.CONTACTS));
-						new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
-						new Sender(new RequestMessage(RequestType.ONLINE_CONTACTS));
+//						new Sender(new RequestMessage(RequestType.MESSAGE));
+//						new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
+//						DatabaseController.db.clearTable("contact");
+//						new Sender(new RequestMessage(RequestType.CONTACTS));
+//						new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
+//						new Sender(new RequestMessage(RequestType.ONLINE_CONTACTS));
+						new Sender(new RequestMessage(RequestType.NEW_LOGIN));
 					} catch (UnknownHostException e) {
 						e.printStackTrace();
 					}

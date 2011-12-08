@@ -16,8 +16,8 @@ public class Server {
 
 	/* 
 	 * Alla anslutna enheter sparas i detta objekt associerade med sina IP-addresser
-	 * Behöver servern veta vilken IP-address en viss användare har så är det från detta
-	 * objekt IP-addressen kan hämtas 
+	 * Behï¿½ver servern veta vilken IP-address en viss anvï¿½ndare har sï¿½ ï¿½r det frï¿½n detta
+	 * objekt IP-addressen kan hï¿½mtas 
 	 */
 	public static Associations onlineUsers = new Associations();
 
@@ -52,15 +52,18 @@ public class Server {
 	}
 
 	public static void main(String[] args) {
-		new Server();
-		/*new Thread(new Runnable(){
+		
+		new Thread(new Runnable(){
 			@Override
 			public void run() {
 				Scanner in = new Scanner(System.in);
 				while(true){
-					LoginManager.logoutUser(in.next());
+					String str = in.next();
+					System.out.println("TEMPTEMP Logga ut "+str);
+					LoginManager.logoutUser(str);
 				}
 			}
-		}).start();*/
+		}).start();
+		new Server();
 	}	
 }
