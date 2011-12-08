@@ -64,14 +64,16 @@ public class SessionController extends Observable{
 		this.connection = status;
 		setChanged();
 		notifyObservers(status);
-		QoSManager.getCurrentActivity().runOnUiThread(new Runnable(){
+		final Activity current = QoSManager.getCurrentActivity();
+		if(current == null) return;
+		current.runOnUiThread(new Runnable(){
 			public void run() {
 				if (status.equals(ConnectionStatus.CONNECTED)){
-					QoSManager.getCurrentActivity().setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.connected);
+					current.setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.connected);
 				
 				}
 				else if (status.equals(ConnectionStatus.DISCONNECTED)){
-					QoSManager.getCurrentActivity().setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.disconnected);
+					current.setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.disconnected);
 				}
 				
 											

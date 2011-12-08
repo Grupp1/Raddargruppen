@@ -91,33 +91,33 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 			intent.setAction(Intent.ACTION_GET_CONTENT);
 			startActivityForResult(Intent.createChooser(intent,
 					"Select Picture"), SELECT_PICTURE);
-			//öppnar galleriet där man kan välja bild att bifoga
+			//ï¿½ppnar galleriet dï¿½r man kan vï¿½lja bild att bifoga
 			
 		}
 		if (v.equals(sendButton)) {
 			
-			//Undersöker om alla fält är skrivna i
-			//TODO: gör nogrannare undersökning
+			//Undersï¿½ker om alla fï¿½lt ï¿½r skrivna i
+			//TODO: gï¿½r nogrannare undersï¿½kning
 			String[] temp = new String[2];
 			temp[0] = destUser.getText().toString().trim();
 			temp[1] = subject.getText().toString().trim();
 
 			if (temp[0].equals("")
-					|| temp[1].equals("")) { 
-				Toast.makeText(getApplicationContext(), "Fyll i alla fält",
+					|| temp[1].equals("")||yourSelectedImage==null) { 
+				Toast.makeText(getApplicationContext(), "Fyll i alla fï¿½lt",
 						Toast.LENGTH_SHORT).show();
 
 				return;
 			
-				/*if (om bild inte är tillagd){
-				Toast.makeText(getApplicationContext(), "Välj en bild",
+				/*if (om bild inte ï¿½r tillagd){
+				Toast.makeText(getApplicationContext(), "Vï¿½lj en bild",
 						Toast.LENGTH_SHORT).show();
 						return;
 						}
 				 */
 			}
 			/*
-			 * Fixa nätverkskommunikationen i en separat tråd...
+			 * Fixa nï¿½tverkskommunikationen i en separat trï¿½d...
 			 */
 			new Thread(new Runnable() {
 				public void run() {
@@ -168,10 +168,10 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 	
 	
 	/**
-	 * Anropas när man valt en bild från galleriet eller valt en kontakt
+	 * Anropas nï¿½r man valt en bild frï¿½n galleriet eller valt en kontakt
 	 * @param requestCode 
-	 * @param resultCode 0 för kontakt, SELECT_PICTURE för galleri
-	 * @param data Bildens data från galleriet eller
+	 * @param resultCode 0 fï¿½r kontakt, SELECT_PICTURE fï¿½r galleri
+	 * @param data Bildens data frï¿½n galleriet eller
 	 */
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if(resultCode == RESULT_OK){
@@ -190,7 +190,7 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 
 				yourSelectedImage = BitmapFactory.decodeFile(filePath);
 				preview.setImageBitmap(yourSelectedImage);
-				//bilden som ska skickas med meddelandet är yourSelectedImage
+				//bilden som ska skickas med meddelandet ï¿½r yourSelectedImage
 				break;
 			case 0:
 				if(requestCode == 0){
