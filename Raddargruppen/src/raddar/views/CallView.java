@@ -74,13 +74,13 @@ public class CallView extends Activity implements OnClickListener {
 		try {
 			//AssetFileDescriptor descriptor = getAssets().openFd("burp.wav");
 			//soundId = soundPool.load(descriptor, 1);
-			soundPool.load(this, R.raw.ringing, 1);
-			Log.d( "Ljuduppspelning", "Ljud inladdat");
-			soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener(){
-				public void onLoadComplete(SoundPool soundPool, int soundId, int status) {
-					if(status == 0){
-						Log.d("onLoadComplete", "Ready");
-						if (sip.equals("incoming")) {
+			if(sip.equals("incoming")){
+				soundPool.load(this, R.raw.ringing, 1);
+				Log.d( "Ljuduppspelning", "Ljud inladdat");
+				soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener(){
+					public void onLoadComplete(SoundPool soundPool, int soundId, int status) {
+						if(status == 0){
+							Log.d("onLoadComplete", "Ready");
 							float volume = audioManager.getStreamVolume(AudioManager.STREAM_RING);
 							float maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_RING);
 							Log.d("Inkommande, volume", Float.toString(volume));
@@ -89,16 +89,16 @@ public class CallView extends Activity implements OnClickListener {
 							Log.d("Inkommande, VOLYM:", Float.toString(volume));
 							soundPool.play(soundId, volume, volume, 1, -1, 1);
 						}
+						else{
+							Log.d("onLoadComplete", "Error");
+							//MapUI.this.logg("Loadproblem, status=", Integer.toString(status));
+						}
+						//MapUI.this.logg("onLoadComplete", Integer.toString(soundId));
+						//playedSound = true;
 					}
-					else{
-						Log.d("onLoadComplete", "Error");
-						//MapUI.this.logg("Loadproblem, status=", Integer.toString(status));
-					}
-					//MapUI.this.logg("onLoadComplete", Integer.toString(soundId));
-					//playedSound = true;
-				}
 
-			});
+				});
+			}
 		}
 		catch(Exception ex){
 			Log.d( "Ljuduppspelning", "Fel i inladdningen av ljudfil" );
@@ -115,7 +115,7 @@ public class CallView extends Activity implements OnClickListener {
 					try {
 						call.answerCall(30);
 					} catch (Exception e) {
-						
+
 					}
 				}
 
@@ -135,7 +135,7 @@ public class CallView extends Activity implements OnClickListener {
 			try {
 
 				call = SipController.manager
-						.takeAudioCall(intent, listener);
+				.takeAudioCall(intent, listener);
 				updateText("Samtal från",  call.getPeerProfile().getUserName());
 			} catch (SipException e) {
 				e.printStackTrace();
@@ -175,7 +175,7 @@ public class CallView extends Activity implements OnClickListener {
 				Log.d( "Ljuduppspelning", "Fel i inladdningen av ljudfil" );
 				throw new RuntimeException(ex);
 			}
-			*/
+			 */
 
 			SipController.hasCall = true;
 			acceptCall.setClickable(false);
@@ -191,14 +191,14 @@ public class CallView extends Activity implements OnClickListener {
 	private void updateText(final String info, final String caller) {
 		runOnUiThread(new Runnable() {
 			public void run() {
-																		
+
 				infoText.setText(info);
 				callerText.setText(caller);
 			}
 		});
 	}
-	
-	
+
+
 	/**
 	 * Used to initiate a call with the specified sipAddress
 	 * @param sipAddress the sipaddress you want to call
@@ -344,15 +344,15 @@ public class CallView extends Activity implements OnClickListener {
 			}
 		});
 	}
-	
+
 	private void stopSounds(){
 		/*
 		audioManager.setStreamVolume(soundId, savedVolume, 0);
-		*/
+		 */
 		soundPool.autoPause();
 		soundPool.release();
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
