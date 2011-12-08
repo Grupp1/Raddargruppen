@@ -124,6 +124,7 @@ public class ContactListView extends ListActivity implements OnClickListener,Obs
 			Intent nextIntent = new Intent(this,CallView.class);
 			nextIntent.putExtra("sip","sip:" + contacts.get(info.position).getUserName()
 					+ "@ekiga.net" );
+			nextIntent.putExtra("dstUser", contacts.get(info.position).getUserName());
 			startActivityForResult(nextIntent,9);
 
 		}else if (item.getTitle() == "Skicka textmeddelande") {
