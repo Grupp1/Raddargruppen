@@ -153,18 +153,17 @@ public class LoginManager extends Observable {
 		setChanged();
 		notifyObservers(logIn);
 	}
+	public boolean isRunningStubornLoginThread(){
+		if(s == null)
+			return false;
+		return true;
+	}
 
 	/**
 	 * Denna metoden kollar lokalt i cachen om anvï¿½ndaren finns sparad i cachen
 	 * och fï¿½rsï¿½ker i sï¿½dana fall verifiera inmatade uppgifter emot dessa.
-	 * 
-<<<<<<< HEAD
 	 * @param username
 	 *            Anvï¿½ndarnamnet
-=======
-	 * @param userName
-	 *            Användarnamnet
->>>>>>> cache
 	 * @param password
 	 *            Lï¿½senordet
 	 * @return true om verifieringen gï¿½r bra, false annars
@@ -238,7 +237,7 @@ public class LoginManager extends Observable {
 					if (s == null)
 						break;
 					// Vï¿½nta tvï¿½ minuter mellan varje fï¿½rsï¿½k
-					Thread.sleep(100);
+					Thread.sleep(10000);
 
 				} catch (InterruptedException e) {
 					Log.d("LoginManager.java", "evaluateLocally FAILADE!!");

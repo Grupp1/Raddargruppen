@@ -62,6 +62,7 @@ public class Receiver implements Runnable {
 				e.printStackTrace();
 			}
 			Message m = new Gson().fromJson(in.readLine(), c);
+			
 			MessageType mt = m.getType();
 			if(mt!=MessageType.PROBE){
 				System.out.println();
@@ -77,7 +78,6 @@ public class Receiver implements Runnable {
 				NotificationMessage nm = (new NotificationMessage("Server", NotificationType.DISCONNECT));
 				nm.setData("Du är inte inloggad mot servern. Var vänlig logga in igen.");
 				LoginManager.logoutUser(m.getSrcUser());
-				new Sender(nm, so.getInetAddress()); 
 				return;
 			}
 

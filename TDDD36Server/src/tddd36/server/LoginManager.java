@@ -90,11 +90,9 @@ public class LoginManager {
 			Database.removeMapObject(username);
 			broadcast(mom);
 		}
-		System.out.println(username+" logout");
-		
 		// Kolla om anvï¿½ndaren redan ï¿½r utloggad
 		if (a == null)
-			System.out.println(username + " har loggat ut ");
+			System.out.println(username + " är redan utloggad ");
 		// ...annars loggar vi ut denne.
 		else			
 			System.out.println(username + " har loggat ut (" + a.getHostAddress() + ") ");

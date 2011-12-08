@@ -288,7 +288,6 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	@Override
 	public void onPause() {
 		super.onPause();
-		//unregisterReceiver(mBatteryInfoReceiver);
 	}
 
 	public void enableButtons() {
