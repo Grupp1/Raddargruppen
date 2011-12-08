@@ -27,6 +27,7 @@ import raddar.models.You;
 import raddar.views.MainView;
 import raddar.views.MapUI;
 import raddar.views.StartView;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -188,15 +189,17 @@ public class ReciveHandler extends Observable implements Runnable {
 		}
 		else if(mt == MessageType.NOTIFICATION){
 			Log.e("LOGOUT","OTHER USER HAS LOGGED IN ON ANOTHER DEVICE");
-			QoSManager.getCurrentActivity().runOnUiThread(new Runnable() {
+			final Activity current = QoSManager.getCurrentActivity();
+			if(current == null) return;
+			current.runOnUiThread(new Runnable() {
 				public void run() {
-					AlertDialog.Builder alert = new AlertDialog.Builder(QoSManager.getCurrentActivity());
+					AlertDialog.Builder alert = new AlertDialog.Builder(current);
 
 					alert.setTitle("Forcerad utloggning");
 					alert.setMessage(m.getData());
 					alert.setOnCancelListener(new OnCancelListener(){
 						public void onCancel(DialogInterface dialog) {
-							Intent intent = new Intent(QoSManager.getCurrentActivity(),StartView.class);
+							Intent intent = new Intent(current,StartView.class);
 							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							QoSManager.getCurrentActivity().startActivity(intent);
 						}

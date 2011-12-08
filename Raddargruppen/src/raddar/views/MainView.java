@@ -52,6 +52,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	public static MapCont mapCont;
 	public static MainView theOne;
 	private Bundle extras;
+	private boolean downloading;
 
 	/*
 	 * Lyssnar efter �ndringar hos batteriniv�n
@@ -190,7 +191,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	}
 	private void showLogoutWindow(){
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("�r du s�ker p� att du vill logga ut?")
+		builder.setMessage("Är du säker på att du vill logga ut?")
 		.setCancelable(false)
 		.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
 

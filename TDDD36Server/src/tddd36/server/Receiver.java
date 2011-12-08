@@ -57,7 +57,9 @@ public class Receiver implements Runnable {
 			in = new BufferedReader(new InputStreamReader(so.getInputStream()));
 			Class c= null ;
 			try {
-				c = Class.forName(in.readLine());
+				String str = in.readLine();
+				if(str == null) return;
+				c = Class.forName(str);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -76,7 +78,6 @@ public class Receiver implements Runnable {
 				System.out.println("Not online");
 				NotificationMessage nm = (new NotificationMessage("Server", NotificationType.DISCONNECT));
 				nm.setData("Du �r inte inloggad mot servern. Var v�nlig logga in igen.");
-				LoginManager.logoutUser(m.getSrcUser());
 				new Sender(nm, so.getInetAddress()); 
 				return;
 			}
@@ -237,7 +238,12 @@ public class Receiver implements Runnable {
 			break;
 		case NEW_LOGIN:
 			ArrayList<Message> list =  Database.retrieveAllTextMessagesTo(rm.getSrcUser());
-			list.addAll(Database.retrieveAllBufferedMessagesTo(rm.getSrcUser()));
+			ArrayList<Message> tempBuffered = Database.retrieveAllBufferedMessagesTo(rm.getSrcUser());
+			for(Message m: tempBuffered){
+				Database.storeTextMessage((TextMessage)m);
+			}
+			Database.deleteFromBuffer(rm.getSrcUser());
+			list.addAll(tempBuffered);
 			list.addAll(Database.retrieveAllUsers());
 			list.addAll(Database.retrieveAllMapObjects());
 			ArrayList<String> temp1 = Associations.getOnlineUserNames();

@@ -37,7 +37,6 @@ public class ReadMessageView extends Activity{
 
 		TextView readMessage =(TextView)this.findViewById(R.id.readMessage);
 		ImageView readMessageImage = (ImageView)this.findViewById(R.id.imageView1337);
-		readMessageImage.setImageResource(0);
 
 		readMessageSrcUser.setText(extras.get("sender").toString());
 		readMessageDate.setText(extras.get("date").toString());
@@ -62,7 +61,7 @@ public class ReadMessageView extends Activity{
 
 		if(extras.get("type") == MessageType.TEXT){
 			readMessage.setText("\n"+extras.get("data").toString()); //Om textbildmeddelande
-
+			readMessageImage.setImageDrawable(null);
 		}
 		else{
 			byte[] after = Base64.decode(extras.get("data").toString(), Base64.DEFAULT);

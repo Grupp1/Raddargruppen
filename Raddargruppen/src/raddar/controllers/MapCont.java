@@ -38,7 +38,7 @@ public class MapCont implements Observer, Runnable{
 	private Geocoder geocoder;
 
 	/*
-	 * Skickar vidare operationer i en ny tråd till MapModel 
+	 * Skickar vidare operationer i en ny trï¿½d till MapModel 
 	 */
 
 	public MapCont(MainView m){
@@ -112,16 +112,19 @@ public class MapCont implements Observer, Runnable{
 
 	public void run() {
 		ArrayList<MapObject> olist = DatabaseController.db.getAllRowsAsArrays("map");
+		
+		if(areYouFind){
+			if(olist.size() == 0)
+				olist.add(you);
+			mapUI.controller.animateTo(you.getPoint());
+			mapUI.controller.setZoom(13);
+			mapUI.follow = true;
+		}
 		for(int i = 0; i < olist.size();i++){
 			MapObject o = olist.get(i);
 			mapModel.add(o);
 			o.updateData(geocoder);
 			mapUI.drawNewMapObject(o);
-		}
-		if(areYouFind){
-			mapUI.controller.animateTo(you.getPoint());
-			mapUI.controller.setZoom(13);
-			mapUI.follow = true;
 		}
 	}
 
@@ -164,9 +167,8 @@ public class MapCont implements Observer, Runnable{
 			if (!areYouFind){
 				areYouFind = true;
 				Log.d("YOU", o.toString());
-				you = new You((GeoPoint)data, SessionController.getUser()+" position", "Här är "+SessionController.getUser(),
+				you = new You((GeoPoint)data, SessionController.getUser()+" position", "HÃ¤r Ã¤r "+SessionController.getUser(),
 						R.drawable.circle_green, ResourceStatus.FREE);
-				//olist.add(you); // databas, bortkommenterad fel?
 				add(you,true);		// karta
 			}
 			else{
@@ -218,7 +220,7 @@ public class MapCont implements Observer, Runnable{
 	public void renewYou() {
 		if (you!=null){
 			//olist.remove(you);
-			you = new You((GeoPoint)you.getPoint(), SessionController.getUser()+" position", "Här är "+SessionController.getUser(),
+			you = new You((GeoPoint)you.getPoint(), SessionController.getUser()+" position", "Hï¿½r ï¿½r "+SessionController.getUser(),
 					R.drawable.circle_green, ResourceStatus.FREE);
 			//olist.add(you); // databas
 			updateObject(you,true);		// karta

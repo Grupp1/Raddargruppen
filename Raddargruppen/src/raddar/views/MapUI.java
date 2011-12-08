@@ -66,7 +66,7 @@ public class MapUI extends MapActivity implements Observer {
 		mapView.setSatellite(true);
 
 		/**
-		 *  Lista över alla overlays (lager) som visas på kartan
+		 *  Lista ï¿½ver alla overlays (lager) som visas pï¿½ kartan
 		 */
 		mapOverlays = mapView.getOverlays();
 
@@ -92,7 +92,7 @@ public class MapUI extends MapActivity implements Observer {
 		controller.animateTo(sthlmLocation);
 		controller.setZoom(8);
 
-		//		Drawable d = getResources().getIdentifier(null, null, null);
+		//	Drawable d = getResources().getIdentifier(null, null, null);
 
 	}
 
@@ -161,13 +161,13 @@ public class MapUI extends MapActivity implements Observer {
 		startActivity(nextIntent);
 	}
 
-	// Tar hand om inmatning från skärmen, ritar ut knappar och anropar MapCont
+	// Tar hand om inmatning frï¿½n skï¿½rmen, ritar ut knappar och anropar MapCont
 
 	class Touchy extends Overlay{
 		private Context context;
-		//		private CharSequence [] items = {"Brand", "Brandbil", "Händelse", "Resurs"};
-		private CharSequence [] items = {"Händelse", "Resurs"};
-		private CharSequence [] prio = {"Hög", "Mellan", "Låg"};
+		//		private CharSequence [] items = {"Brand", "Brandbil", "Hï¿½ndelse", "Resurs"};
+		private CharSequence [] items = {"Hï¿½ndelse", "Resurs"};
+		private CharSequence [] prio = {"Hï¿½g", "Mellan", "Lï¿½g"};
 		private CharSequence [] stat = {"Ledig", "Upptagen"};
 		private String value;
 		private EditText input;
@@ -189,7 +189,7 @@ public class MapUI extends MapActivity implements Observer {
 						Touchy.this.item = item;
 						AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 
-						alertDialog.setTitle("Lägg till beskrivning");
+						alertDialog.setTitle("Lï¿½gg till beskrivning");
 						alertDialog.setMessage("Beskrivning");
 
 						input = new EditText(context);
@@ -201,12 +201,12 @@ public class MapUI extends MapActivity implements Observer {
 								value = input.getText().toString();
 
 								/*
-								 * Om situation sätt prioritet
+								 * Om situation sï¿½tt prioritet
 								 */
 
 								if(Touchy.this.item == 0){
 									AlertDialog.Builder builder = new AlertDialog.Builder(context);
-									builder.setTitle("Välj prioritet");
+									builder.setTitle("Vï¿½lj prioritet");
 									builder.setSingleChoiceItems(prio, -1, new DialogInterface.OnClickListener() {
 										public void onClick(DialogInterface dialog, int item) {
 											prioritet = item;
@@ -245,12 +245,12 @@ public class MapUI extends MapActivity implements Observer {
 								
 								
 								/*
-								 * Om resurs, sätt prioritet
+								 * Om resurs, sï¿½tt prioritet
 								 */
 
 								if(Touchy.this.item == 1){
 									AlertDialog.Builder builder = new AlertDialog.Builder(context);
-									builder.setTitle("Välj status");
+									builder.setTitle("Vï¿½lj status");
 									builder.setSingleChoiceItems(stat, -1, new DialogInterface.OnClickListener() {
 										public void onClick(DialogInterface dialog, int item) {
 											status = item;
@@ -299,15 +299,15 @@ public class MapUI extends MapActivity implements Observer {
 
 				AlertDialog alert = builder.create();
 
-				alert.setButton("Hämta adress", new DialogInterface.OnClickListener() {
+				alert.setButton("Hï¿½mta adress", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						Toast.makeText(getApplicationContext(), MainView.mapCont.calcAdress(touchedPoint), Toast.LENGTH_LONG).show();
 					}
 				});
 
 				/*
-				// Exempel på en till knapp
-				alert.setButton2("Gå till min position", new DialogInterface.OnClickListener() {
+				// Exempel pï¿½ en till knapp
+				alert.setButton2("Gï¿½ till min position", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						controller.animateTo(myLocation); 
 					}
@@ -411,8 +411,8 @@ public class MapUI extends MapActivity implements Observer {
 		}
 
 		mapView.postInvalidate();
-		// RITA OM PÅ NÅGOT SÄTT
-		//använd mapView.invalidate() om du kör i UI tråden
+		// RITA OM Pï¿½ Nï¿½GOT Sï¿½TT
+		//anvï¿½nd mapView.invalidate() om du kï¿½r i UI trï¿½den
 	}
 
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -421,7 +421,7 @@ public class MapUI extends MapActivity implements Observer {
 		return true;
 	}
 
-	//	Anropas varje gång menu klickas på
+	//	Anropas varje gï¿½ng menu klickas pï¿½
 	//	@Override
 	//	public boolean onPrepareOptionsMenu(Menu menu){
 	//		return true;
@@ -445,7 +445,7 @@ public class MapUI extends MapActivity implements Observer {
 			else{
 				follow = true;
 			}
-			toast = Toast.makeText(getBaseContext(), "Följ efter: " +follow, Toast.LENGTH_LONG);
+			toast = Toast.makeText(getBaseContext(), "Fï¿½lj efter: " +follow, Toast.LENGTH_LONG);
 			toast.show();
 			return true;
 		case R.id.myLocation:

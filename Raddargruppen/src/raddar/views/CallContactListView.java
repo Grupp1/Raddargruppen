@@ -24,6 +24,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -36,6 +37,7 @@ public class CallContactListView extends ListActivity implements Observer{
 	static String nameChoice;
 	AdapterView.AdapterContextMenuInfo info;
 	static int namePosition;
+	private View footer;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -52,7 +54,7 @@ public class CallContactListView extends ListActivity implements Observer{
 		ia = new ContactAdapter(this, R.layout.call_contact_list, contacts);
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
-		setListAdapter(ia);
+		
 		lv.setOnItemClickListener(new OnItemClickListener() {
 
 			/**
@@ -67,6 +69,14 @@ public class CallContactListView extends ListActivity implements Observer{
 				startActivityForResult(nextIntent,9);
 			}
 		});
+		if(contacts.size() == 0){
+			footer = ((LayoutInflater)this.getSystemService
+					(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.contact_footer_text, null, false);
+			lv.addFooterView(footer);
+			TextView foot = (TextView)footer.findViewById(R.id.text_foot);
+			foot.setText("Ingen är online för tillfället!");
+		}
+		setListAdapter(ia);
 	}
 
 
@@ -122,6 +132,8 @@ public class CallContactListView extends ListActivity implements Observer{
 							return object1.getUserName().compareToIgnoreCase(object2.getUserName());
 						}
 					});
+					ListView lv = getListView();
+					lv.removeFooterView(footer);
 					ia.notifyDataSetChanged();					
 				}
 			});
