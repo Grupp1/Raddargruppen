@@ -54,7 +54,7 @@ public class StartView extends Activity implements Observer {
 		user = (EditText) this.findViewById(R.id.usertext1);
 		password = (EditText) this.findViewById(R.id.passwordtext1);
 		
-		// Endast fï¿½r lï¿½ttare testning
+		// Endast för lättare testning
 		user.setText("danan612");
 		password.setText("raddar");
 
@@ -115,7 +115,7 @@ public class StartView extends Activity implements Observer {
 							Toast.LENGTH_LONG).show();
 				} else if ((LoginResponse) data == LoginResponse.NO_SUCH_USER_OR_PASSWORD)
 					Toast.makeText(StartView.this,
-							"Ogiltigt anvï¿½ndarnamn eller lï¿½senord",
+							"Ogiltigt användarnamn eller lösenord",
 							Toast.LENGTH_LONG).show();
 				else if ((LoginResponse) data == LoginResponse.NO_CONNECTION)
 					Toast.makeText(StartView.this, "Ingen kontakt med servern",
@@ -132,7 +132,7 @@ public class StartView extends Activity implements Observer {
 					startActivity(nextIntent);
 				}
 				else if((LoginResponse) data == LoginResponse.USER_ALREADY_LOGGED_IN){
-					Toast.makeText(StartView.this, "Anvï¿½ndaren ï¿½r redan inloggad pï¿½ servern, loggar ut denne",
+					Toast.makeText(StartView.this, "Användaren är redan inloggad på servern, loggar ut denne",
 							Toast.LENGTH_LONG).show();
 					Intent nextIntent = new Intent(StartView.this,
 							MainView.class);

@@ -82,7 +82,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 
 		DatabaseController.db.addObserver(this);
 		/**
-		 * Initierar kartans controller fï¿½r att kunna fï¿½ gps koordinaterna fï¿½r sin position
+		 * Initierar kartans controller för att kunna få gps koordinaterna för sin position
 		 */
 		new SessionController(extras.get("user").toString()).addObserver(this);
 		mapCont = new MapCont(MainView.this);
@@ -189,7 +189,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	}
 	private void showLogoutWindow(){
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("Ã„r du sÃ¤ker pÃ¥ att du vill logga ut?")
+		builder.setMessage("Är du säker på att du vill logga ut?")
 		.setCancelable(false)
 		.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
 

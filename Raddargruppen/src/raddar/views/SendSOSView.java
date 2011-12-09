@@ -33,7 +33,6 @@ public class SendSOSView extends Activity {
 	private Button button;
 	private Button clear;
 	private EditText et;
-	private String savedSnippet;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -69,11 +68,19 @@ public class SendSOSView extends Activity {
 	}
 	
 	private void startAlarm() {
-		savedSnippet = MainView.mapCont.getYou().getSnippet();
+		MainView.mapCont.setSavedSnippet(MainView.mapCont.getYou().getSnippet());
 		txt = et.getText().toString();
+		
+		// Ta bort dig själv från kartan
+		MainView.mapCont.removeObject(MainView.mapCont.getYou(), false);
+		
 		MainView.mapCont.getYou().setSOS(true);
 		MainView.mapCont.getYou().setSnippet(txt);
 		MainView.mapCont.getYou().setTitle(SessionController.getUser()+", ALARM");
+		
+		// Lägger till dig själv på kartan
+		MainView.mapCont.add(MainView.mapCont.getYou(), false);
+		
 		Gson gson = new Gson();
 		MapObjectMessage mo = new MapObjectMessage(gson.toJson(MainView.mapCont.getYou()),
 				(MainView.mapCont.getYou()).getClass().getName(),MainView.mapCont.getYou().getId(),
@@ -88,9 +95,17 @@ public class SendSOSView extends Activity {
 	
 	private void cancelAlarm() {
 		txt = "";
+		
+		// Ta bort dig själv på kartan
+		MainView.mapCont.removeObject(MainView.mapCont.getYou(), false);
+		
 		MainView.mapCont.getYou().setSOS(false);
-		MainView.mapCont.getYou().setSnippet(savedSnippet);
+		MainView.mapCont.getYou().setSnippet(MainView.mapCont.getSavedSnippet());
 		MainView.mapCont.getYou().setTitle(SessionController.getUser());
+		
+		// Lägg till dig själv igen
+		MainView.mapCont.add(MainView.mapCont.getYou(), false);
+		
 		Gson gson = new Gson();
 		MapObjectMessage mo = new MapObjectMessage(gson.toJson(MainView.mapCont.getYou()),
 				(MainView.mapCont.getYou()).getClass().getName(),MainView.mapCont.getYou().getId(),

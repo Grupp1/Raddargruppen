@@ -63,7 +63,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 	}
 
 	/**
-	 * Vad som hï¿½nder nï¿½r man trycker pï¿½ en situation
+	 * Vad som händer när man trycker på en situation
 	 */
 
 	protected boolean onTap(final int index) {
@@ -77,14 +77,14 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 		AlertDialog alert = dialog.create();
 		if(!(item instanceof You && item.getId()!=SessionController.getUser())){
-			alert.setButton("ï¿½ndra beskrivning", new DialogInterface.OnClickListener() {
+			alert.setButton("Ändra beskrivning", new DialogInterface.OnClickListener() {
 
 				//alert.setBackground(R.drawable.rounded_button);
 				//setBackgroundResource(R.drawable.rounded_button);
 				public void onClick(DialogInterface dialog, int whichButton) {
 					AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
-					alertDialog.setTitle("ï¿½ndra beskrivning");
+					alertDialog.setTitle("Ändra beskrivning");
 					alertDialog.setMessage("Beskrivning");
 
 					input = new EditText(mContext);
@@ -98,7 +98,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 							}
 						});
 
-						alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+						alertDialog.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
 
 							}
@@ -124,7 +124,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 					AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
-					alertDialog.setTitle("ï¿½r du sï¿½ker pï¿½ att du vill ta bort objektet?");
+					alertDialog.setTitle("Är du säker på att du vill ta bort objektet?");
 
 
 					alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
@@ -186,7 +186,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 		 */
 
 		if(item instanceof Situation){
-			alert.setButton3("ï¿½ndra prioritet", new DialogInterface.OnClickListener() {
+			alert.setButton3("Ändra prioritet", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
 
 					AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
@@ -199,7 +199,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 							AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
-							alertDialog.setTitle("ï¿½r du sï¿½ker pï¿½ att du vill ï¿½ndra prioritet?");
+							alertDialog.setTitle("Är du säker på att du vill ändra prioritet?");
 
 
 							alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
@@ -240,7 +240,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 		 */
 		else{
 			if(!(item instanceof You && item.getId()!=SessionController.getUser())){
-				alert.setButton3("ï¿½ndra status", new DialogInterface.OnClickListener() {
+				alert.setButton3("Ändra status", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
 
 						AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
@@ -253,7 +253,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 								AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
-								alertDialog.setTitle("ï¿½r du sï¿½ker pï¿½ att du vill ï¿½ndra status?");
+								alertDialog.setTitle("Är du säker på att du vill ändra status?");
 
 
 								alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener() {

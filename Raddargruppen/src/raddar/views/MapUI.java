@@ -66,10 +66,12 @@ public class MapUI extends MapActivity implements Observer {
 		mapView.setSatellite(true);
 
 		/**
-		 *  Lista ï¿½ver alla overlays (lager) som visas pï¿½ kartan
+		 *  Lista över alla overlays (lager) som visas på kartan
 		 */
 		mapOverlays = mapView.getOverlays();
-
+		touchy = new Touchy(mapView.getContext());
+		mapOverlays.add(touchy);
+		
 		compass = new MyLocationOverlay(MapUI.this, mapView);
 		mapOverlays.add(compass);
 		controller = mapView.getController();
@@ -83,9 +85,6 @@ public class MapUI extends MapActivity implements Observer {
 		sthlmLocation = new GeoPoint(59357290, 17960050);
 
 		geocoder = new Geocoder(getBaseContext(), Locale.getDefault());
-
-		touchy = new Touchy(mapView.getContext());
-		mapOverlays.add(touchy);
 
 		MainView.mapCont.declareMapUI(this);
 
@@ -146,14 +145,16 @@ public class MapUI extends MapActivity implements Observer {
 	public void sendTextMessage(String user){
 		Intent nextIntent = new Intent(MapUI.this,
 				SendMessageView.class);
-		nextIntent.putExtra("map", user);
+		String [] items = {user, "", ""};
+		nextIntent.putExtra("message", items);
 		startActivity(nextIntent);
 	}
 	
 	public void sendImageMessage(String user){
 		Intent nextIntent = new Intent(MapUI.this,
 				SendImageMessageView.class);
-		nextIntent.putExtra("map", user);
+		String [] items = {user, "", ""};
+		nextIntent.putExtra("message", items);
 		startActivity(nextIntent);
 	}
 
@@ -169,9 +170,9 @@ public class MapUI extends MapActivity implements Observer {
 
 	class Touchy extends Overlay{
 		private Context context;
-		//		private CharSequence [] items = {"Brand", "Brandbil", "Hï¿½ndelse", "Resurs"};
-		private CharSequence [] items = {"Hï¿½ndelse", "Resurs"};
-		private CharSequence [] prio = {"Hï¿½g", "Mellan", "Lï¿½g"};
+		//		private CharSequence [] items = {"Brand", "Brandbil", "Händelse", "Resurs"};
+		private CharSequence [] items = {"Händelse", "Resurs"};
+		private CharSequence [] prio = {"Hög", "Mellan", "Låg"};
 		private CharSequence [] stat = {"Ledig", "Upptagen"};
 		private String value;
 		private EditText input;
@@ -238,7 +239,7 @@ public class MapUI extends MapActivity implements Observer {
 										}
 									});
 
-									builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+									builder.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
 										public void onClick(DialogInterface dialog, int whichButton) {
 
 										}
@@ -280,7 +281,7 @@ public class MapUI extends MapActivity implements Observer {
 										}
 									});
 
-									builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+									builder.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
 										public void onClick(DialogInterface dialog, int whichButton) {
 
 										}
@@ -291,7 +292,7 @@ public class MapUI extends MapActivity implements Observer {
 								}
 							}
 						});
-						alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+						alertDialog.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
 
 							}
@@ -303,7 +304,7 @@ public class MapUI extends MapActivity implements Observer {
 
 				AlertDialog alert = builder.create();
 
-				alert.setButton("Hï¿½mta adress", new DialogInterface.OnClickListener() {
+				alert.setButton("Hämta adress", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						Toast.makeText(getApplicationContext(), MainView.mapCont.calcAdress(touchedPoint), Toast.LENGTH_LONG).show();
 					}
@@ -452,7 +453,7 @@ public class MapUI extends MapActivity implements Observer {
 				MainView.mapCont.follow = true;
 			}
 
-			toast = Toast.makeText(getBaseContext(), "FÃ¶lja efter: " +MainView.mapCont.follow, Toast.LENGTH_LONG);
+			toast = Toast.makeText(getBaseContext(), "Följa efter: " +MainView.mapCont.follow, Toast.LENGTH_LONG);
 			toast.show();
 			return true;
 		case R.id.myLocation:

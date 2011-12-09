@@ -73,7 +73,9 @@ public class CallContactListView extends ListActivity implements Observer{
 					(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.contact_footer_text, null, false);
 			lv.addFooterView(footer);
 			TextView foot = (TextView)footer.findViewById(R.id.text_foot);
-			foot.setText("Ingen Ã¤r online fÃ¶r tillfÃ¤llet!");
+			foot.setClickable(false);
+			foot.setTextSize(20);
+			foot.setText("Ingen är online för tillfället!");
 		}
 		setListAdapter(ia);
 	}
