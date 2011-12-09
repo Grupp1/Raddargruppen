@@ -50,6 +50,7 @@ public class SessionController extends Observable{
 	 */
 	public SessionController(String user){
 		this.user = user;
+		onlineUsers.clear();
 		sessionController = this;
 	}
 	/**
@@ -135,11 +136,13 @@ public class SessionController extends Observable{
 		if(!onlineUsers.contains(userName));
 			onlineUsers.add(userName);
 		setChanged();
-		notifyObservers(new Contact(userName,false));
+		notifyObservers(new Contact(userName,true));
 	}
 	
 	public void removeOnlineUser(String userName){
 		onlineUsers.remove(userName);
+		setChanged();
+		notifyObservers(new Contact(userName,false));
 	}
 	
 	public static boolean isOnline(String userName){

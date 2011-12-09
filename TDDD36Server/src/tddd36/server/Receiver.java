@@ -69,7 +69,9 @@ public class Receiver implements Runnable {
 			if(mt!=MessageType.PROBE){
 				System.out.println();
 				System.out.println("Messagetype: "+mt.toString());
+				System.out.println(m.getSrcUser()+" är online: "+Server.onlineUsers.isUserOnline(m.getSrcUser()));
 			}
+			
 			//Det den h�r if-satsen g�r �t att unders�ka om anv�ndaren som skickade meddelandet �r online.
 			//Om han inte �r det m�ste �r det enda meddelandena har f�r skicka notifications och requesta salt.
 			//Om han g�r m�got annat loggas han ut.
@@ -159,7 +161,7 @@ public class Receiver implements Runnable {
 
 	private void handleMapObjectMessage(MapObjectMessage mo){
 		MapOperation mapO = mo.getMapOperation();
-		System.out.println("MapOperation: ");
+		System.out.println("MapOperation: "+mapO.toString());
 		switch(mapO){
 		case ADD:
 			//System.out.println("handleMapObjectMessage ADD");
@@ -250,6 +252,7 @@ public class Receiver implements Runnable {
 			for(String onlineUser: temp1){
 				temp2.add(new OnlineUsersMessage(OnlineOperation.ADD, onlineUser));
 			}
+			list.addAll(temp2);
 			new Sender(list, rm.getSrcUser());
 			break;
 		default:

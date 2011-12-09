@@ -15,6 +15,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -37,6 +38,7 @@ public class CallContactListView extends ListActivity implements Observer{
 	AdapterView.AdapterContextMenuInfo info;
 	static int namePosition;
 	private View footer;
+	private TextView foot;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -53,7 +55,7 @@ public class CallContactListView extends ListActivity implements Observer{
 		ia = new ContactAdapter(this, R.layout.call_contact_list, contacts);
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
-		
+
 		lv.setOnItemClickListener(new OnItemClickListener() {
 
 			/**
@@ -61,6 +63,7 @@ public class CallContactListView extends ListActivity implements Observer{
 			 * Snabbt klick p� en kontakt, ringer direkt
 			 */
 			public void onItemClick(AdapterView<?> a, View v, int position, long id) {
+				if(contacts.size() == 0) return;
 				Intent nextIntent = new Intent(CallContactListView.this,CallView.class);
 				nextIntent.putExtra("sip","sip:" + contacts.get(position).getUserName()   
 						+ "@ekiga.net" );
@@ -92,7 +95,7 @@ public class CallContactListView extends ListActivity implements Observer{
 
 		public View getView(int pos, View convertView, ViewGroup parent) {
 			//TODO Programmet ritar nu ut alla kontaktr utan att fylla i namnen. Det ska inte ens rita ut dem!
-			
+
 			View v = convertView;
 			final Contact c = contacts.get(pos);
 			if (v == null) {
@@ -127,14 +130,25 @@ public class CallContactListView extends ListActivity implements Observer{
 		if(data instanceof Contact){
 			runOnUiThread(new Runnable(){
 				public void run() {
-					contacts.add((Contact)data);
+					Contact c = (Contact) data;
+					if(c.isgroup())
+						contacts.add(c);
+					else{
+						Log.d("ONLINEUSERS",contacts.remove(c)+"");
+					}
 					Collections.sort(contacts,new Comparator<Contact>(){
 						public int compare(Contact object1, Contact object2) {
 							return object1.getUserName().compareToIgnoreCase(object2.getUserName());
 						}
 					});
 					ListView lv = getListView();
-					lv.removeFooterView(footer);
+					if(contacts.size() == 0){
+						lv.addFooterView(footer);
+						foot.setText("Ingen är online för tillfället!");
+					}
+					else{
+						lv.removeFooterView(footer);
+					}
 					ia.notifyDataSetChanged();					
 				}
 			});

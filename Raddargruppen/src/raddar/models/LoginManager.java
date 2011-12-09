@@ -49,7 +49,7 @@ public class LoginManager extends Observable {
 	 *            Anvï¿½ndarnamnet
 =======
 	 * @param userName
-	 *            Användarnamnet
+	 *            Anvï¿½ndarnamnet
 >>>>>>> cache
 	 * @param password
 	 *            Lï¿½senordet
@@ -91,7 +91,7 @@ public class LoginManager extends Observable {
 			// Anvï¿½nd saltet vi fick fï¿½r att salta och kryptera lï¿½senordet
 			password = Encryption.encrypt(password, salt);
 
-			// Skapa msg med användarnamn och krypterat lösenord
+			// Skapa msg med anvï¿½ndarnamn och krypterat lï¿½senord
 			NotificationMessage nm = new NotificationMessage(userName,
 					NotificationType.CONNECT, password);
 			send = nm.getClass().getName() + "\r\n";
@@ -178,7 +178,7 @@ public class LoginManager extends Observable {
 			password = Encryption.encrypt(password, salt);
 			if (password.equals(cachedUser.get(1))){
 				/*
-				 * StubbornLoginThread försöker logga in mot servern med jämna
+				 * StubbornLoginThread fï¿½rsï¿½ker logga in mot servern med jï¿½mna
 				 * mellanrum
 				 */
 				s = new StubbornLoginThread(userName, password);
@@ -235,7 +235,7 @@ public class LoginManager extends Observable {
 					if (s == null)
 						break;
 					// Vï¿½nta tvï¿½ minuter mellan varje fï¿½rsï¿½k
-					Thread.sleep(10000);
+					Thread.sleep(60000);
 
 				} catch (InterruptedException e) {
 					Log.d("LoginManager.java", "evaluateLocally FAILADE!!");

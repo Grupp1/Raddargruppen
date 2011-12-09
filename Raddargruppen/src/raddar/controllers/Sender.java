@@ -13,6 +13,7 @@ import raddar.enums.ConnectionStatus;
 import raddar.enums.ServerInfo;
 import raddar.models.LoginManager;
 import raddar.models.Message;
+import raddar.models.NotificationMessage;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -62,7 +63,8 @@ public class Sender implements Runnable {
 			send +=	gson.toJson(message);	
 		}
 		try {
-			if(SessionController.getConnectionStatus()== ConnectionStatus.DISCONNECTED){
+			if(SessionController.getConnectionStatus()== ConnectionStatus.DISCONNECTED && 
+					!(message instanceof NotificationMessage)){
 				DatabaseController.db.addBufferedMessageRow(send);
 				return;
 			}	
@@ -80,11 +82,11 @@ public class Sender implements Runnable {
 		} catch (IOException ie) {
 			Log.d("Skapandet av socket [2]", ie.toString());
 			SessionController.getSessionController().changeConnectionStatus(ConnectionStatus.DISCONNECTED);
-			//BÖR ÄNDRAS ASAP
+			//Bï¿½R ï¿½NDRAS ASAP
 			if(!lm.isRunningStubornLoginThread())
 				lm.evaluate(SessionController.getUserName(), SessionController.getPassword(),false);
-			
-			DatabaseController.db.addBufferedMessageRow(send);
+			if(!(message instanceof NotificationMessage))
+				DatabaseController.db.addBufferedMessageRow(send);
 		} 
 	}
 }
