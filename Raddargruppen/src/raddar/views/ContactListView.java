@@ -21,12 +21,11 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -127,6 +126,7 @@ public class ContactListView extends ListActivity implements OnClickListener,Obs
 			Intent nextIntent = new Intent(this,CallView.class);
 			nextIntent.putExtra("sip","sip:" + contacts.get(info.position).getUserName()
 					+ "@ekiga.net" );
+			nextIntent.putExtra("dstUser", contacts.get(info.position).getUserName());
 			startActivityForResult(nextIntent,9);
 
 		}else if (item.getTitle() == "Skicka textmeddelande") {

@@ -1,21 +1,17 @@
 package raddar.controllers;
 
 
+import java.util.ArrayList;
+import java.util.Observable;
+
 import raddar.enums.ConnectionStatus;
 import raddar.gruppen.R;
-
-
 import raddar.models.Contact;
 import raddar.models.QoSManager;
 import android.app.Activity;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.view.Window;
-
-import java.util.Observable;
-
 import android.view.View;
-import java.util.ArrayList;
+import android.view.Window;
 
 
 /**

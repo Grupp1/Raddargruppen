@@ -21,11 +21,9 @@ import raddar.controllers.Sender;
 import raddar.controllers.SessionController;
 import raddar.enums.ConnectionStatus;
 import raddar.enums.LoginResponse;
-import raddar.enums.MessageType;
 import raddar.enums.NotificationType;
 import raddar.enums.RequestType;
 import raddar.enums.ServerInfo;
-import android.database.SQLException;
 import android.util.Log;
 
 import com.google.gson.Gson;

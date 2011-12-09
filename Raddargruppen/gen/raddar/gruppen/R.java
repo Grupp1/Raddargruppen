@@ -192,11 +192,9 @@ public final class R {
         public static final int mapmenu=0x7f060000;
     }
     public static final class raw {
-        public static final int balthazar=0x7f040000;
-        public static final int busy=0x7f040001;
-        public static final int calling=0x7f040002;
-        public static final int ringing=0x7f040003;
-        public static final int sound=0x7f040004;
+        public static final int busy=0x7f040000;
+        public static final int calling=0x7f040001;
+        public static final int ringing=0x7f040002;
     }
     public static final class string {
         public static final int accept_call_answer=0x7f050027;
