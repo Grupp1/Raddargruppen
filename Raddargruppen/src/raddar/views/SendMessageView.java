@@ -58,14 +58,9 @@ public class SendMessageView extends Activity implements OnClickListener {
 			Log.d("SendMessageView", "message:"+e.toString());
 		}
 
-		try{
-			String destMapUser = extras.getString("map");
-			destUser.setText(destMapUser);
-		} catch (Exception e){
-			Log.d("SendMessageView", "map:"+e.toString());
-		}
 		sendButton.setOnClickListener(this);
 		destUser.setOnClickListener(this);
+		
 		destUser.setFocusable(false);
 	}
 

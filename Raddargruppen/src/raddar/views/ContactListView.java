@@ -60,7 +60,9 @@ public class ContactListView extends ListActivity implements OnClickListener,Obs
 					(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.contact_footer_text, null, false);
 			lv.addFooterView(footer);
 			TextView foot = (TextView)footer.findViewById(R.id.text_foot);
-			foot.setText("Var v√§nlig v√§nta p√• att kontakterna laddas ner fr√•n servern.");
+			foot.setClickable(false);
+			foot.setTextSize(20);
+			foot.setText("Var v‰nlig v‰nta pÂ att kontakterna laddas ner frÂn servern.");
 		}
 		setListAdapter(ia);
 		registerForContextMenu(lv);

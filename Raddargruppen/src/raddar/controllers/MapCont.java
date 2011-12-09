@@ -36,10 +36,20 @@ public class MapCont implements Observer, Runnable{
 	public boolean areYouFind = false;
 	private You you;
 	private Geocoder geocoder;
+	// Sträng som används av sos-funktionen
+	private String savedSnippet;
 
 	/*
 	 * Skickar vidare operationer i en ny trï¿½d till MapModel 
 	 */
+
+	public String getSavedSnippet() {
+		return savedSnippet;
+	}
+
+	public void setSavedSnippet(String savedSnippet) {
+		this.savedSnippet = savedSnippet;
+	}
 
 	public MapCont(MainView m){
 		gps  = new GPSModel(m, this);
@@ -136,12 +146,12 @@ public class MapCont implements Observer, Runnable{
 		}
 	}
 	
-	public void removeObject(MapObject o,boolean notify){
+	public void removeObject(MapObject o,boolean sendToServer){
 		Log.d("RemoveObject", "MapCont:"+o.getTitle());
 		if(mapModel != null){
 			mapModel.removeObject(o);
 			mapUI.drawNewMapObject(o);
-			if(notify){
+			if(sendToServer){
 				Gson gson = new Gson();
 				try{
 					MapObjectMessage mom = new MapObjectMessage(gson.toJson(o),
