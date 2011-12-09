@@ -36,6 +36,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 	public MapObjectList(Drawable defaultMarker, Context context) {
 		this(defaultMarker);
 		mContext = context;
+		populate();
 	}
 
 	@Override

@@ -43,7 +43,6 @@ public class StartView extends Activity implements Observer {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.start);
-		
 		SessionController.titleBar(this, " - Logga in");
 		new DatabaseController(this);
 

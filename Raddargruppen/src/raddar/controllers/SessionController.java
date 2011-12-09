@@ -21,7 +21,7 @@ import android.view.Window;
  */
 
 public class SessionController extends Observable{
-		
+
 	private static ArrayList<String> onlineUsers = new ArrayList<String>();
 
 	public static String password;
@@ -30,7 +30,7 @@ public class SessionController extends Observable{
 
 	private static SessionController sessionController;
 	private static String userName;
-	 static String getUserName() {
+	static String getUserName() {
 		return userName;
 	}
 	public static void setUserName(String userName) {
@@ -43,7 +43,7 @@ public class SessionController extends Observable{
 		SessionController.password = password;
 	}
 
-	
+
 	/**
 	 * Create new session on the client
 	 * @param user The user whom is the owner of the session
@@ -71,55 +71,55 @@ public class SessionController extends Observable{
 			public void run() {
 				if (status.equals(ConnectionStatus.CONNECTED)){
 					current.setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.connected);
-				
+
 				}
 				else if (status.equals(ConnectionStatus.DISCONNECTED)){
 					current.setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.disconnected);
 				}
-				
-											
+
+
 			}
 		});
-																															
+
 	}
-	
+
 	public static void newToast(String data){
 		sessionController.setChanged();
 		sessionController.notifyObservers(data);
 	}
-	
+
 	public static SessionController getSessionController(){
 		return sessionController;
 	}
 	public static ConnectionStatus getConnectionStatus(){
 		return connection;
 	}
-/**
- * S�tter utseendet p� titleBar
- * @param a activity som den anropas fr�n
- * @param s app_name + / var man �r
- */
+	/**
+	 * S�tter utseendet p� titleBar
+	 * @param a activity som den anropas fr�n
+	 * @param s app_name + / var man �r
+	 */
 	public static void titleBar(Activity a, String s){
 		a.setTitle(" Alice" + s);
 		View title = a.getWindow().findViewById(android.R.id.title);
 		View titleBar = (View) title.getParent();
 		if (connection.equals(ConnectionStatus.CONNECTED)){
 			a.setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.connected);
-		
+
 		}
 		else if (connection.equals(ConnectionStatus.DISCONNECTED)){
 			a.setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.disconnected);
 		}
 
 		titleBar.setBackgroundColor(Color.rgb(48,128,20));
-		
+
 	}
 
-	
+
 	public void setOnlineUsers(ArrayList<String> onlineUsers){
 		this.onlineUsers = onlineUsers;
 	}
-	
+
 	public static ArrayList<Contact> getOnlineContacts(){
 		ArrayList<Contact> temp = new ArrayList<Contact>();
 		for(String s: onlineUsers){
@@ -127,24 +127,26 @@ public class SessionController extends Observable{
 		}
 		return temp;
 	}
-	
+
 	public static ArrayList getOnlineUsers(){
 		return onlineUsers;
 	}
-	
+
 	public void addOnlineUser(String userName){
-		if(!onlineUsers.contains(userName));
+		if(!onlineUsers.contains(userName)){
 			onlineUsers.add(userName);
-		setChanged();
-		notifyObservers(new Contact(userName,true));
+			setChanged();
+			notifyObservers(new Contact(userName,true));
+
+		}
 	}
-	
+
 	public void removeOnlineUser(String userName){
 		onlineUsers.remove(userName);
 		setChanged();
 		notifyObservers(new Contact(userName,false));
 	}
-	
+
 	public static boolean isOnline(String userName){
 		return onlineUsers.contains(userName);
 	}

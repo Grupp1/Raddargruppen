@@ -245,7 +245,6 @@ public class Receiver implements Runnable {
 			}
 			Database.deleteFromBuffer(rm.getSrcUser());
 			list.addAll(tempBuffered);
-			list.addAll(Database.retrieveAllUsers());
 			list.addAll(Database.retrieveAllMapObjects());
 			ArrayList<String> temp1 = Associations.getOnlineUserNames();
 			ArrayList<OnlineUsersMessage> temp2 = new ArrayList<OnlineUsersMessage>();
@@ -253,6 +252,7 @@ public class Receiver implements Runnable {
 				temp2.add(new OnlineUsersMessage(OnlineOperation.ADD, onlineUser));
 			}
 			list.addAll(temp2);
+			list.addAll(Database.retrieveAllUsers());
 			new Sender(list, rm.getSrcUser());
 			break;
 		default:
