@@ -111,6 +111,7 @@ public class ContactListView extends ListActivity implements OnClickListener,Obs
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
+		if(contacts.size() == 0) return;
 		info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 		nameChoice = contacts.get(info.position).getUserName();
 		namePosition = info.position;
@@ -121,6 +122,7 @@ public class ContactListView extends ListActivity implements OnClickListener,Obs
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
+		
 		if (item.getTitle() == "Ring") {
 			Intent nextIntent = new Intent(this,CallView.class);
 			nextIntent.putExtra("sip","sip:" + contacts.get(info.position).getUserName()

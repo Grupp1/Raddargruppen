@@ -39,7 +39,6 @@ public class NotificationService extends Service implements Runnable {
 
 	public void run() {
 		NotificationManager nManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-		
 		int icon = R.drawable.sym_action_email;
 		CharSequence tickerText = "Meddelande";
 		long when = System.currentTimeMillis();
