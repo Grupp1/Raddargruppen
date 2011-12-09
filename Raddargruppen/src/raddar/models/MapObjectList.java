@@ -31,6 +31,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 	public MapObjectList(Drawable defaultMarker) {
 		super(boundCenterBottom(defaultMarker));
+		populate();
 	}
 
 	public MapObjectList(Drawable defaultMarker, Context context) {
