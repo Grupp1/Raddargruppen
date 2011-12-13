@@ -78,7 +78,7 @@ public class CallContactListView extends ListActivity implements Observer{
 			TextView foot = (TextView)footer.findViewById(R.id.text_foot);
 			foot.setClickable(false);
 			foot.setTextSize(20);
-			foot.setText("Ingen är online för tillfället!");
+			foot.setText("Ingen ï¿½r online fï¿½r tillfï¿½llet!");
 		}
 		setListAdapter(ia);
 	}
@@ -116,7 +116,6 @@ public class CallContactListView extends ListActivity implements Observer{
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		DatabaseController.db.deleteObserver(this);
 	}
 
 	@Override
@@ -127,26 +126,36 @@ public class CallContactListView extends ListActivity implements Observer{
 	}
 
 	public void update(Observable observable, final Object data) {
-		if(data instanceof Contact){
+		final ListView lv = getListView();
+		if(data == null|| (data instanceof String && data.equals("clear_online_users"))){
+			runOnUiThread(new Runnable(){
+				public void run() {
+					lv.addFooterView(footer);
+					contacts.clear();
+					setListAdapter(ia);
+				}
+			});
+		}
+		else if(data instanceof Contact){
 			runOnUiThread(new Runnable(){
 				public void run() {
 					Contact c = (Contact) data;
 					if(c.isgroup())
 						contacts.add(c);
 					else{
-						Log.d("ONLINEUSERS",contacts.remove(c)+"");
+						contacts.remove(c);
 					}
 					Collections.sort(contacts,new Comparator<Contact>(){
 						public int compare(Contact object1, Contact object2) {
 							return object1.getUserName().compareToIgnoreCase(object2.getUserName());
 						}
 					});
-					ListView lv = getListView();
+					
 					if(contacts.size() == 0){
 						lv.addFooterView(footer);
 						foot.setText("Ingen Ã¤r online fÃ¶r tillfÃ¤llet!");
 					}
-					else{
+					else if (contacts.size()==1){
 						lv.removeFooterView(footer);
 					}
 					ia.notifyDataSetChanged();					

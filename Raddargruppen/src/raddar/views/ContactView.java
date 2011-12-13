@@ -34,14 +34,17 @@ public class ContactView extends ListActivity implements OnClickListener, Observ
 	private ArrayList<Contact> contacts;
 	private ArrayList selected;
 	private Button foot;
+	private View header;
 
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		SessionController.titleBar(this, " - Kontaktlista");
-		
+
 		contacts = DatabaseController.db.getAllRowsAsArrays("contact");
 		DatabaseController.db.addObserver(this);
+		SessionController.getSessionController().addObserver(this);
+
 		Collections.sort(contacts,new Comparator<Contact>(){
 			public int compare(Contact object1, Contact object2) {
 				return object1.getUserName().compareToIgnoreCase(object2.getUserName());
@@ -59,7 +62,15 @@ public class ContactView extends ListActivity implements OnClickListener, Observ
 				(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.contact_footer, null, false);
 		lv.addFooterView(footer);
 		foot = (Button)footer.findViewById(R.id.foot);
-
+		header = ((LayoutInflater)this.getSystemService
+				(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.contact_footer_text, null, false);
+		TextView head = (TextView)header.findViewById(R.id.text_foot);
+		head.setText("Var v�nlig v�nta p� att kontakterna laddas ner fr�n servern.");
+		head.setClickable(false);
+		head.setTextSize(20);
+		if(contacts.size() == 0){
+			lv.addHeaderView(header);
+		}
 
 		setListAdapter(ia);
 		foot.setOnClickListener(this);
@@ -78,10 +89,11 @@ public class ContactView extends ListActivity implements OnClickListener, Observ
 			this.selected = selected;
 			this.contacts = contacts;
 		}
-
-		public View getView(int pos, View convertView, ViewGroup parent){
+		@Override
+		public View getView(final int pos, View convertView, ViewGroup parent){
 			View v = convertView;
 			final Contact c = contacts.get(pos);
+
 			if(v == null){
 				LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				v = vi.inflate(R.layout.contact, null);
@@ -91,7 +103,8 @@ public class ContactView extends ListActivity implements OnClickListener, Observ
 					public void onCheckedChanged(CompoundButton buttonView,
 							boolean isChecked) {
 						Intent in = new Intent();
-						if(isChecked){						
+						if(isChecked){
+							Log.d("ContactListView",c.getUserName()+pos);
 							selected.add(c.getUserName());
 							String[] sel = new String[selected.size()];
 							sel = (String[]) selected.toArray(sel);
@@ -108,20 +121,21 @@ public class ContactView extends ListActivity implements OnClickListener, Observ
 						}
 					}
 				});
-				if (c != null) {
-					TextView tt = (TextView) v.findViewById(R.id.label);
-					tt.setText(c.getUserName());
-					if (SessionController.isOnline(c.getUserName())){
-						ImageView statusImage = (ImageView) v.findViewById(R.id.statusImage);
-						statusImage.setImageResource(R.drawable.online_circle_green);
-					}
-					else {
-						ImageView statusImage = (ImageView) v.findViewById(R.id.statusImage);
-						statusImage.setImageResource(R.drawable.online_circle_red);
-					} 
-				
+			}
+			if (c != null) {
+				TextView tt = (TextView) v.findViewById(R.id.label);
+				tt.setText(c.getUserName());
+				if (SessionController.isOnline(c.getUserName())){
+					ImageView statusImage = (ImageView) v.findViewById(R.id.statusImage);
+					statusImage.setImageResource(R.drawable.online_circle_green);
 				}
-			}	
+				else {
+					ImageView statusImage = (ImageView) v.findViewById(R.id.statusImage);
+					statusImage.setImageResource(R.drawable.online_circle_red);
+				} 
+
+			}
+
 			return v;
 		}
 	}
@@ -138,17 +152,33 @@ public class ContactView extends ListActivity implements OnClickListener, Observ
 		DatabaseController.db.deleteObserver(this);
 	}
 	public void update(Observable observable, final Object data) {
-		if(data instanceof Contact){
+		final ListView lv = getListView();
+		if(observable.getClass().equals(SessionController.class)){
+			runOnUiThread(new Runnable(){
+				public void run() {
+					ia.notifyDataSetChanged();
+				}
+			});
+		}
+		else if(data == null){
+			runOnUiThread(new Runnable(){
+				public void run() {
+					contacts.clear();
+					ia.notifyDataSetChanged();
+				}
+			});
+		}
+		else if(data instanceof Contact){
 			runOnUiThread(new Runnable(){
 				public void run() {
 					contacts.add((Contact)data);
-					Log.d("FAN","FAN");
 					Collections.sort(contacts,new Comparator<Contact>(){
 						public int compare(Contact object1, Contact object2) {
 							return object1.getUserName().compareToIgnoreCase(object2.getUserName());
 						}
-
 					});
+					if(contacts.size() == 1)
+						lv.removeHeaderView(header);
 					ia.notifyDataSetChanged();					
 				}
 			});

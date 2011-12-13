@@ -76,13 +76,14 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.main);
 		
+		SessionController.appIsRunning = true;
 		SessionController.titleBar(this, " ");
 		extras = getIntent().getExtras();
 		theOne = this;
 
 		DatabaseController.db.addObserver(this);
 		/**
-		 * Initierar kartans controller för att kunna få gps koordinaterna för sin position
+		 * Initierar kartans controller fï¿½r att kunna fï¿½ gps koordinaterna fï¿½r sin position
 		 */
 		new SessionController(extras.get("user").toString()).addObserver(this);
 		mapCont = new MapCont(MainView.this);
@@ -189,7 +190,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	}
 	private void showLogoutWindow(){
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("Är du säker på att du vill logga ut?")
+		builder.setMessage("ï¿½r du sï¿½ker pï¿½ att du vill logga ut?")
 		.setCancelable(false)
 		.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
 
@@ -216,6 +217,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	public void onDestroy() {
 		super.onDestroy();
 		SessionController.getSessionController().deleteObserver(this);
+		SessionController.appIsRunning = false;
 		SipController.onClose();
 		// Notifiera servern att vi gï¿½r offline
 		NotificationMessage nm = new NotificationMessage(SessionController.getUser(), 
@@ -261,6 +263,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 					
 				}else if (data == ConnectionStatus.DISCONNECTED){
 					Log.d("STATUS","DISCONNECTED");
+					SessionController.getSessionController().clearOnlineUsers();
 					Toast.makeText(getApplicationContext(), "Tappad anslutning mot servern",Toast.LENGTH_LONG).show();
 				}
 				else if (data instanceof String){
@@ -279,6 +282,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	@Override
 	public void onResume() {
 		super.onResume();
+		//Session
 		if (SettingsView.powerIsAutomatic())
 			registerReceiver(mBatteryInfoReceiver, new IntentFilter(
 					Intent.ACTION_BATTERY_CHANGED));

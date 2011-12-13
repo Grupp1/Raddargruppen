@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.net.ssl.SSLSocket;
 
@@ -68,7 +70,8 @@ public class Receiver implements Runnable {
 			MessageType mt = m.getType();
 			if(mt!=MessageType.PROBE){
 				System.out.println();
-				System.out.println("Messagetype: "+mt.toString());
+				System.out.println("Mottagit: "+new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()) +
+						" Messagetype: "+mt.toString());
 				System.out.println(m.getSrcUser()+" är online: "+Server.onlineUsers.isUserOnline(m.getSrcUser()));
 			}
 			

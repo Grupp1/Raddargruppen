@@ -23,6 +23,8 @@ import android.view.Window;
 public class SessionController extends Observable{
 
 	private static ArrayList<String> onlineUsers = new ArrayList<String>();
+	
+	public static boolean appIsRunning = false;
 
 	public static String password;
 	private static String user;
@@ -150,6 +152,9 @@ public class SessionController extends Observable{
 	public static boolean isOnline(String userName){
 		return onlineUsers.contains(userName);
 	}
-
-
+	public void clearOnlineUsers() {
+		onlineUsers.clear();
+		setChanged();
+		notifyObservers();
+	}
 }

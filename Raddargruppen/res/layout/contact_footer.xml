@@ -6,8 +6,12 @@
 	android:layout_height="match_parent">
 	<Button
 		android:text="@string/contact_foot"
-		android:layout_height="wrap_content"
+		android:layout_height="30dip"
 		android:layout_width="match_parent"
-		android:id="@+id/foot"></Button>
+		android:id="@+id/foot"
+		android:background="@drawable/rounded_button2"
+		android:layout_gravity="right"
+		android:textColor="#FFFFFF"
+		android:layout_marginLeft="30dip" android:layout_marginRight="30dip" android:layout_marginTop="5dip" android:layout_marginBottom="5dip"></Button>
 
 </LinearLayout>
