@@ -20,7 +20,7 @@ public class Associations {
 	private HashMap<String, InetAddress> updatedAssociations = new HashMap<String, InetAddress>();
 
 	Associations(){
-		long delay = 15000;
+		long delay = 45000;
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask(){
 			@Override
