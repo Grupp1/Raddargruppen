@@ -47,13 +47,14 @@ public class ReciveHandler extends Observable implements Runnable {
 	 */
 	public void run() {
 		try {
+			thread.interrupt();
 			// Skapa en ServerSocket fï¿½r att lyssna pï¿½ inkommande meddelanden
 			//ServerSocket so = new ServerSocket(ServerInfo.SERVER_PORT);
 			SSLServerSocketFactory sslserversocketfactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
 			SSLServerSocket sslserversocket = (SSLServerSocket) sslserversocketfactory.createServerSocket(ServerInfo.SERVER_PORT);
 			sslserversocket.setEnabledCipherSuites(new String[] { "SSL_DH_anon_WITH_RC4_128_MD5" });
 
-			while (true) {
+			while (SessionController.appIsRunning) {
 				// Nï¿½r ett inkommande meddelande tas emot skapa en ny Receiver
 				// som kï¿½rs i en egen trï¿½d
 				new Receiver((SSLSocket) sslserversocket.accept(), this, context);
@@ -64,8 +65,7 @@ public class ReciveHandler extends Observable implements Runnable {
 			Log.d("ReciveHandler",
 			"Kunde inte ta emot meddelande, disconnected");
 			// ie.printStackTrace();
-		}
-
+		} 
 	}
 	/**
 	 * Method to handle incoming messages to the applicaions and send
@@ -104,26 +104,28 @@ public class ReciveHandler extends Observable implements Runnable {
 				MainView.mapCont.updateObject(mo,false);
 				break;
 			case ALARM_ON:
-				QoSManager.getCurrentActivity().runOnUiThread(new Runnable() {
+				final Activity current = QoSManager.getCurrentActivity();
+				if(current == null) return;
+				current.runOnUiThread(new Runnable() {
 					public void run() {
-						// Tar bort användaren från otherList
+						// Tar bort anvï¿½ndaren frï¿½n otherList
 						((You)mo).setSOS(false);
 						MainView.mapCont.removeObject(mo, false);
 
-						// Lägger till i sosList
+						// Lï¿½gger till i sosList
 						((You)mo).setSOS(true);
 						MainView.mapCont.add(mo, false);
 
-						AlertDialog.Builder alert = new AlertDialog.Builder(QoSManager.getCurrentActivity());
+						AlertDialog.Builder alert = new AlertDialog.Builder(current);
 
-						alert.setTitle("SOS-meddelande från: "+m.getSrcUser());
+						alert.setTitle("SOS-meddelande frï¿½n: "+m.getSrcUser());
 						alert.setMessage(mo.getSnippet());
 
 						alert.setPositiveButton("Visa position",
 								new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
-								// Gå till kartan
+								// Gï¿½ till kartan
 								Intent intent = new Intent(QoSManager.getCurrentActivity(),MapUI.class);
 								intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 								intent.putExtra("lat", mo.getPoint().getLatitudeE6());
@@ -147,11 +149,11 @@ public class ReciveHandler extends Observable implements Runnable {
 				});
 				break;
 			case ALARM_OFF:
-				// Tar bort användaren från sosList
+				// Tar bort anvï¿½ndaren frï¿½n sosList
 				((You)mo).setSOS(true);
 				MainView.mapCont.removeObject(mo, false);
 
-				// Lägger till i otherList
+				// Lï¿½gger till i otherList
 				((You)mo).setSOS(false);
 				MainView.mapCont.add(mo, false);
 				break;
@@ -160,7 +162,7 @@ public class ReciveHandler extends Observable implements Runnable {
 			}
 		}
 		else if(mt == MessageType.ONLINE_USERS){
-			if(!((OnlineUsersMessage)m).getUserName().equals(SessionController.getUser())){
+		//	if(!((OnlineUsersMessage)m).getUserName().equals(SessionController.getUser())){
 				switch(((OnlineUsersMessage) m).getOnlineOperation()){
 				case ADD:
 					SessionController.getSessionController().addOnlineUser(((OnlineUsersMessage)m).getUserName());
@@ -174,11 +176,11 @@ public class ReciveHandler extends Observable implements Runnable {
 					break;
 				}
 			}
-		}
+	//	}
 
 		else if(mt == MessageType.CONTACT){
 			if(((ContactMessage)m).getContact().equals(SessionController.getUser())){
-				// Bortkommenterad för lättare testning
+				// Bortkommenterad fï¿½r lï¿½ttare testning
 				//return;
 			}
 			DatabaseController.db.addRow(((ContactMessage)m).toContact());

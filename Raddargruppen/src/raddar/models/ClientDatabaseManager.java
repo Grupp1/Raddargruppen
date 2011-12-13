@@ -343,7 +343,8 @@ public class ClientDatabaseManager extends Observable {
 		db.delete("message", null, null);
 		db.delete("map", null, null);
 		db.delete("contact", null, null);
-
+		setChanged();
+		notifyObservers();
 	}
 
 	/********************************************************************
@@ -402,8 +403,8 @@ public class ClientDatabaseManager extends Observable {
 	
 	
 	/**
-	 * Returnerar en ArrayList<String> med användare och lösenord från chachedUsers databasen
-	 * @param userName användarnamnet som ska returneras
+	 * Returnerar en ArrayList<String> med anvï¿½ndare och lï¿½senord frï¿½n chachedUsers databasen
+	 * @param userName anvï¿½ndarnamnet som ska returneras
 	 * @return
 	 */
 	public ArrayList<String> getCachedUserRow(String userName){

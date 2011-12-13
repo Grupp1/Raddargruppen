@@ -227,7 +227,7 @@ public class LoginManager extends Observable {
 		}
 
 		public void run() {
-			while (true) {
+			while (SessionController.appIsRunning) {
 				try {
 					if (s == null)
 						break;
@@ -235,7 +235,7 @@ public class LoginManager extends Observable {
 					if (s == null)
 						break;
 					// V�nta tv� minuter mellan varje f�rs�k
-					Thread.sleep(60000);
+					Thread.sleep(30000);
 
 				} catch (InterruptedException e) {
 					Log.d("LoginManager.java", "evaluateLocally FAILADE!!");

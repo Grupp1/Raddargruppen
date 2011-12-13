@@ -47,4 +47,10 @@ public class Contact {
 	public void setSipPw(String sipPw){
 		this.sipPw = sipPw;
 	}
+	@Override
+	public boolean equals(Object o) {
+		if(o instanceof Contact)
+			return ((Contact) o).getUserName().equals(userName);
+		return false;
+	}
 }

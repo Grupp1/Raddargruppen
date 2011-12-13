@@ -15,6 +15,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -45,25 +46,30 @@ public class ContactListView extends ListActivity implements OnClickListener,Obs
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		SessionController.titleBar(this, " - Kontaktlista");
+		
 		contacts = DatabaseController.db.getAllRowsAsArrays("contact");
 		DatabaseController.db.addObserver(this);
+		SessionController.getSessionController().addObserver(this);
+		
 		ia = new ContactAdapter(this, R.layout.contact_list, contacts);
 		Collections.sort(contacts,new Comparator<Contact>(){
 			public int compare(Contact object1, Contact object2) {
 				return object1.getUserName().compareToIgnoreCase(object2.getUserName());
 			}
 		});
+		
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
+		footer = ((LayoutInflater)this.getSystemService
+				(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.contact_footer_text, null, false);
+		TextView foot = (TextView)footer.findViewById(R.id.text_foot);
+		foot.setText("Var vï¿½nlig vï¿½nta pï¿½ att kontakterna laddas ner frï¿½n servern.");
+		foot.setClickable(false);
+		foot.setTextSize(20);
 		if(contacts.size() == 0){
-			footer = ((LayoutInflater)this.getSystemService
-					(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.contact_footer_text, null, false);
 			lv.addFooterView(footer);
-			TextView foot = (TextView)footer.findViewById(R.id.text_foot);
-			foot.setClickable(false);
-			foot.setTextSize(20);
-			foot.setText("Var vänlig vänta på att kontakterna laddas ner från servern.");
 		}
+		
 		setListAdapter(ia);
 		registerForContextMenu(lv);
 
@@ -170,7 +176,25 @@ public class ContactListView extends ListActivity implements OnClickListener,Obs
 	}
 
 	public void update(Observable observable,final Object data) {
-		if(data instanceof Contact){
+		final ListView lv = getListView();
+		if(observable.getClass().equals(SessionController.class)){
+			runOnUiThread(new Runnable(){
+				public void run() {
+					ia.notifyDataSetChanged();
+				}
+			});
+		}
+		else if(data == null){
+			runOnUiThread(new Runnable(){
+				public void run() {
+					lv.addFooterView(footer);
+					contacts.clear();
+					setListAdapter(ia);
+				}
+			});
+		}
+
+		else if(data instanceof Contact){
 			runOnUiThread(new Runnable(){
 				public void run() {
 					contacts.add((Contact)data);
@@ -179,8 +203,8 @@ public class ContactListView extends ListActivity implements OnClickListener,Obs
 							return object1.getUserName().compareToIgnoreCase(object2.getUserName());
 						}
 					});
-					ListView lv = getListView();
-					lv.removeFooterView(footer);
+					if(contacts.size() == 1)
+						lv.removeFooterView(footer);
 					ia.notifyDataSetChanged();	
 				}
 			});
