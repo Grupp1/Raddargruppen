@@ -44,6 +44,7 @@ public class StartView extends Activity implements Observer {
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.start);
 		SessionController.titleBar(this, " - Logga in");
+		setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.disconnected);
 		new DatabaseController(this);
 
 		System.setProperty("javax.net.ssl.keyStore","assets/androidKey");
@@ -148,6 +149,7 @@ public class StartView extends Activity implements Observer {
 	public void onResume() {
 		super.onResume();
 		QoSManager.setCurrentActivity(this);
+		SessionController.getSessionController().updateConnectionImage();
 	}
 	
 	@Override

@@ -10,6 +10,7 @@ import javax.net.ssl.SSLSocket;
 
 import raddar.enums.ConnectionStatus;
 import raddar.enums.MessageType;
+import raddar.enums.NotificationType;
 import raddar.enums.ServerInfo;
 import raddar.models.ContactMessage;
 import raddar.models.MapObject;
@@ -182,27 +183,34 @@ public class ReciveHandler extends Observable implements Runnable {
 			}
 			DatabaseController.db.addRow(((ContactMessage)m).toContact());
 		}
-		
-		else if(mt == MessageType.NOTIFICATION){
-			Log.e("LOGOUT","OTHER USER HAS LOGGED IN ON ANOTHER DEVICE");
-			final Activity current = QoSManager.getCurrentActivity();
-			if(current == null) return;
-			current.runOnUiThread(new Runnable() {
-				public void run() {
-					AlertDialog.Builder alert = new AlertDialog.Builder(current);
 
-					alert.setTitle("Forcerad utloggning");
-					alert.setMessage(m.getData());
-					alert.setOnCancelListener(new OnCancelListener(){
-						public void onCancel(DialogInterface dialog) {
-							Intent intent = new Intent(current,StartView.class);
-							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-							QoSManager.getCurrentActivity().startActivity(intent);
-						}
-					});
-					alert.show();
-				}
-			});
+		else if(mt == MessageType.NOTIFICATION){
+			if(((NotificationMessage)m).getNotification() == NotificationType.SYNC_DONE){
+				MainView.theOne.viewToast("All data har laddats ner från servern");
+				MainView.mapCont.setDownloadingDone(true);
+				Log.d("DOWN", "DONE");
+			}
+			else{
+				Log.e("LOGOUT","OTHER USER HAS LOGGED IN ON ANOTHER DEVICE");
+				final Activity current = QoSManager.getCurrentActivity();
+				if(current == null) return;
+				current.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder alert = new AlertDialog.Builder(current);
+
+						alert.setTitle("Forcerad utloggning");
+						alert.setMessage(m.getData());
+						alert.setOnCancelListener(new OnCancelListener(){
+							public void onCancel(DialogInterface dialog) {
+								Intent intent = new Intent(current,StartView.class);
+								intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+								QoSManager.getCurrentActivity().startActivity(intent);
+							}
+						});
+						alert.show();
+					}
+				});
+			}
 		}
 
 	}

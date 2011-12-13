@@ -100,7 +100,6 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		//		//TEMPOR�RT M�STE FIXAS
 		//		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
 
-		new SessionController(extras.get("user").toString()).addObserver(this);
 		//		new DatabaseController(this);
 		new ReciveHandler(this).addObserver(this);
 		
@@ -265,6 +264,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 				}
 				else if (data instanceof String){
 					if(data.equals("LOGOUT")){
+						SessionController.getSessionController().changeConnectionStatus(ConnectionStatus.DISCONNECTED);
 						finish();
 					}else{
 						Toast.makeText(getBaseContext(), (String)data, Toast.LENGTH_SHORT).show();
@@ -279,11 +279,12 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	@Override
 	public void onResume() {
 		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
 		if (SettingsView.powerIsAutomatic())
 			registerReceiver(mBatteryInfoReceiver, new IntentFilter(
 					Intent.ACTION_BATTERY_CHANGED));
-		QoSManager.setCurrentActivity(this);
-		QoSManager.setPowerMode();
+		SessionController.getSessionController().updateConnectionImage();
 	}
 
 	@Override
@@ -301,5 +302,14 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		callButton.setEnabled(false);
 		serviceButton.setEnabled(false);
 		contactButton.setEnabled(false);
+	}
+	
+	public void viewToast(final String text){
+		runOnUiThread(new Runnable(){
+			public void run() {
+				Toast toast = Toast.makeText(getBaseContext(), text, Toast.LENGTH_LONG);
+				toast.show();
+			}
+		});
 	}
 }

@@ -10,6 +10,7 @@ import raddar.models.Contact;
 import raddar.models.QoSManager;
 import android.app.Activity;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 
@@ -65,24 +66,27 @@ public class SessionController extends Observable{
 		this.connection = status;
 		setChanged();
 		notifyObservers(status);
+		updateConnectionImage();
+	}
+
+	public void updateConnectionImage(){
 		final Activity current = QoSManager.getCurrentActivity();
 		if(current == null) return;
 		current.runOnUiThread(new Runnable(){
 			public void run() {
-				if (status.equals(ConnectionStatus.CONNECTED)){
+				if (connection.equals(ConnectionStatus.CONNECTED)){
 					current.setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.connected);
 
 				}
-				else if (status.equals(ConnectionStatus.DISCONNECTED)){
+				else if (connection.equals(ConnectionStatus.DISCONNECTED)){
 					current.setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.disconnected);
 				}
 
 
 			}
 		});
-
 	}
-
+	
 	public static void newToast(String data){
 		sessionController.setChanged();
 		sessionController.notifyObservers(data);

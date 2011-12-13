@@ -101,11 +101,14 @@ public class DraftView extends ListActivity {
 			}			
 			return v;
 		}
-	}@Override
+	}
+	
+	@Override
 	public void onResume() {
 		super.onResume();
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
+		SessionController.getSessionController().updateConnectionImage();
 	}
 }
 

@@ -82,7 +82,8 @@ public class Sender implements Runnable {
 		} catch (IOException ie) {
 			Log.d("Skapandet av socket [2]", ie.toString());
 			SessionController.getSessionController().changeConnectionStatus(ConnectionStatus.DISCONNECTED);
-			//Bï¿½R ï¿½NDRAS ASAP
+			
+			//BÖR ÄNDRAS ASAP
 			if(!lm.isRunningStubornLoginThread())
 				lm.evaluate(SessionController.getUserName(), SessionController.getPassword(),false);
 			if(!(message instanceof NotificationMessage))

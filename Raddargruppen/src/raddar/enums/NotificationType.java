@@ -10,6 +10,11 @@ public enum NotificationType {
 		public String toString() {
 			return "disconnect";
 		}
+	},
+	SYNC_DONE {
+		public String toString(){
+			return "synkroniserad med servern";
+		}
 	};
 	
 	public static NotificationType convert(String str) {

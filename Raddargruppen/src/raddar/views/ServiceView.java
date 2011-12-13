@@ -46,5 +46,6 @@ public class ServiceView extends Activity implements OnClickListener{
 		super.onResume();
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
+		SessionController.getSessionController().updateConnectionImage();
 	}
 }

@@ -66,6 +66,7 @@ public class ReadMessageView extends Activity{
 		super.onResume();
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
+		SessionController.getSessionController().updateConnectionImage();
 	}
 
 }

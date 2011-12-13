@@ -166,6 +166,7 @@ public class ContactListView extends ListActivity implements OnClickListener,Obs
 		super.onResume();
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
+		SessionController.getSessionController().updateConnectionImage();
 	}
 
 	public void update(Observable observable,final Object data) {

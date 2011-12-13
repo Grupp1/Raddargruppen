@@ -253,6 +253,7 @@ public class Receiver implements Runnable {
 			}
 			list.addAll(temp2);
 			list.addAll(Database.retrieveAllUsers());
+			list.add(new NotificationMessage("server", NotificationType.SYNC_DONE));
 			new Sender(list, rm.getSrcUser());
 			break;
 		default:

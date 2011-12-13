@@ -1,5 +1,6 @@
 package raddar.views;
 
+import raddar.controllers.SessionController;
 import raddar.gruppen.R;
 import raddar.models.QoSManager;
 import android.app.Activity;
@@ -49,5 +50,6 @@ public class EnterNumberView extends Activity implements OnClickListener{
 		super.onResume();
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
+		SessionController.getSessionController().updateConnectionImage();
 	}
 }
