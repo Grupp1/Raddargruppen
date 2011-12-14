@@ -8,15 +8,15 @@ import android.widget.Toast;
 public class QoSManager {
 
 	/*
-	 * En lista med aktiva activities så att man lätt kan komma åt dem när man
-	 * behöver ändra ljusstyrka etc (vid låg batterinivå)
+	 * En lista med aktiva activities sï¿½ att man lï¿½tt kan komma ï¿½t dem nï¿½r man
+	 * behï¿½ver ï¿½ndra ljusstyrka etc (vid lï¿½g batterinivï¿½)
 	 */
 	private static Activity current;
 	private static int level = 100;
 
 	/**
-	 * Ange vilken aktivitet som befinner sig i förgrunden
-	 * @param a Aktiviteten som befinner sig i förgrunden
+	 * Ange vilken aktivitet som befinner sig i fï¿½rgrunden
+	 * @param a Aktiviteten som befinner sig i fï¿½rgrunden
 	 */
 	public static void setCurrentActivity(Activity a) {
 		current = a;
@@ -26,16 +26,16 @@ public class QoSManager {
 	}
 	
 	/**
-	 * Ställ in telefonens strömläge beroende på telefonens
-	 * redan sparade batterinivå
+	 * Stï¿½ll in telefonens strï¿½mlï¿½ge beroende pï¿½ telefonens
+	 * redan sparade batterinivï¿½
 	 */
 	public static void setPowerMode() {
 		setPowerMode(level);
 	}
 	
 	/**
-	 * Ställ in telefonens strömläge beroende på batterinivå
-	 * @param l Batterinivå
+	 * Stï¿½ll in telefonens strï¿½mlï¿½ge beroende pï¿½ batterinivï¿½
+	 * @param l Batterinivï¿½
 	 */
 	public static void setPowerMode(int l) {
 		displayToastIfChanged(l);
@@ -47,7 +47,7 @@ public class QoSManager {
 	}
 
 	/**
-	 * Anropa denna när batterinivån är över 20%
+	 * Anropa denna nï¿½r batterinivï¿½n ï¿½r ï¿½ver 20%
 	 */
 	public static void setNormalPowerMode() {
 		WindowManager.LayoutParams lp = current.getWindow().getAttributes();
@@ -59,7 +59,7 @@ public class QoSManager {
 	}
 
 	/**
-	 * Anropa denna när batterinivån är 20% eller mindre
+	 * Anropa denna nï¿½r batterinivï¿½n ï¿½r 20% eller mindre
 	 */
 	public static void setPowerSaveMode() {
 		WindowManager.LayoutParams lp = current.getWindow().getAttributes();
@@ -74,8 +74,8 @@ public class QoSManager {
 		int old_level = level;
 		level = l;
 		if (old_level == 21 && level == 20)
-			Toast.makeText(current, "Strömsparläge aktiverat", Toast.LENGTH_LONG).show();
+			Toast.makeText(current, "StrÃ¶msparlÃ¤ge aktiverat", Toast.LENGTH_LONG).show();
 		if (old_level == 20 && level == 21)
-			Toast.makeText(current, "Normalt strömläge aktiverat", Toast.LENGTH_LONG).show();
+			Toast.makeText(current, "Normalt strÃ¶mlÃ¤ge aktiverat", Toast.LENGTH_LONG).show();
 	}
 }

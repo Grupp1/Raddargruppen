@@ -77,7 +77,7 @@ public class ReciveHandler extends Observable implements Runnable {
 	public void newMessage(MessageType mt, final Message m, boolean notify) {
 
 		if (mt == MessageType.PROBE){
-			Log.d("PROBE", "POBE");
+			Log.d("PROBE", "PROBE");
 			NotificationMessage mess = new NotificationMessage(SessionController.getUser(), null);
 			mess.setType(MessageType.PROBE);
 			try {
@@ -96,12 +96,15 @@ public class ReciveHandler extends Observable implements Runnable {
 			switch(((MapObjectMessage)m).getMapOperation()){
 			case ADD:
 				MainView.mapCont.add(mo,false);
+				Log.d("KARTA", "RECIVE, ADD:"+mo.getTitle());
 				break;
 			case REMOVE:
 				MainView.mapCont.removeObject(mo, false);
+				Log.d("KARTA", "RECIVE, REMOVE:"+mo.getTitle());
 				break;
 			case UPDATE:
 				MainView.mapCont.updateObject(mo,false);
+				Log.d("KARTA", "RECIVE, UPDATE:"+mo.getTitle());
 				break;
 			case ALARM_ON:
 				final Activity current = QoSManager.getCurrentActivity();
@@ -118,14 +121,14 @@ public class ReciveHandler extends Observable implements Runnable {
 
 						AlertDialog.Builder alert = new AlertDialog.Builder(current);
 
-						alert.setTitle("SOS-meddelande fr�n: "+m.getSrcUser());
+						alert.setTitle("SOS-meddelande från: "+m.getSrcUser());
 						alert.setMessage(mo.getSnippet());
 
 						alert.setPositiveButton("Visa position",
 								new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
-								// G� till kartan
+								// gå till kartan
 								Intent intent = new Intent(QoSManager.getCurrentActivity(),MapUI.class);
 								intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 								intent.putExtra("lat", mo.getPoint().getLatitudeE6());
@@ -188,7 +191,7 @@ public class ReciveHandler extends Observable implements Runnable {
 
 		else if(mt == MessageType.NOTIFICATION){
 			if(((NotificationMessage)m).getNotification() == NotificationType.SYNC_DONE){
-				MainView.theOne.viewToast("All data har laddats ner fr�n servern");
+				MainView.theOne.viewToast("All data har laddats ner fr�n servern");
 				MainView.mapCont.setDownloadingDone(true);
 				Log.d("DOWN", "DONE");
 			}

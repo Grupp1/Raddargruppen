@@ -128,7 +128,7 @@ public class CallView extends Activity implements OnClickListener {
 				@Override
 				public void onError(SipAudioCall call, int errorCode,
 						String errorMessage) {
-					viewToast("Samtalet avbröts");
+					viewToast("Samtalet avbrï¿½ts");
 					finish();
 				}
 			};
@@ -136,7 +136,7 @@ public class CallView extends Activity implements OnClickListener {
 
 				call = SipController.manager
 				.takeAudioCall(intent, listener);
-				updateText("Samtal från",  call.getPeerProfile().getUserName());
+				updateText("Samtal frï¿½n",  call.getPeerProfile().getUserName());
 			} catch (SipException e) {
 				e.printStackTrace();
 			}
@@ -213,7 +213,6 @@ public class CallView extends Activity implements OnClickListener {
 
 					stopSounds();
 					call.startAudio();
-					call.setSpeakerMode(false);
 					if (call.isMuted()) {
 						call.toggleMute();
 					}
@@ -225,7 +224,7 @@ public class CallView extends Activity implements OnClickListener {
 				}
 				@Override
 				public void onError(SipAudioCall call, int errorCode, String errorMessage) {
-					viewToast("Samtalet bröts");
+					viewToast("Samtalet brï¿½ts");
 					finish();
 				}
 				@Override
@@ -253,7 +252,7 @@ public class CallView extends Activity implements OnClickListener {
 							}
 						}
 					});*/
-					viewToast("Mottagaren är upptagen");
+					viewToast("Mottagaren ï¿½r upptagen");
 					finish();
 				}
 			};
@@ -290,7 +289,7 @@ public class CallView extends Activity implements OnClickListener {
 			if (call != null) {
 				call.endCall();
 				call.close();
-			}else Log.d("call", "är null");
+			}else Log.d("call", "ï¿½r null");
 		} catch (SipException e) {
 			e.printStackTrace();
 		}
@@ -304,7 +303,6 @@ public class CallView extends Activity implements OnClickListener {
 			updateText("Pratar med ", call.getPeerProfile().getUserName());
 			call.answerCall(30);
 			call.startAudio();
-			call.setSpeakerMode(false);
 			if (call.isMuted()) {
 				call.toggleMute();
 			}

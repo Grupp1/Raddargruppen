@@ -263,7 +263,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 				}else if (data == ConnectionStatus.DISCONNECTED){
 					Log.d("STATUS","DISCONNECTED");
 					SessionController.getSessionController().clearOnlineUsers();
-					Toast.makeText(getApplicationContext(), "Tappad anslutning mot servern",Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), "Tappad anslutning mot servern", Toast.LENGTH_LONG).show();
 				}
 				else if (data instanceof String){
 					if(data.equals("LOGOUT")){
@@ -284,6 +284,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		super.onResume();
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
+		MainView.mapCont.gps.getLocationManager().requestLocationUpdates(MainView.mapCont.gps.getTowers(), 500, 1, MainView.mapCont.gps);
 		//Session
 		if (SettingsView.powerIsAutomatic())
 			registerReceiver(mBatteryInfoReceiver, new IntentFilter(
@@ -294,6 +295,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	@Override
 	public void onPause() {
 		super.onPause();
+		MainView.mapCont.gps.getLocationManager().removeUpdates(MainView.mapCont.gps);
 	}
 
 	public void enableButtons() {

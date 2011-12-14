@@ -18,7 +18,6 @@ public class GPSModel extends Observable implements LocationListener {
 	
 	private int lat = 0;
 	private int lon = 0;
-	// Ska vara noll senare. Nu är det universitetet.
 	private GeoPoint myLocation;
 	private LocationManager lm;
 	private String towers;
@@ -40,7 +39,7 @@ public class GPSModel extends Observable implements LocationListener {
 			notifyObservers(myLocation);
 		}
 		else{
-			notifyObservers("Kan inte hitta leverantör");
+			notifyObservers("Kan inte hitta leverantï¿½r");
 		}
 	}
 

@@ -66,7 +66,7 @@ public class MapUI extends MapActivity implements Observer {
 		mapView.setBuiltInZoomControls(true);
 		mapView.setSatellite(true);
 		/**
-		 *  Lista över alla overlays (lager) som visas på kartan
+		 *  Lista ï¿½ver alla overlays (lager) som visas pï¿½ kartan
 		 */
 		mapOverlays = mapView.getOverlays();
 		touchy = new Touchy(mapView.getContext());
@@ -117,7 +117,6 @@ public class MapUI extends MapActivity implements Observer {
 		MainView.mapCont.setGatheredToast(true);
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
-		MainView.mapCont.gps.getLocationManager().requestLocationUpdates(MainView.mapCont.gps.getTowers(), 500, 1, MainView.mapCont.gps);
 		SessionController.getSessionController().updateConnectionImage();
 	}
 
@@ -125,7 +124,6 @@ public class MapUI extends MapActivity implements Observer {
 	protected void onPause() {
 		super.onPause();
 		compass.disableCompass();
-		MainView.mapCont.gps.getLocationManager().removeUpdates(MainView.mapCont.gps);
 	}
 
 	@Override
@@ -172,9 +170,9 @@ public class MapUI extends MapActivity implements Observer {
 
 	class Touchy extends Overlay{
 		private Context context;
-		//		private CharSequence [] items = {"Brand", "Brandbil", "Händelse", "Resurs"};
-		private CharSequence [] items = {"Händelse", "Resurs"};
-		private CharSequence [] prio = {"Hög", "Mellan", "Låg"};
+		//		private CharSequence [] items = {"Brand", "Brandbil", "Hï¿½ndelse", "Resurs"};
+		private CharSequence [] items = {"Hï¿½ndelse", "Resurs"};
+		private CharSequence [] prio = {"Hï¿½g", "Mellan", "Lï¿½g"};
 		private CharSequence [] stat = {"Ledig", "Upptagen"};
 		private String value;
 		private EditText input;
@@ -306,7 +304,7 @@ public class MapUI extends MapActivity implements Observer {
 
 				AlertDialog alert = builder.create();
 
-				alert.setButton("Hämta adress", new DialogInterface.OnClickListener() {
+				alert.setButton("Hï¿½mta adress", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						Toast.makeText(getApplicationContext(), MainView.mapCont.calcAdress(touchedPoint), Toast.LENGTH_LONG).show();
 					}
@@ -368,31 +366,17 @@ public class MapUI extends MapActivity implements Observer {
 	/**
 	 * 
 	 * @param mo MapObject att rita ut
-	 * @param hideToast true om en toast inte ska visas för uppdateringen
+	 * @param hideToast true om en toast inte ska visas fï¿½r uppdateringen
 	 */
-	public void drawNewMapObject(final MapObject mo, final boolean hideToast){
+	public void drawNewMapObject(final MapObject mo){
 		runOnUiThread(new Runnable(){
 			public void run() {
 				MapObjectList list = MainView.mapCont.getList(mo);
 				if (!mapOverlays.contains(list)){
 					mapOverlays.add((MapObjectList) list);
 				}
-
 				else{
 					mapOverlays.set(mapOverlays.indexOf(list), list);
-				}
-				if(!hideToast){
-					if(!mo.getAddedBy().equals(SessionController.getUser())){
-						String txt = "";
-						if(mo instanceof You){
-							txt = mo.getAddedBy()+" är online";
-						}
-						else{
-							txt = "Objekt tillagt: "+mo.getTitle()+", Skapad av: "+mo.getAddedBy();
-						}
-						toast = Toast.makeText(getBaseContext(), txt, Toast.LENGTH_LONG);
-						toast.show();
-					}
 				}
 				mapView.invalidate();
 			}});
@@ -460,7 +444,7 @@ public class MapUI extends MapActivity implements Observer {
 				MainView.mapCont.follow = true;
 			}
 
-			toast = Toast.makeText(getBaseContext(), "Följa efter: " +MainView.mapCont.follow, Toast.LENGTH_LONG);
+			toast = Toast.makeText(getBaseContext(), "Fï¿½lja efter: " +MainView.mapCont.follow, Toast.LENGTH_LONG);
 			toast.show();
 			return true;
 		case R.id.myLocation:
