@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +52,10 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	public static MainView theOne;
 	private Bundle extras;
 	private boolean downloading;
+
+	private ProgressBar downloadBar;
+	private TextView downloadText;
+	private int max;
 
 	/*
 	 * Lyssnar efter �ndringar hos batteriniv�n
@@ -75,7 +80,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.main);
-		
+
 		SessionController.appIsRunning = true;
 		SessionController.titleBar(this, " ");
 		extras = getIntent().getExtras();
@@ -87,12 +92,13 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		 */
 		new SessionController(extras.get("user").toString()).addObserver(this);
 		mapCont = new MapCont(MainView.this);
+		SessionController.getSessionController().changeConnectionStatus((ConnectionStatus)extras.get("connectionStatus"));
 		new SipController(this);
 		new ReciveHandler(this).addObserver(this);
 
 		String level = BatteryManager.EXTRA_LEVEL;
 		Log.d("EXTRA_LEVEL", level);
-		
+
 
 		//		controller = new InternalComManager();
 		//		controller.setUser(extras.get("user").toString());
@@ -104,18 +110,18 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		new SessionController(extras.get("user").toString()).addObserver(this);
 		//		new DatabaseController(this);
 		new ReciveHandler(this).addObserver(this);
-		
-		
-		
-//		try {
-//			new Sender(new RequestMessage(RequestType.MESSAGE));
-//			new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
-//			new Sender(new RequestMessage(RequestType.CONTACTS));
-//			new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
-//		} catch (UnknownHostException e) {
-//			e.printStackTrace();
-//		}
-		
+
+
+
+		//		try {
+		//			new Sender(new RequestMessage(RequestType.MESSAGE));
+		//			new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
+		//			new Sender(new RequestMessage(RequestType.CONTACTS));
+		//			new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
+		//		} catch (UnknownHostException e) {
+		//			e.printStackTrace();
+		//		}
+
 
 
 		callButton = (ImageButton)this.findViewById(R.id.callButton);
@@ -141,16 +147,19 @@ public class MainView extends Activity implements OnClickListener, Observer {
 
 		logButton = (ImageButton)this.findViewById(R.id.logButton);
 		logButton.setOnClickListener(this);
-		
+
+		downloadBar = (ProgressBar) this.findViewById(R.id.download_bar);
+		downloadText = (TextView)this.findViewById(R.id.download_text);
+
 
 		statusText = (TextView)this.findViewById(R.id.statusText);
-		
+
 		statusText.setText("Inloggad som: " +  SessionController.getUser());
 		statusText.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC), Typeface.ITALIC);
-		
+
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
-		SessionController.getSessionController().changeConnectionStatus((ConnectionStatus)extras.get("connectionStatus"));
+		
 	}
 
 	public void onClick(View v) {
@@ -186,7 +195,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		else if(v == logButton){
 			showLogoutWindow();
 		}
-		
+
 	}
 	private void showLogoutWindow(){
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -222,7 +231,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		// Notifiera servern att vi g�r offline
 		NotificationMessage nm = new NotificationMessage(SessionController.getUser(), 
 				NotificationType.DISCONNECT);
-		
+
 		try {
 			// Skicka meddelandet
 			new Sender(nm);		
@@ -250,27 +259,51 @@ public class MainView extends Activity implements OnClickListener, Observer {
 					DatabaseController.db.clearDatabase();
 					mapCont.renewYou();
 					try {
-//						new Sender(new RequestMessage(RequestType.MESSAGE));
-//						new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
-//						DatabaseController.db.clearTable("contact");
-//						new Sender(new RequestMessage(RequestType.CONTACTS));
-//						new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
-//						new Sender(new RequestMessage(RequestType.ONLINE_CONTACTS));
+						//						new Sender(new RequestMessage(RequestType.MESSAGE));
+						//						new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
+						//						DatabaseController.db.clearTable("contact");
+						//						new Sender(new RequestMessage(RequestType.CONTACTS));
+						//						new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
+						//						new Sender(new RequestMessage(RequestType.ONLINE_CONTACTS));
 						new Sender(new RequestMessage(RequestType.NEW_LOGIN));
 					} catch (UnknownHostException e) {
 						e.printStackTrace();
 					}
-					
+
 				}else if (data == ConnectionStatus.DISCONNECTED){
 					Log.d("STATUS","DISCONNECTED");
 					SessionController.getSessionController().clearOnlineUsers();
 					Toast.makeText(getApplicationContext(), "Tappad anslutning mot servern",Toast.LENGTH_LONG).show();
+					downloadBar.setVisibility(View.VISIBLE);
+					downloadText.setVisibility(View.VISIBLE);
 				}
 				else if (data instanceof String){
 					if(data.equals("LOGOUT")){
 						finish();
 					}else{
 						Toast.makeText(getBaseContext(), (String)data, Toast.LENGTH_SHORT).show();
+					}
+				}
+				else if (data instanceof Integer){
+					final int progress = ((Integer)data).intValue();
+					if (progress < 0){
+
+						downloadBar.setVisibility(View.VISIBLE);
+						downloadText.setVisibility(View.VISIBLE);
+						max = -progress;
+						downloadBar.setMax(max);
+						downloadBar.setProgress(0);
+
+					}
+					else if(progress < max){
+						Log.d("SYNC", max+"");
+						downloadBar.setProgress(progress);
+						downloadBar.postInvalidate();
+					}
+					else{
+						downloadBar.setVisibility(View.INVISIBLE);
+						downloadText.setVisibility(View.INVISIBLE);
+
 					}
 				}
 

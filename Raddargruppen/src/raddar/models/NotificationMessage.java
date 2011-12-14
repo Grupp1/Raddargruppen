@@ -5,12 +5,13 @@ import raddar.enums.NotificationType;
 
 public class NotificationMessage extends Message {
 
-	// Message-header attributen för NotificationMessages
+	// Message-header attributen fï¿½r NotificationMessages
 	public final static String HEADER_NOTIFICATION = "Notification: ";
 	public final static String HEADER_PASSWORD = "Password: ";
 	
 	private String password;
 	private NotificationType notification;
+	private int numberOfMessages;
 	
 
 	public NotificationMessage(String fromUser, NotificationType notification) {
@@ -40,6 +41,12 @@ public class NotificationMessage extends Message {
 
 	public NotificationType getNotification() {
 		return notification;
+	}
+	public void setNumberOfMessages(int numberOfMessages){
+		this.numberOfMessages = numberOfMessages;
+	}
+	public int getNumberOfMessages(){
+		return numberOfMessages;
 	}
 
 	public void setNotification(NotificationType notification) {

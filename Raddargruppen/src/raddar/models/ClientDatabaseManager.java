@@ -313,6 +313,21 @@ public class ClientDatabaseManager extends Observable {
 			e.printStackTrace();
 		}
 	}
+	public void updateDraftRow(Message m){
+		ContentValues values = new ContentValues();
+		values.put("destUser", m.getDestUser());
+		values.put("rDate", m.getDate());
+		values.put("subject", m.getSubject());
+		values.put("mData", m.getData());
+		Log.d("DRAFTS", m.getDate());
+		try {
+			Log.d("DRAFTS",(db.update("drafts", values,
+					"msgID = '" + m.getDate()+ "'", null)+""));
+		} catch (Exception e) {
+			Log.e("DB Error", e.toString());
+			e.printStackTrace();
+		}
+	}
 
 	/**********************************************************************
 	 * UPDATING A ROW IN THE MAPOBJECT TABLE
@@ -356,7 +371,7 @@ public class ClientDatabaseManager extends Observable {
 
 	public void deleteDraftRow(Message m) {
 		try {
-			db.delete("drafts", "destUser = '" + m.getDestUser().toString().trim() +"'", null);
+			db.delete("drafts", "msgID = '" + m.getDate() +"'", null);
 		} catch (Exception e) {
 			Log.e("DB ERROR", e.toString());
 			e.printStackTrace();
@@ -524,7 +539,7 @@ public class ClientDatabaseManager extends Observable {
 								DB_NAME, cursor.getString(1),
 								cursor.getString(4));
 						m.setSubject(cursor.getString(3));
-						m.setDate(cursor.getString(2));
+						m.setDate(cursor.getInt(0)+"");
 						dataArrays.add(m);
 					}
 					else if (table.equals("map")) {
@@ -615,7 +630,7 @@ public class ClientDatabaseManager extends Observable {
 					"mData text)";
 
 			String draftsTableQueryString = "create table drafts (" 
-					+ "msgId integer primary key autoincrement not null," + 
+					+ "msgID integer primary key autoincrement not null," + 
 					"destUser text," +
 					"rDate integer," +
 					"subject text," +

@@ -25,7 +25,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 /**
- * Denna klass används vid utritning av drafts.
+ * Denna klass anvï¿½nds vid utritning av drafts.
  * @author magkj501
  *
  */
@@ -56,18 +56,19 @@ public class DraftView extends ListActivity {
 				nextIntent.putExtra("type", drafts.get(position).getType());
 				
 				Message m = drafts.get(position);
-				String [] items = {m.getDestUser().toString(), m.getSubject().toString(), m.getData().toString()};
+				String [] items = {m.getDestUser().toString(), m.getSubject().toString(), m.getData().toString(),
+						m.getDate()};
 				for(int i=0; i<items.length; i++){
 				Log.d("DraftView", items[i]);
 				}
 				nextIntent.putExtra("message", items);
-				startActivity(nextIntent);
+				startActivityForResult(nextIntent,0);
 			}
 		});
 	}
 	
 	/**
-	 * Denna klass används vid utritning av drafts.
+	 * Denna klass anvï¿½nds vid utritning av drafts.
 	 * @author magkj501
 	 *
 	 */
@@ -97,7 +98,7 @@ public class DraftView extends ListActivity {
 				if (tt != null) 
 					tt.setText("Mottagare: "+m.getDestUser());                            
 				if(bt != null)
-					bt.setText("Ämne: "+ m.getSubject());
+					bt.setText("ï¿½mne: "+ m.getSubject());
 			}			
 			return v;
 		}
@@ -106,6 +107,11 @@ public class DraftView extends ListActivity {
 		super.onResume();
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
+	}
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(resultCode == 1)
+			finish();
 	}
 }
 

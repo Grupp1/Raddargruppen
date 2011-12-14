@@ -10,6 +10,7 @@ import javax.net.ssl.SSLSocket;
 
 import raddar.enums.ConnectionStatus;
 import raddar.enums.MessageType;
+import raddar.enums.NotificationType;
 import raddar.enums.ServerInfo;
 import raddar.models.ContactMessage;
 import raddar.models.MapObject;
@@ -34,6 +35,9 @@ public class ReciveHandler extends Observable implements Runnable {
 	private Thread thread = new Thread(this);
 
 	private Context context;
+
+	private int max = 0;
+	private int current = 0;
 
 	public ReciveHandler(Context context) {
 		this.context = context;
@@ -62,7 +66,7 @@ public class ReciveHandler extends Observable implements Runnable {
 		} catch (IOException ie) {
 			notifyObservers(ConnectionStatus.DISCONNECTED);
 			Log.d("ReciveHandler",
-			"Kunde inte ta emot meddelande, disconnected");
+					"Kunde inte ta emot meddelande, disconnected");
 			// ie.printStackTrace();
 		} 
 	}
@@ -74,6 +78,10 @@ public class ReciveHandler extends Observable implements Runnable {
 	 * @param notify true if we should notify the user
 	 */
 	public void newMessage(MessageType mt, final Message m, boolean notify) {
+		if(max!=current)
+			SessionController.getSessionController().setProgressbar(current++);
+
+
 
 		if (mt == MessageType.PROBE){
 			Log.d("PROBE", "POBE");
@@ -161,21 +169,21 @@ public class ReciveHandler extends Observable implements Runnable {
 			}
 		}
 		else if(mt == MessageType.ONLINE_USERS){
-		//	if(!((OnlineUsersMessage)m).getUserName().equals(SessionController.getUser())){
-				switch(((OnlineUsersMessage) m).getOnlineOperation()){
-				case ADD:
-					SessionController.getSessionController().addOnlineUser(((OnlineUsersMessage)m).getUserName());
-					Log.d("ONLINE_USER TRUE", ((OnlineUsersMessage)m).getUserName());
-					break;
-				case REMOVE:
-					SessionController.getSessionController().removeOnlineUser(((OnlineUsersMessage)m).getUserName());
-					Log.d("ONLINE_USER FALSE", ((OnlineUsersMessage)m).getUserName());
-					break;
-				default:
-					break;
-				}
+			//	if(!((OnlineUsersMessage)m).getUserName().equals(SessionController.getUser())){
+			switch(((OnlineUsersMessage) m).getOnlineOperation()){
+			case ADD:
+				SessionController.getSessionController().addOnlineUser(((OnlineUsersMessage)m).getUserName());
+				Log.d("ONLINE_USER TRUE", ((OnlineUsersMessage)m).getUserName());
+				break;
+			case REMOVE:
+				SessionController.getSessionController().removeOnlineUser(((OnlineUsersMessage)m).getUserName());
+				Log.d("ONLINE_USER FALSE", ((OnlineUsersMessage)m).getUserName());
+				break;
+			default:
+				break;
 			}
-	//	}
+		}
+		//	}
 
 		else if(mt == MessageType.CONTACT){
 			if(((ContactMessage)m).getContact().equals(SessionController.getUser())){
@@ -184,27 +192,38 @@ public class ReciveHandler extends Observable implements Runnable {
 			}
 			DatabaseController.db.addRow(((ContactMessage)m).toContact());
 		}
-		
-		else if(mt == MessageType.NOTIFICATION){
-			Log.e("LOGOUT","OTHER USER HAS LOGGED IN ON ANOTHER DEVICE");
-			final Activity current = QoSManager.getCurrentActivity();
-			if(current == null) return;
-			current.runOnUiThread(new Runnable() {
-				public void run() {
-					AlertDialog.Builder alert = new AlertDialog.Builder(current);
 
-					alert.setTitle("Forcerad utloggning");
-					alert.setMessage(m.getData());
-					alert.setOnCancelListener(new OnCancelListener(){
-						public void onCancel(DialogInterface dialog) {
-							Intent intent = new Intent(current,StartView.class);
-							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-							QoSManager.getCurrentActivity().startActivity(intent);
-						}
-					});
-					alert.show();
-				}
-			});
+		else if(mt == MessageType.NOTIFICATION){
+			NotificationType nt = ((NotificationMessage)m).getNotification();
+			if(nt == NotificationType.SYNC_START){
+				max = ((NotificationMessage)m).getNumberOfMessages();
+				current = 0;
+				SessionController.getSessionController().setProgressbar(-max);
+			}
+			else if(nt == NotificationType.SYNC_DONE){
+				SessionController.getSessionController().setProgressbar(max*2);
+			}
+			else{
+				Log.e("LOGOUT","OTHER USER HAS LOGGED IN ON ANOTHER DEVICE");
+				final Activity current = QoSManager.getCurrentActivity();
+				if(current == null) return;
+				current.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder alert = new AlertDialog.Builder(current);
+
+						alert.setTitle("Forcerad utloggning");
+						alert.setMessage(m.getData());
+						alert.setOnCancelListener(new OnCancelListener(){
+							public void onCancel(DialogInterface dialog) {
+								Intent intent = new Intent(current,StartView.class);
+								intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+								QoSManager.getCurrentActivity().startActivity(intent);
+							}
+						});
+						alert.show();
+					}
+				});
+			}
 		}
 
 	}

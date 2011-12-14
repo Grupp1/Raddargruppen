@@ -36,7 +36,7 @@ public class MapCont implements Observer, Runnable{
 	public boolean areYouFind = false;
 	private You you;
 	private Geocoder geocoder;
-	// Sträng som används av sos-funktionen
+	// Strï¿½ng som anvï¿½nds av sos-funktionen
 	private String savedSnippet;
 
 	/*
@@ -123,8 +123,7 @@ public class MapCont implements Observer, Runnable{
 		ArrayList<MapObject> olist = DatabaseController.db.getAllRowsAsArrays("map");
 		
 		if(areYouFind){
-			if(olist.size() == 0)
-				olist.add(you);
+			olist.add(you);
 			mapUI.controller.animateTo(you.getPoint());
 			mapUI.controller.setZoom(13);
 			follow = true;
@@ -233,7 +232,7 @@ public class MapCont implements Observer, Runnable{
 					you.getStatus(), you.isSOS());
 			updateObject(you,true);		// karta
 			if (mapUI != null){
-				mapUI.drawNewMapObject(you);
+			//	mapUI.drawNewMapObject(you);
 				if(follow){
 					mapUI.controller.animateTo(you.getPoint());
 				}

@@ -71,14 +71,15 @@ public class CallContactListView extends ListActivity implements Observer{
 				startActivityForResult(nextIntent,9);
 			}
 		});
+		footer = ((LayoutInflater)this.getSystemService
+				(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.contact_footer_text, null, false);
+		foot = (TextView)footer.findViewById(R.id.text_foot);
+		foot.setClickable(false);
+		foot.setTextSize(20);
+		foot.setText("Ingen �r online f�r tillf�llet!");
+		
 		if(contacts.size() == 0){
-			footer = ((LayoutInflater)this.getSystemService
-					(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.contact_footer_text, null, false);
 			lv.addFooterView(footer);
-			TextView foot = (TextView)footer.findViewById(R.id.text_foot);
-			foot.setClickable(false);
-			foot.setTextSize(20);
-			foot.setText("Ingen �r online f�r tillf�llet!");
 		}
 		setListAdapter(ia);
 	}
@@ -116,6 +117,7 @@ public class CallContactListView extends ListActivity implements Observer{
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		SessionController.getSessionController().deleteObserver(this);
 	}
 
 	@Override
@@ -127,7 +129,7 @@ public class CallContactListView extends ListActivity implements Observer{
 
 	public void update(Observable observable, final Object data) {
 		final ListView lv = getListView();
-		if(data == null|| (data instanceof String && data.equals("clear_online_users"))){
+		if(data == null){
 			runOnUiThread(new Runnable(){
 				public void run() {
 					lv.addFooterView(footer);

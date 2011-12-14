@@ -227,6 +227,13 @@
 		android:layout_marginLeft="5dip"
 		android:layout_marginBottom="5dip">
 	</TextView>
+	<ProgressBar
+		android:layout_height="wrap_content"
+		style="?android:attr/progressBarStyleHorizontal"
+		android:layout_alignParentTop="true"
+		android:layout_alignLeft="@+id/linearLayoutMessages"
+		android:layout_width="30dip" android:layout_alignRight="@+id/linearLayoutMessages" android:id="@+id/download_bar"></ProgressBar>
+	<TextView android:text="@string/download_text" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignBottom="@+id/download_bar" android:layout_toLeftOf="@+id/download_bar" android:id="@+id/download_text"></TextView>
 
 
 

@@ -66,7 +66,7 @@ public class Receiver implements Runnable {
 				e.printStackTrace();
 			}
 			Message m = new Gson().fromJson(in.readLine(), c);
-			
+
 			MessageType mt = m.getType();
 			if(mt!=MessageType.PROBE){
 				System.out.println();
@@ -74,7 +74,7 @@ public class Receiver implements Runnable {
 						" Messagetype: "+mt.toString());
 				System.out.println(m.getSrcUser()+" är online: "+Server.onlineUsers.isUserOnline(m.getSrcUser()));
 			}
-			
+
 			//Det den h�r if-satsen g�r �t att unders�ka om anv�ndaren som skickade meddelandet �r online.
 			//Om han inte �r det m�ste �r det enda meddelandena har f�r skicka notifications och requesta salt.
 			//Om han g�r m�got annat loggas han ut.
@@ -114,7 +114,7 @@ public class Receiver implements Runnable {
 				break;
 			case MAPOBJECT:
 				handleMapObjectMessage((MapObjectMessage) m);
-				broadcast(m);
+				//broadcast(m);
 				break;
 			default:
 				System.out.println("Received message has unknown type. Discarding... ");
@@ -169,15 +169,24 @@ public class Receiver implements Runnable {
 		case ADD:
 			//System.out.println("handleMapObjectMessage ADD");
 			if(Database.addMapObject(mo))
-				break;
+				broadcast(mo);
+			break;
 		case REMOVE:
 			//System.out.println("handleMapObjectMessage REMOVE");
 			Database.removeMapObject(mo.getId());
+			broadcast(mo);
 			break;
 		case UPDATE:
+			if(Database.addMapObject(mo))
+				mo.setMapOperation(MapOperation.ADD);
+			else
+				Database.updateMapObject(mo);
+			broadcast(mo);
+			break;
 		case ALARM_ON:
 		case ALARM_OFF:
-		Database.updateMapObject(mo);
+			Database.updateMapObject(mo);
+
 			break;
 		default:
 			System.out.println("Ok�nd MapOperation");
@@ -256,6 +265,9 @@ public class Receiver implements Runnable {
 			}
 			list.addAll(temp2);
 			list.addAll(Database.retrieveAllUsers());
+			NotificationMessage nm = new NotificationMessage("Server", NotificationType.SYNC_START);
+			nm.setNumberOfMessages(list.size());
+			list.add(0, nm);
 			new Sender(list, rm.getSrcUser());
 			break;
 		default:

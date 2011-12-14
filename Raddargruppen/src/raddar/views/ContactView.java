@@ -89,22 +89,25 @@ public class ContactView extends ListActivity implements OnClickListener, Observ
 			this.selected = selected;
 			this.contacts = contacts;
 		}
+
 		@Override
 		public View getView(final int pos, View convertView, ViewGroup parent){
 			View v = convertView;
 			final Contact c = contacts.get(pos);
-
+			
 			if(v == null){
 				LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				v = vi.inflate(R.layout.contact, null);
+			}
+			if (c != null) {
+				TextView tt = (TextView) v.findViewById(R.id.label);
 				CheckBox bt = (CheckBox) v.findViewById(R.id.check);
-
 				bt.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
 					public void onCheckedChanged(CompoundButton buttonView,
 							boolean isChecked) {
 						Intent in = new Intent();
 						if(isChecked){
-							Log.d("ContactListView",c.getUserName()+pos);
+							Log.d("ContactListView",c.getUserName()+" nummer "+pos);
 							selected.add(c.getUserName());
 							String[] sel = new String[selected.size()];
 							sel = (String[]) selected.toArray(sel);
@@ -121,9 +124,6 @@ public class ContactView extends ListActivity implements OnClickListener, Observ
 						}
 					}
 				});
-			}
-			if (c != null) {
-				TextView tt = (TextView) v.findViewById(R.id.label);
 				tt.setText(c.getUserName());
 				if (SessionController.isOnline(c.getUserName())){
 					ImageView statusImage = (ImageView) v.findViewById(R.id.statusImage);

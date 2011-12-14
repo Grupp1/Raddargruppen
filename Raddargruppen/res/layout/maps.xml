@@ -13,7 +13,7 @@
 		android:layout_width="fill_parent"
 		android:clickable="true"
 
-		android:apiKey="0b1qi7XBfQqn9A3za-xBrAlalU6nTrHtuJ-lKog"
+		android:apiKey="0sfNWnyLW9XDZyE6ofqFmhQCysDsbRTK_0Yh00A"
 
 		android:enabled="true"
 		android:layout_height="match_parent" />

@@ -139,7 +139,7 @@ public class ContactListView extends ListActivity implements OnClickListener,Obs
 
 		}else if (item.getTitle() == "Skicka textmeddelande") {
 			Intent nextIntent = new Intent(this,SendMessageView.class);
-			String[] items = new String[3];
+			String[] items = new String[4];
 			items[0] = contacts.get(info.position).getUserName();
 			items[1] = "";
 			items[2] = "";

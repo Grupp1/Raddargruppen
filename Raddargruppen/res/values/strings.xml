@@ -61,4 +61,6 @@
 	<string name="application_name">Alice</string>
 
 	<string name="start">0x7f030018</string>
+
+	<string name="download_text">Synkning:  </string>
 </resources>

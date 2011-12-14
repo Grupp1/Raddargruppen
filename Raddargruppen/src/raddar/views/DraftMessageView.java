@@ -29,8 +29,8 @@ public class DraftMessageView extends Activity {
 			
 		
 		/**
-		 * Måste fixas. Går man in i utkast och trycker på redigera utkast men sedan inte skickar det läggs det till 
-		 * på nytt i databasen, dvs det finns 2 likadana meddelanden i utkast. 
+		 * Mï¿½ste fixas. Gï¿½r man in i utkast och trycker pï¿½ redigera utkast men sedan inte skickar det lï¿½ggs det till 
+		 * pï¿½ nytt i databasen, dvs det finns 2 likadana meddelanden i utkast. 
 		 * 
 		 */
 		
@@ -41,7 +41,7 @@ public class DraftMessageView extends Activity {
 				Intent nextIntent = new Intent(DraftMessageView.this, SendMessageView.class);
 				nextIntent.putExtra("message", items);
 				startActivity(nextIntent);
-				 
+				setResult(1, null);
 				finish();
 				
 			}
@@ -49,7 +49,8 @@ public class DraftMessageView extends Activity {
 		
 		TextView draftMessage =(TextView)this.findViewById(R.id.draftMessage);
 		draftMessageDestUser.setText(extras.get("reciever").toString());
-		draftMessageDate.setText(extras.get("date").toString());
+		//draftMessageDate.setText(extras.get("date").toString());
+		draftMessageDate.setText("Datum Ã¤nnu inte satt");
 		draftMessageSubject.setText(extras.get("subject").toString());
 		draftMessage.setText("\n"+extras.get("data").toString());
 		

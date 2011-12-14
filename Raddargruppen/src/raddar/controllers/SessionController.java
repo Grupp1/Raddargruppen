@@ -157,4 +157,8 @@ public class SessionController extends Observable{
 		setChanged();
 		notifyObservers();
 	}
+	public void setProgressbar(int progress) {
+		setChanged();
+		notifyObservers(new Integer(progress));
+	}
 }

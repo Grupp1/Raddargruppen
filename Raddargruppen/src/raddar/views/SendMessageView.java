@@ -36,6 +36,8 @@ public class SendMessageView extends Activity implements OnClickListener {
 	private EditText subject;
 	private EditText messageData;
 	private Button sendButton;
+	private boolean saveAsDraft = true;
+	private String msgId = "";
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -51,30 +53,35 @@ public class SendMessageView extends Activity implements OnClickListener {
 		Bundle extras = getIntent().getExtras();
 		try {
 			String[] items = (String[]) extras.getCharSequenceArray("message");
-			destUser.setText(items[0].toString());
+			destUser.setText(items[0].toString()+";");
 			subject.setText(items[1].toString());
 			messageData.setText(items[2].toString());
+			if(items.length > 3){
+				msgId = items[3].toString();
+				saveAsDraft = false;
+			}
+
 		} catch (Exception e) {
 			Log.d("SendMessageView", "message:"+e.toString());
 		}
 
 		sendButton.setOnClickListener(this);
 		destUser.setOnClickListener(this);
-		
+
 		destUser.setFocusable(false);
 	}
 
 
 	public void onClick(View v) {
 		if (v.equals(sendButton)) {
-			// Undersöker om alla fält är skrivna i
-			// TODO: gör nogrannare undersökning
+			// Undersï¿½ker om alla fï¿½lt ï¿½r skrivna i
+			// TODO: gï¿½r nogrannare undersï¿½kning
 			String[] temp = new String[3];
 			temp[0] = destUser.getText().toString().trim();
 			temp[1] = subject.getText().toString().trim();
 			temp[2] = messageData.getText().toString().trim();
 			if (temp[0].equals("") || temp[1].equals("") || temp[2].equals("")) {
-				Toast.makeText(getApplicationContext(), "Fyll i alla fält",
+				Toast.makeText(getApplicationContext(), "Fyll i alla fï¿½lt",
 						Toast.LENGTH_SHORT).show();
 				return;
 			}
@@ -101,7 +108,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 	private void sendMessages() {
 		String[] destUsers = (destUser.getText().toString() + ";").split(";");
 		Log.d("number of messages", destUsers.length + "");
-		for (int i = 0; i < destUsers.length-1; i++) {
+		for (int i = 0; i < destUsers.length; i++) {
 			Message m = new TextMessage(SessionController.getUser(), ""
 					+ destUsers[i]);
 			m.setSubject(subject.getText() + "");
@@ -114,7 +121,10 @@ public class SendMessageView extends Activity implements OnClickListener {
 						.getByName(raddar.enums.ServerInfo.SERVER_IP),
 						raddar.enums.ServerInfo.SERVER_PORT);
 				DatabaseController.db.addOutboxRow(m);
-				DatabaseController.db.deleteDraftRow(m);
+				if(!saveAsDraft){
+					m.setDate(msgId);
+					DatabaseController.db.deleteDraftRow(m);
+				}
 
 			} catch (UnknownHostException e) {
 				DatabaseController.db.addDraftRow(m);
@@ -123,17 +133,31 @@ public class SendMessageView extends Activity implements OnClickListener {
 	}
 
 	public void onBackPressed() {
-		String[] destUsers = (destUser.getText().toString() + ";").split(";");
-		Log.d("number of messages", destUsers.length + "");
-		for (int i = 0; i < destUsers.length; i++) {
-			Message m = new TextMessage(SessionController.getUser(), ""
-					+ destUsers[i]);
+		if((((destUser).getText()+"").trim().equals("")&&((subject).getText()+"").trim().equals("")
+				&&((messageData).getText()+"").trim().equals("")))
+			super.onBackPressed();
+		else if(!saveAsDraft){
+			String temp = "";
+			if(destUser.length() > 0)
+				temp = (destUser.getText()+"").substring(0, (destUser.getText()+"").length()-1);
+			Message m = new TextMessage(SessionController.getUser(),temp);
 			m.setSubject(subject.getText() + "");
 			m.setData(messageData.getText() + "");
-			DatabaseController.db.addDraftRow(m);
+			m.setDate(msgId);
+			DatabaseController.db.updateDraftRow(m);
+			super.onBackPressed();
 		}
-
-		super.onBackPressed();
+		else{
+			String temp = "";
+			if(destUser.length() > 0)
+				temp = (destUser.getText()+"").substring(0, (destUser.getText()+"").length()-1);
+			Message m = new TextMessage(SessionController.getUser(),temp);
+			m.setSubject(subject.getText() + "");
+			m.setData(messageData.getText() + "");
+			m.setDate("");
+			DatabaseController.db.addDraftRow(m);
+			super.onBackPressed();
+		}
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -144,7 +168,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 				String[] destUsers = extras.getStringArray("contacts");
 
 				for(int i = 0; i < destUsers.length; i++)
-					temp += destUsers[i]+"; ";
+					temp += destUsers[i]+";";
 				destUser.setText(temp);	
 
 			}
