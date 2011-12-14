@@ -38,7 +38,7 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 	private String filePath;
 	private Bitmap bitmap;
 	private String before;
-	
+
 	private Bitmap yourSelectedImage;
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -55,31 +55,46 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 		sendButton.setOnClickListener(this);
 		destUser.setOnClickListener(this);
 		destUser.setFocusable(false);
-		
+
 
 		Bundle extras = getIntent().getExtras();
 		try {
 			String[] items = (String[]) extras.getCharSequenceArray("message");
-			destUser.setText(items[0].toString());
+			destUser.setText(items[0].toString()+";");
 			subject.setText(items[1].toString());
-		} catch (Exception e){
-			Log.d("SendImageMessageView", "message:"+e.toString());
+			//messageData.setText(items[2].toString());
+			//if(items.length > 3){
+			//	msgId = items[3].toString();
+			//	saveAsDraft = false;
+			//}
+
+		} catch (Exception e) {
+			Log.d("SendMessageView", "message:"+e.toString());
 		}
-		
-		try{
-			String destMapUser = extras.getString("map");
-			destUser.setText(destMapUser);
-		}catch (Exception e){
-			Log.d("SendImageMessageView", "map:"+e.toString());
-		}
+
+		//		Bundle extras = getIntent().getExtras();
+		//		try {
+		//			String[] items = (String[]) extras.getCharSequenceArray("message");
+		//			destUser.setText(items[0].toString());
+		//			subject.setText(items[1].toString());
+		//		} catch (Exception e){
+		//			Log.d("SendImageMessageView", "message:"+e.toString());
+		//		}
+		//		
+		//		try{
+		//			String destMapUser = extras.getString("map");
+		//			destUser.setText(destMapUser);
+		//		}catch (Exception e){
+		//			Log.d("SendImageMessageView", "map:"+e.toString());
+		//		}
 		destUser.setOnClickListener(this);
 
-//		if(SessionController.testBitmap != null)
-//			preview.setImageBitmap(SessionController.testBitmap);
-		
+		//		if(SessionController.testBitmap != null)
+		//			preview.setImageBitmap(SessionController.testBitmap);
+
 		preview.setDrawingCacheEnabled(true);
 		preview.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED), 
-	            MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+				MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
 		preview.layout(0, 0, preview.getMeasuredWidth(), preview.getMeasuredHeight()); 
 		preview.buildDrawingCache(true);
 	}
@@ -92,10 +107,10 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 			startActivityForResult(Intent.createChooser(intent,
 					"Select Picture"), SELECT_PICTURE);
 			//�ppnar galleriet d�r man kan v�lja bild att bifoga
-			
+
 		}
 		if (v.equals(sendButton)) {
-			
+
 			//Unders�ker om alla f�lt �r skrivna i
 			//TODO: g�r nogrannare unders�kning
 			String[] temp = new String[2];
@@ -108,7 +123,7 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 						Toast.LENGTH_SHORT).show();
 
 				return;
-			
+
 				/*if (om bild inte �r tillagd){
 				Toast.makeText(getApplicationContext(), "V�lj en bild",
 						Toast.LENGTH_SHORT).show();
@@ -142,7 +157,7 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 		bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
 		byte[] imageBytes = stream.toByteArray();
 		before = Base64.encodeToString(imageBytes,Base64.DEFAULT);
-		
+
 		for(int i = 0; i < destUsers.length-1;i++){
 			Log.d("IMAGE",destUsers[i]);
 			TextMessage m = new TextMessage(MessageType.IMAGE, SessionController.getUser(), destUsers[i], before);
@@ -159,14 +174,14 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 			}
 		}
 	}
-	
+
 	private byte[] stringToBytes(String str) {
 		str += "****************************************";
 		str = str.substring(0, 40);
 		return str.getBytes();
 	}
-	
-	
+
+
 	/**
 	 * Anropas n�r man valt en bild fr�n galleriet eller valt en kontakt
 	 * @param requestCode 
@@ -187,7 +202,8 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 				int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 				filePath = cursor.getString(columnIndex);
 				cursor.close();
-
+				if(yourSelectedImage!=null)
+					yourSelectedImage.recycle();
 				yourSelectedImage = BitmapFactory.decodeFile(filePath);
 				preview.setImageBitmap(yourSelectedImage);
 				//bilden som ska skickas med meddelandet �r yourSelectedImage
@@ -211,6 +227,7 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 		super.onResume();
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
+		SessionController.getSessionController().updateConnectionImage();
 	}
 } 
 

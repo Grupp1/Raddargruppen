@@ -68,7 +68,7 @@ public class Receiver implements Runnable {
 			Message m = new Gson().fromJson(in.readLine(), c);
 
 			MessageType mt = m.getType();
-			if(mt!=MessageType.PROBE){
+			if(mt!=MessageType.PROBE&&mt != MessageType.MAPOBJECT){
 				System.out.println();
 				System.out.println("Mottagit: "+new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()) +
 						" Messagetype: "+mt.toString());
@@ -164,7 +164,7 @@ public class Receiver implements Runnable {
 
 	private void handleMapObjectMessage(MapObjectMessage mo){
 		MapOperation mapO = mo.getMapOperation();
-		System.out.println("MapOperation: "+mapO.toString());
+		//System.out.println("MapOperation: "+mapO.toString());
 		switch(mapO){
 		case ADD:
 			//System.out.println("handleMapObjectMessage ADD");
@@ -186,7 +186,7 @@ public class Receiver implements Runnable {
 		case ALARM_ON:
 		case ALARM_OFF:
 			Database.updateMapObject(mo);
-
+			broadcast(mo);
 			break;
 		default:
 			System.out.println("Ok�nd MapOperation");
@@ -265,6 +265,7 @@ public class Receiver implements Runnable {
 			}
 			list.addAll(temp2);
 			list.addAll(Database.retrieveAllUsers());
+			list.add(new NotificationMessage("server", NotificationType.SYNC_DONE));
 			NotificationMessage nm = new NotificationMessage("Server", NotificationType.SYNC_START);
 			nm.setNumberOfMessages(list.size());
 			list.add(0, nm);

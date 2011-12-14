@@ -13,6 +13,7 @@ public class QoSManager {
 	 */
 	private static Activity current;
 	private static int level = 100;
+	public static boolean power_save = false;
 
 	/**
 	 * Ange vilken aktivitet som befinner sig i f�rgrunden
@@ -57,6 +58,7 @@ public class QoSManager {
 		
 		if (current == MainView.theOne)
 			MainView.theOne.enableButtons();
+		power_save = false;
 	}
 
 	/**
@@ -69,14 +71,15 @@ public class QoSManager {
 		
 		if (current == MainView.theOne)
 			MainView.theOne.disableButtons();
+		power_save = true;
 	}
 	
 	private static void displayToastIfChanged(int l) {
 		int old_level = level;
 		level = l;
 		if (old_level == 21 && level == 20)
-			Toast.makeText(current, "Str�msparl�ge aktiverat", Toast.LENGTH_LONG).show();
+			Toast.makeText(current, "Strömsparläge aktiverat", Toast.LENGTH_LONG).show();
 		if (old_level == 20 && level == 21)
-			Toast.makeText(current, "Normalt str�ml�ge aktiverat", Toast.LENGTH_LONG).show();
+			Toast.makeText(current, "Normalt strömläge aktiverat", Toast.LENGTH_LONG).show();
 	}
 }

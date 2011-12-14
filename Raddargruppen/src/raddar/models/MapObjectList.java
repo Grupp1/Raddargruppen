@@ -65,7 +65,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 	}
 
 	/**
-	 * Vad som händer när man trycker på en situation
+	 * Vad som hï¿½nder nï¿½r man trycker pï¿½ en situation
 	 */
 
 	protected boolean onTap(final int index) {
@@ -79,14 +79,14 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 		AlertDialog alert = dialog.create();
 		if(!(item instanceof You && item.getId()!=SessionController.getUser())){
-			alert.setButton("Ändra beskrivning", new DialogInterface.OnClickListener() {
+			alert.setButton("ï¿½ndra beskrivning", new DialogInterface.OnClickListener() {
 
 				//alert.setBackground(R.drawable.rounded_button);
 				//setBackgroundResource(R.drawable.rounded_button);
 				public void onClick(DialogInterface dialog, int whichButton) {
 					AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
-					alertDialog.setTitle("Ändra beskrivning");
+					alertDialog.setTitle("Ã„ndra beskrivning");
 					alertDialog.setMessage("Beskrivning");
 
 					input = new EditText(mContext);
@@ -126,7 +126,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 					AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
-					alertDialog.setTitle("Är du säker på att du vill ta bort objektet?");
+					alertDialog.setTitle("Ã„r du sÃ¤ker pÃ¥ att du vill ta bort objektet?");
 
 
 					alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
@@ -148,15 +148,17 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 				}
 			});
 		}
-		
-		
+
+
 		// Ringa och skicka meddelande till instanser av You som inte ï¿½r dig sjï¿½lv
 		if (item instanceof You && !(item.getId().equals(SessionController.getUser()))){
-			alert.setButton("Ring", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-					MainView.mapCont.callUser(item.getAddedBy());
-				}
-			});
+			if(!QoSManager.power_save){
+				alert.setButton("Ring", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						MainView.mapCont.callUser(item.getAddedBy());
+					}
+				});
+			}
 			alert.setButton2("Skicka bildmeddelande", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
 					MainView.mapCont.sendImageMessage(item.getAddedBy());
@@ -168,9 +170,9 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 				}
 			});
 		}
-		
-		
-		
+
+
+
 		//		/*
 		//		 * ï¿½ndra prioritet pï¿½ situation pï¿½ kartan
 		//		 */
@@ -188,7 +190,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 		 */
 
 		if(item instanceof Situation){
-			alert.setButton3("Ändra prioritet", new DialogInterface.OnClickListener() {
+			alert.setButton3("Ã„ndra prioritet", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
 
 					AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
@@ -201,7 +203,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 							AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
-							alertDialog.setTitle("Är du säker på att du vill ändra prioritet?");
+							alertDialog.setTitle("Ã„r du sÃ¤ker pÃ¥ att du vill Ã¤ndra prioritet?");
 
 
 							alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
@@ -242,7 +244,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 		 */
 		else{
 			if(!(item instanceof You && item.getId()!=SessionController.getUser())){
-				alert.setButton3("Ändra status", new DialogInterface.OnClickListener() {
+				alert.setButton3("Ã„ndra status", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
 
 						AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
@@ -255,7 +257,7 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 
 								AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
-								alertDialog.setTitle("Är du säker på att du vill ändra status?");
+								alertDialog.setTitle("Ã„r du sÃ¤ker pÃ¥ att du vill Ã¤ndra status?");
 
 
 								alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener() {

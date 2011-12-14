@@ -158,5 +158,6 @@ public class WeatherView extends ExpandableListActivity {
 		super.onResume();
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
+		SessionController.getSessionController().updateConnectionImage();
 	}
 }

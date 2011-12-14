@@ -34,6 +34,12 @@ public class You extends Resource {
 			setIcon(R.drawable.sosicon);
 		}
 	}
+	@Override
+	public boolean equals(Object o) {
+		if(o instanceof You)
+			return ((You)o).getId().equals(getId());
+		return false;
+	}
 	
 	public boolean isSOS(){
 		return SOS;

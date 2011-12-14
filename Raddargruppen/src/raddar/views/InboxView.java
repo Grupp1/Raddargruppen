@@ -153,5 +153,6 @@ public class InboxView extends ListActivity implements Observer{
 		super.onResume();
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
+		SessionController.getSessionController().updateConnectionImage();
 	}
 }

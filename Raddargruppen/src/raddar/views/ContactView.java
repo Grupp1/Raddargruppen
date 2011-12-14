@@ -145,6 +145,7 @@ public class ContactView extends ListActivity implements OnClickListener, Observ
 		super.onResume();
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
+		SessionController.getSessionController().updateConnectionImage();
 	}
 	@Override
 	protected void onDestroy() {

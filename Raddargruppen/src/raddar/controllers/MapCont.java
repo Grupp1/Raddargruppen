@@ -1,7 +1,9 @@
+
 package raddar.controllers;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.nio.channels.GatheringByteChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -9,6 +11,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import raddar.enums.MapOperation;
+import raddar.enums.OnlineOperation;
 import raddar.enums.ResourceStatus;
 import raddar.models.GPSModel;
 import raddar.models.MapModel;
@@ -31,7 +34,7 @@ public class MapCont implements Observer, Runnable{
 	public boolean follow = false;
 	public static GPSModel gps;
 	private Thread thread = new Thread(this);
-	//private ArrayList<MapObject>  olist;
+	private ArrayList<MapObject>  olist;
 	private MapUI mapUI;
 	public boolean areYouFind = false;
 	private You you;
@@ -39,8 +42,16 @@ public class MapCont implements Observer, Runnable{
 	// Str�ng som anv�nds av sos-funktionen
 	private String savedSnippet;
 
+	private boolean gatheredToast = true;
+
+	private boolean downloadingDone = false;
+
+	public void setDownloadingDone(boolean downloadingDone) {
+		this.downloadingDone = downloadingDone;
+	}
+
 	/*
-	 * Skickar vidare operationer i en ny tr�d till MapModel 
+	 * Skickar vidare operationer i en ny tråd till MapModel 
 	 */
 
 	public String getSavedSnippet() {
@@ -60,15 +71,12 @@ public class MapCont implements Observer, Runnable{
 		this.mapUI = mapUI;
 		mapModel = new MapModel(mapUI);
 		geocoder = new Geocoder(mapUI.getBaseContext(), Locale.getDefault());
-
 		if (!thread.isAlive()){
 			run();
 		}
 	}
+	
 	public MapObjectList getList(MapObject mo){
-		Log.d("GET MAP OBJECT LIST",""+mo.getTitle());
-//		if(mapModel==null)
-//			return null;
 		return mapModel.getList(mo);
 	}
 
@@ -82,6 +90,7 @@ public class MapCont implements Observer, Runnable{
 			mapModel.add(o);
 			o.updateData(geocoder);
 			mapUI.drawNewMapObject(o);
+			mapObjectToast(o, MapOperation.ADD);
 		}
 		if(sendToServer){
 			Gson gson = new Gson();
@@ -94,7 +103,7 @@ public class MapCont implements Observer, Runnable{
 
 			}
 		}
-		DatabaseController.db.addRow(o,sendToServer);
+		DatabaseController.db.addRow(o, sendToServer);
 	}
 
 	public void updateObject(MapObject o,boolean sendToServer){
@@ -103,6 +112,7 @@ public class MapCont implements Observer, Runnable{
 			mapModel.updateObject(o);
 			o.updateData(geocoder);
 			mapUI.drawNewMapObject(o);
+			mapObjectToast(o, MapOperation.UPDATE);
 		}
 		if(sendToServer){
 			Gson gson = new Gson();
@@ -120,10 +130,15 @@ public class MapCont implements Observer, Runnable{
 
 
 	public void run() {
-		ArrayList<MapObject> olist = DatabaseController.db.getAllRowsAsArrays("map");
-		
+		if (olist!=null){
+			olist.clear();
+		}
+		olist = DatabaseController.db.getAllRowsAsArrays("map");
+		gatheredToast = true;
 		if(areYouFind){
-			olist.add(you);
+			if(!olist.contains(you)){
+				olist.add(you);
+			}
 			mapUI.controller.animateTo(you.getPoint());
 			mapUI.controller.setZoom(13);
 			follow = true;
@@ -133,6 +148,14 @@ public class MapCont implements Observer, Runnable{
 			mapModel.add(o);
 			o.updateData(geocoder);
 			mapUI.drawNewMapObject(o);
+		}
+		if(gatheredToast){
+			if(downloadingDone){
+				MainView.theOne.viewToast(olist.size()+" objekt finns på kartan");
+				gatheredToast = false;
+			}else{
+				MainView.theOne.viewToast("Laddar fortfarande ner kart-objekt från servern");
+			}
 		}
 	}
 
@@ -144,7 +167,7 @@ public class MapCont implements Observer, Runnable{
 			return false;
 		}
 	}
-	
+
 	public void removeObject(MapObject o,boolean sendToServer){
 		Log.d("RemoveObject", "MapCont:"+o.getTitle());
 		if(mapModel != null){
@@ -160,6 +183,7 @@ public class MapCont implements Observer, Runnable{
 				catch (UnknownHostException e) {
 				}
 			}
+			mapObjectToast(o, MapOperation.REMOVE);	
 		}
 		DatabaseController.db.deleteRow(o);
 	}
@@ -174,15 +198,13 @@ public class MapCont implements Observer, Runnable{
 		if (data instanceof GeoPoint){
 			if (!areYouFind){
 				areYouFind = true;
-				Log.d("YOU", o.toString());
-
-				you = new You((GeoPoint)data, SessionController.getUser(), "Här är"+SessionController.getUser(),
+				you = new You((GeoPoint)data, SessionController.getUser(), "Här är "+SessionController.getUser(),
 						ResourceStatus.FREE, false);
-				add(you,true);		// karta
+				add(you, true);
 			}
 			else{
 				you.setPoint((GeoPoint)data);
-				updateObject(you,true);
+				updateObject(you, true);
 			}
 
 			if (mapUI != null){
@@ -213,15 +235,45 @@ public class MapCont implements Observer, Runnable{
 		}
 		return display;
 	}
-	
+
+	public void mapObjectToast(MapObject o, MapOperation mo){
+		if(gatheredToast){
+			return;
+		}
+		String txt = "Objektet: \""+o.getTitle()+": "+o.getSnippet()+"\"";
+		switch (mo){
+		case ADD:
+			txt += " skapat";
+			if(!o.getAddedBy().equals(SessionController.getUser())){
+				txt += " av "+o.getAddedBy();	
+			}
+			break;
+		case UPDATE:
+			txt += " uppdaterat";
+			if(!o.getChangedBy().equals(SessionController.getUser())){
+				txt += " av "+o.getChangedBy();	
+			}
+			break;
+		case REMOVE:
+			txt += " borttaget";
+			if(!o.getChangedBy().equals(SessionController.getUser())){
+				txt += " av "+o.getChangedBy();	
+			}
+			break;
+		default:
+			break;
+		}
+		MainView.theOne.viewToast(txt);
+	}
+
 	public void sendTextMessage(String user){
 		mapUI.sendTextMessage(user);
 	}
-	
+
 	public void sendImageMessage(String user){
 		mapUI.sendImageMessage(user);
 	}
-	
+
 	public void callUser(String user){
 		mapUI.callUser(user);
 	}

@@ -125,6 +125,7 @@ public class CallContactListView extends ListActivity implements Observer{
 		super.onResume();
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
+		SessionController.getSessionController().updateConnectionImage();
 	}
 
 	public void update(Observable observable, final Object data) {
@@ -155,7 +156,7 @@ public class CallContactListView extends ListActivity implements Observer{
 					
 					if(contacts.size() == 0){
 						lv.addFooterView(footer);
-						foot.setText("Ingen Ã¤r online fÃ¶r tillfÃ¤llet!");
+						foot.setText("Ingen är online för tillfället!");
 					}
 					else if (contacts.size()==1){
 						lv.removeFooterView(footer);

@@ -42,9 +42,8 @@
 			android:layout_marginBottom="20dip"
 			android:layout_marginRight="30dip"
 			android:layout_gravity="right"
-			android:layout_width="wrap_content"
 			android:id="@+id/answerButton"
-			android:layout_height="wrap_content"></Button>
+			android:background="@drawable/rounded_button2" android:layout_width="120dip" android:layout_height="30dip"></Button>
 
 		<LinearLayout
 			android:layout_height="wrap_content"

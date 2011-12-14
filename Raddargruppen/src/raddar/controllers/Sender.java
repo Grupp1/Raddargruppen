@@ -81,7 +81,9 @@ public class Sender implements Runnable {
 			sslsocket.close();
 		} catch (IOException ie) {
 			Log.d("Skapandet av socket [2]", ie.toString());
-			SessionController.getSessionController().changeConnectionStatus(ConnectionStatus.DISCONNECTED);
+			if(SessionController.getConnectionStatus().equals(ConnectionStatus.DISCONNECTED))
+				SessionController.getSessionController().changeConnectionStatus(ConnectionStatus.DISCONNECTED);
+
 			//B�R �NDRAS ASAP
 			if(!lm.isRunningStubornLoginThread())
 				lm.evaluate(SessionController.getUserName(), SessionController.getPassword(),false);

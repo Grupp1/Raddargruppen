@@ -11,6 +11,7 @@ public enum NotificationType {
 			return "disconnect";
 		}
 	}, SYNC_START, SYNC_DONE;
+
 	
 	public static NotificationType convert(String str) {
 		if (str == null) return null;

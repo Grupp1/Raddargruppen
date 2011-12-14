@@ -8,15 +8,20 @@ import raddar.enums.MessageType;
 import raddar.gruppen.R;
 import raddar.models.Message;
 import raddar.models.QoSManager;
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -33,6 +38,7 @@ import android.widget.TextView;
 public class DraftView extends ListActivity {
 	private DraftAdapter ia;
 	private ArrayList<Message> drafts;
+	private AdapterView.AdapterContextMenuInfo info;
 	
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -65,6 +71,7 @@ public class DraftView extends ListActivity {
 				startActivityForResult(nextIntent,0);
 			}
 		});
+		registerForContextMenu(lv);
 	}
 	
 	/**
@@ -72,6 +79,32 @@ public class DraftView extends ListActivity {
 	 * @author magkj501
 	 *
 	 */
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		//super.onCreateContextMenu(menu, v, menuInfo);
+		if(drafts.size() == 0) return;
+		info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Vill du ta bort detta meddalande från utkast?")
+		.setCancelable(true)
+		.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+
+			public void onClick(DialogInterface dialog, int id) {
+				DatabaseController.db.deleteDraftRow(drafts.get(info.position));
+				drafts.remove(drafts.get(info.position));
+				ia.notifyDataSetChanged();
+			}
+		})
+		.setNegativeButton("Nej", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.cancel();
+			}
+		});
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
 
 	private class DraftAdapter extends ArrayAdapter<Message>{
 
@@ -102,11 +135,14 @@ public class DraftView extends ListActivity {
 			}			
 			return v;
 		}
-	}@Override
+	}
+	
+	@Override
 	public void onResume() {
 		super.onResume();
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
+		SessionController.getSessionController().updateConnectionImage();
 	}
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {

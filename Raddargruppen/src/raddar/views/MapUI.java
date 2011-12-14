@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
+import raddar.controllers.MapCont;
 import raddar.controllers.SessionController;
 import raddar.enums.ResourceStatus;
 import raddar.enums.SituationPriority;
@@ -52,7 +53,7 @@ public class MapUI extends MapActivity implements Observer {
 	private List<Overlay> mapOverlays;
 	private Touchy touchy;
 	private Toast toast;
-	private Geocoder geocoder;	
+	private Geocoder geocoder;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -64,14 +65,13 @@ public class MapUI extends MapActivity implements Observer {
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 		mapView.setSatellite(true);
-
 		/**
-		 *  Lista över alla overlays (lager) som visas på kartan
+		 *  Lista ï¿½ver alla overlays (lager) som visas pï¿½ kartan
 		 */
 		mapOverlays = mapView.getOverlays();
 		touchy = new Touchy(mapView.getContext());
 		mapOverlays.add(touchy);
-		
+
 		compass = new MyLocationOverlay(MapUI.this, mapView);
 		mapOverlays.add(compass);
 		controller = mapView.getController();
@@ -116,14 +116,13 @@ public class MapUI extends MapActivity implements Observer {
 		super.onResume();
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
-		MainView.mapCont.gps.getLocationManager().requestLocationUpdates(MainView.mapCont.gps.getTowers(), 500, 1, MainView.mapCont.gps);
+		SessionController.getSessionController().updateConnectionImage();
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
 		compass.disableCompass();
-		MainView.mapCont.gps.getLocationManager().removeUpdates(MainView.mapCont.gps);
 	}
 
 	@Override
@@ -149,7 +148,7 @@ public class MapUI extends MapActivity implements Observer {
 		nextIntent.putExtra("message", items);
 		startActivity(nextIntent);
 	}
-	
+
 	public void sendImageMessage(String user){
 		Intent nextIntent = new Intent(MapUI.this,
 				SendImageMessageView.class);
@@ -170,9 +169,9 @@ public class MapUI extends MapActivity implements Observer {
 
 	class Touchy extends Overlay{
 		private Context context;
-		//		private CharSequence [] items = {"Brand", "Brandbil", "Händelse", "Resurs"};
-		private CharSequence [] items = {"Händelse", "Resurs"};
-		private CharSequence [] prio = {"Hög", "Mellan", "Låg"};
+		//		private CharSequence [] items = {"Brand", "Brandbil", "Hï¿½ndelse", "Resurs"};
+		private CharSequence [] items = {"HÃ¤ndelse", "Resurs"};
+		private CharSequence [] prio = {"HÃ¶g", "Mellan", "LÃ¥g"};
 		private CharSequence [] stat = {"Ledig", "Upptagen"};
 		private String value;
 		private EditText input;
@@ -194,7 +193,7 @@ public class MapUI extends MapActivity implements Observer {
 						Touchy.this.item = item;
 						AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 
-						alertDialog.setTitle("Lï¿½gg till beskrivning");
+						alertDialog.setTitle("LÃ¤gg till beskrivning");
 						alertDialog.setMessage("Beskrivning");
 
 						input = new EditText(context);
@@ -234,8 +233,6 @@ public class MapUI extends MapActivity implements Observer {
 													R.drawable.situation, prio);
 											o.updateData(geocoder);
 											MainView.mapCont.add(o, true);
-											Toast.makeText(getApplicationContext(), items[Touchy.this.item]+" utplacerad",
-													Toast.LENGTH_LONG).show();
 										}
 									});
 
@@ -247,15 +244,15 @@ public class MapUI extends MapActivity implements Observer {
 									builder.show();
 								}
 
-								
-								
+
+
 								/*
 								 * Om resurs, sï¿½tt prioritet
 								 */
 
 								if(Touchy.this.item == 1){
 									AlertDialog.Builder builder = new AlertDialog.Builder(context);
-									builder.setTitle("Vï¿½lj status");
+									builder.setTitle("VÃ¤lj status");
 									builder.setSingleChoiceItems(stat, -1, new DialogInterface.OnClickListener() {
 										public void onClick(DialogInterface dialog, int item) {
 											status = item;
@@ -276,8 +273,6 @@ public class MapUI extends MapActivity implements Observer {
 													R.drawable.resource, status);
 											o.updateData(geocoder);
 											MainView.mapCont.add(o, true);
-											Toast.makeText(getApplicationContext(), items[Touchy.this.item]+" utplacerad",
-													Toast.LENGTH_LONG).show();
 										}
 									});
 
@@ -304,7 +299,7 @@ public class MapUI extends MapActivity implements Observer {
 
 				AlertDialog alert = builder.create();
 
-				alert.setButton("Hämta adress", new DialogInterface.OnClickListener() {
+				alert.setButton("HÃ¤mta adress", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						Toast.makeText(getApplicationContext(), MainView.mapCont.calcAdress(touchedPoint), Toast.LENGTH_LONG).show();
 					}
@@ -363,6 +358,11 @@ public class MapUI extends MapActivity implements Observer {
 
 	}
 
+	/**
+	 * 
+	 * @param mo MapObject att rita ut
+	 * @param hideToast true om en toast inte ska visas fï¿½r uppdateringen
+	 */
 	public void drawNewMapObject(final MapObject mo){
 		runOnUiThread(new Runnable(){
 			public void run() {
@@ -370,22 +370,8 @@ public class MapUI extends MapActivity implements Observer {
 				if (!mapOverlays.contains(list)){
 					mapOverlays.add((MapObjectList) list);
 				}
-
 				else{
-					Log.d("MAPUI", "else");
 					mapOverlays.set(mapOverlays.indexOf(list), list);
-				}
-
-				if(!mo.getAddedBy().equals(SessionController.getUser())){
-					String txt = "";
-					if(mo instanceof You){
-						txt = mo.getAddedBy()+" har gått online";
-					}
-					else{
-						txt = "Objekt tillagt: "+mo.getTitle()+", Skapad av: "+mo.getAddedBy();
-					}
-					toast = Toast.makeText(getBaseContext(), txt, Toast.LENGTH_LONG);
-					toast.show();
 				}
 				mapView.invalidate();
 			}});
@@ -453,7 +439,7 @@ public class MapUI extends MapActivity implements Observer {
 				MainView.mapCont.follow = true;
 			}
 
-			toast = Toast.makeText(getBaseContext(), "Följa efter: " +MainView.mapCont.follow, Toast.LENGTH_LONG);
+			toast = Toast.makeText(getBaseContext(), "FÃ¶lja efter: " +MainView.mapCont.follow, Toast.LENGTH_LONG);
 			toast.show();
 			return true;
 		case R.id.myLocation:

@@ -9,11 +9,13 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ReadMessageView extends Activity{
 
@@ -23,6 +25,9 @@ public class ReadMessageView extends Activity{
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.read_message);
 		final Bundle extras = getIntent().getExtras();
+		Log.d("ReadMessageView", "extras.get(\"subject\")" + extras.get("subject"));
+		Log.d("ReadMessageView", "extras.get(\"data\")" + extras.get("data"));
+		
 		SessionController.titleBar(this, " - Meddelanden");
 
 		TextView readMessageSrcUser = (TextView)this.findViewById(R.id.readMessageSrcUser);
@@ -49,8 +54,6 @@ public class ReadMessageView extends Activity{
 			}
 		});
 
-
-
 		if(extras.get("type") == MessageType.TEXT){
 			readMessage.setText("\n"+extras.get("data").toString()); //Om textbildmeddelande
 			readMessageImage.setImageDrawable(null);
@@ -66,6 +69,7 @@ public class ReadMessageView extends Activity{
 		super.onResume();
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
+		SessionController.getSessionController().updateConnectionImage();
 	}
 
 }

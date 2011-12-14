@@ -123,6 +123,7 @@ public class OutBoxView extends ListActivity {
 		super.onResume();
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
+		SessionController.getSessionController().updateConnectionImage();
 	}
 
 

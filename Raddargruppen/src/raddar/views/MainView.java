@@ -3,6 +3,8 @@ package raddar.views;
 import java.net.UnknownHostException;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import raddar.controllers.DatabaseController;
 import raddar.controllers.MapCont;
@@ -51,11 +53,11 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	public static MapCont mapCont;
 	public static MainView theOne;
 	private Bundle extras;
-	private boolean downloading;
 
 	private ProgressBar downloadBar;
-	private TextView downloadText;
 	private int max;
+	private Timer timer = new Timer();
+	private Boolean timeout;
 
 	/*
 	 * Lyssnar efter �ndringar hos batteriniv�n
@@ -91,8 +93,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		 * Initierar kartans controller f�r att kunna f� gps koordinaterna f�r sin position
 		 */
 		new SessionController(extras.get("user").toString()).addObserver(this);
-		mapCont = new MapCont(MainView.this);
-		SessionController.getSessionController().changeConnectionStatus((ConnectionStatus)extras.get("connectionStatus"));
+		
 		new SipController(this);
 		new ReciveHandler(this).addObserver(this);
 
@@ -107,7 +108,6 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		//		//TEMPOR�RT M�STE FIXAS
 		//		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
 
-		new SessionController(extras.get("user").toString()).addObserver(this);
 		//		new DatabaseController(this);
 		new ReciveHandler(this).addObserver(this);
 
@@ -149,8 +149,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		logButton.setOnClickListener(this);
 
 		downloadBar = (ProgressBar) this.findViewById(R.id.download_bar);
-		downloadText = (TextView)this.findViewById(R.id.download_text);
-
+		downloadBar.setVisibility(View.INVISIBLE);
 
 		statusText = (TextView)this.findViewById(R.id.statusText);
 
@@ -159,7 +158,8 @@ public class MainView extends Activity implements OnClickListener, Observer {
 
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
-		
+		mapCont = new MapCont(MainView.this);
+		SessionController.getSessionController().changeConnectionStatus((ConnectionStatus)extras.get("connectionStatus"));
 	}
 
 	public void onClick(View v) {
@@ -199,7 +199,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	}
 	private void showLogoutWindow(){
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("�r du s�ker p� att du vill logga ut?")
+		builder.setMessage("Är du säker på att du vill logga ut?")
 		.setCancelable(false)
 		.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
 
@@ -228,6 +228,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		SessionController.getSessionController().deleteObserver(this);
 		SessionController.appIsRunning = false;
 		SipController.onClose();
+		MainView.mapCont.gps.getLocationManager().removeUpdates(MainView.mapCont.gps);
 		// Notifiera servern att vi g�r offline
 		NotificationMessage nm = new NotificationMessage(SessionController.getUser(), 
 				NotificationType.DISCONNECT);
@@ -258,13 +259,17 @@ public class MainView extends Activity implements OnClickListener, Observer {
 							, Toast.LENGTH_LONG).show();
 					DatabaseController.db.clearDatabase();
 					mapCont.renewYou();
+					downloadBar.setProgress(0);
+					downloadBar.setVisibility(View.VISIBLE);
+					timeout = true;
+					timer.schedule(new CountDown(), 30*1000,30*1000);
 					try {
-						//						new Sender(new RequestMessage(RequestType.MESSAGE));
-						//						new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
-						//						DatabaseController.db.clearTable("contact");
-						//						new Sender(new RequestMessage(RequestType.CONTACTS));
-						//						new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
-						//						new Sender(new RequestMessage(RequestType.ONLINE_CONTACTS));
+						//new Sender(new RequestMessage(RequestType.MESSAGE));
+						//new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
+						//DatabaseController.db.clearTable("contact");
+						//new Sender(new RequestMessage(RequestType.CONTACTS));
+						//new Sender(new RequestMessage(RequestType.MAP_OBJECTS));
+						//new Sender(new RequestMessage(RequestType.ONLINE_CONTACTS));
 						new Sender(new RequestMessage(RequestType.NEW_LOGIN));
 					} catch (UnknownHostException e) {
 						e.printStackTrace();
@@ -274,36 +279,31 @@ public class MainView extends Activity implements OnClickListener, Observer {
 					Log.d("STATUS","DISCONNECTED");
 					SessionController.getSessionController().clearOnlineUsers();
 					Toast.makeText(getApplicationContext(), "Tappad anslutning mot servern",Toast.LENGTH_LONG).show();
-					downloadBar.setVisibility(View.VISIBLE);
-					downloadText.setVisibility(View.VISIBLE);
 				}
 				else if (data instanceof String){
 					if(data.equals("LOGOUT")){
+						SessionController.getSessionController().changeConnectionStatus(ConnectionStatus.DISCONNECTED);
 						finish();
 					}else{
 						Toast.makeText(getBaseContext(), (String)data, Toast.LENGTH_SHORT).show();
 					}
 				}
 				else if (data instanceof Integer){
+					timeout = false;
 					final int progress = ((Integer)data).intValue();
 					if (progress < 0){
-
 						downloadBar.setVisibility(View.VISIBLE);
-						downloadText.setVisibility(View.VISIBLE);
 						max = -progress;
 						downloadBar.setMax(max);
 						downloadBar.setProgress(0);
 
 					}
 					else if(progress < max){
-						Log.d("SYNC", max+"");
 						downloadBar.setProgress(progress);
 						downloadBar.postInvalidate();
 					}
 					else{
 						downloadBar.setVisibility(View.INVISIBLE);
-						downloadText.setVisibility(View.INVISIBLE);
-
 					}
 				}
 
@@ -311,16 +311,18 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		});
 
 	}
-
+	
 	@Override
 	public void onResume() {
 		super.onResume();
+		QoSManager.setCurrentActivity(this);
+		QoSManager.setPowerMode();
+		MainView.mapCont.gps.getLocationManager().requestLocationUpdates(MainView.mapCont.gps.getTowers(), 500, 1, MainView.mapCont.gps);
 		//Session
 		if (SettingsView.powerIsAutomatic())
 			registerReceiver(mBatteryInfoReceiver, new IntentFilter(
 					Intent.ACTION_BATTERY_CHANGED));
-		QoSManager.setCurrentActivity(this);
-		QoSManager.setPowerMode();
+		SessionController.getSessionController().updateConnectionImage();
 	}
 
 	@Override
@@ -338,5 +340,30 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		callButton.setEnabled(false);
 		serviceButton.setEnabled(false);
 		contactButton.setEnabled(false);
+	}
+	
+	public void viewToast(final String text){
+		runOnUiThread(new Runnable(){
+			public void run() {
+				Toast toast = Toast.makeText(getBaseContext(), text, Toast.LENGTH_LONG);
+				toast.show();
+			}
+		});
+	}
+	class CountDown extends TimerTask{
+		public void run(){
+			if(SessionController.getConnectionStatus()==ConnectionStatus.DISCONNECTED){
+				timer.cancel();
+			}
+			else if(timeout){
+				try {
+					new Sender(new RequestMessage(RequestType.NEW_LOGIN));
+				} catch (UnknownHostException e) {
+					e.printStackTrace();
+				}
+			}else{
+				timer.cancel();
+			}
+		}
 	}
 }

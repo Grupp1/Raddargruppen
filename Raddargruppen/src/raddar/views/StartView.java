@@ -44,6 +44,7 @@ public class StartView extends Activity implements Observer {
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.start);
 		SessionController.titleBar(this, " - Logga in");
+		setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.disconnected);
 		new DatabaseController(this);
 
 		System.setProperty("javax.net.ssl.keyStore","assets/androidKey");
@@ -54,8 +55,8 @@ public class StartView extends Activity implements Observer {
 		password = (EditText) this.findViewById(R.id.passwordtext1);
 
 		// Endast f�r l�ttare testning
-		user.setText("danan612");
-		password.setText("raddar");
+		user.setText("lalle");
+		password.setText("lalle");
 
 
 		final LoginManager lm = new LoginManager
@@ -110,9 +111,6 @@ public class StartView extends Activity implements Observer {
 						nextIntent.putExtra("connectionStatus", ConnectionStatus.CONNECTED);
 						startActivity(nextIntent);
 					}
-					Toast.makeText(StartView.this,
-							"Ansluten till servern",
-							Toast.LENGTH_LONG).show();
 				} else if ((LoginResponse) data == LoginResponse.NO_SUCH_USER_OR_PASSWORD)
 					Toast.makeText(StartView.this,
 							"Ogiltigt anv�ndarnamn eller l�senord",
@@ -132,8 +130,6 @@ public class StartView extends Activity implements Observer {
 					startActivity(nextIntent);
 				}
 				else if((LoginResponse) data == LoginResponse.USER_ALREADY_LOGGED_IN){
-					Toast.makeText(StartView.this, "Anv�ndaren �r redan inloggad p� servern, loggar ut denne",
-							Toast.LENGTH_LONG).show();
 					Intent nextIntent = new Intent(StartView.this,
 							MainView.class);
 					nextIntent.putExtra("user", user.getText().toString());
