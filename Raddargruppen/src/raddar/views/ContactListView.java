@@ -8,6 +8,7 @@ import java.util.Observer;
 
 import raddar.controllers.DatabaseController;
 import raddar.controllers.SessionController;
+import raddar.enums.ConnectionStatus;
 import raddar.gruppen.R;
 import raddar.models.Contact;
 import raddar.models.QoSManager;
@@ -63,7 +64,11 @@ public class ContactListView extends ListActivity implements OnClickListener,Obs
 		footer = ((LayoutInflater)this.getSystemService
 				(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.contact_footer_text, null, false);
 		TextView foot = (TextView)footer.findViewById(R.id.text_foot);
-		foot.setText("Var v�nlig v�nta p� att kontakterna laddas ner fr�n servern.");
+		if(SessionController.getConnectionStatus().equals(ConnectionStatus.CONNECTED)){
+			foot.setText("Var vänlig vänta på att kontakterna laddas ner från servern");
+		}else{
+			foot.setText("Ingen kontakt med servern");
+		}
 		foot.setClickable(false);
 		foot.setTextSize(20);
 		if(contacts.size() == 0){

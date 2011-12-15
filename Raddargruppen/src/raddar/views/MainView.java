@@ -3,8 +3,6 @@ package raddar.views;
 import java.net.UnknownHostException;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import raddar.controllers.DatabaseController;
 import raddar.controllers.MapCont;
@@ -53,11 +51,8 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	public static MapCont mapCont;
 	public static MainView theOne;
 	private Bundle extras;
-
 	private ProgressBar downloadBar;
 	private int max;
-	private Timer timer = new Timer();
-	private boolean timeout;
 	private ReciveHandler reciveHandler;
 
 	/*
@@ -165,9 +160,14 @@ public class MainView extends Activity implements OnClickListener, Observer {
 
 	public void onClick(View v) {
 		if(v == callButton){
-
-			Intent nextIntent = new Intent(MainView.this, CallContactListView.class);
-			startActivity(nextIntent);
+			if(!QoSManager.power_save){
+				Intent nextIntent = new Intent(MainView.this, CallContactListView.class);
+				startActivity(nextIntent);
+			}
+			else{
+				Toast.makeText(getBaseContext(), "Funktionen inte tillgänglig under strömsparsläge"
+						, Toast.LENGTH_SHORT).show();
+			}
 		}
 		else if(v == messageButton){
 			Intent nextIntent = new Intent(MainView.this, MessageChoiceView.class);
@@ -178,12 +178,24 @@ public class MainView extends Activity implements OnClickListener, Observer {
 			startActivity(nextIntent);
 		}
 		else if(v == contactButton){
-			Intent nextIntent = new Intent(MainView.this, ContactListView.class);
-			startActivity(nextIntent);
+			if(!QoSManager.power_save){
+				Intent nextIntent = new Intent(MainView.this, ContactListView.class);
+				startActivity(nextIntent);
+			}
+			else{
+				Toast.makeText(getBaseContext(), "Funktionen inte tillgänglig under strömsparsläge"
+						, Toast.LENGTH_SHORT).show();
+			}
 		}
 		else if(v == serviceButton){
-			Intent nextIntent = new Intent(MainView.this, ServiceView.class);
-			startActivity(nextIntent);
+			if(!QoSManager.power_save){
+				Intent nextIntent = new Intent(MainView.this, ServiceView.class);
+				startActivity(nextIntent);
+			}
+			else{
+				Toast.makeText(getBaseContext(), "Funktionen inte tillgänglig under strömsparsläge"
+						, Toast.LENGTH_SHORT).show();
+			}
 		}
 		else if(v == sosButton){
 			Intent nextIntent = new Intent(MainView.this, SendSOSView.class);
@@ -226,7 +238,6 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		timer.cancel();
 		SessionController.getSessionController().deleteObserver(this);
 		SessionController.appIsRunning = false;
 		SipController.onClose();
@@ -256,13 +267,22 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		runOnUiThread(new Runnable(){
 			public void run(){
 				if(data == ConnectionStatus.CONNECTED){
+					// TODO Gör detta så att inte blir dubbel toast vid flera disconnect på rad
+					// Måste dock kolla så att setConnectionStatus anropar efter notifyObservers
+					// så att den alltid hamnar i if-satsen
+//					if (SessionController.getConnectionStatus().equals(ConnectionStatus.CONNECTED)){
+//						Log.d("STATUS", "ALREADY CONNECTED");
+//						return;
+//					}
+					
+					
+					
 					Log.d("STATUS","CONNECTED");
-					Toast.makeText(getApplicationContext(), "Ansluten till servern"
+					Toast.makeText(getBaseContext(), "Ansluten till servern"
 							, Toast.LENGTH_LONG).show();
 					mapCont.renewYou();
 					downloadBar.setProgress(0);
 					downloadBar.setVisibility(View.VISIBLE);
-					timeout = true;
 					//timer.schedule(new CountDown(), 30*1000,30*1000);
 					try {
 						//new Sender(new RequestMessage(RequestType.MESSAGE));
@@ -277,9 +297,18 @@ public class MainView extends Activity implements OnClickListener, Observer {
 					}
 
 				}else if (data == ConnectionStatus.DISCONNECTED){
+					// TODO Gör detta så att inte blir dubbel toast vid flera disconnect på rad
+					// Måste dock kolla så att setConnectionStatus anropar efter notifyObservers
+					// så att den alltid hamnar i if-satsen
+//					if (SessionController.getConnectionStatus().equals(ConnectionStatus.DISCONNECTED)){
+//						Log.d("STATUS", "ALREADY DISCONNECTED");
+//						return;
+//					}
+					
+					
 					Log.d("STATUS","DISCONNECTED");
 					SessionController.getSessionController().clearOnlineUsers();
-					Toast.makeText(getApplicationContext(), "Tappad anslutning mot servern",Toast.LENGTH_LONG).show();
+					Toast.makeText(getBaseContext(), "Tappad anslutning mot servern",Toast.LENGTH_LONG).show();
 				}
 				else if (data instanceof String){
 					if(data.equals("LOGOUT")){
@@ -290,7 +319,6 @@ public class MainView extends Activity implements OnClickListener, Observer {
 					}
 				}
 				else if (data instanceof Integer){
-					timeout = false;
 					final int progress = ((Integer)data).intValue();
 					if (progress < 0){
 						DatabaseController.db.clearDatabase();
@@ -331,41 +359,13 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	public void onPause() {
 		super.onPause();
 	}
-
-	public void enableButtons() {
-		callButton.setEnabled(true);
-		serviceButton.setEnabled(true);
-		contactButton.setEnabled(true);
-	}
-
-	public void disableButtons() {
-		callButton.setEnabled(false);
-		serviceButton.setEnabled(false);
-		contactButton.setEnabled(false);
-	}
 	
 	public void viewToast(final String text){
 		runOnUiThread(new Runnable(){
-			public void run() {
+			public void run(){
 				Toast toast = Toast.makeText(getBaseContext(), text, Toast.LENGTH_LONG);
 				toast.show();
 			}
 		});
-	}
-	class CountDown extends TimerTask{
-		public void run(){
-			if(SessionController.getConnectionStatus()==ConnectionStatus.DISCONNECTED){
-				timer.cancel();
-			}
-			else if(timeout){
-				try {
-					new Sender(new RequestMessage(RequestType.NEW_LOGIN));
-				} catch (UnknownHostException e) {
-					e.printStackTrace();
-				}
-			}else{
-				timer.cancel();
-			}
-		}
 	}
 }

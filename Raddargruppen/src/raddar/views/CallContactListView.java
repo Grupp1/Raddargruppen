@@ -8,6 +8,7 @@ import java.util.Observer;
 
 import raddar.controllers.DatabaseController;
 import raddar.controllers.SessionController;
+import raddar.enums.ConnectionStatus;
 import raddar.gruppen.R;
 import raddar.models.Contact;
 import raddar.models.QoSManager;
@@ -76,7 +77,11 @@ public class CallContactListView extends ListActivity implements Observer{
 		foot = (TextView)footer.findViewById(R.id.text_foot);
 		foot.setClickable(false);
 		foot.setTextSize(20);
-		foot.setText("Ingen är online för tillfället!");
+		if(SessionController.getConnectionStatus().equals(ConnectionStatus.CONNECTED)){
+			foot.setText("Ingen är online för tillfället");
+		}else{
+			foot.setText("Ingen kontakt med servern");
+		}
 		
 		if(contacts.size() == 0){
 			lv.addFooterView(footer);

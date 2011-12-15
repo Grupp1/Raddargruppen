@@ -55,22 +55,16 @@ public class QoSManager {
 		WindowManager.LayoutParams lp = current.getWindow().getAttributes();
 		lp.screenBrightness = 0.4f;
 		current.getWindow().setAttributes(lp);
-		
-		if (current == MainView.theOne)
-			MainView.theOne.enableButtons();
 		power_save = false;
 	}
 
 	/**
-	 * Anropa denna n�r batteriniv�n �r 20% eller mindre
+	 * Anropa denna när batterinivån är 20% eller mindre
 	 */
 	public static void setPowerSaveMode() {
 		WindowManager.LayoutParams lp = current.getWindow().getAttributes();
 		lp.screenBrightness = 0.05f;
 		current.getWindow().setAttributes(lp);
-		
-		if (current == MainView.theOne)
-			MainView.theOne.disableButtons();
 		power_save = true;
 	}
 	

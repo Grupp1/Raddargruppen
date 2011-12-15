@@ -56,8 +56,8 @@ public class StartView extends Activity implements Observer {
 		password = (EditText) this.findViewById(R.id.passwordtext1);
 
 		// Endast f�r l�ttare testning
-		user.setText("danan612");
-		password.setText("raddar");
+		user.setText("lalle");
+		password.setText("lalle");
 
 
 		final LoginManager lm = new LoginManager
@@ -114,7 +114,7 @@ public class StartView extends Activity implements Observer {
 					}
 				} else if ((LoginResponse) data == LoginResponse.NO_SUCH_USER_OR_PASSWORD)
 					Toast.makeText(StartView.this,
-							"Ogiltigt anv�ndarnamn eller l�senord",
+							"Ogiltigt användarnamn eller lösenord",
 							Toast.LENGTH_LONG).show();
 				else if ((LoginResponse) data == LoginResponse.NO_CONNECTION)
 					Toast.makeText(StartView.this, "Ingen kontakt med servern",

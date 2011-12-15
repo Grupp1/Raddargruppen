@@ -18,6 +18,7 @@ import raddar.models.MapModel;
 import raddar.models.MapObject;
 import raddar.models.MapObjectList;
 import raddar.models.MapObjectMessage;
+import raddar.models.QoSManager;
 import raddar.models.You;
 import raddar.views.MainView;
 import raddar.views.MapUI;
@@ -86,7 +87,7 @@ public class MapCont implements Observer, Runnable{
 
 	public void add(MapObject o, boolean sendToServer){
 		Log.d("AddObject", "MapCont:"+o.getTitle());
-		if(mapUI != null){
+		if(QoSManager.getCurrentActivity().equals(mapUI)){
 			mapModel.add(o);
 			o.updateData(geocoder);
 			mapUI.drawNewMapObject(o);
@@ -108,7 +109,7 @@ public class MapCont implements Observer, Runnable{
 
 	public void updateObject(MapObject o,boolean sendToServer){
 		Log.d("UpdateObject","MapCont: "+o.getTitle());
-		if(mapUI!=null){
+		if(QoSManager.getCurrentActivity().equals(mapUI)){
 			mapModel.updateObject(o);
 			o.updateData(geocoder);
 			mapUI.drawNewMapObject(o);
@@ -170,7 +171,7 @@ public class MapCont implements Observer, Runnable{
 
 	public void removeObject(MapObject o,boolean sendToServer){
 		Log.d("RemoveObject", "MapCont:"+o.getTitle());
-		if(mapModel != null){
+		if(QoSManager.getCurrentActivity().equals(mapUI)){
 			mapModel.removeObject(o);
 			mapUI.drawNewMapObject(o);
 			if(sendToServer){
@@ -237,26 +238,26 @@ public class MapCont implements Observer, Runnable{
 	}
 
 	public void mapObjectToast(MapObject o, MapOperation mo){
-		if(gatheredToast){
+		if(gatheredToast || o.getId().equals(SessionController.getUser())){
 			return;
 		}
 		String txt = "Objektet: \""+o.getTitle()+": "+o.getSnippet()+"\"";
 		switch (mo){
 		case ADD:
 			txt += " skapat";
-			if(!o.getAddedBy().equals(SessionController.getUser())){
+			if(!o.getAddedBy().equals(SessionController.getUser())&& !(o instanceof You)){
 				txt += " av "+o.getAddedBy();	
 			}
 			break;
 		case UPDATE:
 			txt += " uppdaterat";
-			if(!o.getChangedBy().equals(SessionController.getUser())){
+			if(!o.getChangedBy().equals(SessionController.getUser()) && !(o instanceof You)){
 				txt += " av "+o.getChangedBy();	
 			}
 			break;
 		case REMOVE:
 			txt += " borttaget";
-			if(!o.getChangedBy().equals(SessionController.getUser())){
+			if(!o.getChangedBy().equals(SessionController.getUser()) && !(o instanceof You)){
 				txt += " av "+o.getChangedBy();	
 			}
 			break;
