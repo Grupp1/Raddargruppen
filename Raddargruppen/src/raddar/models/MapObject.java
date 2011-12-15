@@ -27,7 +27,7 @@ public class MapObject extends OverlayItem {
 	private ID idGen;
 
 	/**
-	 * Super-klassen för ett objekt på kartan
+	 * Super-klassen fï¿½r ett objekt pï¿½ kartan
 	 * 
 	 * @param point Koordinater
 	 * @param title Titel
@@ -44,8 +44,8 @@ public class MapObject extends OverlayItem {
 		this.date = new SimpleDateFormat("yyyy:MM:dd 'kl' HH:mm:ss").format(new Date());
 
 
-		this.changedBy = "Ej ändrad";
-		this.changedDate = "Ej ändrad";
+		this.changedBy = "Ej Ã¤ndrad";
+		this.changedDate = "Ej Ã¤ndrad";
 
 
 		if(point!= null && addedBy!= null&& date != null){
@@ -70,7 +70,7 @@ public class MapObject extends OverlayItem {
 
 	/**
 	 * 
-	 * @return Skaparens användarnamn
+	 * @return Skaparens anvï¿½ndarnamn
 	 */
 	public String getAddedBy(){
 		return addedBy;
@@ -78,7 +78,7 @@ public class MapObject extends OverlayItem {
 
 	/**
 	 * 
-	 * @return Tiden och datumet då objektet skapades
+	 * @return Tiden och datumet dï¿½ objektet skapades
 	 */
 	public String getDate(){
 		return date;
@@ -173,8 +173,8 @@ public class MapObject extends OverlayItem {
 	}
 
 	/**
-	 * Returnerar en sträng som visar all relevant information för det specifika objektet
-	 * @return Objektets relevanta information för användaren
+	 * Returnerar en strï¿½ng som visar all relevant information fï¿½r det specifika objektet
+	 * @return Objektets relevanta information fï¿½r anvï¿½ndaren
 	 */
 	public String getDescription() {
 		return description;
@@ -182,7 +182,7 @@ public class MapObject extends OverlayItem {
 
 	/**
 	 * 
-	 * @param description En sträng som samlar objektets relevanta information
+	 * @param description En strï¿½ng som samlar objektets relevanta information
 	 */
 	public void setDescription(String description){
 		this.description = description;
@@ -198,11 +198,11 @@ public class MapObject extends OverlayItem {
 	}	
 
 	/**
-	 * Tar fram objektets geografiska adress från dess koordinater
+	 * Tar fram objektets geografiska adress frï¿½n dess koordinater
 	 * @param geocoder Kartans geocoder
 	 */
 	public void updateAdress(Geocoder geocoder){
-		String display ="Kunde inte hämta adress";
+		String display ="Kunde inte hÃ¤mta adress";
 		try{
 			List<Address> address = geocoder.getFromLocation(point.getLatitudeE6() / 1E6, point.getLongitudeE6() / 1E6, 1);
 			display = "";
@@ -221,12 +221,12 @@ public class MapObject extends OverlayItem {
 	}
 
 	/**
-	 * Uppdaterar strängen description med objektets variabler
+	 * Uppdaterar strï¿½ngen description med objektets variabler
 	 */
 	public void updateDescription(){
 		setDescription("Beskrivning: " + "\n" +getSnippet()+"\n\nAdress: "+getAdress()+
 				"Koordinater:" + "\n" +getPoint().getLatitudeE6()/1E6+", "+getPoint().getLongitudeE6()/1E6 + "\n\nSkapad: " + 
-				getDate() + "\nSkapad av: " + getAddedBy() + "\nSenast ändrad: " + getChangedDate() + "\nSenast ändrad av: " +
+				getDate() + "\nSkapad av: " + getAddedBy() + "\nSenast Ã¤ndrad: " + getChangedDate() + "\nSenast Ã¤ndrad av: " +
 				getChangedBy() + "\n" + "ID: " + getId()+ "\n");
 	}
 
