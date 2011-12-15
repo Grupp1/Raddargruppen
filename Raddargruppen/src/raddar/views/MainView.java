@@ -57,7 +57,8 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	private ProgressBar downloadBar;
 	private int max;
 	private Timer timer = new Timer();
-	private Boolean timeout;
+	private boolean timeout;
+	private ReciveHandler reciveHandler;
 
 	/*
 	 * Lyssnar efter �ndringar hos batteriniv�n
@@ -95,7 +96,8 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		new SessionController(extras.get("user").toString()).addObserver(this);
 		
 		new SipController(this);
-		new ReciveHandler(this).addObserver(this);
+		reciveHandler = new ReciveHandler(this);
+		reciveHandler.addObserver(this);
 
 		String level = BatteryManager.EXTRA_LEVEL;
 		Log.d("EXTRA_LEVEL", level);
@@ -109,7 +111,6 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		//		NotificationMessage nm = new NotificationMessage(MainView.controller.getUser(), NotificationType.CONNECT);
 
 		//		new DatabaseController(this);
-		new ReciveHandler(this).addObserver(this);
 
 
 
@@ -225,6 +226,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		timer.cancel();
 		SessionController.getSessionController().deleteObserver(this);
 		SessionController.appIsRunning = false;
 		SipController.onClose();
@@ -257,12 +259,11 @@ public class MainView extends Activity implements OnClickListener, Observer {
 					Log.d("STATUS","CONNECTED");
 					Toast.makeText(getApplicationContext(), "Ansluten till servern"
 							, Toast.LENGTH_LONG).show();
-					DatabaseController.db.clearDatabase();
 					mapCont.renewYou();
 					downloadBar.setProgress(0);
 					downloadBar.setVisibility(View.VISIBLE);
 					timeout = true;
-					timer.schedule(new CountDown(), 30*1000,30*1000);
+					//timer.schedule(new CountDown(), 30*1000,30*1000);
 					try {
 						//new Sender(new RequestMessage(RequestType.MESSAGE));
 						//new Sender(new RequestMessage(RequestType.BUFFERED_MESSAGE));
@@ -292,6 +293,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 					timeout = false;
 					final int progress = ((Integer)data).intValue();
 					if (progress < 0){
+						DatabaseController.db.clearDatabase();
 						downloadBar.setVisibility(View.VISIBLE);
 						max = -progress;
 						downloadBar.setMax(max);

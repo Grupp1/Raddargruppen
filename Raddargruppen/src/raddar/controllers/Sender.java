@@ -14,6 +14,7 @@ import raddar.enums.ServerInfo;
 import raddar.models.LoginManager;
 import raddar.models.Message;
 import raddar.models.NotificationMessage;
+import raddar.models.RequestMessage;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -64,7 +65,7 @@ public class Sender implements Runnable {
 		}
 		try {
 			if(SessionController.getConnectionStatus()== ConnectionStatus.DISCONNECTED && 
-					!(message instanceof NotificationMessage)){
+					!(message instanceof NotificationMessage || message instanceof RequestMessage)){
 				DatabaseController.db.addBufferedMessageRow(send);
 				return;
 			}	
@@ -81,13 +82,13 @@ public class Sender implements Runnable {
 			sslsocket.close();
 		} catch (IOException ie) {
 			Log.d("Skapandet av socket [2]", ie.toString());
-			if(SessionController.getConnectionStatus().equals(ConnectionStatus.DISCONNECTED))
+			if(SessionController.getConnectionStatus().equals(ConnectionStatus.CONNECTED))
 				SessionController.getSessionController().changeConnectionStatus(ConnectionStatus.DISCONNECTED);
 
 			//B�R �NDRAS ASAP
 			if(!lm.isRunningStubornLoginThread())
 				lm.evaluate(SessionController.getUserName(), SessionController.getPassword(),false);
-			if(!(message instanceof NotificationMessage))
+			if(!(message instanceof NotificationMessage|| message instanceof RequestMessage))
 				DatabaseController.db.addBufferedMessageRow(send);
 		} 
 	}

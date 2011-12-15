@@ -8,6 +8,7 @@ import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import javax.net.ssl.SSLSocket;
 
@@ -83,7 +84,7 @@ public class Receiver implements Runnable {
 					((RequestMessage)m).getRequestType() == RequestType.SALT))){
 				System.out.println("Not online");
 				NotificationMessage nm = (new NotificationMessage("Server", NotificationType.DISCONNECT));
-				nm.setData("Du är inte inloggad mot servern. Var v�nlig logga in igen.");
+				nm.setData("Du är inte inloggad mot servern. Var vänlig logga in igen.");
 				new Sender(nm, so.getInetAddress());
 				return;
 			}
@@ -250,6 +251,7 @@ public class Receiver implements Runnable {
 			}
 			break;
 		case NEW_LOGIN:
+			
 			ArrayList<Message> list =  Database.retrieveAllTextMessagesTo(rm.getSrcUser());
 			ArrayList<Message> tempBuffered = Database.retrieveAllBufferedMessagesTo(rm.getSrcUser());
 			for(Message m: tempBuffered){

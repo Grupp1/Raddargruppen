@@ -131,7 +131,7 @@ public class DraftView extends ListActivity {
 				if (tt != null) 
 					tt.setText("Mottagare: "+m.getDestUser());                            
 				if(bt != null)
-					bt.setText("�mne: "+ m.getSubject());
+					bt.setText("Ämne: "+ m.getSubject());
 			}			
 			return v;
 		}

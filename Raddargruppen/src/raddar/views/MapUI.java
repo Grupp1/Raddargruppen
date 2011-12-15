@@ -210,7 +210,7 @@ public class MapUI extends MapActivity implements Observer {
 
 								if(Touchy.this.item == 0){
 									AlertDialog.Builder builder = new AlertDialog.Builder(context);
-									builder.setTitle("V�lj prioritet");
+									builder.setTitle("Välj prioritet");
 									builder.setSingleChoiceItems(prio, -1, new DialogInterface.OnClickListener() {
 										public void onClick(DialogInterface dialog, int item) {
 											prioritet = item;

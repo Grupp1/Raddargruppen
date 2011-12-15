@@ -49,7 +49,7 @@ public class OutBoxView extends ListActivity {
 		int size = temp.size();
 		outbox = new ArrayList<Message>(size);
 		
-		// Vänder arraylisten så att nyaste meddelandet visas överst
+		// Vï¿½nder arraylisten sï¿½ att nyaste meddelandet visas ï¿½verst
 		
 		if(size > 1){
 			for(int i = 0; i<size; i++ ){
@@ -82,7 +82,7 @@ public class OutBoxView extends ListActivity {
 	}
 
 	/**
-	 * Denna klass används vid utritning av outboxen.
+	 * Denna klass anvï¿½nds vid utritning av outboxen.
 	 * @author magkj501
 	 *
 	 */
@@ -113,7 +113,7 @@ public class OutBoxView extends ListActivity {
 				if (tt != null) 
 					tt.setText("Mottagare: "+m.getDestUser());                            
 				if(bt != null)
-					bt.setText("Ämne: "+ m.getSubject());
+					bt.setText("Ã„mne: "+ m.getSubject());
 			}			
 			return v;
 		}

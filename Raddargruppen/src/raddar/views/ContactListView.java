@@ -187,6 +187,7 @@ public class ContactListView extends ListActivity implements OnClickListener,Obs
 		else if(data == null){
 			runOnUiThread(new Runnable(){
 				public void run() {
+					lv.removeFooterView(footer);
 					lv.addFooterView(footer);
 					contacts.clear();
 					setListAdapter(ia);

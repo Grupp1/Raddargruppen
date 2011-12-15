@@ -22,7 +22,7 @@ public class Sender implements Runnable {
 
 	private Thread thread = new Thread(this);
 	private InetAddress adr;		// Mottagarens IP-adress
-	private int port;	// Porten som mottagaren lyssnar på
+	private int port;	// Porten som mottagaren lyssnar pï¿½
 	private ArrayList<Message> messages;
 
 	public Sender(Message m, InetAddress address, int port) {
@@ -31,20 +31,20 @@ public class Sender implements Runnable {
 		messages.add(m);
 		this.adr = address;
 		this.port = port;
-		thread.start();	// Starta denna tråden
+		thread.start();	// Starta denna trï¿½den
 	}
 
 	public Sender(Message m, String toUser, int port) {
-		// Hämta mottagarens IP-adress och låt annan konstruktor göra resten av jobbet
+		// Hï¿½mta mottagarens IP-adress och lï¿½t annan konstruktor gï¿½ra resten av jobbet
 		this(m, Server.onlineUsers.getUserAddress(toUser), port);
 	}
 	public Sender(Message m, String toUser) {
-		// Hämta mottagarens IP-adress och låt annan konstruktor göra resten av jobbet
+		// Hï¿½mta mottagarens IP-adress och lï¿½t annan konstruktor gï¿½ra resten av jobbet
 		this(m, Server.onlineUsers.getUserAddress(toUser), 4043);
 	}
 
 	public Sender(Message m, InetAddress address) {
-		// Sätt port till 6789 och låt annan konstruktor göra resten av jobbet
+		// Sï¿½tt port till 6789 och lï¿½t annan konstruktor gï¿½ra resten av jobbet
 		this(m, address, 4043);
 	}
 	/**
@@ -61,12 +61,12 @@ public class Sender implements Runnable {
 
 	
 	/**
-	 * Skickar ett meddeladne till alla som är online.
+	 * Skickar ett meddeladne till alla som ï¿½r online.
 	 * @param m meddeladnen som ska skickas.
 	 */
 	public static void broadcast(Message m) {
 		for (InetAddress adr: Server.onlineUsers.getAllAssociations().values()){
-			//if(adr == srcAdr) continue; //Behövs inte i sender?
+			//if(adr == srcAdr) continue; //Behï¿½vs inte i sender?
 			new Sender(m, adr, 4043);
 		}
 
@@ -92,10 +92,10 @@ public class Sender implements Runnable {
 						Database.deleteFromTextMessages((TextMessage)m);
 					}
 				}
-				System.out.println("Mottagarens IP-adress är inte känd. Buffrar meddelandet... ");	// Skriv ut att vi inte känner till mottagarens adress
+				System.out.println("Mottagarens IP-adress ï¿½r inte kï¿½nd. Buffrar meddelandet... ");	// Skriv ut att vi inte kï¿½nner till mottagarens adress
 				return;
 			}
-			// Skapa en socket för att kunna skicka meddelandet till mottagaren
+			// Skapa en socket fï¿½r att kunna skicka meddelandet till mottagaren
 			//Socket rSocket = new Socket(adr, port);
 			SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 			SSLSocket sslsocket = (SSLSocket) sslsocketfactory.createSocket(adr, port);
@@ -122,7 +122,7 @@ public class Sender implements Runnable {
 
 		} catch (IOException e) {
 
-			// Logga ut denna användaren om 
+			// Logga ut denna anvï¿½ndaren om 
 			if(messages.size() <= 0) return;
 			LoginManager.logoutUser(((Message) messages.get(0)).getDestUser());
 			for(Message m : messages){
@@ -131,7 +131,7 @@ public class Sender implements Runnable {
 					Database.deleteFromTextMessages((TextMessage)m);
 				}
 			}
-			// Mottagaren är inte online
+			// Mottagaren ï¿½r inte online
 			// Buffra meddelandet
 		}
 	}

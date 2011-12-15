@@ -65,7 +65,7 @@ public class ContactView extends ListActivity implements OnClickListener, Observ
 		header = ((LayoutInflater)this.getSystemService
 				(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.contact_footer_text, null, false);
 		TextView head = (TextView)header.findViewById(R.id.text_foot);
-		head.setText("Var v�nlig v�nta p� att kontakterna laddas ner fr�n servern.");
+		head.setText("Var vänlig vänta på att kontakterna laddas ner från servern.");
 		head.setClickable(false);
 		head.setTextSize(20);
 		if(contacts.size() == 0){

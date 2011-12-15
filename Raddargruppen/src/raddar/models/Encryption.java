@@ -12,19 +12,19 @@ import java.security.NoSuchAlgorithmException;
 public class Encryption {
 
 	/**
-	 * En metod som saltar och krypterar ett lösenord.
-	 * Saltet som används är det som tas in som en parametar, och 
-	 * hashfunktionen som används är SHA-1.
-	 * @param password Lösenordet i klartext
-	 * @param salt Saltet som skall användas
-	 * @return Det krypterade lösenordet
+	 * En metod som saltar och krypterar ett lï¿½senord.
+	 * Saltet som anvï¿½nds ï¿½r det som tas in som en parametar, och 
+	 * hashfunktionen som anvï¿½nds ï¿½r SHA-1.
+	 * @param password Lï¿½senordet i klartext
+	 * @param salt Saltet som skall anvï¿½ndas
+	 * @return Det krypterade lï¿½senordet
 	 */
 	public static String encrypt(String password, String salt) {
 		return byteArrayToHexString(computeHash(password, salt));
 	}
 	
 	/**
-	 * Skapar ett nytt 4-tecken (32-bitars) långt salt
+	 * Skapar ett nytt 4-tecken (32-bitars) lï¿½ngt salt
 	 * @return Ett nyskapat salt
 	 */
 	public static String newSalt() {
@@ -45,7 +45,7 @@ public class Encryption {
 			md.reset();
 			byte[] b = str.getBytes("UTF-8");
 			md.update(b);
-			md.reset();
+			//md.reset();
 			md.update(salt.getBytes("UTF-8"));
 			return md.digest();
 		} catch (NoSuchAlgorithmException e) {
@@ -57,7 +57,7 @@ public class Encryption {
 	}
 
 	/*
-	 * Översätter en byte-array till hexadecimalt format
+	 * ï¿½versï¿½tter en byte-array till hexadecimalt format
 	 */
 	private static String byteArrayToHexString(byte[] b) {
 		StringBuffer sb = new StringBuffer(b.length * 2);

@@ -45,14 +45,14 @@ public class Receiver implements Runnable {
 				m = gson.fromJson(temp, c);
 				if(!(m.getType() == MessageType.TEXT||m.getType() == MessageType.IMAGE))
 					notify = false;
-				rh.newMessage(m.getType(), m,notify);
+				rh.newMessage(m.getType(), m,notify, so);
 
 				test = in.readLine();
 			}
 			so.close();
 
 			if (m != null && notify && (m.getType() == MessageType.TEXT||m.getType() == MessageType.IMAGE)) {
-				SessionController.newToast("Meddelande från "+(m).getSrcUser());
+				SessionController.newToast("Meddelande frï¿½n "+(m).getSrcUser());
 				Intent intent = new Intent(context, NotificationService.class);
 				String[] message = new String[5];
 				message[0] = m.getSrcUser();
@@ -64,7 +64,6 @@ public class Receiver implements Runnable {
 			}
 		} catch (IOException ie) {
 			Log.d("Receiver", "IOException");
-			//ie.printStackTrace();
 		} catch (ArrayIndexOutOfBoundsException e) {
 			Log.d("Undersï¿½k", "ArrayIndexOutOfBounds i receiver");
 		} catch (ClassNotFoundException e) {

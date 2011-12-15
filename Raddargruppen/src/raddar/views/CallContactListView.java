@@ -76,7 +76,7 @@ public class CallContactListView extends ListActivity implements Observer{
 		foot = (TextView)footer.findViewById(R.id.text_foot);
 		foot.setClickable(false);
 		foot.setTextSize(20);
-		foot.setText("Ingen �r online f�r tillf�llet!");
+		foot.setText("Ingen är online för tillfället!");
 		
 		if(contacts.size() == 0){
 			lv.addFooterView(footer);
@@ -156,7 +156,7 @@ public class CallContactListView extends ListActivity implements Observer{
 					
 					if(contacts.size() == 0){
 						lv.addFooterView(footer);
-						foot.setText("Ingen �r online f�r tillf�llet!");
+						foot.setText("Ingen är online för tillfället!");
 					}
 					else if (contacts.size()==1){
 						lv.removeFooterView(footer);

@@ -45,7 +45,7 @@ public class InboxView extends ListActivity implements Observer{
 		int size = temp.size();
 		textInbox = new ArrayList<Message>(size);
 		
-		// Vänder arraylisten så att nyaste meddelandet visas överst
+		// Vï¿½nder arraylisten sï¿½ att nyaste meddelandet visas ï¿½verst
 		
 		if(size > 1){	
 			for(int i = 0; i<size; i++ ){
@@ -140,9 +140,9 @@ public class InboxView extends ListActivity implements Observer{
 					iv.setImageResource(R.drawable.picturewriter);
 				}
 				if (tt != null) 
-					tt.setText("Avsändare: "+m.getSrcUser());                            
+					tt.setText("AvsÃ¤ndare: "+m.getSrcUser());                            
 				if(bt != null)
-					bt.setText("Ämne: "+ m.getSubject());
+					bt.setText("Ã„mne: "+ m.getSubject());
 			}			
 			return v;
 		}

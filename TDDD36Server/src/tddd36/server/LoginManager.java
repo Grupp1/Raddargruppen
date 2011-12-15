@@ -30,7 +30,6 @@ public class LoginManager {
 	public static void evaluateUser(String username, String password, SSLSocket so) {
 		// Om anv�ndaren har loggat in med korrekt l�senord
 		PrintWriter pw;
-
 		if (Database.evalutateUser(username, password)) {
 			try {
 				// Skapa utstr�mmen till klienten
@@ -65,7 +64,7 @@ public class LoginManager {
 				e.printStackTrace();
 			}
 		} else {	// H�r hamnar vi n�r anv�ndarnanm eller l�senord �r fel
-			System.out.println("Ogiltigt anv�ndarnamn eller l�senord. ");
+			System.out.println("Ogiltigt användarnamn eller lösenord. ");
 			try {
 				pw = new PrintWriter(so.getOutputStream(), true);
 				pw.println("NOT OK");
@@ -92,7 +91,7 @@ public class LoginManager {
 		}
 		// Kolla om anv�ndaren redan �r utloggad
 		if (a == null)
-			System.out.println(username + " �r redan utloggad ");
+			System.out.println(username + " �r redan utloggad ");
 		// ...annars loggar vi ut denne.
 		else			
 			System.out.println(username + " har loggat ut (" + a.getHostAddress() + ") ");

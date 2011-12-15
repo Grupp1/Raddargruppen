@@ -34,10 +34,6 @@ public class LoginManager extends Observable {
 
 	private StubbornLoginThread s = null;
 	private LoginResponse logIn = LoginResponse.NO_SUCH_USER_OR_PASSWORD;
-	/**
-	 * H�rdkoda denna boolean true om klienten inte ska kontakta servern f�r inloggning
-	 */
-	public boolean debugMode = false;
 
 	/**
 	 * Verifierar att username och password �r giltiga. Denna metoden kommer att
@@ -145,9 +141,6 @@ public class LoginManager extends Observable {
 			else
 				return;
 		}
-		if(debugMode){
-			logIn = LoginResponse.ACCEPTED_NO_CONNECTION;
-		}
 		setChanged();
 		notifyObservers(logIn);
 	}
@@ -181,6 +174,7 @@ public class LoginManager extends Observable {
 				 * StubbornLoginThread f�rs�ker logga in mot servern med j�mna
 				 * mellanrum
 				 */
+				SessionController.appIsRunning = true;
 				s = new StubbornLoginThread(userName, password);
 				return LoginResponse.ACCEPTED_NO_CONNECTION;
 			}

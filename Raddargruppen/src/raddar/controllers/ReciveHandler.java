@@ -38,7 +38,7 @@ public class ReciveHandler extends Observable implements Runnable {
 
 	private int max = 0;
 	private int current = 0;
-
+	
 	public ReciveHandler(Context context) {
 		this.context = context;
 		thread.start();
@@ -50,25 +50,33 @@ public class ReciveHandler extends Observable implements Runnable {
 	 */
 	public void run() {
 		try {
-			thread.interrupt();
+			Log.d("BUGG", "VA 1");
 			// Skapa en ServerSocket f�r att lyssna p� inkommande meddelanden
 			//ServerSocket so = new ServerSocket(ServerInfo.SERVER_PORT);
 			SSLServerSocketFactory sslserversocketfactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+			Log.d("BUGG", "VA 2");
 			SSLServerSocket sslserversocket = (SSLServerSocket) sslserversocketfactory.createServerSocket(ServerInfo.SERVER_PORT);
+			Log.d("BUGG", "VA 3");
 			sslserversocket.setEnabledCipherSuites(new String[] { "SSL_DH_anon_WITH_RC4_128_MD5" });
+			Thread.sleep(3000);
 
 			while (SessionController.appIsRunning) {
+				Log.d("BUGG", "VA 4");
 				// N�r ett inkommande meddelande tas emot skapa en ny Receiver
 				// som k�rs i en egen tr�d
 				new Receiver((SSLSocket) sslserversocket.accept(), this, context);
-				notifyObservers(ConnectionStatus.CONNECTED);
 			}
-		} catch (IOException ie) {
-			notifyObservers(ConnectionStatus.DISCONNECTED);
-			Log.d("ReciveHandler",
-					"Kunde inte ta emot meddelande, disconnected");
-			// ie.printStackTrace();
-		} 
+			sslserversocket.close();
+
+		}
+		catch (IOException ie) {
+			
+			ie.printStackTrace();
+			Log.d("BUGG", ie.toString());
+
+		}catch(InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	/**
 	 * Method to handle incoming messages to the applicaions and send
@@ -77,7 +85,7 @@ public class ReciveHandler extends Observable implements Runnable {
 	 * @param m the message
 	 * @param notify true if we should notify the user
 	 */
-	public void newMessage(MessageType mt, final Message m, boolean notify) {
+	public void newMessage(MessageType mt, final Message m, boolean notify, SSLSocket socket){
 		if(max!=current)
 			SessionController.getSessionController().setProgressbar(current++);
 
@@ -208,7 +216,7 @@ public class ReciveHandler extends Observable implements Runnable {
 				MainView.mapCont.setDownloadingDone(true);
 				SessionController.getSessionController().setProgressbar(max*2);
 			}
-				
+
 			else{
 				Log.e("LOGOUT","OTHER USER HAS LOGGED IN ON ANOTHER DEVICE");
 				final Activity current = QoSManager.getCurrentActivity();
