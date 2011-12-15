@@ -78,7 +78,8 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 		dialog.setMessage(item.getDescription());
 
 		AlertDialog alert = dialog.create();
-		if(!(item instanceof You && item.getId()!=SessionController.getUser())){
+		if((item instanceof You && item.getId()==SessionController.getUser())||(item instanceof Situation||
+				(item instanceof Resource &&!(item instanceof You)))){
 			alert.setButton("Ändra beskrivning", new DialogInterface.OnClickListener() {
 
 				//alert.setBackground(R.drawable.rounded_button);
@@ -243,7 +244,8 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 		 * �ndra Status p� resurs p� kartan.
 		 */
 		else{
-			if((item instanceof You && item.getId()==SessionController.getUser())||!(item instanceof You)){
+			if((item instanceof You && item.getId()==SessionController.getUser())||(item instanceof Resource &&
+					!(item instanceof You))){
 				alert.setButton3("Ändra status", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
 

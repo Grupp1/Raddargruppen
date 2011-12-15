@@ -46,7 +46,7 @@ public class ReadMessageView extends Activity{
 
 		answerButton.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View v) {
-				String [] items = {extras.get("sender").toString(), extras.get("subject").toString(), ""};
+				String [] items = {extras.get("sender").toString(), "Re:"+extras.get("subject").toString(), ""};
 				Intent nextIntent = new Intent(ReadMessageView.this, SendMessageView.class);
 				nextIntent.putExtra("message", items);
 				startActivity(nextIntent);
