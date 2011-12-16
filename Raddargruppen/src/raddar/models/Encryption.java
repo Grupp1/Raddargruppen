@@ -45,7 +45,6 @@ public class Encryption {
 			md.reset();
 			byte[] b = str.getBytes("UTF-8");
 			md.update(b);
-			//md.reset();
 			md.update(salt.getBytes("UTF-8"));
 			return md.digest();
 		} catch (NoSuchAlgorithmException e) {

@@ -56,12 +56,11 @@ public class StartView extends Activity implements Observer {
 		password = (EditText) this.findViewById(R.id.passwordtext1);
 
 		// Endast f�r l�ttare testning
-		user.setText("lalle");
-		password.setText("lalle");
+		user.setText("nikla729");
+		password.setText("nikla729");
 
 
-		final LoginManager lm = new LoginManager
-				();
+		final LoginManager lm = new LoginManager();
 		lm.addObserver(this);
 		dialog = new ProgressDialog(this);
 		dialog.setCancelable(false);
@@ -151,6 +150,7 @@ public class StartView extends Activity implements Observer {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		SessionController.appIsRunning = false;
 		DatabaseController.db.clearDatabase();
 		DatabaseController.db.close();
 	}

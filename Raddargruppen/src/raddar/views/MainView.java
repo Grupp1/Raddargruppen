@@ -240,12 +240,12 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		super.onDestroy();
 		SessionController.getSessionController().deleteObserver(this);
 		SessionController.appIsRunning = false;
+		
 		SipController.onClose();
 		MainView.mapCont.gps.getLocationManager().removeUpdates(MainView.mapCont.gps);
 		// Notifiera servern att vi g�r offline
 		NotificationMessage nm = new NotificationMessage(SessionController.getUser(), 
 				NotificationType.DISCONNECT);
-
 		try {
 			// Skicka meddelandet
 			new Sender(nm);		
@@ -253,7 +253,6 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		} catch (UnknownHostException e) {
 			Log.d("NotificationMessage", "Disconnect failed");
 		}
-
 		/* Om applikationen st�ngs ner tar vi bort notifikationer i 
 		   notifikationsf�ltet l�ngst upp p� telefonens sk�rm */
 		NotificationManager mNtf = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);

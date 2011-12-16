@@ -258,7 +258,7 @@ public class Receiver implements Runnable {
 				Database.storeTextMessage((TextMessage)m);
 			}
 			Database.deleteFromBuffer(rm.getSrcUser());
-			list.addAll(tempBuffered);
+		//	list.addAll(tempBuffered);
 			list.addAll(Database.retrieveAllMapObjects());
 			ArrayList<String> temp1 = Associations.getOnlineUserNames();
 			ArrayList<OnlineUsersMessage> temp2 = new ArrayList<OnlineUsersMessage>();
@@ -272,6 +272,7 @@ public class Receiver implements Runnable {
 			nm.setNumberOfMessages(list.size());
 			list.add(0, nm);
 			new Sender(list, rm.getSrcUser());
+			new Sender(tempBuffered,rm.getSrcUser());
 			break;
 		default:
 			System.out.println("Ok�nd RequestType");
