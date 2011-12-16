@@ -160,12 +160,12 @@ public class MapObjectList extends ItemizedOverlay<OverlayItem> {
 					}
 				});
 			}
-			alert.setButton2("Skicka bildmeddelande", new DialogInterface.OnClickListener() {
+			alert.setButton2("Skicka bildmed.", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
 					MainView.mapCont.sendImageMessage(item.getAddedBy());
 				}
 			});
-			alert.setButton3("Skicka textmeddelande", new DialogInterface.OnClickListener() {
+			alert.setButton3("Skicka textmed.", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
 					MainView.mapCont.sendTextMessage(item.getAddedBy());
 				}

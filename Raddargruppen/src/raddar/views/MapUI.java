@@ -170,7 +170,7 @@ public class MapUI extends MapActivity implements Observer {
 	class Touchy extends Overlay{
 		private Context context;
 		//		private CharSequence [] items = {"Brand", "Brandbil", "H�ndelse", "Resurs"};
-		private CharSequence [] items = {"Händelse", "Resurs"};
+		private CharSequence [] items = {"Situation", "Resurs"};
 		private CharSequence [] prio = {"Hög", "Mellan", "Låg"};
 		private CharSequence [] stat = {"Ledig", "Upptagen"};
 		private String value;
@@ -345,11 +345,6 @@ public class MapUI extends MapActivity implements Observer {
 		}
 	}
 
-	protected boolean isSatellite() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 	public MapView getMapView(){
 		return mapView;
 	}
@@ -376,7 +371,7 @@ public class MapUI extends MapActivity implements Observer {
 				mapView.invalidate();
 			}});
 	}
-
+	
 	public void update(Observable observable, Object data) {
 		if (data instanceof GeoPoint){
 
@@ -434,12 +429,12 @@ public class MapUI extends MapActivity implements Observer {
 		case R.id.follow:
 			if (MainView.mapCont.follow){
 				MainView.mapCont.follow = false;
+				toast = Toast.makeText(getBaseContext(), "Ej fokuserad på din position", Toast.LENGTH_LONG);
 			}
 			else{
 				MainView.mapCont.follow = true;
+				toast = Toast.makeText(getBaseContext(), "Fokuserad på din position", Toast.LENGTH_LONG);
 			}
-
-			toast = Toast.makeText(getBaseContext(), "Följa efter: " +MainView.mapCont.follow, Toast.LENGTH_LONG);
 			toast.show();
 			return true;
 		case R.id.myLocation:
@@ -453,11 +448,12 @@ public class MapUI extends MapActivity implements Observer {
 		case R.id.traffic:
 			if(mapView.isTraffic()){
 				mapView.setTraffic(false);
+				toast = Toast.makeText(getBaseContext(), "Trafik döljs", Toast.LENGTH_LONG);
 			}
 			else{
 				mapView.setTraffic(true);
+				toast = Toast.makeText(getBaseContext(), "Trafik visas", Toast.LENGTH_LONG);
 			}
-			toast = Toast.makeText(getBaseContext(), "Trafik: " +mapView.isTraffic(), Toast.LENGTH_LONG);
 			toast.show();
 			return true;
 		default:

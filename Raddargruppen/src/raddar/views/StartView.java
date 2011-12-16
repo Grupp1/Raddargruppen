@@ -51,13 +51,12 @@ public class StartView extends Activity implements Observer {
 		System.setProperty("javax.net.ssl.keyStore","assets/androidKey");
 	    System.setProperty("javax.net.ssl.keyStorePassword","android");
 		
-
 		user = (EditText) this.findViewById(R.id.usertext1);
 		password = (EditText) this.findViewById(R.id.passwordtext1);
 
 		// Endast f�r l�ttare testning
-		user.setText("lalle");
-		password.setText("lalle");
+		user.setText("magkj501");
+		password.setText("magkj501");
 
 
 		final LoginManager lm = new LoginManager

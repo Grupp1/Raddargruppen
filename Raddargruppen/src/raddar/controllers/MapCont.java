@@ -87,7 +87,7 @@ public class MapCont implements Observer, Runnable{
 
 	public void add(MapObject o, boolean sendToServer){
 		Log.d("AddObject", "MapCont:"+o.getTitle());
-		if(QoSManager.getCurrentActivity().equals(mapUI)){
+		if(QoSManager.getCurrentActivity() != null && QoSManager.getCurrentActivity().equals(mapUI)){
 			mapModel.add(o);
 			o.updateData(geocoder);
 			mapUI.drawNewMapObject(o);
@@ -109,7 +109,7 @@ public class MapCont implements Observer, Runnable{
 
 	public void updateObject(MapObject o,boolean sendToServer){
 		Log.d("UpdateObject","MapCont: "+o.getTitle());
-		if(QoSManager.getCurrentActivity().equals(mapUI)){
+		if(QoSManager.getCurrentActivity() != null && QoSManager.getCurrentActivity().equals(mapUI)){
 			mapModel.updateObject(o);
 			o.updateData(geocoder);
 			mapUI.drawNewMapObject(o);
@@ -171,7 +171,7 @@ public class MapCont implements Observer, Runnable{
 
 	public void removeObject(MapObject o,boolean sendToServer){
 		Log.d("RemoveObject", "MapCont:"+o.getTitle());
-		if(QoSManager.getCurrentActivity().equals(mapUI)){
+		if(QoSManager.getCurrentActivity() != null && QoSManager.getCurrentActivity().equals(mapUI)){
 			mapModel.removeObject(o);
 			mapUI.drawNewMapObject(o);
 			if(sendToServer){
@@ -238,7 +238,8 @@ public class MapCont implements Observer, Runnable{
 	}
 
 	public void mapObjectToast(MapObject o, MapOperation mo){
-		if(gatheredToast || o.getId().equals(SessionController.getUser())){
+		if(gatheredToast || o.getId().equals(SessionController.getUser()) ||
+				mo.equals(MapOperation.UPDATE) && o instanceof You){
 			return;
 		}
 		String txt = "Objektet: \""+o.getTitle()+": "+o.getSnippet()+"\"";

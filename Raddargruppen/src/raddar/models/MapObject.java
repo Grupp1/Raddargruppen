@@ -121,6 +121,9 @@ public class MapObject extends OverlayItem {
 	 */
 	public void setSnippet(String snippet) {
 		this.snippet = snippet;
+		if (snippet == ""){
+			snippet = "Ingen beskrivning";
+		}
 		changeLatestUser();
 	}
 
@@ -224,7 +227,7 @@ public class MapObject extends OverlayItem {
 	 * Uppdaterar str�ngen description med objektets variabler
 	 */
 	public void updateDescription(){
-		setDescription("Beskrivning: " + "\n" +getSnippet()+"\n\nAdress: "+getAdress()+
+		setDescription("\nBeskrivning: " + "\n" +getSnippet()+"\n\nAdress: "+getAdress()+
 				"Koordinater:" + "\n" +getPoint().getLatitudeE6()/1E6+", "+getPoint().getLongitudeE6()/1E6 + "\n\nSkapad: " + 
 				getDate() + "\nSkapad av: " + getAddedBy() + "\nSenast ändrad: " + getChangedDate() + "\nSenast ändrad av: " +
 				getChangedBy() + "\n" + "ID: " + getId()+ "\n");

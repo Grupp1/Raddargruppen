@@ -34,10 +34,10 @@
 	<string name="main_services">Externa tjänster</string>
     <string name="add_contact_add">Lägg till kontakt:</string>
     <string name="add_contact_save">Spara</string>
-	<string name="map_menu_follow">Följ mig</string><string name="sos_meddelande">SOS-meddelande:</string>
-    
-    <string name="map_menu_toggle">Satellitvy</string>
-    <string name="map_menu_myLocation">Min position</string>
+	<string name="sos_meddelande">SOS-meddelande:</string>
+	<string name="map_menu_follow">Följ mig</string>
+    <string name="map_menu_toggle">Kartvy/Satellitvy</string>
+    <string name="map_menu_myLocation">Gå till min position</string>
     <string name="map_menu_traffic">Trafik</string>
     <string name="edit_contact_edit">Redigera kontakt:</string>
     <string name="cancel">Avbryt</string>

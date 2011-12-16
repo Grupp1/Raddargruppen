@@ -120,7 +120,7 @@ public final class R {
         public static final int mapview=0x7f070035;
         public static final int messageButton=0x7f070025;
         public static final int messageData=0x7f07004e;
-        public static final int myLocation=0x7f070064;
+        public static final int myLocation=0x7f070062;
         public static final int newPictureButton=0x7f07003a;
         public static final int newTextButton=0x7f070039;
         public static final int normal_power_radio_button=0x7f07005b;
@@ -154,7 +154,7 @@ public final class R {
         public static final int textView2=0x7f070023;
         public static final int textView3=0x7f070026;
         public static final int text_foot=0x7f07000e;
-        public static final int toggle=0x7f070062;
+        public static final int toggle=0x7f070064;
         public static final int toptext=0x7f070048;
         public static final int traffic=0x7f070065;
         public static final int trafikverketButton=0x7f070058;
@@ -227,7 +227,7 @@ public final class R {
         public static final int main_sos=0x7f050017;
         public static final int map_close=0x7f050007;
         public static final int map_header=0x7f050008;
-        public static final int map_menu_follow=0x7f05001b;
+        public static final int map_menu_follow=0x7f05001c;
         public static final int map_menu_myLocation=0x7f05001e;
         public static final int map_menu_toggle=0x7f05001d;
         public static final int map_menu_traffic=0x7f05001f;
@@ -244,7 +244,7 @@ public final class R {
         public static final int send_message=0x7f05000e;
         public static final int send_send=0x7f05000f;
         public static final int send_subject=0x7f05000d;
-        public static final int sos_meddelande=0x7f05001c;
+        public static final int sos_meddelande=0x7f05001b;
         public static final int start=0x7f050033;
         public static final int start_exit=0x7f050005;
         public static final int start_header=0x7f050000;
