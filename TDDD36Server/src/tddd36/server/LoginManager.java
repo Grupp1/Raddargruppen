@@ -35,7 +35,7 @@ public class LoginManager {
 				// Skapa utstr�mmen till klienten
 				pw = new PrintWriter(so.getOutputStream(), true);
 				if(Server.onlineUsers.getUserAddress(username)!=null){
-					System.out.println(username+" har f�rs�kt logga in, men �r redan inloggad p� ip-adressen "
+					System.out.println(username+" har försökt logga in, men är redan inloggad på ip-adressen "
 							+ Server.onlineUsers.getUserAddress(username));
 					if(Server.onlineUsers.getUserAddress(username).equals(so.getInetAddress())){
 						pw.println("OK");
@@ -43,7 +43,7 @@ public class LoginManager {
 						return;
 					}else{
 						NotificationMessage nm = (new NotificationMessage("Server", NotificationType.DISCONNECT));
-						nm.setData("En annan klient har loggat in p� denna anv�ndare. Du kommer nu att loggas ut.");
+						nm.setData("En annan klient har loggat in på denna användare. Du kommer nu att loggas ut.");
 						new Sender(nm, username);
 						pw.println("OK_FORCE_LOGOUT");
 						Server.onlineUsers.removeUser(username);

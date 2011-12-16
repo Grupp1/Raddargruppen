@@ -190,7 +190,7 @@ public class Receiver implements Runnable {
 			broadcast(mo);
 			break;
 		default:
-			System.out.println("Ok�nd MapOperation");
+			System.out.println("Okänd MapOperation");
 		}	
 	}
 
@@ -274,7 +274,7 @@ public class Receiver implements Runnable {
 			new Sender(list, rm.getSrcUser());
 			break;
 		default:
-			System.out.println("Ok�nd RequestType");
+			System.out.println("Okänd RequestType");
 		}
 	}
 }

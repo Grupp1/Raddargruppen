@@ -47,7 +47,7 @@ public class CallView extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.walkietalkie);
-		SessionController.titleBar(this, " - Samtal");
+		SessionController.titleBar(this, " - Samtal", true);
 		Bundle extras = getIntent().getExtras();
 
 		final String sip = (String) extras.get("sip");
@@ -128,7 +128,7 @@ public class CallView extends Activity implements OnClickListener {
 				@Override
 				public void onError(SipAudioCall call, int errorCode,
 						String errorMessage) {
-					viewToast("Samtalet avbr�ts");
+					viewToast("Samtalet avbröts");
 					finish();
 				}
 			};
@@ -136,7 +136,7 @@ public class CallView extends Activity implements OnClickListener {
 
 				call = SipController.manager
 				.takeAudioCall(intent, listener);
-				updateText("Samtal fr�n",  call.getPeerProfile().getUserName());
+				updateText("Samtal från",  call.getPeerProfile().getUserName());
 			} catch (SipException e) {
 				e.printStackTrace();
 			}
@@ -224,7 +224,7 @@ public class CallView extends Activity implements OnClickListener {
 				}
 				@Override
 				public void onError(SipAudioCall call, int errorCode, String errorMessage) {
-					viewToast("Samtalet br�ts");
+					viewToast("Samtalet bröts");
 					finish();
 				}
 				@Override
@@ -252,7 +252,7 @@ public class CallView extends Activity implements OnClickListener {
 							}
 						}
 					});*/
-					viewToast("Mottagaren �r upptagen");
+					viewToast("Mottagaren är upptagen");
 					finish();
 				}
 			};

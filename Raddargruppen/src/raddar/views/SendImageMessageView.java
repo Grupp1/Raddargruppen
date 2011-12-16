@@ -45,7 +45,7 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.send_image_message);
-		SessionController.titleBar(this, " - Nytt bildmeddelande");
+		SessionController.titleBar(this, " - Nytt bildmeddelande", true);
 		destUser = (EditText) this.findViewById(R.id.destUser);
 		subject = (EditText) this.findViewById(R.id.subject);
 		sendButton = (Button) this.findViewById(R.id.sendButton);
@@ -119,7 +119,7 @@ public class SendImageMessageView extends Activity implements OnClickListener {
 
 			if (temp[0].equals("")
 					|| temp[1].equals("")||yourSelectedImage==null) { 
-				Toast.makeText(getApplicationContext(), "Fyll i alla f�lt",
+				Toast.makeText(getApplicationContext(), "Fyll i alla fält",
 						Toast.LENGTH_SHORT).show();
 
 				return;

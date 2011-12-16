@@ -105,8 +105,12 @@ public class SessionController extends Observable{
 	 * @param a activity som den anropas fr�n
 	 * @param s app_name + / var man �r
 	 */
-	public static void titleBar(Activity a, String s){
-		a.setTitle(" Alice" + s);
+	public static void titleBar(Activity a, String s, boolean loggedIn){
+		if(loggedIn){
+			a.setTitle(" Alice" + s + " - " + getUser());
+		}else{
+			a.setTitle(" Alice" + s);
+		}
 		View title = a.getWindow().findViewById(android.R.id.title);
 		View titleBar = (View) title.getParent();
 		if (connection.equals(ConnectionStatus.CONNECTED)){

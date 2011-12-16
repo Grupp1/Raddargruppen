@@ -47,7 +47,6 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	private ImageButton sosButton;
 	private ImageButton setupButton;
 	private ImageButton logButton;
-	private TextView statusText;
 	public static MapCont mapCont;
 	public static MainView theOne;
 	private Bundle extras;
@@ -79,8 +78,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.main);
 
-		SessionController.appIsRunning = true;
-		SessionController.titleBar(this, " ");
+		
 		extras = getIntent().getExtras();
 		theOne = this;
 
@@ -89,6 +87,8 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		 * Initierar kartans controller f�r att kunna f� gps koordinaterna f�r sin position
 		 */
 		new SessionController(extras.get("user").toString()).addObserver(this);
+		SessionController.appIsRunning = true;
+		SessionController.titleBar(this, " - Huvudmeny", true);
 		
 		new SipController(this);
 		reciveHandler = new ReciveHandler(this);
@@ -147,10 +147,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		downloadBar = (ProgressBar) this.findViewById(R.id.download_bar);
 		downloadBar.setVisibility(View.INVISIBLE);
 
-		statusText = (TextView)this.findViewById(R.id.statusText);
 
-		statusText.setText("Inloggad som: " +  SessionController.getUser());
-		statusText.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC), Typeface.ITALIC);
 
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();

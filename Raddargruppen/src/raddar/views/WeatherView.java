@@ -26,7 +26,7 @@ public class WeatherView extends ExpandableListActivity {
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
     	requestWindowFeature(Window.FEATURE_RIGHT_ICON);
-    	SessionController.titleBar(this, " - Väder");
+    	SessionController.titleBar(this, " - VÃ¤der", true);
     	mAdapter = new MyExpandableListAdapter();
         setListAdapter(mAdapter);
         registerForContextMenu(getExpandableListView());

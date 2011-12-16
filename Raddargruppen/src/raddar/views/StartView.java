@@ -43,7 +43,7 @@ public class StartView extends Activity implements Observer {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.start);
-		SessionController.titleBar(this, " - Logga in");
+		SessionController.titleBar(this, " - Logga in", false);
 		setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.disconnected);
 		new DatabaseController(this);
 		DatabaseController.db.clearDatabase();
@@ -56,8 +56,8 @@ public class StartView extends Activity implements Observer {
 		password = (EditText) this.findViewById(R.id.passwordtext1);
 
 		// Endast f�r l�ttare testning
-		user.setText("lalle");
-		password.setText("lalle");
+		user.setText("mikbe953");
+		password.setText("mikbe953");
 
 
 		final LoginManager lm = new LoginManager

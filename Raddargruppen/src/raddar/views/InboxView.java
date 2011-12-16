@@ -37,7 +37,7 @@ public class InboxView extends ListActivity implements Observer{
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
-		SessionController.titleBar(this, " - Inkorg");
+		SessionController.titleBar(this, " - Inkorg", true);
 		DatabaseController.db.addObserver(this);
 		temp = DatabaseController.db.getAllRowsAsArrays("message");
 		//imageInbox = DatabaseController.db.getAllRowsAsArrays("imageMessage");

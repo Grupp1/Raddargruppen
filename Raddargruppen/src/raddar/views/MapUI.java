@@ -61,7 +61,7 @@ public class MapUI extends MapActivity implements Observer {
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.maps);
 
-		SessionController.titleBar(this, " - Karta");
+		SessionController.titleBar(this, " - Karta", true);
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 		mapView.setSatellite(true);
