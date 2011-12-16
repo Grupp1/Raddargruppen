@@ -43,7 +43,7 @@ public class StartView extends Activity implements Observer {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.start);
-		SessionController.titleBar(this, " - Logga in");
+		SessionController.titleBar(this, " - Logga in", false);
 		setFeatureDrawableResource(Window.FEATURE_RIGHT_ICON, R.drawable.disconnected);
 		new DatabaseController(this);
 		DatabaseController.db.clearDatabase();
@@ -51,14 +51,12 @@ public class StartView extends Activity implements Observer {
 		System.setProperty("javax.net.ssl.keyStore","assets/androidKey");
 	    System.setProperty("javax.net.ssl.keyStorePassword","android");
 		
-
 		user = (EditText) this.findViewById(R.id.usertext1);
 		password = (EditText) this.findViewById(R.id.passwordtext1);
 
 		// Endast f�r l�ttare testning
-		user.setText("nikla729");
-		password.setText("nikla729");
-
+		user.setText("danan612");
+		password.setText("raddar");
 
 		final LoginManager lm = new LoginManager();
 		lm.addObserver(this);

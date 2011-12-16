@@ -43,7 +43,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.send_message);
-		SessionController.titleBar(this, " - Nytt textmeddelande");
+		SessionController.titleBar(this, " - Nytt textmeddelande", true);
 
 		destUser = (EditText) this.findViewById(R.id.destUser);
 		subject = (EditText) this.findViewById(R.id.subject);

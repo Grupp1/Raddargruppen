@@ -43,7 +43,7 @@ public class OutBoxView extends ListActivity {
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
-		SessionController.titleBar(this, " - Utkorg");
+		SessionController.titleBar(this, " - Utkorg", true);
 
 		temp = DatabaseController.db.getAllRowsAsArrays("outbox");
 		int size = temp.size();

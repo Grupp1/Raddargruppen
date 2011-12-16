@@ -28,7 +28,7 @@ public class ReadMessageView extends Activity{
 		Log.d("ReadMessageView", "extras.get(\"subject\")" + extras.get("subject"));
 		Log.d("ReadMessageView", "extras.get(\"data\")" + extras.get("data"));
 		
-		SessionController.titleBar(this, " - Meddelanden");
+		SessionController.titleBar(this, " - Meddelanden", true);
 
 		TextView readMessageSrcUser = (TextView)this.findViewById(R.id.readMessageSrcUser);
 		TextView readMessageDate = (TextView)this.findViewById(R.id.readMessageDate);

@@ -40,7 +40,7 @@ public class ContactView extends ListActivity implements OnClickListener, Observ
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
-		SessionController.titleBar(this, " - Kontaktlista");
+		SessionController.titleBar(this, " - Kontaktlista", true);
 
 		contacts = DatabaseController.db.getAllRowsAsArrays("contact");
 		DatabaseController.db.addObserver(this);

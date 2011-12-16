@@ -27,7 +27,7 @@ public class SettingsView extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.settings);
-		SessionController.titleBar(this, " - Inst‰llningar");
+		SessionController.titleBar(this, " - Inst√§llningar", true);
 		normal = (RadioButton) findViewById(R.id.normal_power_radio_button);
 		low = (RadioButton) findViewById(R.id.low_power_radio_button);
 		automatic = (RadioButton) findViewById(R.id.automatic_power_radio_button);

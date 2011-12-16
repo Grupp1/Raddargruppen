@@ -27,8 +27,8 @@ public class Resource extends MapObject {
 	@Override
 	public void updateDescription(){
 		super.updateDescription();
-		String des = this.getDescription();
-		des = des +"\nStatus: "+ getStatus().toString();
+		String des ="Status: "+ getStatus().toString()+"\n";
+		des += this.getDescription();
 		setDescription(des);
 	}
 	

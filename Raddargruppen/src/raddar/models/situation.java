@@ -24,8 +24,8 @@ public class Situation extends MapObject {
 	@Override
 	public void updateDescription(){
 		super.updateDescription();
-		String des = this.getDescription();
-		des = des +"\nPrioritet: "+ getPriority().toString();
+		String des = "Prioritet: "+ getPriority().toString()+ "\n";
+		des += this.getDescription();
 		setDescription(des);
 	}
 	
