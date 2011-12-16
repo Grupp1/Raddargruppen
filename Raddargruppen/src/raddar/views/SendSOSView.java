@@ -27,7 +27,7 @@ public class SendSOSView extends Activity {
 	private static boolean SOS_ALARM_IS_ACTIVE = false;
 	
 	// statisk variabel som ser till att det man skrivit
-	// inte försvinner bara för att man lämnar vyn tillfälligt
+	// inte fï¿½rsvinner bara fï¿½r att man lï¿½mnar vyn tillfï¿½lligt
 	private static String txt = "";
 	
 	private Button button;
@@ -52,11 +52,10 @@ public class SendSOSView extends Activity {
 				if (v == button) {
 					if (SOS_ALARM_IS_ACTIVE) {
 						cancelAlarm();
-						updateLabels();
 					} else {
 						startAlarm();
-						updateLabels();
 					}
+					updateLabels();
 				}
 				if (v == clear) 
 					et.setText(txt = "");
@@ -71,14 +70,14 @@ public class SendSOSView extends Activity {
 		MainView.mapCont.setSavedSnippet(MainView.mapCont.getYou().getSnippet());
 		txt = et.getText().toString();
 		
-		// Ta bort dig själv från kartan
+		// Ta bort dig sjï¿½lv frï¿½n kartan
 		MainView.mapCont.removeObject(MainView.mapCont.getYou(), false);
 		
 		MainView.mapCont.getYou().setSOS(true);
 		MainView.mapCont.getYou().setSnippet(txt);
 		MainView.mapCont.getYou().setTitle(SessionController.getUser()+", ALARM");
 		
-		// Lägger till dig själv på kartan
+		// Lï¿½gger till dig sjï¿½lv pï¿½ kartan
 		MainView.mapCont.add(MainView.mapCont.getYou(), false);
 		
 		Gson gson = new Gson();
@@ -94,16 +93,13 @@ public class SendSOSView extends Activity {
 	}
 	
 	private void cancelAlarm() {
-		txt = "";
-		
-		// Ta bort dig själv på kartan
+		// Ta bort dig sjï¿½lv pï¿½ kartan
 		MainView.mapCont.removeObject(MainView.mapCont.getYou(), false);
-		
 		MainView.mapCont.getYou().setSOS(false);
 		MainView.mapCont.getYou().setSnippet(MainView.mapCont.getSavedSnippet());
 		MainView.mapCont.getYou().setTitle(SessionController.getUser());
 		
-		// Lägg till dig själv igen
+		// Lï¿½gg till dig sjï¿½lv igen
 		MainView.mapCont.add(MainView.mapCont.getYou(), false);
 		
 		Gson gson = new Gson();
@@ -121,7 +117,7 @@ public class SendSOSView extends Activity {
 	
 	/*
 	 * Knappens text ska skifta mellan Skicka och Avbryt, 
-	 * beroende på om ett larm redan är aktivt
+	 * beroende pï¿½ om ett larm redan ï¿½r aktivt
 	 */
 	private void updateLabels() {
 		if (SOS_ALARM_IS_ACTIVE) {
@@ -129,10 +125,12 @@ public class SendSOSView extends Activity {
 			et.setText(txt);
 			et.setEnabled(false);
 			clear.setEnabled(false);
+			clear.setVisibility(4);
 		} else {
 			button.setText("Skicka");
 			et.setEnabled(true);
 			clear.setEnabled(true);
+			clear.setVisibility(0);
 			et.setText(txt);
 		}
 	}

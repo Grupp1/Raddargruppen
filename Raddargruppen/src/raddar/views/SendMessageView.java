@@ -81,7 +81,7 @@ public class SendMessageView extends Activity implements OnClickListener {
 			temp[1] = subject.getText().toString().trim();
 			temp[2] = messageData.getText().toString().trim();
 			if (temp[0].equals("") || temp[1].equals("") || temp[2].equals("")) {
-				Toast.makeText(getApplicationContext(), "Fyll i alla f�lt",
+				Toast.makeText(getApplicationContext(), "Fyll i alla fält",
 						Toast.LENGTH_SHORT).show();
 				return;
 			}

@@ -19,7 +19,7 @@ public class ServiceView extends Activity implements OnClickListener{
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.services);
-		SessionController.titleBar(this, " - Externa tjänster");
+		SessionController.titleBar(this, " - Externa tjï¿½nster");
 		yrButton = (ImageButton)this.findViewById(R.id.yrButton);
 		yrButton.setOnClickListener(this);
 		
@@ -36,7 +36,7 @@ public class ServiceView extends Activity implements OnClickListener{
 		}
 		
 		if(v == trafikverketButton){
-			finish();
+			MainView.theOne.viewToast("Funktionen inte implementerad");
 		}
 		
 	}
