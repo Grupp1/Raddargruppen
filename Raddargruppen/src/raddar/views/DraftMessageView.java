@@ -19,7 +19,7 @@ public class DraftMessageView extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.draft_message);
-		SessionController.titleBar(this, " - Utkast");
+		SessionController.titleBar(this, " - Utkast", true);
 		final Bundle extras = getIntent().getExtras();
 		TextView draftMessageDestUser = (TextView)this.findViewById(R.id.draftMessageDestUser);
 		TextView draftMessageDate = (TextView)this.findViewById(R.id.draftMessageDate);

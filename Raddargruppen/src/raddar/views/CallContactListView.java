@@ -44,7 +44,7 @@ public class CallContactListView extends ListActivity implements Observer{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
-		SessionController.titleBar(this, " - Samtal");
+		SessionController.titleBar(this, " - Samtal", true);
 
 		contacts = SessionController.getOnlineContacts();
 		SessionController.getSessionController().addObserver(this);
@@ -161,7 +161,7 @@ public class CallContactListView extends ListActivity implements Observer{
 					
 					if(contacts.size() == 0){
 						lv.addFooterView(footer);
-						foot.setText("Ingen är online för tillfället!");
+						foot.setText("Ingen är online för tillfället");
 					}
 					else if (contacts.size()==1){
 						lv.removeFooterView(footer);

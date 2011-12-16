@@ -43,7 +43,7 @@ public class DraftView extends ListActivity {
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
-		SessionController.titleBar(this, " - Utkast");
+		SessionController.titleBar(this, " - Utkast", true);
 		drafts = DatabaseController.db.getAllRowsAsArrays("drafts");
 
 		ia = new DraftAdapter(this, R.layout.row,drafts);
@@ -87,7 +87,7 @@ public class DraftView extends ListActivity {
 		info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("Vill du ta bort detta meddalande från utkast?")
+		builder.setMessage("Vill du ta bort detta meddelande från utkast?")
 		.setCancelable(true)
 		.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
 

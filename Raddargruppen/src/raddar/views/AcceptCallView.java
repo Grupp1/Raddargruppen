@@ -20,7 +20,7 @@ public class AcceptCallView extends Activity implements OnClickListener{
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.walkietalkie);
-		SessionController.titleBar(this, " - Samtal");
+		SessionController.titleBar(this, " - Samtal", true);
 
 		acceptCall = (Button)this.findViewById(R.id.denyCall);
 		acceptCall.setOnClickListener(this);
@@ -28,7 +28,7 @@ public class AcceptCallView extends Activity implements OnClickListener{
 		denyCall = (Button)this.findViewById(R.id.denyCall);
 		denyCall.setOnClickListener(this);
 
-		callerText = (TextView)this.findViewById(R.id.callerText);  //där namnet på den som ringer ska in
+		callerText = (TextView)this.findViewById(R.id.callerText);  //dï¿½r namnet pï¿½ den som ringer ska in
 		
 	}
 

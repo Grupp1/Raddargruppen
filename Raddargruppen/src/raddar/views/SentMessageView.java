@@ -9,7 +9,7 @@ import android.view.Window;
 import android.widget.TextView;
 
 /**
- * Denna klass ritar ut det skickade meddelandet som klickas på 
+ * Denna klass ritar ut det skickade meddelandet som klickas pï¿½ 
  * @author magkj501
  *
  */
@@ -21,7 +21,7 @@ public class SentMessageView extends Activity{
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.sent_message);
-		SessionController.titleBar(this, " - Utkorg");
+		SessionController.titleBar(this, " - Utkorg", true);
 		Bundle extras = getIntent().getExtras();
 		TextView sentMessageDestUser = (TextView)this.findViewById(R.id.sentMessageDestUser);
 		TextView sentMessageDate = (TextView)this.findViewById(R.id.sentMessageDate);

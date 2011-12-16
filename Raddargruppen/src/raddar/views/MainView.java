@@ -47,7 +47,6 @@ public class MainView extends Activity implements OnClickListener, Observer {
 	private ImageButton sosButton;
 	private ImageButton setupButton;
 	private ImageButton logButton;
-	private TextView statusText;
 	public static MapCont mapCont;
 	public static MainView theOne;
 	private Bundle extras;
@@ -79,8 +78,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.main);
 
-		SessionController.appIsRunning = true;
-		SessionController.titleBar(this, " ");
+		
 		extras = getIntent().getExtras();
 		theOne = this;
 
@@ -89,6 +87,8 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		 * Initierar kartans controller f�r att kunna f� gps koordinaterna f�r sin position
 		 */
 		new SessionController(extras.get("user").toString()).addObserver(this);
+		SessionController.appIsRunning = true;
+		SessionController.titleBar(this, " - Huvudmeny", true);
 		
 		new SipController(this);
 		reciveHandler = new ReciveHandler(this);
@@ -147,10 +147,7 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		downloadBar = (ProgressBar) this.findViewById(R.id.download_bar);
 		downloadBar.setVisibility(View.INVISIBLE);
 
-		statusText = (TextView)this.findViewById(R.id.statusText);
 
-		statusText.setText("Inloggad som: " +  SessionController.getUser());
-		statusText.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC), Typeface.ITALIC);
 
 		QoSManager.setCurrentActivity(this);
 		QoSManager.setPowerMode();
@@ -267,16 +264,6 @@ public class MainView extends Activity implements OnClickListener, Observer {
 		runOnUiThread(new Runnable(){
 			public void run(){
 				if(data == ConnectionStatus.CONNECTED){
-					// TODO Gör detta så att inte blir dubbel toast vid flera disconnect på rad
-					// Måste dock kolla så att setConnectionStatus anropar efter notifyObservers
-					// så att den alltid hamnar i if-satsen
-//					if (SessionController.getConnectionStatus().equals(ConnectionStatus.CONNECTED)){
-//						Log.d("STATUS", "ALREADY CONNECTED");
-//						return;
-//					}
-					
-					
-					
 					Log.d("STATUS","CONNECTED");
 					Toast.makeText(getBaseContext(), "Ansluten till servern"
 							, Toast.LENGTH_LONG).show();
@@ -297,15 +284,6 @@ public class MainView extends Activity implements OnClickListener, Observer {
 					}
 
 				}else if (data == ConnectionStatus.DISCONNECTED){
-					// TODO Gör detta så att inte blir dubbel toast vid flera disconnect på rad
-					// Måste dock kolla så att setConnectionStatus anropar efter notifyObservers
-					// så att den alltid hamnar i if-satsen
-//					if (SessionController.getConnectionStatus().equals(ConnectionStatus.DISCONNECTED)){
-//						Log.d("STATUS", "ALREADY DISCONNECTED");
-//						return;
-//					}
-					
-					
 					Log.d("STATUS","DISCONNECTED");
 					SessionController.getSessionController().clearOnlineUsers();
 					Toast.makeText(getBaseContext(), "Tappad anslutning mot servern",Toast.LENGTH_LONG).show();

@@ -24,7 +24,7 @@ public class MessageChoiceView extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_RIGHT_ICON);
 		setContentView(R.layout.message_choice);
-		SessionController.titleBar(this, " - Meddelanden");
+		SessionController.titleBar(this, " - Meddelanden", true);
 		
 		newTextButton = (ImageButton)this.findViewById(R.id.newTextButton);
 		newTextButton.setOnClickListener(this);
