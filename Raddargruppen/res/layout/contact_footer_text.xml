@@ -5,5 +5,6 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:id="@+id/text_foot"
-	android:textSize="40dip">
+	android:textSize="40dip"
+	android:textColor="#FFFFFF">
 </TextView>

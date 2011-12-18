@@ -65,7 +65,7 @@ public class Database {
 
 			if (rs.next()) {
 				if (password == null) {
-					System.out.println("Lösenordet får inte vara null (Database.java). ");
+					System.out.println("Lösenordet f�r inte vara null (Database.java). ");
 					return false;
 				}
 				// J�mf�r input l�senordet med det lagrade l�senordet (b�da �r krypterade)

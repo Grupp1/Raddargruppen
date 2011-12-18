@@ -35,7 +35,7 @@ public class LoginManager {
 				// Skapa utstrï¿½mmen till klienten
 				pw = new PrintWriter(so.getOutputStream(), true);
 				if(Server.onlineUsers.getUserAddress(username)!=null){
-					System.out.println(username+" har fÃ¶rsÃ¶kt logga in, men Ã¤r redan inloggad pÃ¥ ip-adressen "
+					System.out.println(username+" har försökt att logga in, men är redan inloggad på ip-adressen "
 							+ Server.onlineUsers.getUserAddress(username));
 					if(Server.onlineUsers.getUserAddress(username).equals(so.getInetAddress())){
 						pw.println("OK");
@@ -43,7 +43,7 @@ public class LoginManager {
 						return;
 					}else{
 						NotificationMessage nm = (new NotificationMessage("Server", NotificationType.DISCONNECT));
-						nm.setData("En annan klient har loggat in pÃ¥ denna anvÃ¤ndare. Du kommer nu att loggas ut.");
+						nm.setData("En annan klient har loggat in på denna användare. Du kommer nu att loggas ut.");
 						new Sender(nm, username);
 						pw.println("OK_FORCE_LOGOUT");
 						Server.onlineUsers.removeUser(username);
@@ -58,13 +58,13 @@ public class LoginManager {
 				// Lï¿½gg till anvï¿½ndaren i listan ï¿½ver inloggade anvï¿½ndare
 
 				Server.onlineUsers.addUser(username, so.getInetAddress());
-				System.out.println("AnvÃ¤ndare online: "+Server.onlineUsers.onlineUsers());
+				System.out.println("Användare online: "+Server.onlineUsers.onlineUsers());
 			} catch (IOException e) {
 				System.out.println("Could not respond with \"OK\" to client attempting to Log in. Socket error? ");
 				e.printStackTrace();
 			}
 		} else {	// Hï¿½r hamnar vi nï¿½r anvï¿½ndarnanm eller lï¿½senord ï¿½r fel
-			System.out.println("Ogiltigt anvÃ¤ndarnamn eller lÃ¶senord. ");
+			System.out.println("Ogiltigt användarnamn eller lösenord. ");
 			try {
 				pw = new PrintWriter(so.getOutputStream(), true);
 				pw.println("NOT OK");
@@ -91,7 +91,7 @@ public class LoginManager {
 		}
 		// Kolla om anvï¿½ndaren redan ï¿½r utloggad
 		if (a == null)
-			System.out.println(username + " ï¿½r redan utloggad ");
+			System.out.println(username + " är redan utloggad ");
 		// ...annars loggar vi ut denne.
 		else			
 			System.out.println(username + " har loggat ut (" + a.getHostAddress() + ") ");

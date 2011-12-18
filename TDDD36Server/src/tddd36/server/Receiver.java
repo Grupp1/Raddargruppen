@@ -84,7 +84,7 @@ public class Receiver implements Runnable {
 					((RequestMessage)m).getRequestType() == RequestType.SALT))){
 				System.out.println("Not online");
 				NotificationMessage nm = (new NotificationMessage("Server", NotificationType.DISCONNECT));
-				nm.setData("Du √§r inte inloggad mot servern. Var v√§nlig logga in igen.");
+				nm.setData("Du ‰r inte inloggad mot servern. Var v‰nlig logga in igen.");
 				new Sender(nm, so.getInetAddress());
 				return;
 			}
@@ -190,7 +190,7 @@ public class Receiver implements Runnable {
 			broadcast(mo);
 			break;
 		default:
-			System.out.println("Ok√§nd MapOperation");
+			System.out.println("Ok‰nd MapOperation");
 		}	
 	}
 
@@ -274,7 +274,7 @@ public class Receiver implements Runnable {
 			new Sender(list, rm.getSrcUser());
 			break;
 		default:
-			System.out.println("Ok√§nd RequestType");
+			System.out.println("Ok‰nd RequestType");
 		}
 	}
 }
