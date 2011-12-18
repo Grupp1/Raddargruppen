@@ -33,7 +33,11 @@ public class LoginManager extends Observable {
 	private static HashMap<String, String> passwordCache = new HashMap<String, String>();
 
 	private StubbornLoginThread s = null;
+	private static boolean thread_is_active = false;
+	private static boolean server_connection_achieved = false;
 	private LoginResponse logIn = LoginResponse.NO_SUCH_USER_OR_PASSWORD;
+	
+	private static int nLoginThreads = 0;
 
 	/**
 	 * Verifierar att username och password �r giltiga. Denna metoden kommer att
@@ -51,9 +55,9 @@ public class LoginManager extends Observable {
 	 *            L�senordet
 	 * @return true om verifieringen g�r bra, false annars
 	 */
-	public void evaluate(String userName, String password, boolean firstLogIn) {
+	public void evaluate(String userName, String password, boolean passwordNotHashed) {
 		try {
-			
+			server_connection_achieved = false;
 			//nya ssl
 			SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 			SSLSocket sslsocket = (SSLSocket) sslsocketfactory.createSocket();
@@ -65,6 +69,9 @@ public class LoginManager extends Observable {
 			int TIME_OUT = 5000;
 			sslsocket.connect(sockAddr, TIME_OUT);
 
+			Log.d("LoginManager.java", "server_connection_achieved sätts nu till true...");
+			server_connection_achieved = true;
+
 			sslsocket.setEnabledCipherSuites(new String[] { "SSL_DH_anon_WITH_RC4_128_MD5" });
 			// Initiera handskakningen
 			SSLSession session = sslsocket.getSession();
@@ -72,20 +79,24 @@ public class LoginManager extends Observable {
 			PrintWriter pw = new PrintWriter(sslsocket.getOutputStream(), true);
 			BufferedReader br = new BufferedReader(new InputStreamReader(
 					sslsocket.getInputStream()));
+			String send = "";
+			String gg = "";
+			String salt = "";
+			if(passwordNotHashed){
+				RequestMessage rm = new RequestMessage(RequestType.SALT);
+				rm.setSrcUser(userName);
+				send = rm.getClass().getName() + "\r\n";
+				gg = new Gson().toJson(rm);
+				send += gg;
+				// Skicka SALT-request
+				pw.println(send);
 
-			RequestMessage rm = new RequestMessage(RequestType.SALT);
-			rm.setSrcUser(userName);
-			String send = rm.getClass().getName() + "\r\n";
-			String gg = new Gson().toJson(rm);
-			send += gg;
-			// Skicka SALT-request
-			pw.println(send);
+				// L�s in salt fr�n server
+				salt = br.readLine();
 
-			// L�s in salt fr�n server
-			String salt = br.readLine();
-
-			// Anv�nd saltet vi fick f�r att salta och kryptera l�senordet
-			password = Encryption.encrypt(password, salt);
+				// Anv�nd saltet vi fick f�r att salta och kryptera l�senordet
+				password = Encryption.encrypt(password, salt);
+			}
 
 			// Skapa msg med anv�ndarnamn och krypterat l�senord
 			NotificationMessage nm = new NotificationMessage(userName,
@@ -106,37 +117,36 @@ public class LoginManager extends Observable {
 			sslsocket.close();
 			
 			if (response.equals("OK")) {
-				s = null;
 				SessionController.setPassword(password);
 				SessionController.setUserName(userName);
 				if(SessionController.getSessionController()!=null)
 					SessionController.getSessionController().changeConnectionStatus(ConnectionStatus.CONNECTED);
 				logIn = LoginResponse.ACCEPTED;
-				cache(userName, password, salt);
+				if(passwordNotHashed)
+					cache(userName, password, salt);
 				sendBufferedMessages();
 			}
 			else if(response.equals("OK_FORCE_LOGOUT")){
-				s = null;
 				SessionController.setPassword(password);
 				SessionController.setUserName(userName);
 				if(SessionController.getSessionController()!=null)
 					SessionController.getSessionController().changeConnectionStatus(ConnectionStatus.CONNECTED);
 				logIn = LoginResponse.USER_ALREADY_LOGGED_IN;
+				if(passwordNotHashed)
+					cache(userName, password, salt);
 				sendBufferedMessages();
-			}else{
-				s = null;
 			}
 		} catch (IOException e) {
-			Log.d("NotificationMessage", "Server connection failed");
+			Log.d("LoginManager.java", "Socket mot server kunde inte skapas... "+e.toString());
 			// Om servern inte kan n�s, kolla om vi har en f�rs�kande tr�d redan
 			// ...har vi en f�rs�kande tr�d inneb�r det att vi redan �r inloggade lokalt
 			// och d� returnerar vi h�r, annars loggar vi in lokalt
-			if(!firstLogIn && s==null){
+			if(!passwordNotHashed && thread_is_active == false){
 				s = new StubbornLoginThread(userName, password);
-				Log.d("LoginManager", "LULZ 3");
+				Log.d("LoginManager.java", "S har nu skapats i evaluate()");
 				return;
 			}
-			else if (s == null)
+			else if (thread_is_active == false)
 				logIn = evaluateLocally(userName, password);
 			else
 				return;
@@ -145,9 +155,7 @@ public class LoginManager extends Observable {
 		notifyObservers(logIn);
 	}
 	public boolean isRunningStubornLoginThread(){
-		if(s == null)
-			return false;
-		return true;
+		return thread_is_active;
 	}
 
 	/**
@@ -176,6 +184,7 @@ public class LoginManager extends Observable {
 				 */
 				SessionController.appIsRunning = true;
 				s = new StubbornLoginThread(userName, password);
+				Log.d("LoginManager.java", "S har nu skapats i evaluateLocally()");
 				return LoginResponse.ACCEPTED_NO_CONNECTION;
 			}
 		}catch(Exception e){
@@ -215,6 +224,9 @@ public class LoginManager extends Observable {
 		private Thread thrd = new Thread(this);
 
 		StubbornLoginThread(String username, String password) {
+			thread_is_active = true;
+			nLoginThreads++;
+			Log.d("LoginManager.java", "Number of active LoginThreads: " + nLoginThreads );
 			this.username = username;
 			this.password = password;
 			thrd.start();
@@ -223,14 +235,15 @@ public class LoginManager extends Observable {
 		public void run() {
 			while (SessionController.appIsRunning) {
 				try {
-					if (s == null)
-						break;
-					evaluate(username, password,false);
-					if (s == null)
-						break;
-					// V�nta tv� minuter mellan varje f�rs�k
 					Thread.sleep(30000);
-
+					if (server_connection_achieved) {
+						Log.d("LoginManager.java", "Avbryter StubbornLoginThread... ");
+						nLoginThreads--;
+						thread_is_active = false;
+						return;
+					}
+					Log.d("LoginManager.java", "About to evaluate in StubbornLoginThread... ");
+					evaluate(username, password,false);
 				} catch (InterruptedException e) {
 					Log.d("LoginManager.java", "evaluateLocally FAILADE!!");
 					continue;
@@ -239,5 +252,4 @@ public class LoginManager extends Observable {
 		}
 
 	}
-
 }
